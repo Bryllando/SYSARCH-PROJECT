@@ -7,7 +7,7 @@
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-        <!-- Table header bar -->
+        <!-- Table toolbar -->
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
             <div class="flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-[#5B0E14]"></div>
@@ -39,7 +39,7 @@
 
         <!-- Table -->
         <div class="overflow-x-auto">
-            <table class="w-full text-sm" id="historyTable">
+            <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100">
                         <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">ID
@@ -60,81 +60,84 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50" id="historyBody">
-                    <% if (typeof sessions !=='undefined' && sessions && sessions.length> 0) { %>
-                        <% sessions.forEach(function(s) { %>
-                            <tr class="hover:bg-gray-50 transition-colors history-row">
-                                <td class="px-4 py-3 font-medium text-gray-700">
-                                    <%= user.id_number %>
-                                </td>
-                                <td class="px-4 py-3 text-gray-600">
-                                    <%= user.first_name %>
-                                        <%= user.last_name %>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span
-                                        class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
-                                        <%= s.purpose || '—' %>
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-gray-600">
-                                    <%= s.lab_room || '—' %>
-                                </td>
-                                <td class="px-4 py-3 text-gray-600">
-                                    <%= s.time_in ? new Date(s.time_in).toLocaleTimeString('en-US', {hour:'2-digit',
-                                        minute:'2-digit'}) : '—' %>
-                                </td>
-                                <td class="px-4 py-3 text-gray-600">
-                                    <% if (s.time_out) { %>
-                                        <%= new Date(s.time_out).toLocaleTimeString('en-US', {hour:'2-digit',
-                                            minute:'2-digit'}) %>
-                                            <% } else { %>
-                                                <span
-                                                    class="inline-flex items-center gap-1 text-green-600 font-medium text-xs">
+                <tbody class="divide-y divide-gray-50">
+
+                    <% var safeSessions=(typeof sessions !=='undefined' && sessions) ? sessions : []; %>
+
+                        <% if (safeSessions.length> 0) { %>
+                            <% safeSessions.forEach(function(s) { %>
+                                <tr class="hover:bg-gray-50 transition-colors history-row">
+                                    <td class="px-4 py-3 font-medium text-gray-700">
+                                        <%= user.id_number %>
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-600">
+                                        <%= user.first_name %>
+                                            <%= user.last_name %>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span
+                                            class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+                                            <%= s.purpose || '—' %>
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-600">
+                                        <%= s.lab_room || '—' %>
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-600">
+                                        <%= s.time_in ? new Date(s.time_in).toLocaleTimeString('en-US', {hour:'2-digit',
+                                            minute:'2-digit'}) : '—' %>
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-600">
+                                        <% if (s.time_out) { %>
+                                            <%= new Date(s.time_out).toLocaleTimeString('en-US', {hour:'2-digit',
+                                                minute:'2-digit'}) %>
+                                                <% } else { %>
                                                     <span
-                                                        class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                                                    Active
-                                                </span>
+                                                        class="inline-flex items-center gap-1 text-green-600 font-medium text-xs">
+                                                        <span
+                                                            class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                                        Active
+                                                    </span>
+                                                    <% } %>
+                                    </td>
+                                    <td class="px-4 py-3 text-gray-600">
+                                        <%= s.time_in ? new Date(s.time_in).toLocaleDateString('en-US', {year:'numeric',
+                                            month:'short', day:'numeric'}) : '—' %>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <% if (s.status==='done' ) { %>
+                                            <button onclick="openFeedbackModal('<%= s.id %>')"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5"
+                                                style="background: linear-gradient(135deg, #059669, #047857);">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                    fill="currentColor" class="size-3">
+                                                    <path fill-rule="evenodd"
+                                                        d="M1 8.74c0 .983.713 1.825 1.69 1.943L3 10.72v2.03a.75.75 0 0 0 1.28.53l1.5-1.5.31-.03H9a2.26 2.26 0 0 0 2.25-2.25v-5.5A2.25 2.25 0 0 0 9 1.75H4A2.25 2.25 0 0 0 1.75 4v4.74H1Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Feedback
+                                            </button>
+                                            <% } else { %>
+                                                <span class="text-xs text-gray-400">—</span>
                                                 <% } %>
-                                </td>
-                                <td class="px-4 py-3 text-gray-600">
-                                    <%= s.time_in ? new Date(s.time_in).toLocaleDateString('en-US', {year:'numeric',
-                                        month:'short', day:'numeric'}) : '—' %>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <% if (s.status==='done' ) { %>
-                                        <button onclick="openFeedbackModal('<%= s.id %>')"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5"
-                                            style="background: linear-gradient(135deg, #059669, #047857);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                fill="currentColor" class="size-3">
-                                                <path fill-rule="evenodd"
-                                                    d="M1 8.74c0 .983.713 1.825 1.69 1.943L3 10.72v2.03a.75.75 0 0 0 1.28.53l1.5-1.5.31-.03H9a2.26 2.26 0 0 0 2.25-2.25v-5.5A2.25 2.25 0 0 0 9 1.75H4A2.25 2.25 0 0 0 1.75 4v4.74H1Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            Feedback
-                                        </button>
-                                        <% } else { %>
-                                            <span class="text-xs text-gray-400">—</span>
-                                            <% } %>
-                                </td>
-                            </tr>
-                            <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="8" class="px-4 py-12 text-center text-gray-400 text-sm">
-                                            No sit-in history found.
-                                        </td>
-                                    </tr>
-                                    <% } %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="8" class="px-4 py-12 text-center text-gray-400 text-sm">
+                                                No sit-in history found.
+                                            </td>
+                                        </tr>
+                                        <% } %>
+
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination info -->
         <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-            <span id="showingText">Showing <%= sessions ? sessions.length : 0 %> entries</span>
-            <div class="flex items-center gap-1" id="pagination"></div>
+            <span>Showing <%= safeSessions.length %> entries</span>
         </div>
     </div>
 </div>
@@ -153,12 +156,12 @@
                 </svg>
             </button>
         </div>
-        <form id="feedbackForm" action="/feedback" method="POST" class="p-6 space-y-4">
+        <form action="/feedback" method="POST" class="p-6 space-y-4">
             <input type="hidden" name="session_id" id="feedbackSessionId">
             <div class="space-y-1">
                 <label class="block text-sm font-bold text-gray-700">Rating</label>
                 <div class="flex gap-2" id="starRating">
-                    <% for(let i=1; i <=5; i++) { %>
+                    <% for (let i=1; i <=5; i++) { %>
                         <button type="button" data-star="<%= i %>"
                             class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors">★</button>
                         <% } %>
@@ -191,12 +194,11 @@
     }
 
     // Star rating
-    const stars = document.querySelectorAll('.star-btn');
-    stars.forEach(star => {
+    document.querySelectorAll('.star-btn').forEach(star => {
         star.addEventListener('click', () => {
             const val = parseInt(star.dataset.star);
             document.getElementById('ratingInput').value = val;
-            stars.forEach((s, i) => {
+            document.querySelectorAll('.star-btn').forEach((s, i) => {
                 s.classList.toggle('text-yellow-400', i < val);
                 s.classList.toggle('text-gray-300', i >= val);
             });
