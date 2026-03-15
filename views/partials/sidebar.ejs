@@ -1,46 +1,11 @@
-<style>
-    #sidebar {
-        transition: width 0.25s ease;
-        min-height: 100%;
-        width: 224px;
-    }
-
-    #sidebar.collapsed {
-        width: 64px;
-    }
-
-    #sidebar.collapsed .sidebar-text {
-        display: none;
-    }
-
-    #sidebar.collapsed .sidebar-link {
-        justify-content: center;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    #sidebar.collapsed #sidebarNav {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    #sidebar.collapsed #sidebarLogout {
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-
-    #sidebar.collapsed #sidebarLogout a {
-        justify-content: center;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
-</style>
-
-<aside id="sidebar" class="bg-[#273F4F] text-white flex flex-col shrink-0 relative">
+<aside id="sidebar" class="bg-[#273F4F] text-white flex flex-col shrink-0 relative"
+    style="width:224px; min-height:100%; transition:width 0.25s ease;">
 
     <!-- Toggle Button -->
     <button id="sidebarToggle"
-        class="absolute -right-3 top-5 z-50 w-6 h-6 bg-[#273F4F] border-2 border-white/20 rounded-full flex items-center justify-center cursor-pointer hover:bg-[#5B0E14] transition-all shadow-md">
+        class="absolute -right-3 top-5 z-50 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer shadow-md transition-colors"
+        style="background:#273F4F; border:2px solid rgba(255,255,255,0.2);"
+        onmouseover="this.style.background='#5B0E14'" onmouseout="this.style.background='#273F4F'">
         <svg id="iconCollapse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
             class="size-3 text-white">
             <path fill-rule="evenodd"
@@ -48,7 +13,7 @@
                 clip-rule="evenodd" />
         </svg>
         <svg id="iconExpand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-            class="size-3 text-white hidden">
+            class="size-3 text-white" style="display:none;">
             <path fill-rule="evenodd"
                 d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
                 clip-rule="evenodd" />
@@ -131,7 +96,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         class="size-5 shrink-0">
                         <path
-                            d="M11.7 2.805a.75.75 0 0 1 .6 0A60.65 60.65 0 0 1 22.83 8.72a.75.75 0 0 1-.231 1.337 49.948 49.948 0 0 0-9.902 3.912l-.003.002-.014.007-.014.007a49.3 49.3 0 0 0-5.657 2.448 1.867 1.867 0 0 0-.894 1.489v.173a3.375 3.375 0 0 0-1.003.677A60.62 60.62 0 0 1 1.17 8.72a.75.75 0 0 1-.231-1.337A60.65 60.65 0 0 1 11.7 2.805Z" />
+                            d="M11.7 2.805a.75.75 0 0 1 .6 0A60.65 60.65 0 0 1 22.83 8.72a.75.75 0 0 1-.231 1.337 49.948 49.948 0 0 0-9.902 3.912l-.003.002-.014.007a49.3 49.3 0 0 0-5.657 2.448 1.867 1.867 0 0 0-.894 1.489v.173a3.375 3.375 0 0 0-1.003.677A60.62 60.62 0 0 1 1.17 8.72a.75.75 0 0 1-.231-1.337A60.65 60.65 0 0 1 11.7 2.805Z" />
                         <path
                             d="M13.06 15.473a48.45 48.45 0 0 1 7.666-3.282c.134 1.414.22 2.843.255 4.284a.75.75 0 0 1-.46.711 47.87 47.87 0 0 1-8.105 2.571.75.75 0 0 1-.612-.123 47.974 47.974 0 0 0-9.77-3.286.75.75 0 0 1-.464-.707 48.28 48.28 0 0 1 .255-4.277 48.45 48.45 0 0 1 7.666 3.282 2.25 2.25 0 0 0 1.575 0Z" />
                     </svg>
@@ -212,28 +177,59 @@
 
 </aside>
 
+<style>
+    #sidebar.collapsed {
+        width: 64px !important;
+    }
+
+    #sidebar.collapsed .sidebar-text {
+        display: none;
+    }
+
+    #sidebar.collapsed .sidebar-link {
+        justify-content: center;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    #sidebar.collapsed #sidebarNav {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    #sidebar.collapsed #sidebarLogout {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    #sidebar.collapsed #sidebarLogout a {
+        justify-content: center;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+</style>
+
 <script>
     const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('sidebarToggle');
     const iconCollapse = document.getElementById('iconCollapse');
     const iconExpand = document.getElementById('iconExpand');
 
     function applyState(collapsed) {
         if (collapsed) {
             sidebar.classList.add('collapsed');
-            iconCollapse.classList.add('hidden');
-            iconExpand.classList.remove('hidden');
+            iconCollapse.style.display = 'none';
+            iconExpand.style.display = 'block';
         } else {
             sidebar.classList.remove('collapsed');
-            iconCollapse.classList.remove('hidden');
-            iconExpand.classList.add('hidden');
+            iconCollapse.style.display = 'block';
+            iconExpand.style.display = 'none';
         }
     }
 
-    // Restore saved state on page load
+    // Default open, only collapse if user previously chose it
     applyState(localStorage.getItem('sidebarCollapsed') === 'true');
 
-    toggleBtn.addEventListener('click', () => {
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
         const willCollapse = !sidebar.classList.contains('collapsed');
         applyState(willCollapse);
         localStorage.setItem('sidebarCollapsed', willCollapse);
