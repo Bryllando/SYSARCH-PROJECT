@@ -123,7 +123,7 @@
                 <h2 class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">Announcements</h2>
             </div>
             <div class="flex-1 overflow-y-auto p-5 space-y-4 max-h-96">
-                <% if (typeof announcements !=='undefined' && announcements.length> 0) { %>
+                <% if (typeof announcements !=='undefined' && announcements &&announcements.length> 0) { %>
                     <% announcements.forEach(function(ann) { %>
                         <div class="border-l-4 border-[#5B0E14] pl-4 py-1">
                             <p class="text-xs text-gray-400 mb-1 font-medium">

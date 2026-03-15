@@ -39,29 +39,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('layout', 'layouts/main');
 
 // Public routes
-// Sa homepage route, pass empty defaults
+// Homepage — redirect to dashboard if already logged in
 app.get('/', (req, res) => {
-    res.render('pages/index', {
-        sessions: [],
-        announcements: [],
-        messages: []
-    });
+    if (req.session.user) {
+        return req.session.user.role === 'admin'
+            ? res.redirect('/admin')
+            : res.redirect('/dashboard');
+    }
+    res.render('pages/index');
 });
-app.get('/about', (req, res) => res.render('pages/about'));
 
 
-// seed-admin route (for testing)
-app.get('/create-admin', async (req, res) => {
-    const bcrypt = require('bcryptjs');
-    const db = require('./database/database');
-    const hashed = await bcrypt.hash('Admin@1234', 10);
-    db.run(
-        `INSERT OR IGNORE INTO users (id_number, last_name, first_name, middle_initial, course, year_level, email, password, role)
-         VALUES ('0000-00000','Admin','CCS','','BSCS',1,'admin@ccs.edu',?,'admin')`,
-        [hashed],
-        () => res.send('Admin created! Delete this route now.')
-    );
-});
+
+// // seed-admin route (for testing)
+// app.get('/create-admin', async (req, res) => {
+//     const bcrypt = require('bcryptjs');
+//     const db = require('./database/database');
+//     const hashed = await bcrypt.hash('Admin@1234', 10);
+//     db.run(
+//         `INSERT OR IGNORE INTO users (id_number, last_name, first_name, middle_initial, course, year_level, email, password, role)
+//          VALUES ('0000-00000','Admin','CCS','','BSCS',1,'admin@ccs.edu',?,'admin')`,
+//         [hashed],
+//         () => res.send('Admin created! Delete this route now.')
+//     );
+// });
 
 // Auth routes (login, register, logout)
 app.use('/', authRoutes);
