@@ -1,0 +1,29 @@
+@layer components {
+
+    /* --- NAVIGATION LINK --- */
+    .nav-link {
+        @apply relative transition-colors duration-200 hover:text-[#F1E194];
+    }
+
+    /* Kani ang animated underline substitute sa ::after */
+    .nav-link::after {
+        content: '';
+        @apply absolute -bottom-0.75 left-0 h-0.5 w-0 bg-[#F1E194] transition-all duration-[0.25s] ease-in-out;
+    }
+
+    /* Inig hover, mo-expand ang width sa underline */
+    .nav-link:hover::after {
+        @apply w-full;
+    }
+
+    /* --- DROPDOWN MENU --- */
+    .dropdown-menu {
+        /* Initial State: Nakatago */
+        @apply opacity-0 -translate-y-2 pointer-events-none transition-all duration-200 ease-in-out;
+    }
+
+    /* Active State: Kung naay .open nga class */
+    .dropdown-menu.open {
+        @apply opacity-100 translate-y-0 pointer-events-auto;
+    }
+}

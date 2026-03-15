@@ -1,0 +1,31 @@
+@layer components {
+
+    .btn-base {
+        @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center;
+    }
+
+    .btn-dark {
+        @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center bg-[#273F4F] text-white hover:bg-slate-700;
+    }
+
+    .btn-maroon {
+        @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center bg-[#5B0E14] text-white hover:bg-[#7a131b];
+    }
+
+    .btn-gold {
+        @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center bg-[#F1E194] text-[#333] hover:bg-[#e0d07a];
+    }
+
+    .btn-error {
+        @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center bg-red-600 text-white hover:bg-red-700;
+    }
+
+    .btn-warning {
+        @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center bg-amber-500 text-white hover:bg-amber-600;
+    }
+
+    .btn-success {
+        @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center bg-emerald-600 text-white hover:bg-emerald-700;
+    }
+
+}

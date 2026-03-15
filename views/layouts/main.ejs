@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/head') %>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- Background Image (Fixed — visible sa tanan pages) -->
+    <div class="fixed inset-0 bg-cover bg-center bg-no-repeat -z-10"
+        style="background-image: url('/images/background.jpg');"></div>
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black/50 -z-10"></div>
+
+    <%- include('../partials/navbar') %>
+
+        <main class="flex-1">
+            <%- body %>
+        </main>
+
+        <footer class="bg-[#3A0910] text-white/50 text-center py-4 text-xs">
+            &copy; <%= new Date().getFullYear() %> University of Cebu — College of Computer Studies. All rights
+                reserved.
+        </footer>
+
+</body>
+
+</html>

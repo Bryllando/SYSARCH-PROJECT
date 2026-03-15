@@ -1,0 +1,28 @@
+{
+  "name": "taburnal_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon server.js",
+    "build": "npx tailwindcss -i ./src/css/input.css -o ./public/dist/output.css --minify",
+    "dev": "npx tailwindcss -i ./src/css/input.css -o ./public/dist/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "ejs": "^5.0.1",
+    "expres": "^0.0.5",
+    "express": "^5.2.1",
+    "express-ejs-layouts": "^2.5.1",
+    "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
