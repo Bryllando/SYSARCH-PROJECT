@@ -1,0 +1,165 @@
+<div class="p-6">
+
+    <div class="mb-6">
+        <h1 class="text-2xl font-extrabold text-[#273F4F]">Current Sit-in</h1>
+        <p class="text-gray-500 text-sm mt-1">Students currently active in the laboratory.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+        <!-- Table toolbar -->
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
+                    style="background:#F0FDF4; color:#059669;">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                    Live
+                </span>
+                <span class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">Active Sessions</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-gray-500">Show</label>
+                    <select id="entriesPerPage"
+                        class="border border-gray-200 rounded-lg px-2 py-1 text-xs text-gray-600 focus:outline-none">
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                    <label class="text-xs text-gray-500">entries</label>
+                </div>
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="Search..."
+                        class="border border-gray-200 rounded-lg pl-8 pr-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#273F4F] w-40">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        class="size-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2">
+                        <path fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100">
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Sit ID
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">ID
+                            Number</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Name
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Course
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                            Purpose</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Lab
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                            Session</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Time
+                            In</th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Status
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50" id="sitinBody">
+                    <% if (typeof sessions !=='undefined' && sessions && sessions.length> 0) { %>
+                        <% sessions.forEach(function(s) { %>
+                            <tr class="hover:bg-gray-50 transition-colors sitin-row">
+                                <td class="px-4 py-3 font-mono text-xs text-gray-500">#<%= s.id %>
+                                </td>
+                                <td class="px-4 py-3 font-medium text-gray-700">
+                                    <%= s.id_number %>
+                                </td>
+                                <td class="px-4 py-3 text-gray-700">
+                                    <%= s.last_name %>, <%= s.first_name %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+                                        <%= s.course %>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-gray-600 text-xs">
+                                    <%= s.purpose || '—' %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-[#273F4F]/10 text-[#273F4F]">
+                                        <%= s.lab_room %>
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-center font-bold text-[#5B0E14]">
+                                    <%= s.remaining_sessions ?? 30 %>
+                                </td>
+                                <td class="px-4 py-3 text-xs text-gray-600">
+                                    <%= s.time_in ? new Date(s.time_in).toLocaleTimeString('en-US', {hour:'2-digit',
+                                        minute:'2-digit'}) : '—' %>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span
+                                        class="inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
+                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                        Active
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <form action="/admin/sitin/<%= s.id %>/end" method="POST"
+                                        onsubmit="return confirm('Log out this student?')">
+                                        <button type="submit"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5 cursor-pointer"
+                                            style="background: linear-gradient(135deg, #DC2626, #B91C1C);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                fill="currentColor" class="size-3">
+                                                <path fill-rule="evenodd"
+                                                    d="M2 4.75A2.75 2.75 0 0 1 4.75 2h3a2.75 2.75 0 0 1 2.75 2.75v.5a.75.75 0 0 1-1.5 0v-.5c0-.69-.56-1.25-1.25-1.25h-3c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h3c.69 0 1.25-.56 1.25-1.25v-.5a.75.75 0 0 1 1.5 0v.5A2.75 2.75 0 0 1 7.75 14h-3A2.75 2.75 0 0 1 2 11.25v-6.5Zm9.47.47a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 1 1-1.06-1.06l.97-.97H5.75a.75.75 0 0 1 0-1.5h6.69l-.97-.97a.75.75 0 0 1 0-1.06Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            Log Out
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="10" class="px-4 py-16 text-center">
+                                            <div class="flex flex-col items-center gap-3">
+                                                <div
+                                                    class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        fill="currentColor" class="size-7 text-gray-300">
+                                                        <path fill-rule="evenodd"
+                                                            d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                                <p class="text-sm text-gray-400 font-medium">No active sit-in sessions
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+            <span>Showing <%= sessions ? sessions.length : 0 %> active entries</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('input', function () {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.sitin-row').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
+</script>
