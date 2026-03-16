@@ -18,7 +18,7 @@
     <!-- Right side -->
     <div class="flex items-center gap-4">
 
-        <% /* Notification bell — regular users ONLY */ if (user && user.role==='user' ) { %>
+        <% if (user && user.role==='user' ) { %>
             <div class="relative">
                 <button id="notifBtn"
                     class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1">
@@ -48,7 +48,7 @@
             <% } %>
 
                 <!-- Name + Role + Avatar -->
-                <<div class="flex items-center gap-3">
+                <div class="flex items-center gap-3">
                     <div class="text-right hidden sm:block">
                         <p class="text-white font-semibold text-sm leading-none">
                             <%= user ? user.first_name + ' ' + user.last_name : '' %>
@@ -57,6 +57,8 @@
                             <%= user ? user.role : '' %>
                         </p>
                     </div>
+                </div>
+
     </div>
 </header>
 

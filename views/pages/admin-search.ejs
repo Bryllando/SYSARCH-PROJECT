@@ -1,11 +1,11 @@
-<div class="p-6">
+<div class="p-6 flex flex-col items-center">
 
-    <!-- Search Card — matches Image 1 layout -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 max-w-lg mb-8">
+    <!-- Search Card — small, centered, matches screenshot exactly -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 w-full max-w-sm mb-8">
 
-        <!-- Card Title row -->
+        <!-- Title row -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-            <h2 class="font-bold text-[#273F4F] text-base">Search Student</h2>
+            <h2 class="font-bold text-gray-800 text-base">Search Student</h2>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                 class="size-5 text-gray-300">
                 <path fill-rule="evenodd"
@@ -14,11 +14,10 @@
             </svg>
         </div>
 
-        <!-- Search input centered -->
+        <!-- Search form body -->
         <form method="GET" action="/admin/search" class="px-5 pt-5 pb-4 flex flex-col gap-4">
-            <input type="text" name="q" value="<%= query %>" placeholder="Search..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#273F4F] focus:outline-none transition-all">
-
+            <input type="text" name="q" value="<%= query %>" placeholder="Search..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
+                       focus:ring-2 focus:ring-[#273F4F] focus:outline-none transition-all">
             <!-- Search button bottom-right -->
             <div class="flex justify-end">
                 <button type="submit"
@@ -30,9 +29,9 @@
         </form>
     </div>
 
-    <!-- Results Table — only shows after searching -->
+    <!-- Results Table — full width, only shown after searching -->
     <% if (query) { %>
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden w-full">
 
             <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
                 <div class="flex items-center gap-2">
@@ -142,8 +141,7 @@
                                                         </svg>
                                                     </div>
                                                     <p class="text-sm text-gray-400 font-medium">No students found for "
-                                                        <%= query %>"
-                                                    </p>
+                                                        <%= query %>"</p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -156,43 +154,40 @@
 
 </div>
 
-<!-- ===== SIT-IN FORM MODAL — matches Image 2 layout (label left, value right) ===== -->
+<!-- ===== SIT-IN FORM MODAL — small centered card matching screenshot ===== -->
 <div id="sitinModal" class="fixed inset-0 z-50 hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeSitinModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
 
-        <!-- Modal Header -->
+        <!-- Header -->
         <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <h3 class="font-bold text-gray-800 text-base">Sit In Form</h3>
             <button onclick="closeSitinModal()"
-                class="w-7 h-7 flex items-center justify-center rounded border border-gray-300 text-gray-500 hover:text-gray-700 hover:border-gray-400 transition-colors cursor-pointer text-xs">
+                class="w-7 h-7 flex items-center justify-center rounded border border-gray-300 text-gray-500 hover:text-gray-700 hover:border-gray-400 transition-colors cursor-pointer text-xs font-bold">
                 ✕
             </button>
         </div>
 
-        <!-- Form Body — label left, value/input right (Image 2 style) -->
+        <!-- Form — label left, value right (matches screenshot) -->
         <form action="/admin/sitin/start" method="POST" class="px-5 py-4 space-y-3">
             <input type="hidden" name="user_id" id="sitinUserId">
 
-            <!-- ID Number -->
             <div class="flex items-center gap-3">
-                <label class="w-36 text-sm text-gray-600 text-right shrink-0">ID Number:</label>
+                <label class="w-32 text-sm text-gray-600 text-right shrink-0">ID Number:</label>
                 <p id="sitinIdNumber"
-                    class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-8.5">
+                    class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-[34px]">
                 </p>
             </div>
 
-            <!-- Student Name -->
             <div class="flex items-center gap-3">
-                <label class="w-36 text-sm text-gray-600 text-right shrink-0">Student Name:</label>
+                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Student Name:</label>
                 <p id="sitinName"
-                    class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-8.5">
+                    class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-[34px]">
                 </p>
             </div>
 
-            <!-- Purpose -->
             <div class="flex items-center gap-3">
-                <label class="w-36 text-sm text-gray-600 text-right shrink-0">Purpose:</label>
+                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Purpose:</label>
                 <div class="flex-1 relative">
                     <select name="purpose" required
                         class="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 appearance-none focus:ring-2 focus:ring-[#273F4F] outline-none">
@@ -215,9 +210,8 @@
                 </div>
             </div>
 
-            <!-- Lab -->
             <div class="flex items-center gap-3">
-                <label class="w-36 text-sm text-gray-600 text-right shrink-0">Lab:</label>
+                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Lab:</label>
                 <div class="flex-1 relative">
                     <select name="lab_room" required
                         class="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 appearance-none focus:ring-2 focus:ring-[#273F4F] outline-none">
@@ -237,22 +231,21 @@
                 </div>
             </div>
 
-            <!-- Remaining Sessions -->
             <div class="flex items-center gap-3">
-                <label class="w-36 text-sm text-gray-600 text-right shrink-0">Remaining Session:</label>
+                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Remaining Session:</label>
                 <p id="sitinSessions"
                     class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-8.5">
                 </p>
             </div>
 
-            <!-- Buttons — Close left, Sit In right (Image 2 style) -->
+            <!-- Buttons — Close then Sit In, bottom right -->
             <div class="flex justify-end gap-2 pt-2">
                 <button type="button" onclick="closeSitinModal()"
                     class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer">
                     Close
                 </button>
                 <button type="submit"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all hover:-translate-y-0.5 cursor-pointer"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white cursor-pointer transition-all hover:-translate-y-0.5"
                     style="background: linear-gradient(135deg, #273F4F, #1a2d38);">
                     Sit In
                 </button>
