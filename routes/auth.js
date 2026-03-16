@@ -35,11 +35,14 @@ router.post('/login', (req, res) => {
             id_number: user.id_number,
             first_name: user.first_name,
             last_name: user.last_name,
+            middle_initial: user.middle_initial,
             course: user.course,
             year_level: user.year_level,
             email: user.email,
             role: user.role,
-            remaining_sessions: user.remaining_sessions
+            remaining_sessions: user.remaining_sessions,
+            address: user.address || '',
+            profile_picture: user.profile_picture || ''
         };
         return user.role === 'admin'
             ? res.redirect('/admin')
@@ -54,7 +57,7 @@ router.get('/register', (req, res) => {
 
 // POST Register
 router.post('/register', async (req, res) => {
-    const { id_number, last_name, first_name, middle_initial, course, section, email, password } = req.body;
+    const { id_number, last_name, first_name, middle_initial, course, section, email, password, address } = req.body;
     if (!/^\d{8}$/.test(id_number)) {
         return res.render('pages/register', {
             messages: [{ type: 'error', text: 'ID Number must be exactly 8 digits.' }]
@@ -63,9 +66,9 @@ router.post('/register', async (req, res) => {
     try {
         const hashed = await bcrypt.hash(password, 10);
         db.run(
-            `INSERT INTO users (id_number, last_name, first_name, middle_initial, course, year_level, email, password)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-            [id_number, last_name, first_name, middle_initial || '', course, section, email, hashed],
+            `INSERT INTO users (id_number, last_name, first_name, middle_initial, course, year_level, email, password, address)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [id_number, last_name, first_name, middle_initial || '', course, section, email, hashed, address || ''],
             function (err) {
                 if (err) {
                     const msg = err.message.includes('UNIQUE')

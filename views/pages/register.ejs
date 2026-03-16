@@ -20,12 +20,15 @@
                     <% } %>
 
                         <form action="/register" method="POST" class="space-y-4">
+
+                            <!-- ID Number -->
                             <div class="space-y-1">
                                 <label class="block text-sm font-bold text-gray-700 ml-1">ID Number</label>
                                 <input type="text" name="id_number" placeholder="eg. 20231234" maxlength="8" required
                                     class="w-48 p-2 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none transition-all text-sm">
                             </div>
 
+                            <!-- Name row -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                                 <div class="space-y-1">
                                     <label class="block text-sm font-bold text-gray-700 ml-1">Last Name</label>
@@ -38,63 +41,159 @@
                                         class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none text-sm">
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">M.I.</label>
+                                    <label class="block text-sm font-bold text-gray-700 ml-1">M.I. <span
+                                            class="text-gray-400 font-normal text-xs">(optional)</span></label>
                                     <input type="text" name="middle_initial" maxlength="2" placeholder="M.I."
                                         class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none text-center text-sm">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div class="space-y-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">Course</label>
-                                    <div class="relative">
-                                        <select name="course" required
-                                            class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm">
-                                            <option value="" disabled selected>Select Course</option>
-                                            <option value="BSCS">BS Computer Science</option>
+                            <!-- Course -->
+                            <div class="space-y-1">
+                                <label class="block text-sm font-bold text-gray-700 ml-1">Course</label>
+                                <div class="relative">
+                                    <select name="course" required
+                                        class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm">
+                                        <option value="" disabled selected>Select your course</option>
+
+                                        <optgroup label="🖥️ College of Computer Studies">
                                             <option value="BSIT">BS Information Technology</option>
-                                            <option value="BSIS">BS Information Systems</option>
-                                            <option value="ACT">ACT</option>
-                                        </select>
-                                        <div
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="space-y-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">Year Level</label>
-                                    <div class="relative">
-                                        <select name="section" required
-                                            class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm">
-                                            <option value="" disabled selected>Select Year Level</option>
-                                            <option value="1">1st Year</option>
-                                            <option value="2">2nd Year</option>
-                                            <option value="3">3rd Year</option>
-                                            <option value="4">4th Year</option>
-                                        </select>
-                                        <div
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </div>
+                                            <option value="BSCS">BS Computer Science</option>
+                                        </optgroup>
+
+                                        <optgroup label="💼 College of Business and Accountancy">
+                                            <option value="BSA">BS Accountancy</option>
+                                            <option value="BSBA-FM">BSBA - Financial Management</option>
+                                            <option value="BSBA-MM">BSBA - Marketing Management</option>
+                                            <option value="BSBA-HRM">BSBA - Human Resource Management</option>
+                                            <option value="BSBA-OM">BSBA - Operations Management</option>
+                                            <option value="BSMA">BS Management Accounting</option>
+                                            <option value="BSEntrep">BS Entrepreneurship</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚙️ College of Engineering">
+                                            <option value="BSCE">BS Civil Engineering</option>
+                                            <option value="BSEE">BS Electrical Engineering</option>
+                                            <option value="BSME">BS Mechanical Engineering</option>
+                                            <option value="BSIE">BS Industrial Engineering</option>
+                                            <option value="BSECE">BS Electronics Engineering</option>
+                                        </optgroup>
+
+                                        <optgroup label="📚 College of Education">
+                                            <option value="BEED">Bachelor of Elementary Education</option>
+                                            <option value="BSED-ENG">BSED - English</option>
+                                            <option value="BSED-MATH">BSED - Mathematics</option>
+                                            <option value="BSED-SCI">BSED - Science</option>
+                                            <option value="BSED-FIL">BSED - Filipino</option>
+                                            <option value="BSED-SOSHIL">BSED - Social Studies</option>
+                                            <option value="BPED">BS Physical Education</option>
+                                        </optgroup>
+
+                                        <optgroup label="🏥 College of Nursing">
+                                            <option value="BSN">BS Nursing</option>
+                                        </optgroup>
+
+                                        <optgroup label="🎨 College of Arts and Sciences">
+                                            <option value="ABCOM">AB Communication</option>
+                                            <option value="ABPOLSCI">AB Political Science</option>
+                                            <option value="BSPSY">BS Psychology</option>
+                                            <option value="BSBIO">BS Biology</option>
+                                            <option value="BSMATH">BS Mathematics</option>
+                                        </optgroup>
+
+                                        <optgroup label="🏛️ College of Architecture and Fine Arts">
+                                            <option value="BSARCH">BS Architecture</option>
+                                            <option value="BSID">BS Interior Design</option>
+                                            <option value="BSFA">BS Fine Arts</option>
+                                        </optgroup>
+
+                                        <optgroup label="🏨 College of Tourism and Hospitality Management">
+                                            <option value="BSTM">BS Tourism Management</option>
+                                            <option value="BSHM">BS Hospitality Management</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚖️ College of Criminal Justice Education">
+                                            <option value="BSCRIM">BS Criminology</option>
+                                        </optgroup>
+
+                                        <optgroup label="💊 College of Pharmacy">
+                                            <option value="BSPHAR">BS Pharmacy</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚓ College of Maritime Education">
+                                            <option value="BSMARE">BS Marine Engineering</option>
+                                            <option value="BSMT">BS Marine Transportation</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚕️ College of Allied Medical Sciences">
+                                            <option value="BSMT-MED">BS Medical Technology</option>
+                                            <option value="BSRT">BS Radiologic Technology</option>
+                                            <option value="BSOT">BS Occupational Therapy</option>
+                                            <option value="BSPT">BS Physical Therapy</option>
+                                        </optgroup>
+
+                                        <optgroup label="📜 College of Law">
+                                            <option value="JD">Juris Doctor</option>
+                                        </optgroup>
+
+                                        <optgroup label="🎓 Senior High School">
+                                            <option value="SHS-STEM">SHS - STEM</option>
+                                            <option value="SHS-ABM">SHS - ABM</option>
+                                            <option value="SHS-HUMSS">SHS - HUMSS</option>
+                                            <option value="SHS-TVL">SHS - TVL</option>
+                                        </optgroup>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- Year Level -->
+                            <div class="space-y-1">
+                                <label class="block text-sm font-bold text-gray-700 ml-1">Year Level</label>
+                                <div class="relative">
+                                    <select name="section" required
+                                        class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm">
+                                        <option value="" disabled selected>Select Year Level</option>
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                        <option value="5">5th Year</option>
+                                        <option value="11">Grade 11 (SHS)</option>
+                                        <option value="12">Grade 12 (SHS)</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
                             <div class="space-y-1">
                                 <label class="block text-sm font-bold text-gray-700 ml-1">Email Address</label>
                                 <input type="email" name="email" placeholder="student@university.edu" required
                                     class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none text-sm">
                             </div>
 
+                            <!-- Address -->
+                            <div class="space-y-1">
+                                <label class="block text-sm font-bold text-gray-700 ml-1">Address <span
+                                        class="text-gray-400 font-normal text-xs">(optional)</span></label>
+                                <input type="text" name="address" placeholder="e.g. Cebu City, Philippines"
+                                    class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none text-sm">
+                            </div>
+
+                            <!-- Passwords -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 <div class="space-y-1">
                                     <label class="block text-sm font-bold text-gray-700 ml-1">Password</label>
@@ -119,7 +218,6 @@
                                         </button>
                                     </div>
                                 </div>
-
                                 <div class="space-y-1">
                                     <label class="block text-sm font-bold text-gray-700 ml-1">Confirm Password</label>
                                     <div class="relative">
@@ -145,6 +243,7 @@
                                 </div>
                             </div>
 
+                            <!-- Password requirements -->
                             <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl">
                                 <h3 class="text-blue-500 text-xs font-bold mb-2 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -164,9 +263,7 @@
                                 </ul>
                             </div>
 
-                            <button type="submit" class="btn-maroon">
-                                Create Account
-                            </button>
+                            <button type="submit" class="btn-maroon">Create Account</button>
                         </form>
 
                         <p class="mt-6 text-center text-sm text-gray-600">

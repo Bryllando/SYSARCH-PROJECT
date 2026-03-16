@@ -1,31 +1,5 @@
 <div class="p-6 space-y-6">
 
-    <!-- Welcome Banner -->
-    <div class="rounded-2xl overflow-hidden relative"
-        style="background: linear-gradient(135deg, #5B0E14 0%, #3A0910 60%, #273F4F 100%); min-height:120px;">
-        <div class="absolute inset-0 opacity-10"
-            style="background-image: repeating-linear-gradient(45deg, #F1E194 0px, #F1E194 1px, transparent 1px, transparent 12px);">
-        </div>
-        <div class="relative z-10 px-8 py-6 flex items-center justify-between flex-wrap gap-4">
-            <div>
-                <p class="text-white/60 text-sm font-medium uppercase tracking-widest mb-1">Welcome back</p>
-                <h1 class="text-white font-extrabold text-2xl md:text-3xl">
-                    <%= user.first_name %>
-                        <%= user.last_name %>
-                </h1>
-                <p class="text-[#F1E194] text-sm mt-1">
-                    <%= user.course %> — Year <%= user.year_level %>
-                </p>
-            </div>
-            <div class="text-right">
-                <p class="text-white/50 text-xs uppercase tracking-widest mb-1">Remaining Sessions</p>
-                <p class="text-[#F1E194] font-extrabold text-4xl">
-                    <%= user.remaining_sessions ?? 30 %>
-                </p>
-            </div>
-        </div>
-    </div>
-
     <!-- 3-column grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
@@ -36,14 +10,24 @@
                 <h2 class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">Student Information</h2>
             </div>
             <div class="p-5 space-y-3">
-                <!-- Avatar -->
+
+                <!-- Avatar / Profile Picture -->
                 <div class="flex justify-center mb-4">
-                    <div class="w-20 h-20 rounded-full flex items-center justify-center font-extrabold text-3xl text-white shadow-lg"
-                        style="background: linear-gradient(135deg, #5B0E14, #273F4F);">
-                        <%= user.first_name.charAt(0).toUpperCase() %>
-                    </div>
+                    <% if (user.profile_picture && user.profile_picture !=='' ) { %>
+                        <img src="<%= user.profile_picture %>" alt="Profile Picture"
+                            class="w-20 h-20 rounded-full object-cover border-4 shadow-lg"
+                            style="border-color: #5B0E14;">
+                        <% } else { %>
+                            <div class="w-20 h-20 rounded-full flex items-center justify-center font-extrabold text-3xl text-white shadow-lg"
+                                style="background: linear-gradient(135deg, #5B0E14, #273F4F);">
+                                <%= user.first_name.charAt(0).toUpperCase() %>
+                            </div>
+                            <% } %>
                 </div>
+
                 <div class="space-y-2.5 text-sm">
+
+                    <!-- Full Name -->
                     <div class="flex items-start gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                             class="size-4 text-[#5B0E14] shrink-0 mt-0.5">
@@ -59,32 +43,8 @@
                             </p>
                         </div>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                            class="size-4 text-[#5B0E14] shrink-0 mt-0.5">
-                            <path d="M2.003 5.884 10 9.882l7.997-3.998A2 2 0 0 0 16 4H4a2 2 0 0 0-1.997 1.884Z" />
-                            <path d="m18 8.118-8 4-8-4V14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.118Z" />
-                        </svg>
-                        <div>
-                            <p class="text-gray-400 text-xs">Email</p>
-                            <p class="font-semibold text-gray-700 break-all">
-                                <%= user.email %>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                            class="size-4 text-[#5B0E14] shrink-0 mt-0.5">
-                            <path
-                                d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
-                        </svg>
-                        <div>
-                            <p class="text-gray-400 text-xs">ID Number</p>
-                            <p class="font-semibold text-gray-700">
-                                <%= user.id_number %>
-                            </p>
-                        </div>
-                    </div>
+
+                    <!-- Course -->
                     <div class="flex items-start gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                             class="size-4 text-[#5B0E14] shrink-0 mt-0.5">
@@ -98,20 +58,84 @@
                             </p>
                         </div>
                     </div>
-                    <!-- Session Badge -->
-                    <div class="mt-3 pt-3 border-t border-gray-100">
-                        <div class="flex items-center justify-between rounded-xl px-4 py-3"
-                            style="background: linear-gradient(135deg, #FFF8DC, #FFF3C4);">
-                            <div>
-                                <p class="text-xs font-bold text-[#5B0E14] uppercase tracking-widest">Remaining Sessions
-                                </p>
-                                <p class="text-gray-500 text-xs mt-0.5">Lab sit-in allowance</p>
-                            </div>
-                            <span class="text-3xl font-extrabold text-[#5B0E14]">
-                                <%= user.remaining_sessions ?? 30 %>
-                            </span>
+
+                    <!-- ID Number -->
+                    <div class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            class="size-4 text-[#5B0E14] shrink-0 mt-0.5">
+                            <path fill-rule="evenodd"
+                                d="M4.5 2A1.5 1.5 0 0 0 3 3.5v13A1.5 1.5 0 0 0 4.5 18h11a1.5 1.5 0 0 0 1.5-1.5V7.621a1.5 1.5 0 0 0-.44-1.06l-4.12-4.122A1.5 1.5 0 0 0 11.378 2H4.5ZM10 8a.75.75 0 0 1 .75.75v1.5h1.5a.75.75 0 0 1 0 1.5h-1.5v1.5a.75.75 0 0 1-1.5 0v-1.5h-1.5a.75.75 0 0 1 0-1.5h1.5v-1.5A.75.75 0 0 1 10 8Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                            <p class="text-gray-400 text-xs">ID Number</p>
+                            <p class="font-semibold text-gray-700">
+                                <%= user.id_number %>
+                            </p>
                         </div>
                     </div>
+
+                    <!-- Email -->
+                    <div class="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            class="size-4 text-[#5B0E14] shrink-0 mt-0.5">
+                            <path d="M2.003 5.884 10 9.882l7.997-3.998A2 2 0 0 0 16 4H4a2 2 0 0 0-1.997 1.884Z" />
+                            <path d="m18 8.118-8 4-8-4V14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.118Z" />
+                        </svg>
+                        <div>
+                            <p class="text-gray-400 text-xs">Email</p>
+                            <p class="font-semibold text-gray-700 break-all">
+                                <%= user.email %>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Address (only shown if set) -->
+                    <% if (user.address && user.address !=='' ) { %>
+                        <div class="flex items-start gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                class="size-4 text-[#5B0E14] shrink-0 mt-0.5">
+                                <path fill-rule="evenodd"
+                                    d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-gray-400 text-xs">Address</p>
+                                <p class="font-semibold text-gray-700">
+                                    <%= user.address %>
+                                </p>
+                            </div>
+                        </div>
+                        <% } %>
+
+                            <!-- Session Badge -->
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <div class="flex items-center justify-between rounded-xl px-4 py-3"
+                                    style="background: linear-gradient(135deg, #FFF8DC, #FFF3C4);">
+                                    <div>
+                                        <p class="text-xs font-bold text-[#5B0E14] uppercase tracking-widest">Remaining
+                                            Sessions</p>
+                                        <p class="text-gray-500 text-xs mt-0.5">Lab sit-in allowance</p>
+                                    </div>
+                                    <span class="text-3xl font-extrabold text-[#5B0E14]">
+                                        <%= user.remaining_sessions ?? 30 %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Edit Profile link -->
+                            <a href="/profile"
+                                class="mt-2 flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5"
+                                style="background: linear-gradient(135deg, #273F4F, #1a2d38);">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="size-4">
+                                    <path
+                                        d="M5.433 13.917l1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z" />
+                                    <path
+                                        d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z" />
+                                </svg>
+                                Edit Profile
+                            </a>
                 </div>
             </div>
         </div>
@@ -123,7 +147,7 @@
                 <h2 class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">Announcements</h2>
             </div>
             <div class="flex-1 overflow-y-auto p-5 space-y-4 max-h-96">
-                <% if (typeof announcements !=='undefined' && announcements &&announcements.length> 0) { %>
+                <% if (typeof announcements !=='undefined' && announcements && announcements.length> 0) { %>
                     <% announcements.forEach(function(ann) { %>
                         <div class="border-l-4 border-[#5B0E14] pl-4 py-1">
                             <p class="text-xs text-gray-400 mb-1 font-medium">
@@ -139,8 +163,6 @@
                                 <div class="text-center py-8">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                         class="size-10 text-gray-200 mx-auto mb-3">
-                                        <path
-                                            d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z" />
                                         <path fill-rule="evenodd"
                                             d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0l.002.1a2.25 2.25 0 1 1-4.5 0Z"
                                             clip-rule="evenodd" />

@@ -19,8 +19,14 @@ db.serialize(() => {
         password TEXT NOT NULL,
         role TEXT DEFAULT 'user',
         remaining_sessions INTEGER DEFAULT 30,
+        address TEXT DEFAULT '',
+        profile_picture TEXT DEFAULT '',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+
+    // Migration: add address and profile_picture columns if they don't exist yet
+    db.run(`ALTER TABLE users ADD COLUMN address TEXT DEFAULT ''`, () => { });
+    db.run(`ALTER TABLE users ADD COLUMN profile_picture TEXT DEFAULT ''`, () => { });
 
     db.run(`CREATE TABLE IF NOT EXISTS sitin_sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

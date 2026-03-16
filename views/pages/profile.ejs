@@ -9,7 +9,7 @@
         <% messages.forEach(function(msg) { %>
             <div
                 class="mb-4 p-3 rounded-xl flex items-center gap-3
-            <%= msg.type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200' %>">
+                <%= msg.type === 'error' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-green-50 text-green-700 border border-green-200' %>">
                 <span class="font-medium text-sm">
                     <%= msg.text %>
                 </span>
@@ -19,14 +19,45 @@
 
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-                        <!-- Avatar header -->
-                        <div class="px-8 py-6 border-b border-gray-100 flex items-center gap-5"
+                        <!-- ── Profile Picture Upload Section ── -->
+                        <div class="px-8 py-6 border-b border-gray-100 flex flex-col items-center gap-4"
                             style="background: linear-gradient(135deg, #f8f9fa, #fff);">
-                            <div class="w-16 h-16 rounded-full flex items-center justify-center font-extrabold text-2xl text-white shrink-0"
-                                style="background: linear-gradient(135deg, #5B0E14, #273F4F);">
-                                <%= user.first_name.charAt(0).toUpperCase() %>
+
+                            <!-- Avatar display -->
+                            <div class="relative group">
+                                <% if (user.profile_picture && user.profile_picture !=='' ) { %>
+                                    <img src="<%= user.profile_picture %>" alt="Profile Picture"
+                                        class="w-24 h-24 rounded-full object-cover border-4 border-[#5B0E14] shadow-lg">
+                                    <% } else { %>
+                                        <div class="w-24 h-24 rounded-full flex items-center justify-center font-extrabold text-4xl text-white shadow-lg border-4 border-[#5B0E14]"
+                                            style="background: linear-gradient(135deg, #5B0E14, #273F4F);">
+                                            <%= user.first_name.charAt(0).toUpperCase() %>
+                                        </div>
+                                        <% } %>
                             </div>
-                            <div>
+
+                            <p class="text-gray-400 text-xs">Profile Picture</p>
+
+                            <!-- Photo upload form -->
+                            <form action="/profile/picture" method="POST" enctype="multipart/form-data"
+                                class="flex flex-col items-center gap-2">
+                                <label for="photoInput"
+                                    class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-[#5B0E14] text-[#5B0E14] text-sm font-semibold hover:bg-[#5B0E14]/5 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                        class="size-4">
+                                        <path fill-rule="evenodd"
+                                            d="M1 8a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 8.07 3h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 16.07 6H17a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8Zm13.5 3a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM10 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    Upload Photo
+                                </label>
+                                <input id="photoInput" type="file" name="profile_picture" accept="image/*"
+                                    class="hidden" onchange="this.form.submit()">
+                                <p class="text-gray-400 text-xs">JPG, PNG, GIF, WEBP — max 5MB</p>
+                            </form>
+
+                            <!-- Name + ID below photo -->
+                            <div class="text-center mt-1">
                                 <p class="font-bold text-[#273F4F] text-lg">
                                     <%= user.first_name %>
                                         <%= user.last_name %>
@@ -37,9 +68,10 @@
                             </div>
                         </div>
 
+                        <!-- ── Info Form ── -->
                         <form action="/profile" method="POST" class="p-8 space-y-5">
 
-                            <!-- Read-only fields notice -->
+                            <!-- Read-only notice -->
                             <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                     class="size-4 text-amber-600 shrink-0">
@@ -69,71 +101,197 @@
 
                             <!-- Name row -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <div class="space-y-1 md:col-span-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">Last Name</label>
-                                    <input type="text" name="last_name" value="<%= user.last_name %>" required
-                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
-                                </div>
-                                <div class="space-y-1 md:col-span-1">
+                                <div class="space-y-1">
                                     <label class="block text-sm font-bold text-gray-700 ml-1">First Name</label>
                                     <input type="text" name="first_name" value="<%= user.first_name %>" required
                                         class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
                                 </div>
                                 <div class="space-y-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">M.I.</label>
+                                    <label class="block text-sm font-bold text-gray-700 ml-1">Last Name</label>
+                                    <input type="text" name="last_name" value="<%= user.last_name %>" required
+                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="block text-sm font-bold text-gray-700 ml-1">M.I. <span
+                                            class="text-gray-400 font-normal">(optional)</span></label>
                                     <input type="text" name="middle_initial" value="<%= user.middle_initial || '' %>"
                                         maxlength="2"
                                         class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm text-center transition-all">
                                 </div>
                             </div>
 
-                            <!-- Course & Year -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div class="space-y-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">Course</label>
-                                    <div class="relative">
-                                        <select name="course" required
-                                            class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm transition-all">
-                                            <option value="BSCS" <%=user.course==='BSCS' ? 'selected' : '' %>>BS
-                                                Computer Science</option>
+                            <!-- Course -->
+                            <div class="space-y-1">
+                                <label class="block text-sm font-bold text-gray-700 ml-1">Course</label>
+                                <div class="relative">
+                                    <select name="course" required
+                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm transition-all">
+                                        <option value="">Select your course</option>
+
+                                        <optgroup label="🖥️ College of Computer Studies">
                                             <option value="BSIT" <%=user.course==='BSIT' ? 'selected' : '' %>>BS
                                                 Information Technology</option>
-                                            <option value="BSIS" <%=user.course==='BSIS' ? 'selected' : '' %>>BS
-                                                Information Systems</option>
-                                            <option value="ACT" <%=user.course==='ACT' ? 'selected' : '' %>>ACT</option>
-                                        </select>
-                                        <div
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </div>
+                                            <option value="BSCS" <%=user.course==='BSCS' ? 'selected' : '' %>>BS
+                                                Computer Science</option>
+                                        </optgroup>
+
+                                        <optgroup label="💼 College of Business and Accountancy">
+                                            <option value="BSA" <%=user.course==='BSA' ? 'selected' : '' %>>BS
+                                                Accountancy</option>
+                                            <option value="BSBA-FM" <%=user.course==='BSBA-FM' ? 'selected' : '' %>>BSBA
+                                                - Financial Management</option>
+                                            <option value="BSBA-MM" <%=user.course==='BSBA-MM' ? 'selected' : '' %>>BSBA
+                                                - Marketing Management</option>
+                                            <option value="BSBA-HRM" <%=user.course==='BSBA-HRM' ? 'selected' : '' %>
+                                                >BSBA - Human Resource Management</option>
+                                            <option value="BSBA-OM" <%=user.course==='BSBA-OM' ? 'selected' : '' %>>BSBA
+                                                - Operations Management</option>
+                                            <option value="BSMA" <%=user.course==='BSMA' ? 'selected' : '' %>>BS
+                                                Management Accounting</option>
+                                            <option value="BSEntrep" <%=user.course==='BSEntrep' ? 'selected' : '' %>>BS
+                                                Entrepreneurship</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚙️ College of Engineering">
+                                            <option value="BSCE" <%=user.course==='BSCE' ? 'selected' : '' %>>BS Civil
+                                                Engineering</option>
+                                            <option value="BSEE" <%=user.course==='BSEE' ? 'selected' : '' %>>BS
+                                                Electrical Engineering</option>
+                                            <option value="BSME" <%=user.course==='BSME' ? 'selected' : '' %>>BS
+                                                Mechanical Engineering</option>
+                                            <option value="BSIE" <%=user.course==='BSIE' ? 'selected' : '' %>>BS
+                                                Industrial Engineering</option>
+                                            <option value="BSECE" <%=user.course==='BSECE' ? 'selected' : '' %>>BS
+                                                Electronics Engineering</option>
+                                        </optgroup>
+
+                                        <optgroup label="📚 College of Education">
+                                            <option value="BEED" <%=user.course==='BEED' ? 'selected' : '' %>>Bachelor
+                                                of Elementary Education</option>
+                                            <option value="BSED-ENG" <%=user.course==='BSED-ENG' ? 'selected' : '' %>
+                                                >BSED - English</option>
+                                            <option value="BSED-MATH" <%=user.course==='BSED-MATH' ? 'selected' : '' %>
+                                                >BSED - Mathematics</option>
+                                            <option value="BSED-SCI" <%=user.course==='BSED-SCI' ? 'selected' : '' %>
+                                                >BSED - Science</option>
+                                            <option value="BSED-FIL" <%=user.course==='BSED-FIL' ? 'selected' : '' %>
+                                                >BSED - Filipino</option>
+                                            <option value="BSED-SOSHIL" <%=user.course==='BSED-SOSHIL' ? 'selected' : ''
+                                                %>>BSED - Social Studies</option>
+                                            <option value="BPED" <%=user.course==='BPED' ? 'selected' : '' %>>BS
+                                                Physical Education</option>
+                                        </optgroup>
+
+                                        <optgroup label="🏥 College of Nursing">
+                                            <option value="BSN" <%=user.course==='BSN' ? 'selected' : '' %>>BS Nursing
+                                            </option>
+                                        </optgroup>
+
+                                        <optgroup label="🎨 College of Arts and Sciences">
+                                            <option value="ABCOM" <%=user.course==='ABCOM' ? 'selected' : '' %>>AB
+                                                Communication</option>
+                                            <option value="ABPOLSCI" <%=user.course==='ABPOLSCI' ? 'selected' : '' %>>AB
+                                                Political Science</option>
+                                            <option value="BSPSY" <%=user.course==='BSPSY' ? 'selected' : '' %>>BS
+                                                Psychology</option>
+                                            <option value="BSBIO" <%=user.course==='BSBIO' ? 'selected' : '' %>>BS
+                                                Biology</option>
+                                            <option value="BSMATH" <%=user.course==='BSMATH' ? 'selected' : '' %>>BS
+                                                Mathematics</option>
+                                        </optgroup>
+
+                                        <optgroup label="🏛️ College of Architecture and Fine Arts">
+                                            <option value="BSARCH" <%=user.course==='BSARCH' ? 'selected' : '' %>>BS
+                                                Architecture</option>
+                                            <option value="BSID" <%=user.course==='BSID' ? 'selected' : '' %>>BS
+                                                Interior Design</option>
+                                            <option value="BSFA" <%=user.course==='BSFA' ? 'selected' : '' %>>BS Fine
+                                                Arts</option>
+                                        </optgroup>
+
+                                        <optgroup label="🏨 College of Tourism and Hospitality Management">
+                                            <option value="BSTM" <%=user.course==='BSTM' ? 'selected' : '' %>>BS Tourism
+                                                Management</option>
+                                            <option value="BSHM" <%=user.course==='BSHM' ? 'selected' : '' %>>BS
+                                                Hospitality Management</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚖️ College of Criminal Justice Education">
+                                            <option value="BSCRIM" <%=user.course==='BSCRIM' ? 'selected' : '' %>>BS
+                                                Criminology</option>
+                                        </optgroup>
+
+                                        <optgroup label="💊 College of Pharmacy">
+                                            <option value="BSPHAR" <%=user.course==='BSPHAR' ? 'selected' : '' %>>BS
+                                                Pharmacy</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚓ College of Maritime Education">
+                                            <option value="BSMARE" <%=user.course==='BSMARE' ? 'selected' : '' %>>BS
+                                                Marine Engineering</option>
+                                            <option value="BSMT" <%=user.course==='BSMT' ? 'selected' : '' %>>BS Marine
+                                                Transportation</option>
+                                        </optgroup>
+
+                                        <optgroup label="⚕️ College of Allied Medical Sciences">
+                                            <option value="BSMT-MED" <%=user.course==='BSMT-MED' ? 'selected' : '' %>>BS
+                                                Medical Technology</option>
+                                            <option value="BSRT" <%=user.course==='BSRT' ? 'selected' : '' %>>BS
+                                                Radiologic Technology</option>
+                                            <option value="BSOT" <%=user.course==='BSOT' ? 'selected' : '' %>>BS
+                                                Occupational Therapy</option>
+                                            <option value="BSPT" <%=user.course==='BSPT' ? 'selected' : '' %>>BS
+                                                Physical Therapy</option>
+                                        </optgroup>
+
+                                        <optgroup label="📜 College of Law">
+                                            <option value="JD" <%=user.course==='JD' ? 'selected' : '' %>>Juris Doctor
+                                            </option>
+                                        </optgroup>
+
+                                        <optgroup label="🎓 Senior High School">
+                                            <option value="SHS-STEM" <%=user.course==='SHS-STEM' ? 'selected' : '' %>
+                                                >SHS - STEM</option>
+                                            <option value="SHS-ABM" <%=user.course==='SHS-ABM' ? 'selected' : '' %>>SHS
+                                                - ABM</option>
+                                            <option value="SHS-HUMSS" <%=user.course==='SHS-HUMSS' ? 'selected' : '' %>
+                                                >SHS - HUMSS</option>
+                                            <option value="SHS-TVL" <%=user.course==='SHS-TVL' ? 'selected' : '' %>>SHS
+                                                - TVL</option>
+                                        </optgroup>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
                                     </div>
                                 </div>
-                                <div class="space-y-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">Year Level</label>
-                                    <div class="relative">
-                                        <select name="year_level" required
-                                            class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm transition-all">
-                                            <option value="1" <%=user.year_level==1 ? 'selected' : '' %>>1st Year
-                                            </option>
-                                            <option value="2" <%=user.year_level==2 ? 'selected' : '' %>>2nd Year
-                                            </option>
-                                            <option value="3" <%=user.year_level==3 ? 'selected' : '' %>>3rd Year
-                                            </option>
-                                            <option value="4" <%=user.year_level==4 ? 'selected' : '' %>>4th Year
-                                            </option>
-                                        </select>
-                                        <div
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </div>
+                            </div>
+
+                            <!-- Year Level -->
+                            <div class="space-y-1">
+                                <label class="block text-sm font-bold text-gray-700 ml-1">Year Level</label>
+                                <div class="relative">
+                                    <select name="year_level" required
+                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm transition-all">
+                                        <option value="1" <%=user.year_level==1 ? 'selected' : '' %>>1st Year</option>
+                                        <option value="2" <%=user.year_level==2 ? 'selected' : '' %>>2nd Year</option>
+                                        <option value="3" <%=user.year_level==3 ? 'selected' : '' %>>3rd Year</option>
+                                        <option value="4" <%=user.year_level==4 ? 'selected' : '' %>>4th Year</option>
+                                        <option value="5" <%=user.year_level==5 ? 'selected' : '' %>>5th Year</option>
+                                        <option value="11" <%=user.year_level==11 ? 'selected' : '' %>>Grade 11 (SHS)
+                                        </option>
+                                        <option value="12" <%=user.year_level==12 ? 'selected' : '' %>>Grade 12 (SHS)
+                                        </option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2" stroke="currentColor" class="size-4 text-gray-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
@@ -145,14 +303,19 @@
                                     class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
                             </div>
 
+                            <!-- Address -->
+                            <div class="space-y-1">
+                                <label class="block text-sm font-bold text-gray-700 ml-1">Address <span
+                                        class="text-gray-400 font-normal">(optional)</span></label>
+                                <input type="text" name="address" value="<%= user.address || '' %>"
+                                    placeholder="e.g. Cebu City, Philippines"
+                                    class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
+                            </div>
+
                             <!-- Buttons -->
                             <div class="flex gap-3 pt-2">
-                                <button type="submit" class="btn-maroon flex-1 py-3 text-base">
-                                    Save Changes
-                                </button>
-                                <a href="/dashboard" class="btn-dark flex-1 py-3 text-base text-center">
-                                    Cancel
-                                </a>
+                                <button type="submit" class="btn-maroon flex-1 py-3 text-base">Save Changes</button>
+                                <a href="/dashboard" class="btn-dark flex-1 py-3 text-base text-center">Cancel</a>
                             </div>
 
                         </form>
