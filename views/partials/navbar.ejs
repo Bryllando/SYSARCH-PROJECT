@@ -1,329 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
+<header class="bg-[#5B0E14] px-6 md:px-10 py-3 flex flex-col md:flex-row justify-between items-center shadow-lg">
 
-<head>
-    <%- include('../partials/head') %>
-        <style>
-            body {
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-                background: #f3f4f6;
-            }
+    <!-- Logo + Title -->
+    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+            <img src="/images/uclogo.png" alt="UC Logo"
+                class="h-10 w-10 md:h-12 md:w-12 object-contain mix-blend-lighten drop-shadow-md">
+            <img src="/images/ucmainccslogopreview.png" alt="CCS Logo"
+                class="h-10 w-10 md:h-12 md:w-12 object-contain mix-blend-lighten drop-shadow-md">
+        </div>
+        <div class="hidden sm:block w-px h-10 bg-white/30"></div>
+        <h1 class="text-white font-semibold text-sm md:text-base leading-tight">
+            College of Computer Studies<br>
+            <span style="color:#F1E194; font-weight:700;">Sit-in Monitoring System</span>
+        </h1>
+    </div>
 
-            #app-wrapper {
-                display: flex;
-                flex: 1;
-                overflow: hidden;
-            }
+    <!-- Navigation -->
+    <nav class="mt-3 md:mt-0">
+        <ul class="flex flex-wrap justify-center items-center gap-5 md:gap-8 list-none">
+            <li>
+                <a href="/" class="nav-link text-white/90 hover:text-white font-medium text-sm md:text-base">Home</a>
+            </li>
 
-            #sidebar {
-                width: 224px;
-                min-height: 100%;
-                background: #273F4F;
-                color: white;
-                display: flex;
-                flex-direction: column;
-                flex-shrink: 0;
-                position: relative;
-                transition: width 0.25s ease;
-                overflow: hidden;
-            }
-
-            #sidebar.collapsed {
-                width: 64px;
-            }
-
-            #sidebar.collapsed .sidebar-text {
-                display: none;
-            }
-
-            #sidebar.collapsed .sidebar-link {
-                justify-content: center;
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            #sidebar.collapsed #sidebarNav {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            #sidebar.collapsed #sidebarLogout {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            #sidebar.collapsed #sidebarLogout a {
-                justify-content: center;
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            #main-content {
-                flex: 1;
-                overflow-y: auto;
-            }
-        </style>
-</head>
-
-<body>
-
-    <%- include('../partials/navbar-dashboard') %>
-
-        <div id="app-wrapper">
-
-            <!-- SIDEBAR -->
-            <aside id="sidebar">
-
-                <!-- Toggle Button -->
-                <button id="sidebarToggle"
-                    style="position:absolute; right:-12px; top:20px; z-index:50; width:24px; height:24px; background:#273F4F; border:2px solid rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3);"
-                    onmouseover="this.style.background='#5B0E14'" onmouseout="this.style.background='#273F4F'">
-                    <svg id="iconCollapse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        style="width:12px;height:12px;color:white;">
-                        <path fill-rule="evenodd"
-                            d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <svg id="iconExpand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        style="width:12px;height:12px;color:white;display:none;">
-                        <path fill-rule="evenodd"
-                            d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-                            clip-rule="evenodd" />
+            <li class="relative">
+                <button id="dropdownButton"
+                    class="nav-link text-white/90 hover:text-white font-medium inline-flex items-center gap-1 text-sm md:text-base focus:outline-none cursor-pointer">
+                    Community
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="currentColor" class="w-3.5 h-3.5 transition-transform duration-200" id="dropdownArrow">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </button>
-
-                <!-- Nav Links -->
-                <nav id="sidebarNav"
-                    style="flex:1; padding:1.5rem 0.75rem; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
-
-                    <% if (user && user.role==='user' ) { %>
-
-                        <a href="/dashboard" class="sidebar-link"
-                            style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                            onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                            onmouseout="this.style.background='transparent'">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                style="width:20px;height:20px;flex-shrink:0;">
-                                <path
-                                    d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
-                                <path
-                                    d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
-                            </svg>
-                            <span class="sidebar-text" style="white-space:nowrap;">Home</span>
-                        </a>
-
-                        <a href="/profile" class="sidebar-link"
-                            style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                            onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                            onmouseout="this.style.background='transparent'">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                style="width:20px;height:20px;flex-shrink:0;">
-                                <path fill-rule="evenodd"
-                                    d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="sidebar-text" style="white-space:nowrap;">Edit Profile</span>
-                        </a>
-
-                        <a href="/history" class="sidebar-link"
-                            style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                            onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                            onmouseout="this.style.background='transparent'">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                style="width:20px;height:20px;flex-shrink:0;">
-                                <path fill-rule="evenodd"
-                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="sidebar-text" style="white-space:nowrap;">Sit-in History</span>
-                        </a>
-
-                        <a href="/reservation" class="sidebar-link"
-                            style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                            onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                            onmouseout="this.style.background='transparent'">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                style="width:20px;height:20px;flex-shrink:0;">
-                                <path fill-rule="evenodd"
-                                    d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="sidebar-text" style="white-space:nowrap;">Reservation</span>
-                        </a>
-
-                        <% } else if (user && user.role==='admin' ) { %>
-
-                            <a href="/admin" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path
-                                        d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
-                                    <path
-                                        d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">Home</span>
-                            </a>
-
-                            <a href="/admin/search" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path fill-rule="evenodd"
-                                        d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">Search</span>
-                            </a>
-
-                            <a href="/admin/students" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path
-                                        d="M11.7 2.805a.75.75 0 0 1 .6 0A60.65 60.65 0 0 1 22.83 8.72a.75.75 0 0 1-.231 1.337 49.948 49.948 0 0 0-9.902 3.912l-.003.002-.014.007a49.3 49.3 0 0 0-5.657 2.448 1.867 1.867 0 0 0-.894 1.489v.173a3.375 3.375 0 0 0-1.003.677A60.62 60.62 0 0 1 1.17 8.72a.75.75 0 0 1-.231-1.337A60.65 60.65 0 0 1 11.7 2.805Z" />
-                                    <path
-                                        d="M13.06 15.473a48.45 48.45 0 0 1 7.666-3.282c.134 1.414.22 2.843.255 4.284a.75.75 0 0 1-.46.711 47.87 47.87 0 0 1-8.105 2.571.75.75 0 0 1-.612-.123 47.974 47.974 0 0 0-9.77-3.286.75.75 0 0 1-.464-.707 48.28 48.28 0 0 1 .255-4.277 48.45 48.45 0 0 1 7.666 3.282 2.25 2.25 0 0 0 1.575 0Z" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">Students</span>
-                            </a>
-
-                            <a href="/admin/sitin" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path fill-rule="evenodd"
-                                        d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">Sit-in</span>
-                            </a>
-
-                            <a href="/admin/students" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path
-                                        d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625Z" />
-                                    <path
-                                        d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">View Student Records</span>
-                            </a>
-
-                            <a href="/admin/reports" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path fill-rule="evenodd"
-                                        d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm4.5 7.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25a.75.75 0 0 1 .75-.75Zm3.75-1.5a.75.75 0 0 0-1.5 0v4.5a.75.75 0 0 0 1.5 0V12Zm2.25-3a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 13.5 9Zm3.75-1.5a.75.75 0 0 0-1.5 0v9a.75.75 0 0 0 1.5 0v-9Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">Sit-in Reports</span>
-                            </a>
-
-                            <a href="/admin/feedback" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path fill-rule="evenodd"
-                                        d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 0 1-.814 1.686.75.75 0 0 0 .44 1.223Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">Feedback Reports</span>
-                            </a>
-
-                            <a href="/admin/reservations" class="sidebar-link"
-                                style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:white;text-decoration:none;transition:background 0.15s;"
-                                onmouseover="this.style.background='rgba(255,255,255,0.1)'"
-                                onmouseout="this.style.background='transparent'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                    style="width:20px;height:20px;flex-shrink:0;">
-                                    <path fill-rule="evenodd"
-                                        d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span class="sidebar-text" style="white-space:nowrap;">Reservation</span>
-                            </a>
-
-                            <% } %>
-                </nav>
-
-                <!-- Logout -->
-                <div id="sidebarLogout" style="padding:12px; border-top:1px solid rgba(255,255,255,0.1);">
-                    <a href="/logout" class="sidebar-link"
-                        style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:500;color:rgba(255,255,255,0.7);text-decoration:none;transition:background 0.15s;"
-                        onmouseover="this.style.background='rgba(220,38,38,0.3)';this.style.color='white'"
-                        onmouseout="this.style.background='transparent';this.style.color='rgba(255,255,255,0.7)'">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                            style="width:20px;height:20px;flex-shrink:0;">
-                            <path fill-rule="evenodd"
-                                d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm10.72 4.72a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H9a.75.75 0 0 1 0-1.5h10.94l-1.72-1.72a.75.75 0 0 1 0-1.06Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span class="sidebar-text" style="white-space:nowrap;">Logout</span>
-                    </a>
+                <div id="dropdownMenu"
+                    class="dropdown-menu absolute left-0 mt-3 w-44 bg-white rounded-xl shadow-xl py-1.5 z-50 border border-gray-100">
+                    <a href="#"
+                        class="block px-4 py-2.5 text-gray-700 hover:bg-[#5B0E14]/5 hover:text-[#5B0E14] text-sm font-medium transition-colors">Forums</a>
+                    <a href="#"
+                        class="block px-4 py-2.5 text-gray-700 hover:bg-[#5B0E14]/5 hover:text-[#5B0E14] text-sm font-medium transition-colors">Events</a>
+                    <a href="#"
+                        class="block px-4 py-2.5 text-gray-700 hover:bg-[#5B0E14]/5 hover:text-[#5B0E14] text-sm font-medium transition-colors">Student
+                        Groups</a>
                 </div>
+            </li>
 
-            </aside>
-
-            <!-- MAIN CONTENT -->
-            <main id="main-content">
-                <%- body %>
-            </main>
-
-        </div>
-
-        <footer
-            style="background:#3A0910;color:rgba(255,255,255,0.5);text-align:center;padding:12px;font-size:12px;flex-shrink:0;">
-            &copy; <%= new Date().getFullYear() %> University of Cebu — College of Computer Studies. All rights
-                reserved.
-        </footer>
-
-        <script>
-            const sidebar = document.getElementById('sidebar');
-            const iconCollapse = document.getElementById('iconCollapse');
-            const iconExpand = document.getElementById('iconExpand');
-
-            function applyState(collapsed) {
-                if (collapsed) {
-                    sidebar.classList.add('collapsed');
-                    iconCollapse.style.display = 'none';
-                    iconExpand.style.display = 'block';
-                } else {
-                    sidebar.classList.remove('collapsed');
-                    iconCollapse.style.display = 'block';
-                    iconExpand.style.display = 'none';
-                }
-            }
-
-            // Default: open. Only collapse if user explicitly chose it before.
-            const saved = localStorage.getItem('sidebarCollapsed');
-            applyState(saved === 'true');
-
-            document.getElementById('sidebarToggle').addEventListener('click', () => {
-                const willCollapse = !sidebar.classList.contains('collapsed');
-                applyState(willCollapse);
-                localStorage.setItem('sidebarCollapsed', willCollapse);
-            });
-        </script>
-
-</body>
-
-</html>
+            <li>
+                <a href="/about"
+                    class="nav-link text-white/90 hover:text-white font-medium text-sm md:text-base">About</a>
+            </li>
+            <li>
+                <a href="/login"
+                    class="nav-link text-white/90 hover:text-white font-medium text-sm md:text-base">Login</a>
+            </li>
+            <li>
+                <a href="/register"
+                    class="inline-flex items-center justify-center font-bold text-sm md:text-base px-4 py-2 rounded-full transition-colors shadow-sm"
+                    style="background:#F1E194; color:#5B0E14;">
+                    Register
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
