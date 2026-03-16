@@ -7,23 +7,23 @@
         display: flex;
         flex-direction: column;
         flex-shrink: 0;
-        position: relative;
         transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         overflow: hidden;
     }
 
     #sidebar.collapsed {
-        width: 64px;
+        width: 56px;
     }
 
+    /* Hide text labels when collapsed */
     #sidebar.collapsed .sidebar-text {
         opacity: 0;
         width: 0;
         overflow: hidden;
-        white-space: nowrap;
         pointer-events: none;
     }
 
+    /* Centre icons when collapsed */
     #sidebar.collapsed .sidebar-link {
         justify-content: center;
         padding-left: 0;
@@ -46,6 +46,14 @@
         padding-right: 0;
     }
 
+    /* Hide toggle label when collapsed */
+    #sidebar.collapsed #toggleLabel {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
     .sidebar-text {
         transition: opacity 0.2s ease, width 0.2s ease;
         white-space: nowrap;
@@ -60,7 +68,7 @@
         border-radius: 12px;
         font-size: 14px;
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.85);
+        color: rgba(255, 255, 255, 0.75);
         text-decoration: none;
         transition: background 0.15s, color 0.15s;
     }
@@ -75,60 +83,100 @@
         color: #F1E194;
     }
 
+    /* Toggle button — lives inside the sidebar header, flush with the top */
+    #sidebarHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 10px 8px 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        min-height: 48px;
+    }
+
+    #sidebarHeader .header-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.35);
+        white-space: nowrap;
+        overflow: hidden;
+        transition: opacity 0.2s ease, width 0.2s ease;
+    }
+
+    #sidebar.collapsed #sidebarHeader .header-label {
+        opacity: 0;
+        width: 0;
+    }
+
     #sidebarToggle {
-        position: absolute;
-        right: -12px;
-        top: 20px;
-        z-index: 50;
-        width: 24px;
-        height: 24px;
-        background: #273F4F;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        transition: background 0.15s;
         flex-shrink: 0;
+        transition: background 0.15s, border-color 0.15s;
     }
 
     #sidebarToggle:hover {
-        background: #5B0E14;
+        background: rgba(91, 14, 20, 0.6);
+        border-color: rgba(241, 225, 148, 0.3);
+    }
+
+    #sidebarLogout a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.45);
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s;
     }
 
     #sidebarLogout a:hover {
-        background: rgba(220, 38, 38, 0.3) !important;
-        color: white !important;
+        background: rgba(220, 38, 38, 0.25);
+        color: rgba(255, 255, 255, 0.85);
     }
 </style>
 
 <aside id="sidebar">
 
-    <!-- Toggle Button -->
-    <button id="sidebarToggle" aria-label="Toggle sidebar">
-        <svg id="iconCollapse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-            style="width:12px;height:12px;color:white;">
-            <path fill-rule="evenodd"
-                d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-                clip-rule="evenodd" />
-        </svg>
-        <svg id="iconExpand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-            style="width:12px;height:12px;color:white;display:none;">
-            <path fill-rule="evenodd"
-                d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
-                clip-rule="evenodd" />
-        </svg>
-    </button>
+    <!-- Sidebar header with inline toggle button -->
+    <div id="sidebarHeader">
+        <span class="header-label">Navigation</span>
+        <button id="sidebarToggle" aria-label="Toggle sidebar" title="Toggle sidebar">
+            <!-- Collapse arrow (shown when expanded) -->
+            <svg id="iconCollapse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                style="width:14px;height:14px;color:rgba(255,255,255,0.7);">
+                <path fill-rule="evenodd"
+                    d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
+                    clip-rule="evenodd" />
+            </svg>
+            <!-- Expand arrow (shown when collapsed) -->
+            <svg id="iconExpand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                style="width:14px;height:14px;color:rgba(255,255,255,0.7);display:none;">
+                <path fill-rule="evenodd"
+                    d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z"
+                    clip-rule="evenodd" />
+            </svg>
+        </button>
+    </div>
 
     <!-- Nav Links -->
     <nav id="sidebarNav"
-        style="flex:1; padding:1.5rem 0.75rem; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
+        style="flex:1; padding:0.75rem 0.5rem; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
 
         <% if (locals.user && user.role==='user' ) { %>
 
-            <a href="/dashboard" class="sidebar-link <%= locals.activePage === 'dashboard' ? 'active' : '' %>">
+            <a href="/dashboard" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
                     <path
@@ -139,7 +187,7 @@
                 <span class="sidebar-text">Home</span>
             </a>
 
-            <a href="/profile" class="sidebar-link <%= locals.activePage === 'profile' ? 'active' : '' %>">
+            <a href="/profile" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
                     <path fill-rule="evenodd"
@@ -149,7 +197,7 @@
                 <span class="sidebar-text">Edit Profile</span>
             </a>
 
-            <a href="/history" class="sidebar-link <%= locals.activePage === 'history' ? 'active' : '' %>">
+            <a href="/history" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
                     <path fill-rule="evenodd"
@@ -159,7 +207,7 @@
                 <span class="sidebar-text">Sit-in History</span>
             </a>
 
-            <a href="/reservation" class="sidebar-link <%= locals.activePage === 'reservation' ? 'active' : '' %>">
+            <a href="/reservation" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
                     <path fill-rule="evenodd"
@@ -171,7 +219,7 @@
 
             <% } else if (locals.user && user.role==='admin' ) { %>
 
-                <a href="/admin" class="sidebar-link <%= locals.activePage === 'admin' ? 'active' : '' %>">
+                <a href="/admin" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path
@@ -182,8 +230,7 @@
                     <span class="sidebar-text">Home</span>
                 </a>
 
-                <a href="/admin/search"
-                    class="sidebar-link <%= locals.activePage === 'admin-search' ? 'active' : '' %>">
+                <a href="/admin/search" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path fill-rule="evenodd"
@@ -193,8 +240,7 @@
                     <span class="sidebar-text">Search</span>
                 </a>
 
-                <a href="/admin/students"
-                    class="sidebar-link <%= locals.activePage === 'admin-students' ? 'active' : '' %>">
+                <a href="/admin/students" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path
@@ -205,7 +251,7 @@
                     <span class="sidebar-text">Students</span>
                 </a>
 
-                <a href="/admin/sitin" class="sidebar-link <%= locals.activePage === 'admin-sitin' ? 'active' : '' %>">
+                <a href="/admin/sitin" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path fill-rule="evenodd"
@@ -226,8 +272,7 @@
                     <span class="sidebar-text">Student Records</span>
                 </a>
 
-                <a href="/admin/reports"
-                    class="sidebar-link <%= locals.activePage === 'admin-reports' ? 'active' : '' %>">
+                <a href="/admin/reports" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path fill-rule="evenodd"
@@ -237,8 +282,7 @@
                     <span class="sidebar-text">Sit-in Reports</span>
                 </a>
 
-                <a href="/admin/feedback"
-                    class="sidebar-link <%= locals.activePage === 'admin-feedback' ? 'active' : '' %>">
+                <a href="/admin/feedback" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path fill-rule="evenodd"
@@ -248,8 +292,7 @@
                     <span class="sidebar-text">Feedback Reports</span>
                 </a>
 
-                <a href="/admin/reservations"
-                    class="sidebar-link <%= locals.activePage === 'admin-reservations' ? 'active' : '' %>">
+                <a href="/admin/reservations" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path fill-rule="evenodd"
@@ -263,8 +306,8 @@
     </nav>
 
     <!-- Logout -->
-    <div id="sidebarLogout" style="padding:12px; border-top:1px solid rgba(255,255,255,0.1);">
-        <a href="/logout" class="sidebar-link" style="color:rgba(255,255,255,0.6);">
+    <div id="sidebarLogout" style="padding:8px 8px 12px; border-top:1px solid rgba(255,255,255,0.08);">
+        <a href="/logout">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 style="width:20px;height:20px;flex-shrink:0;">
                 <path fill-rule="evenodd"
@@ -284,18 +327,11 @@
         const iconExpand = document.getElementById('iconExpand');
 
         function applyState(collapsed) {
-            if (collapsed) {
-                sidebar.classList.add('collapsed');
-                iconCollapse.style.display = 'none';
-                iconExpand.style.display = 'block';
-            } else {
-                sidebar.classList.remove('collapsed');
-                iconCollapse.style.display = 'block';
-                iconExpand.style.display = 'none';
-            }
+            sidebar.classList.toggle('collapsed', collapsed);
+            iconCollapse.style.display = collapsed ? 'none' : 'block';
+            iconExpand.style.display = collapsed ? 'block' : 'none';
         }
 
-        // Restore saved state (default: expanded)
         applyState(localStorage.getItem('sidebarCollapsed') === 'true');
 
         document.getElementById('sidebarToggle').addEventListener('click', () => {
@@ -304,13 +340,14 @@
             localStorage.setItem('sidebarCollapsed', String(willCollapse));
         });
 
-        // Highlight active link
-        const currentPath = window.location.pathname;
+        /* Highlight active link based on current path */
+        const path = window.location.pathname;
         document.querySelectorAll('.sidebar-link').forEach(link => {
             const href = link.getAttribute('href');
-            if (href && (currentPath === href || (href !== '/' && currentPath.startsWith(href) && href.length > 1))) {
-                link.classList.add('active');
-            }
+            if (!href) return;
+            const exact = path === href;
+            const prefix = href !== '/' && href.length > 1 && path.startsWith(href);
+            if (exact || prefix) link.classList.add('active');
         });
     })();
 </script>

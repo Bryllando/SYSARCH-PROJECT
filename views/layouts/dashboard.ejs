@@ -3,25 +3,31 @@
 
 <head>
     <%- include('../partials/head') %>
+        <style>
+            /* Ensure no background image bleeds into the dashboard from cached/guest styles */
+            html,
+            body {
+                background: #f3f4f6 !important;
+                background-image: none !important;
+            }
+        </style>
 </head>
 
-<body class="min-h-screen flex flex-col bg-gray-100">
+<body style="background:#f3f4f6; background-image:none;" class="min-h-screen flex flex-col">
 
-    <%# navbar-dashboard handles both user (with bell) and admin (no bell) via role check inside it %>
-        <%- include('../partials/navbar-dashboard') %>
+    <%- include('../partials/navbar-dashboard') %>
 
-            <%# Sidebar + page content side by side — only rendered when logged in %>
-                <div class="flex flex-1 overflow-hidden">
-                    <%- include('../partials/sidebar') %>
-                        <main class="flex-1 overflow-y-auto">
-                            <%- body %>
-                        </main>
-                </div>
+        <div class="flex flex-1 overflow-hidden">
+            <%- include('../partials/sidebar') %>
+                <main class="flex-1 overflow-y-auto bg-gray-100">
+                    <%- body %>
+                </main>
+        </div>
 
-                <footer class="bg-[#3A0910] text-white/50 text-center py-3 text-xs shrink-0">
-                    &copy; <%= new Date().getFullYear() %> University of Cebu — College of Computer Studies. All rights
-                        reserved.
-                </footer>
+        <footer class="bg-[#3A0910] text-white/50 text-center py-3 text-xs shrink-0">
+            &copy; <%= new Date().getFullYear() %> University of Cebu — College of Computer Studies. All rights
+                reserved.
+        </footer>
 
 </body>
 

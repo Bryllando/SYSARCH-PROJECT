@@ -1,126 +1,107 @@
-<%# navbar-dashboard.ejs Shown only when a user is logged in (both admin and regular user). Left : UC + CCS logos +
-    system title Right : notification bell (users only) | full name + role + avatar NO public nav links (Home /
-    Community / About / Login / Register) here. %>
+<header class="bg-[#5B0E14] px-6 py-3 flex justify-between items-center shadow-lg z-40 relative shrink-0">
 
-    <header class="bg-[#5B0E14] px-6 py-3 flex justify-between items-center shadow-lg z-40 relative shrink-0">
-
-        <!-- Left: Logos + Title -->
-        <div class="flex items-center gap-3">
-            <div class="flex items-center gap-2">
-                <img src="/images/uclogo.png" alt="UC Logo"
-                    class="h-10 w-10 object-contain mix-blend-lighten drop-shadow-md">
-                <img src="/images/ucmainccslogopreview.png" alt="CCS Logo"
-                    class="h-10 w-10 object-contain mix-blend-lighten drop-shadow-md">
-            </div>
-            <div class="w-px h-10 bg-white/30 hidden sm:block"></div>
-            <h1 class="text-white font-semibold text-sm leading-tight hidden sm:block">
-                College of Computer Studies<br>
-                <span style="color:#F1E194; font-weight:700;">Sit-in Monitoring System</span>
-            </h1>
+    <!-- Left: Logos + Title -->
+    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
+            <img src="/images/uclogo.png" alt="UC Logo"
+                class="h-10 w-10 object-contain mix-blend-lighten drop-shadow-md">
+            <img src="/images/ucmainccslogopreview.png" alt="CCS Logo"
+                class="h-10 w-10 object-contain mix-blend-lighten drop-shadow-md">
         </div>
+        <div class="w-px h-10 bg-white/30 hidden sm:block"></div>
+        <h1 class="text-white font-semibold text-sm leading-tight hidden sm:block">
+            College of Computer Studies<br>
+            <span style="color:#F1E194; font-weight:700;">Sit-in Monitoring System</span>
+        </h1>
+    </div>
 
-        <!-- Right: bell (users) + name/role/avatar -->
-        <div class="flex items-center gap-4">
+    <!-- Right side -->
+    <div class="flex items-center gap-4">
 
-            <!-- Notification Bell — only for regular users -->
-            <% if (user && user.role==='user' ) { %>
-                <div class="relative">
-                    <button id="notifBtn"
-                        class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                            <path fill-rule="evenodd"
-                                d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span id="notifBadge"
-                            class="absolute -top-0.5 -right-0.5 bg-[#F1E194] text-[#5B0E14] text-xs font-extrabold rounded-full w-4 h-4 flex items-center justify-center hidden">
-                        </span>
-                    </button>
-
-                    <!-- Notification Dropdown -->
-                    <div id="notifDropdown"
-                        class="dropdown-menu absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl z-50 border border-gray-100 overflow-hidden">
-                        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                            <span class="font-bold text-[#273F4F] text-sm">Notifications</span>
-                            <button id="markAllRead"
-                                class="text-xs text-[#5B0E14] hover:underline cursor-pointer font-medium">
-                                Mark all read
-                            </button>
-                        </div>
-                        <ul id="notifList" class="max-h-72 overflow-y-auto divide-y divide-gray-50">
-                            <li class="px-4 py-6 text-sm text-gray-400 text-center">Loading...</li>
-                        </ul>
+        <% /* Notification bell — regular users ONLY */ if (user && user.role==='user' ) { %>
+            <div class="relative">
+                <button id="notifBtn"
+                    class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                        <path fill-rule="evenodd"
+                            d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span id="notifBadge"
+                        class="absolute -top-0.5 -right-0.5 bg-[#F1E194] text-[#5B0E14] text-xs font-extrabold rounded-full w-4 h-4 flex items-center justify-center hidden">
+                    </span>
+                </button>
+                <div id="notifDropdown"
+                    class="dropdown-menu absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl z-50 border border-gray-100 overflow-hidden">
+                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                        <span class="font-bold text-[#273F4F] text-sm">Notifications</span>
+                        <button id="markAllRead"
+                            class="text-xs text-[#5B0E14] hover:underline cursor-pointer font-medium">
+                            Mark all read
+                        </button>
                     </div>
+                    <ul id="notifList" class="max-h-72 overflow-y-auto divide-y divide-gray-50">
+                        <li class="px-4 py-6 text-sm text-gray-400 text-center">Loading...</li>
+                    </ul>
                 </div>
-                <% } %>
+            </div>
+            <% } %>
 
-                    <!-- Name + Role + Avatar -->
-                    <div class="flex items-center gap-3">
-                        <div class="text-right hidden sm:block">
-                            <p class="text-white font-semibold text-sm leading-none">
-                                <%= user ? user.first_name + ' ' + user.last_name : '' %>
-                            </p>
-                            <p class="text-white/50 text-xs mt-0.5 capitalize">
-                                <%= user ? user.role : '' %>
-                            </p>
-                        </div>
-                        <div class="w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-sm shrink-0"
-                            style="background:#F1E194; color:#5B0E14;">
-                            <%= user ? user.first_name.charAt(0).toUpperCase() : '?' %>
-                        </div>
+                <!-- Name + Role + Avatar -->
+                <<div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-white font-semibold text-sm leading-none">
+                            <%= user ? user.first_name + ' ' + user.last_name : '' %>
+                        </p>
+                        <p class="text-white/50 text-xs mt-0.5 capitalize text-center">
+                            <%= user ? user.role : '' %>
+                        </p>
                     </div>
+    </div>
+</header>
 
-        </div>
-    </header>
+<% if (user && user.role==='user' ) { %>
+    <script>
+        const notifBtn = document.getElementById('notifBtn');
+        const notifDropdown = document.getElementById('notifDropdown');
+        const notifBadge = document.getElementById('notifBadge');
+        const notifList = document.getElementById('notifList');
 
-    <!-- Notification JS — only for regular users -->
-    <% if (user && user.role==='user' ) { %>
-        <script>
-            const notifBtn = document.getElementById('notifBtn');
-            const notifDropdown = document.getElementById('notifDropdown');
-            const notifBadge = document.getElementById('notifBadge');
-            const notifList = document.getElementById('notifList');
-
-            async function loadNotifications() {
-                try {
-                    const res = await fetch('/notifications');
-                    const data = await res.json();
-                    const unread = data.filter(n => !n.is_read).length;
-                    if (unread > 0) {
-                        notifBadge.textContent = unread;
-                        notifBadge.classList.remove('hidden');
-                    } else {
-                        notifBadge.classList.add('hidden');
-                    }
-                    notifList.innerHTML = data.length === 0
-                        ? '<li class="px-4 py-6 text-sm text-gray-400 text-center">No notifications yet</li>'
-                        : data.map(n => `
-                    <li class="px-4 py-3 text-sm ${n.is_read ? 'text-gray-500' : 'font-medium text-[#273F4F] bg-blue-50'}">
-                        <p>${n.message}</p>
-                        <p class="text-xs text-gray-400 mt-0.5">${new Date(n.created_at).toLocaleString()}</p>
-                    </li>`).join('');
-                } catch (e) {
-                    notifList.innerHTML = '<li class="px-4 py-4 text-sm text-gray-400 text-center">Could not load notifications</li>';
-                }
+        async function loadNotifications() {
+            try {
+                const res = await fetch('/notifications');
+                const data = await res.json();
+                const unread = data.filter(n => !n.is_read).length;
+                notifBadge.textContent = unread;
+                notifBadge.classList.toggle('hidden', unread === 0);
+                notifList.innerHTML = data.length === 0
+                    ? '<li class="px-4 py-6 text-sm text-gray-400 text-center">No notifications yet</li>'
+                    : data.map(n => `<li class="px-4 py-3 text-sm ${n.is_read ? 'text-gray-500' : 'font-medium text-[#273F4F] bg-blue-50'}">
+                    <p>${n.message}</p>
+                    <p class="text-xs text-gray-400 mt-0.5">${new Date(n.created_at).toLocaleString()}</p>
+                  </li>`).join('');
+            } catch (e) {
+                notifList.innerHTML = '<li class="px-4 py-4 text-sm text-gray-400 text-center">Could not load notifications</li>';
             }
+        }
 
-            notifBtn.addEventListener('click', e => {
-                e.stopPropagation();
-                notifDropdown.classList.toggle('open');
-                if (notifDropdown.classList.contains('open')) loadNotifications();
-            });
+        notifBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            notifDropdown.classList.toggle('open');
+            if (notifDropdown.classList.contains('open')) loadNotifications();
+        });
 
-            document.getElementById('markAllRead').addEventListener('click', async () => {
-                await fetch('/notifications/read', { method: 'POST' });
-                notifBadge.classList.add('hidden');
-                loadNotifications();
-            });
-
-            document.addEventListener('click', e => {
-                if (!notifDropdown.contains(e.target) && e.target !== notifBtn)
-                    notifDropdown.classList.remove('open');
-            });
-
+        document.getElementById('markAllRead').addEventListener('click', async () => {
+            await fetch('/notifications/read', { method: 'POST' });
+            notifBadge.classList.add('hidden');
             loadNotifications();
-        </script>
-        <% } %>
+        });
+
+        document.addEventListener('click', e => {
+            if (!notifDropdown.contains(e.target) && e.target !== notifBtn)
+                notifDropdown.classList.remove('open');
+        });
+
+        loadNotifications();
+    </script>
+    <% } %>
