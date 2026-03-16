@@ -3,10 +3,12 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../database/database');
 
-// GET Login
+// GET Login — if already logged in, redirect to their dashboard
 router.get('/login', (req, res) => {
     if (req.session.user) {
-        return req.session.user.role === 'admin' ? res.redirect('/admin') : res.redirect('/dashboard');
+        return req.session.user.role === 'admin'
+            ? res.redirect('/admin')
+            : res.redirect('/dashboard');
     }
     res.render('pages/login', { messages: [] });
 });
@@ -29,7 +31,6 @@ router.post('/login', (req, res) => {
             });
         }
 
-        // Save user to session
         req.session.user = {
             id: user.id,
             id_number: user.id_number,
@@ -38,15 +39,13 @@ router.post('/login', (req, res) => {
             course: user.course,
             year_level: user.year_level,
             email: user.email,
-            role: user.role
+            role: user.role,
+            remaining_sessions: user.remaining_sessions
         };
 
-        // Redirect by role
-        if (user.role === 'admin') {
-            res.redirect('/admin');
-        } else {
-            res.redirect('/dashboard');
-        }
+        return user.role === 'admin'
+            ? res.redirect('/admin')
+            : res.redirect('/dashboard');
     });
 });
 
@@ -57,9 +56,8 @@ router.get('/register', (req, res) => {
 
 // POST Register
 router.post('/register', async (req, res) => {
-    const { id_number, last_name, first_name, middle_initial, course, section, email, password, confirm_password } = req.body;
+    const { id_number, last_name, first_name, middle_initial, course, section, email, password } = req.body;
 
-    // Sa POST /register, add before the bcrypt hash:
     if (!/^\d{8}$/.test(id_number)) {
         return res.render('pages/register', {
             messages: [{ type: 'error', text: 'ID Number must be exactly 8 digits.' }]
@@ -91,9 +89,13 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Logout
+// Logout — destroy session completely, clear the cookie, go back to guest homepage
 router.get('/logout', (req, res) => {
-    req.session.destroy(() => res.redirect('/login'));
+    req.session.destroy((err) => {
+        if (err) console.error('Session destroy error:', err);
+        res.clearCookie('connect.sid');
+        res.redirect('/');
+    });
 });
 
 module.exports = router;

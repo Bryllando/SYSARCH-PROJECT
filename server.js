@@ -7,16 +7,14 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-// Routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
 
-// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session setup
+// Session
 app.use(session({
     store: new SQLiteStore({ db: 'sessions.db', dir: './database' }),
     secret: 'ccs-sitin-secret-key',
@@ -25,28 +23,45 @@ app.use(session({
     cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
 }));
 
-// Make session user available in all EJS views
+// Expose session user to every EJS view
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     next();
 });
 
-// EJS + Layouts
+// EJS + layouts
 app.use(express_layouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Default layout is the PUBLIC (guest) layout — no sidebar, guest navbar
 app.set('layout', 'layouts/main');
 
-// Public routes
-// Homepage — redirect to dashboard if already logged in
+// ─── Public homepage ───────────────────────────────────────────────────────────
+// If already logged in → redirect to their dashboard, otherwise show guest index
 app.get('/', (req, res) => {
     if (req.session.user) {
         return req.session.user.role === 'admin'
             ? res.redirect('/admin')
             : res.redirect('/dashboard');
     }
+    // Explicitly confirm the guest layout so there is zero chance of bleed
+    res.set('layout', 'layouts/main');
     res.render('pages/index');
+});
+
+// Auth routes  (GET /login, POST /login, GET /register, POST /register, GET /logout)
+app.use('/', authRoutes);
+
+// User dashboard routes  (/dashboard, /profile, /history, /reservation, /feedback, /notifications)
+app.use('/', userRoutes);
+
+// Admin routes  (/admin, /admin/*, etc.)
+app.use('/admin', adminRoutes);
+
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });
 
 
@@ -63,16 +78,3 @@ app.get('/', (req, res) => {
 //         () => res.send('Admin created! Delete this route now.')
 //     );
 // });
-
-// Auth routes (login, register, logout)
-app.use('/', authRoutes);
-
-// User dashboard routes
-app.use('/', userRoutes);
-
-// Admin routes
-app.use('/admin', adminRoutes);
-
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});

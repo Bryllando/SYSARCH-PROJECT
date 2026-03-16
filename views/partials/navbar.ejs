@@ -15,19 +15,18 @@
         </h1>
     </div>
 
-    <!-- Navigation -->
+    <!-- Guest Nav: Home · Community · About · Login · Register -->
     <nav class="mt-3 md:mt-0">
         <ul class="flex flex-wrap justify-center items-center gap-5 md:gap-8 list-none">
             <li>
                 <a href="/" class="nav-link text-white/90 hover:text-white font-medium text-sm md:text-base">Home</a>
             </li>
-
             <li class="relative">
                 <button id="dropdownButton"
                     class="nav-link text-white/90 hover:text-white font-medium inline-flex items-center gap-1 text-sm md:text-base focus:outline-none cursor-pointer">
                     Community
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                        stroke="currentColor" class="w-3.5 h-3.5 transition-transform duration-200" id="dropdownArrow">
+                        stroke="currentColor" class="w-3.5 h-3.5" id="dropdownArrow">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </button>
@@ -42,7 +41,6 @@
                         Groups</a>
                 </div>
             </li>
-
             <li>
                 <a href="/about"
                     class="nav-link text-white/90 hover:text-white font-medium text-sm md:text-base">About</a>
@@ -61,3 +59,20 @@
         </ul>
     </nav>
 </header>
+
+<script>
+    const _db = document.getElementById('dropdownButton');
+    const _dm = document.getElementById('dropdownMenu');
+    const _da = document.getElementById('dropdownArrow');
+    if (_db && _dm) {
+        _db.addEventListener('click', e => {
+            e.stopPropagation();
+            _dm.classList.toggle('open');
+            if (_da) _da.style.transform = _dm.classList.contains('open') ? 'rotate(180deg)' : '';
+        });
+        document.addEventListener('click', () => {
+            _dm.classList.remove('open');
+            if (_da) _da.style.transform = '';
+        });
+    }
+</script>
