@@ -3,10 +3,7 @@ const router = express.Router();
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 const db = require('../database/database');
 
-router.use((req, res, next) => {
-    res.set('layout', 'layouts/dashboard');
-    next();
-});
+// Layout is set globally in server.js — do NOT set it here.
 
 // Admin Home
 router.get('/', isAuthenticated, isAdmin, (req, res) => {
@@ -33,7 +30,7 @@ router.post('/announcement', isAuthenticated, isAdmin, (req, res) => {
         [req.session.user.id, message], () => res.redirect('/admin'));
 });
 
-// Search student by ID (JSON for modal)
+// Search student by ID — JSON for modal
 router.get('/search-student', isAuthenticated, isAdmin, (req, res) => {
     const q = req.query.q || '';
     db.get(`SELECT * FROM users WHERE role='user' AND id_number = ?`, [q], (err, student) => {
@@ -57,10 +54,11 @@ router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
     const { user_id, purpose, lab_room } = req.body;
     db.get(`SELECT * FROM sitin_sessions WHERE user_id = ? AND status = 'active'`, [user_id], (err, existing) => {
         if (existing) return res.redirect('/admin/sitin');
-        db.run(`UPDATE users SET remaining_sessions = remaining_sessions - 1 WHERE id = ? AND remaining_sessions > 0`, [user_id], () => {
-            db.run(`INSERT INTO sitin_sessions (user_id, purpose, lab_room) VALUES (?, ?, ?)`,
-                [user_id, purpose, lab_room], () => res.redirect('/admin/sitin'));
-        });
+        db.run(`UPDATE users SET remaining_sessions = remaining_sessions - 1 WHERE id = ? AND remaining_sessions > 0`,
+            [user_id], () => {
+                db.run(`INSERT INTO sitin_sessions (user_id, purpose, lab_room) VALUES (?, ?, ?)`,
+                    [user_id, purpose, lab_room], () => res.redirect('/admin/sitin'));
+            });
     });
 });
 
@@ -74,9 +72,10 @@ router.get('/students', isAuthenticated, isAdmin, (req, res) => {
 // Student record
 router.get('/students/:id', isAuthenticated, isAdmin, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.params.id], (err, student) => {
-        db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`, [req.params.id], (err2, sessions) => {
-            res.render('pages/admin-student-record', { student, sessions: sessions || [] });
-        });
+        db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`,
+            [req.params.id], (err2, sessions) => {
+                res.render('pages/admin-student-record', { student, sessions: sessions || [] });
+            });
     });
 });
 
@@ -99,7 +98,8 @@ router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
 // Reports
 router.get('/reports', isAuthenticated, isAdmin, (req, res) => {
     db.all(
-        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course FROM sitin_sessions s JOIN users u ON s.user_id = u.id ORDER BY s.time_in DESC`,
+        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course
+         FROM sitin_sessions s JOIN users u ON s.user_id = u.id ORDER BY s.time_in DESC`,
         (err, sessions) => res.render('pages/admin-reports', { sessions: sessions || [] })
     );
 });
@@ -107,7 +107,8 @@ router.get('/reports', isAuthenticated, isAdmin, (req, res) => {
 // Feedback
 router.get('/feedback', isAuthenticated, isAdmin, (req, res) => {
     db.all(
-        `SELECT f.*, u.id_number, u.first_name, u.last_name FROM feedback f JOIN users u ON f.user_id = u.id ORDER BY f.created_at DESC`,
+        `SELECT f.*, u.id_number, u.first_name, u.last_name
+         FROM feedback f JOIN users u ON f.user_id = u.id ORDER BY f.created_at DESC`,
         (err, feedbacks) => res.render('pages/admin-feedback', { feedbacks: feedbacks || [] })
     );
 });
@@ -115,7 +116,8 @@ router.get('/feedback', isAuthenticated, isAdmin, (req, res) => {
 // Reservations
 router.get('/reservations', isAuthenticated, isAdmin, (req, res) => {
     db.all(
-        `SELECT r.*, u.id_number, u.first_name, u.last_name, u.course FROM reservations r JOIN users u ON r.user_id = u.id ORDER BY r.date DESC`,
+        `SELECT r.*, u.id_number, u.first_name, u.last_name, u.course
+         FROM reservations r JOIN users u ON r.user_id = u.id ORDER BY r.date DESC`,
         (err, reservations) => res.render('pages/admin-reservations', { reservations: reservations || [] })
     );
 });

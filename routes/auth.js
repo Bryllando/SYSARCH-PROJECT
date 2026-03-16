@@ -3,7 +3,9 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../database/database');
 
-// GET Login — if already logged in, redirect to their dashboard
+// Layout is set globally in server.js — do NOT set it here.
+
+// GET Login
 router.get('/login', (req, res) => {
     if (req.session.user) {
         return req.session.user.role === 'admin'
@@ -16,21 +18,18 @@ router.get('/login', (req, res) => {
 // POST Login
 router.post('/login', (req, res) => {
     const { id_number, password } = req.body;
-
     db.get('SELECT * FROM users WHERE id_number = ?', [id_number], async (err, user) => {
         if (err || !user) {
             return res.render('pages/login', {
                 messages: [{ type: 'error', text: 'Invalid ID number or password.' }]
             });
         }
-
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
             return res.render('pages/login', {
                 messages: [{ type: 'error', text: 'Invalid ID number or password.' }]
             });
         }
-
         req.session.user = {
             id: user.id,
             id_number: user.id_number,
@@ -42,7 +41,6 @@ router.post('/login', (req, res) => {
             role: user.role,
             remaining_sessions: user.remaining_sessions
         };
-
         return user.role === 'admin'
             ? res.redirect('/admin')
             : res.redirect('/dashboard');
@@ -57,13 +55,11 @@ router.get('/register', (req, res) => {
 // POST Register
 router.post('/register', async (req, res) => {
     const { id_number, last_name, first_name, middle_initial, course, section, email, password } = req.body;
-
     if (!/^\d{8}$/.test(id_number)) {
         return res.render('pages/register', {
             messages: [{ type: 'error', text: 'ID Number must be exactly 8 digits.' }]
         });
     }
-
     try {
         const hashed = await bcrypt.hash(password, 10);
         db.run(
@@ -75,9 +71,7 @@ router.post('/register', async (req, res) => {
                     const msg = err.message.includes('UNIQUE')
                         ? 'ID number or email already registered.'
                         : 'Registration failed. Please try again.';
-                    return res.render('pages/register', {
-                        messages: [{ type: 'error', text: msg }]
-                    });
+                    return res.render('pages/register', { messages: [{ type: 'error', text: msg }] });
                 }
                 res.redirect('/login');
             }
@@ -89,7 +83,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Logout — destroy session completely, clear the cookie, go back to guest homepage
+// Logout
 router.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) console.error('Session destroy error:', err);

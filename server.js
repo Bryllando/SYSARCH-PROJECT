@@ -14,58 +14,50 @@ const adminRoutes = require('./routes/admin');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session
+// ─── Session ───────────────────────────────────────────────────────────────────
 app.use(session({
     store: new SQLiteStore({ db: 'sessions.db', dir: './database' }),
     secret: 'ccs-sitin-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
-// Expose session user to every EJS view
-app.use((req, res, next) => {
-    res.locals.user = req.session.user || null;
-    next();
-});
-
-// EJS + layouts
+// ─── View engine ───────────────────────────────────────────────────────────────
 app.use(express_layouts);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('layout', 'layouts/main');   // global fallback (guest layout)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Default layout is the PUBLIC (guest) layout — no sidebar, guest navbar
-app.set('layout', 'layouts/main');
+// ─── Global middleware: expose user + choose layout ────────────────────────────
+// express-ejs-layouts reads res.locals.layout to decide which wrapper to use.
+//   No session  →  layouts/main      (public navbar, background image, no sidebar)
+//   Logged in   →  layouts/dashboard (dashboard navbar + sidebar, no public nav)
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    res.locals.layout = req.session.user ? 'layouts/dashboard' : 'layouts/main';
+    next();
+});
 
 // ─── Public homepage ───────────────────────────────────────────────────────────
-// If already logged in → redirect to their dashboard, otherwise show guest index
+// Guests  → pages/index.ejs  wrapped in  layouts/main   (landing page)
+// Members → redirect to their own dashboard immediately
 app.get('/', (req, res) => {
     if (req.session.user) {
         return req.session.user.role === 'admin'
             ? res.redirect('/admin')
             : res.redirect('/dashboard');
     }
-    // Explicitly confirm the guest layout so there is zero chance of bleed
-    res.set('layout', 'layouts/main');
     res.render('pages/index');
 });
 
-// Auth routes  (GET /login, POST /login, GET /register, POST /register, GET /logout)
+// ─── Auth, User, Admin routes ─────────────────────────────────────────────────
 app.use('/', authRoutes);
-
-// User dashboard routes  (/dashboard, /profile, /history, /reservation, /feedback, /notifications)
 app.use('/', userRoutes);
-
-// Admin routes  (/admin, /admin/*, etc.)
 app.use('/admin', adminRoutes);
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
-
-
-
+app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
 // // seed-admin route (for testing)
 // app.get('/create-admin', async (req, res) => {
 //     const bcrypt = require('bcryptjs');

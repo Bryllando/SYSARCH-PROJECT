@@ -3,13 +3,12 @@ const router = express.Router();
 const { isAuthenticated, isUser } = require('../middleware/auth');
 const db = require('../database/database');
 
+// Layout is set globally in server.js — do NOT set it here.
+
 // User Dashboard
 router.get('/dashboard', isAuthenticated, isUser, (req, res) => {
-    res.set('layout', 'layouts/dashboard');
-    // Fetch fresh user data (including remaining_sessions)
     db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err, userData) => {
         db.all(`SELECT * FROM announcements ORDER BY created_at DESC LIMIT 10`, (err2, announcements) => {
-            // Update session with fresh data
             if (userData) req.session.user = { ...req.session.user, ...userData };
             res.render('pages/dashboard', { announcements: announcements || [] });
         });
@@ -18,7 +17,6 @@ router.get('/dashboard', isAuthenticated, isUser, (req, res) => {
 
 // Edit Profile GET
 router.get('/profile', isAuthenticated, isUser, (req, res) => {
-    res.set('layout', 'layouts/dashboard');
     db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err, userData) => {
         if (userData) req.session.user = { ...req.session.user, ...userData };
         res.render('pages/profile', { messages: [] });
@@ -27,7 +25,6 @@ router.get('/profile', isAuthenticated, isUser, (req, res) => {
 
 // Edit Profile POST
 router.post('/profile', isAuthenticated, isUser, (req, res) => {
-    res.set('layout', 'layouts/dashboard');
     const { first_name, last_name, middle_initial, course, year_level, email } = req.body;
     db.run(
         `UPDATE users SET first_name=?, last_name=?, middle_initial=?, course=?, year_level=?, email=? WHERE id=?`,
@@ -48,10 +45,10 @@ router.post('/profile', isAuthenticated, isUser, (req, res) => {
 
 // Sit-in History
 router.get('/history', isAuthenticated, isUser, (req, res) => {
-    res.set('layout', 'layouts/dashboard');
-    db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`, [req.session.user.id], (err, sessions) => {
-        res.render('pages/history', { sessions: sessions || [] });
-    });
+    db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`,
+        [req.session.user.id], (err, sessions) => {
+            res.render('pages/history', { sessions: sessions || [] });
+        });
 });
 
 // Submit Feedback
@@ -66,10 +63,10 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
 
 // Reservation GET
 router.get('/reservation', isAuthenticated, isUser, (req, res) => {
-    res.set('layout', 'layouts/dashboard');
-    db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`, [req.session.user.id], (err, reservations) => {
-        res.render('pages/reservation', { reservations: reservations || [] });
-    });
+    db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`,
+        [req.session.user.id], (err, reservations) => {
+            res.render('pages/reservation', { reservations: reservations || [] });
+        });
 });
 
 // Reservation POST
@@ -89,7 +86,8 @@ router.get('/notifications', isAuthenticated, isUser, (req, res) => {
 });
 
 router.post('/notifications/read', isAuthenticated, isUser, (req, res) => {
-    db.run(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`, [req.session.user.id], () => res.json({ success: true }));
+    db.run(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`,
+        [req.session.user.id], () => res.json({ success: true }));
 });
 
 module.exports = router;
