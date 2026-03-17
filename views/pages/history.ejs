@@ -8,56 +8,66 @@
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
         <!-- Table toolbar -->
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
+        <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
+
+            <!-- LEFT: TITLE -->
             <div class="flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-[#5B0E14]"></div>
-                <span class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">History Information</span>
+                <span class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">
+                    History Information
+                </span>
             </div>
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2">
-                    <label class="text-xs text-gray-500">Show</label>
-                    <select id="entriesPerPage"
-                        class="border border-gray-200 rounded-lg px-2 py-1 text-xs text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#273F4F]">
-                        <option>10</option>
-                        <option>25</option>
-                        <option>50</option>
+
+            <!-- RIGHT: CONTROLS -->
+            <div class="flex flex-wrap items-center justify-end gap-4 sm:gap-8 mt-4 sm:mt-0">
+
+                <div class="flex items-center gap-3">
+                    <label class="text-xs text-gray-500 whitespace-nowrap">Show entries</label>
+                    <select id="entriesPerPage" class="border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-700 
+        focus:outline-none focus:ring-2 focus:ring-[#273F4F] bg-white cursor-pointer">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
                     </select>
-                    <label class="text-xs text-gray-500">entries</label>
                 </div>
-                <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Search..."
-                        class="border border-gray-200 rounded-lg pl-8 pr-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#273F4F] w-40">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="size-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2">
-                        <path fill-rule="evenodd"
-                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                            clip-rule="evenodd" />
-                    </svg>
+
+                <div class="flex items-center gap-3">
+                    <input type="text" id="searchInput" placeholder="Search..." class="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 
+        placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#273F4F] 
+        bg-white w-full sm:w-52">
                 </div>
+
             </div>
         </div>
-
         <!-- Table -->
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-100">
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">ID
-                            Number</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Name
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
+                            ID Number</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
+                            Name</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
                             Purpose</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
                             Laboratory</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Login
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Logout
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Date
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Action
-                        </th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
+                            Login</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
+                            Logout</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
+                            Date</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider whitespace-nowrap">
+                            Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -67,47 +77,50 @@
                         <% if (safeSessions.length> 0) { %>
                             <% safeSessions.forEach(function(s) { %>
                                 <tr class="hover:bg-gray-50 transition-colors history-row">
-                                    <td class="px-4 py-3 font-medium text-gray-700">
+                                    <td class="px-4 py-3 font-mono text-xs text-gray-600 whitespace-nowrap">
                                         <%= user.id_number %>
                                     </td>
-                                    <td class="px-4 py-3 text-gray-600">
-                                        <%= user.first_name %>
-                                            <%= user.last_name %>
+                                    <td class="px-4 py-3 text-gray-700 text-xs whitespace-nowrap">
+                                        <%= user.last_name %>, <%= user.first_name %>
                                     </td>
                                     <td class="px-4 py-3">
                                         <span
-                                            class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+                                            class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 whitespace-nowrap">
                                             <%= s.purpose || '—' %>
                                         </span>
                                     </td>
-                                    <td class="px-4 py-3 text-gray-600">
-                                        <%= s.lab_room || '—' %>
+                                    <td class="px-4 py-3 text-xs whitespace-nowrap">
+                                        <span
+                                            class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-[#273F4F]/10 text-[#273F4F]">
+                                            <%= s.lab_room || '—' %>
+                                        </span>
                                     </td>
-                                    <td class="px-4 py-3 text-gray-600">
+                                    <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
                                         <%= s.time_in ? new Date(s.time_in).toLocaleTimeString('en-US', {hour:'2-digit',
                                             minute:'2-digit'}) : '—' %>
                                     </td>
-                                    <td class="px-4 py-3 text-gray-600">
+                                    <td class="px-4 py-3 text-xs whitespace-nowrap">
                                         <% if (s.time_out) { %>
-                                            <%= new Date(s.time_out).toLocaleTimeString('en-US', {hour:'2-digit',
-                                                minute:'2-digit'}) %>
-                                                <% } else { %>
+                                            <span class="text-gray-600">
+                                                <%= new Date(s.time_out).toLocaleTimeString('en-US', {hour:'2-digit',
+                                                    minute:'2-digit'}) %>
+                                            </span>
+                                            <% } else { %>
+                                                <span
+                                                    class="inline-flex items-center gap-1 text-green-600 font-medium text-xs">
                                                     <span
-                                                        class="inline-flex items-center gap-1 text-green-600 font-medium text-xs">
-                                                        <span
-                                                            class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                                                        Active
-                                                    </span>
-                                                    <% } %>
+                                                        class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>Active
+                                                </span>
+                                                <% } %>
                                     </td>
-                                    <td class="px-4 py-3 text-gray-600">
+                                    <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
                                         <%= s.time_in ? new Date(s.time_in).toLocaleDateString('en-US', {year:'numeric',
                                             month:'short', day:'numeric'}) : '—' %>
                                     </td>
                                     <td class="px-4 py-3">
                                         <% if (s.status==='done' ) { %>
                                             <button onclick="openFeedbackModal('<%= s.id %>')"
-                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5"
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5 whitespace-nowrap"
                                                 style="background: linear-gradient(135deg, #059669, #047857);">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
                                                     fill="currentColor" class="size-3">
@@ -125,8 +138,20 @@
                                 <% }) %>
                                     <% } else { %>
                                         <tr>
-                                            <td colspan="8" class="px-4 py-12 text-center text-gray-400 text-sm">
-                                                No sit-in history found.
+                                            <td colspan="8" class="px-4 py-16 text-center">
+                                                <div class="flex flex-col items-center gap-3">
+                                                    <div
+                                                        class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                            fill="currentColor" class="size-7 text-gray-300">
+                                                            <path fill-rule="evenodd"
+                                                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </div>
+                                                    <p class="text-sm text-gray-400 font-medium">No sit-in history
+                                                        found.</p>
+                                                </div>
                                             </td>
                                         </tr>
                                         <% } %>
@@ -135,9 +160,11 @@
             </table>
         </div>
 
-        <!-- Pagination info -->
-        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-            <span>Showing <%= safeSessions.length %> entries</span>
+        <!-- Footer -->
+        <div class="px-6 py-4 border-t border-gray-100 text-xs text-gray-500">
+            Showing <span class="font-semibold text-gray-700">
+                <%= safeSessions.length %>
+            </span> entries
         </div>
     </div>
 </div>
@@ -149,7 +176,8 @@
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between"
             style="background: linear-gradient(135deg, #5B0E14, #3A0910);">
             <h3 class="font-bold text-white">Submit Feedback</h3>
-            <button onclick="closeFeedbackModal()" class="text-white/60 hover:text-white transition-colors">
+            <button onclick="closeFeedbackModal()"
+                class="text-white/60 hover:text-white transition-colors cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
                     <path
                         d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -158,12 +186,12 @@
         </div>
         <form action="/feedback" method="POST" class="p-6 space-y-4">
             <input type="hidden" name="session_id" id="feedbackSessionId">
-            <div class="space-y-1">
+            <div class="space-y-2">
                 <label class="block text-sm font-bold text-gray-700">Rating</label>
-                <div class="flex gap-2" id="starRating">
+                <div class="flex gap-1" id="starRating">
                     <% for (let i=1; i <=5; i++) { %>
                         <button type="button" data-star="<%= i %>"
-                            class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors">★</button>
+                            class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors cursor-pointer">★</button>
                         <% } %>
                 </div>
                 <input type="hidden" name="rating" id="ratingInput" value="0">
@@ -193,7 +221,6 @@
         document.getElementById('feedbackModal').classList.remove('flex');
     }
 
-    // Star rating
     document.querySelectorAll('.star-btn').forEach(star => {
         star.addEventListener('click', () => {
             const val = parseInt(star.dataset.star);
@@ -205,7 +232,6 @@
         });
     });
 
-    // Search filter
     document.getElementById('searchInput').addEventListener('input', function () {
         const q = this.value.toLowerCase();
         document.querySelectorAll('.history-row').forEach(row => {

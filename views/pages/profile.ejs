@@ -19,19 +19,25 @@
 
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-                        <!-- ── Profile Picture Upload Section ── -->
-                        <div class="px-8 py-6 border-b border-gray-100 flex flex-col items-center gap-4"
+                        <!-- Profile Picture Upload Section -->
+                        <div class="px-8 py-6 border-b border-gray-100 flex flex-col items-center gap-3"
                             style="background: linear-gradient(135deg, #f8f9fa, #fff);">
 
-                            <!-- Avatar display -->
-                            <div class="relative group">
+                            <!-- Avatar — exact same size/shape as dashboard -->
+                            <div
+                                style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #5B0E14;box-shadow:0 2px 14px rgba(91,14,20,0.2);flex-shrink:0;">
                                 <% if (user.profile_picture && user.profile_picture !=='' ) { %>
                                     <img src="<%= user.profile_picture %>" alt="Profile Picture"
-                                        class="w-24 h-24 rounded-full object-cover border-4 border-[#5B0E14] shadow-lg">
+                                        style="width:80px;height:80px;object-fit:cover;display:block;">
                                     <% } else { %>
-                                        <div class="w-24 h-24 rounded-full flex items-center justify-center font-extrabold text-4xl text-white shadow-lg border-4 border-[#5B0E14]"
-                                            style="background: linear-gradient(135deg, #5B0E14, #273F4F);">
-                                            <%= user.first_name.charAt(0).toUpperCase() %>
+                                        <div
+                                            style="width:80px;height:80px;background:linear-gradient(135deg,#5B0E14,#273F4F);display:flex;align-items:center;justify-content:center;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"
+                                                style="width:46px;height:46px;">
+                                                <path fill-rule="evenodd"
+                                                    d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.348A7.698 7.698 0 0 1 12 15a7.693 7.693 0 0 1 5.855 2.749A8.217 8.217 0 0 1 12 20.25a8.216 8.216 0 0 1-5.855-2.401ZM9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
                                         </div>
                                         <% } %>
                             </div>
@@ -58,17 +64,17 @@
 
                             <!-- Name + ID below photo -->
                             <div class="text-center mt-1">
-                                <p class="font-bold text-[#273F4F] text-lg">
+                                <p class="font-bold text-[#273F4F] text-base leading-snug">
                                     <%= user.first_name %>
                                         <%= user.last_name %>
                                 </p>
-                                <p class="text-gray-400 text-sm">
+                                <p class="text-gray-400 text-sm mt-0.5">
                                     <%= user.id_number %> · <%= user.course %>
                                 </p>
                             </div>
                         </div>
 
-                        <!-- ── Info Form ── -->
+                        <!-- Info Form -->
                         <form action="/profile" method="POST" class="p-8 space-y-5">
 
                             <!-- Read-only notice -->
@@ -127,14 +133,12 @@
                                     <select name="course" required
                                         class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm transition-all">
                                         <option value="">Select your course</option>
-
                                         <optgroup label="🖥️ College of Computer Studies">
                                             <option value="BSIT" <%=user.course==='BSIT' ? 'selected' : '' %>>BS
                                                 Information Technology</option>
                                             <option value="BSCS" <%=user.course==='BSCS' ? 'selected' : '' %>>BS
                                                 Computer Science</option>
                                         </optgroup>
-
                                         <optgroup label="💼 College of Business and Accountancy">
                                             <option value="BSA" <%=user.course==='BSA' ? 'selected' : '' %>>BS
                                                 Accountancy</option>
@@ -144,14 +148,9 @@
                                                 - Marketing Management</option>
                                             <option value="BSBA-HRM" <%=user.course==='BSBA-HRM' ? 'selected' : '' %>
                                                 >BSBA - Human Resource Management</option>
-                                            <option value="BSBA-OM" <%=user.course==='BSBA-OM' ? 'selected' : '' %>>BSBA
-                                                - Operations Management</option>
-                                            <option value="BSMA" <%=user.course==='BSMA' ? 'selected' : '' %>>BS
-                                                Management Accounting</option>
                                             <option value="BSEntrep" <%=user.course==='BSEntrep' ? 'selected' : '' %>>BS
                                                 Entrepreneurship</option>
                                         </optgroup>
-
                                         <optgroup label="⚙️ College of Engineering">
                                             <option value="BSCE" <%=user.course==='BSCE' ? 'selected' : '' %>>BS Civil
                                                 Engineering</option>
@@ -164,7 +163,6 @@
                                             <option value="BSECE" <%=user.course==='BSECE' ? 'selected' : '' %>>BS
                                                 Electronics Engineering</option>
                                         </optgroup>
-
                                         <optgroup label="📚 College of Education">
                                             <option value="BEED" <%=user.course==='BEED' ? 'selected' : '' %>>Bachelor
                                                 of Elementary Education</option>
@@ -174,24 +172,14 @@
                                                 >BSED - Mathematics</option>
                                             <option value="BSED-SCI" <%=user.course==='BSED-SCI' ? 'selected' : '' %>
                                                 >BSED - Science</option>
-                                            <option value="BSED-FIL" <%=user.course==='BSED-FIL' ? 'selected' : '' %>
-                                                >BSED - Filipino</option>
-                                            <option value="BSED-SOSHIL" <%=user.course==='BSED-SOSHIL' ? 'selected' : ''
-                                                %>>BSED - Social Studies</option>
-                                            <option value="BPED" <%=user.course==='BPED' ? 'selected' : '' %>>BS
-                                                Physical Education</option>
                                         </optgroup>
-
                                         <optgroup label="🏥 College of Nursing">
                                             <option value="BSN" <%=user.course==='BSN' ? 'selected' : '' %>>BS Nursing
                                             </option>
                                         </optgroup>
-
                                         <optgroup label="🎨 College of Arts and Sciences">
                                             <option value="ABCOM" <%=user.course==='ABCOM' ? 'selected' : '' %>>AB
                                                 Communication</option>
-                                            <option value="ABPOLSCI" <%=user.course==='ABPOLSCI' ? 'selected' : '' %>>AB
-                                                Political Science</option>
                                             <option value="BSPSY" <%=user.course==='BSPSY' ? 'selected' : '' %>>BS
                                                 Psychology</option>
                                             <option value="BSBIO" <%=user.course==='BSBIO' ? 'selected' : '' %>>BS
@@ -199,56 +187,16 @@
                                             <option value="BSMATH" <%=user.course==='BSMATH' ? 'selected' : '' %>>BS
                                                 Mathematics</option>
                                         </optgroup>
-
-                                        <optgroup label="🏛️ College of Architecture and Fine Arts">
-                                            <option value="BSARCH" <%=user.course==='BSARCH' ? 'selected' : '' %>>BS
-                                                Architecture</option>
-                                            <option value="BSID" <%=user.course==='BSID' ? 'selected' : '' %>>BS
-                                                Interior Design</option>
-                                            <option value="BSFA" <%=user.course==='BSFA' ? 'selected' : '' %>>BS Fine
-                                                Arts</option>
-                                        </optgroup>
-
                                         <optgroup label="🏨 College of Tourism and Hospitality Management">
                                             <option value="BSTM" <%=user.course==='BSTM' ? 'selected' : '' %>>BS Tourism
                                                 Management</option>
                                             <option value="BSHM" <%=user.course==='BSHM' ? 'selected' : '' %>>BS
                                                 Hospitality Management</option>
                                         </optgroup>
-
                                         <optgroup label="⚖️ College of Criminal Justice Education">
                                             <option value="BSCRIM" <%=user.course==='BSCRIM' ? 'selected' : '' %>>BS
                                                 Criminology</option>
                                         </optgroup>
-
-                                        <optgroup label="💊 College of Pharmacy">
-                                            <option value="BSPHAR" <%=user.course==='BSPHAR' ? 'selected' : '' %>>BS
-                                                Pharmacy</option>
-                                        </optgroup>
-
-                                        <optgroup label="⚓ College of Maritime Education">
-                                            <option value="BSMARE" <%=user.course==='BSMARE' ? 'selected' : '' %>>BS
-                                                Marine Engineering</option>
-                                            <option value="BSMT" <%=user.course==='BSMT' ? 'selected' : '' %>>BS Marine
-                                                Transportation</option>
-                                        </optgroup>
-
-                                        <optgroup label="⚕️ College of Allied Medical Sciences">
-                                            <option value="BSMT-MED" <%=user.course==='BSMT-MED' ? 'selected' : '' %>>BS
-                                                Medical Technology</option>
-                                            <option value="BSRT" <%=user.course==='BSRT' ? 'selected' : '' %>>BS
-                                                Radiologic Technology</option>
-                                            <option value="BSOT" <%=user.course==='BSOT' ? 'selected' : '' %>>BS
-                                                Occupational Therapy</option>
-                                            <option value="BSPT" <%=user.course==='BSPT' ? 'selected' : '' %>>BS
-                                                Physical Therapy</option>
-                                        </optgroup>
-
-                                        <optgroup label="📜 College of Law">
-                                            <option value="JD" <%=user.course==='JD' ? 'selected' : '' %>>Juris Doctor
-                                            </option>
-                                        </optgroup>
-
                                         <optgroup label="🎓 Senior High School">
                                             <option value="SHS-STEM" <%=user.course==='SHS-STEM' ? 'selected' : '' %>
                                                 >SHS - STEM</option>
