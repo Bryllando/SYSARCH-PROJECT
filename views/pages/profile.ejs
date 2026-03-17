@@ -1,3 +1,154 @@
+<style>
+    /* ── Avatar (matches dashboard) ── */
+    .prof-avatar-wrap {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        padding: 3px;
+        background: linear-gradient(135deg, #5B0E14, #C9953A);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .prof-avatar-inner {
+        width: 94px;
+        height: 94px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid #fff;
+        background: linear-gradient(135deg, #5B0E14, #273F4F);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .prof-avatar-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* ── Form field states ── */
+    .prof-field input,
+    .prof-field select {
+        transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    /* Locked state */
+    .prof-field.locked input,
+    .prof-field.locked select {
+        background: #F3F4F6 !important;
+        border-color: #E5E7EB !important;
+        color: #9CA3AF !important;
+        cursor: not-allowed !important;
+        pointer-events: none;
+    }
+
+    /* Editable state */
+    .prof-field.editable input,
+    .prof-field.editable select {
+        background: #F9FAFB;
+        border-color: #D1D5DB;
+        color: #111827;
+        cursor: text;
+        pointer-events: auto;
+    }
+
+    .prof-field.editable select {
+        cursor: pointer;
+    }
+
+    /* ── Edit button ── */
+    .btn-edit-profile {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        background: linear-gradient(135deg, #273F4F, #3A5669);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        letter-spacing: 0.02em;
+        box-shadow: 0 2px 12px rgba(39, 63, 79, 0.2);
+        transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .btn-edit-profile:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    /* ── Save / Cancel buttons ── */
+    .btn-maroon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #5B0E14, #3A0910);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 12px rgba(91, 14, 20, 0.25);
+        transition: opacity 0.15s, transform 0.15s;
+        text-decoration: none;
+    }
+
+    .btn-maroon:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        background: #F3F4F6;
+        color: #374151;
+        border: 1.5px solid #E5E7EB;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.15s;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background: #E5E7EB;
+        transform: translateY(-1px);
+    }
+
+    /* ── Edit mode notice banner ── */
+    .edit-mode-banner {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        background: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #1D4ED8;
+    }
+
+    /* ── Lock icon overlay on avatar ── */
+    .prof-avatar-container {
+        position: relative;
+        display: inline-flex;
+    }
+</style>
+
 <div class="p-6 max-w-2xl mx-auto">
 
     <div class="mb-6">
@@ -5,6 +156,7 @@
         <p class="text-gray-500 text-sm mt-1">Update your personal information below.</p>
     </div>
 
+    <!-- Flash messages -->
     <% if (typeof messages !=='undefined' ) { %>
         <% messages.forEach(function(msg) { %>
             <div
@@ -19,27 +171,26 @@
 
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-                        <!-- Profile Picture Upload Section -->
+                        <!-- ── Profile Picture Section ── -->
                         <div class="px-8 py-6 border-b border-gray-100 flex flex-col items-center gap-3"
                             style="background: linear-gradient(135deg, #f8f9fa, #fff);">
 
-                            <!-- Avatar — exact same size/shape as dashboard -->
-                            <div
-                                style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:3px solid #5B0E14;box-shadow:0 2px 14px rgba(91,14,20,0.2);flex-shrink:0;">
-                                <% if (user.profile_picture && user.profile_picture !=='' ) { %>
-                                    <img src="<%= user.profile_picture %>" alt="Profile Picture"
-                                        style="width:80px;height:80px;object-fit:cover;display:block;">
-                                    <% } else { %>
-                                        <div
-                                            style="width:80px;height:80px;background:linear-gradient(135deg,#5B0E14,#273F4F);display:flex;align-items:center;justify-content:center;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"
-                                                style="width:46px;height:46px;">
-                                                <path fill-rule="evenodd"
-                                                    d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.348A7.698 7.698 0 0 1 12 15a7.693 7.693 0 0 1 5.855 2.749A8.217 8.217 0 0 1 12 20.25a8.216 8.216 0 0 1-5.855-2.401ZM9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <% } %>
+                            <!-- Avatar — matches dashboard style exactly -->
+                            <div class="prof-avatar-container">
+                                <div class="prof-avatar-wrap">
+                                    <div class="prof-avatar-inner">
+                                        <% if (user.profile_picture && user.profile_picture !=='' ) { %>
+                                            <img src="<%= user.profile_picture %>" alt="Profile Picture">
+                                            <% } else { %>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"
+                                                    style="width:48px;height:48px;">
+                                                    <path fill-rule="evenodd"
+                                                        d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.348A7.698 7.698 0 0 1 12 15a7.693 7.693 0 0 1 5.855 2.749A8.217 8.217 0 0 1 12 20.25a8.216 8.216 0 0 1-5.855-2.401ZM9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                <% } %>
+                                    </div>
+                                </div>
                             </div>
 
                             <p class="text-gray-400 text-xs">Profile Picture</p>
@@ -62,7 +213,7 @@
                                 <p class="text-gray-400 text-xs">JPG, PNG, GIF, WEBP — max 5MB</p>
                             </form>
 
-                            <!-- Name + ID below photo -->
+                            <!-- Name + ID -->
                             <div class="text-center mt-1">
                                 <p class="font-bold text-[#273F4F] text-base leading-snug">
                                     <%= user.first_name %>
@@ -74,8 +225,8 @@
                             </div>
                         </div>
 
-                        <!-- Info Form -->
-                        <form action="/profile" method="POST" class="p-8 space-y-5">
+                        <!-- ── Info Form ── -->
+                        <form action="/profile" method="POST" class="p-8 space-y-5" id="profileForm">
 
                             <!-- Read-only notice -->
                             <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-2">
@@ -89,123 +240,140 @@
                                     modified.</p>
                             </div>
 
-                            <!-- ID Number (read-only) -->
+                            <!-- Edit mode active banner (hidden by default) -->
+                            <div id="editModeBanner" class="edit-mode-banner" style="display:none;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="size-4 shrink-0">
+                                    <path
+                                        d="M2.695 14.763l-1.262 3.154a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.885L17.5 5.5a2.121 2.121 0 0 0-3-3L3.58 13.42a4 4 0 0 0-.885 1.343Z" />
+                                </svg>
+                                Editing mode is on — make your changes then click Save Changes.
+                            </div>
+
+                            <!-- ID Number (always read-only) -->
                             <div class="space-y-1">
-                                <label class="block text-sm font-bold text-gray-500 ml-1">ID Number <span
-                                        class="text-gray-400 font-normal">(read-only)</span></label>
+                                <label class="block text-sm font-bold text-gray-500 ml-1">ID Number
+                                    <span class="text-gray-400 font-normal">(read-only)</span>
+                                </label>
                                 <input type="text" value="<%= user.id_number %>" disabled
                                     class="w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-500 cursor-not-allowed">
                             </div>
 
-                            <!-- Remaining Sessions (read-only) -->
+                            <!-- Remaining Sessions (always read-only) -->
                             <div class="space-y-1">
-                                <label class="block text-sm font-bold text-gray-500 ml-1">Remaining Sessions <span
-                                        class="text-gray-400 font-normal">(read-only)</span></label>
+                                <label class="block text-sm font-bold text-gray-500 ml-1">Remaining Sessions
+                                    <span class="text-gray-400 font-normal">(read-only)</span>
+                                </label>
                                 <input type="text" value="<%= user.remaining_sessions ?? 30 %>" disabled
                                     class="w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-sm text-gray-500 cursor-not-allowed">
                             </div>
 
-                            <!-- Name row -->
+                            <!-- First Name / Last Name / M.I. -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <div class="space-y-1">
+                                <div class="space-y-1 prof-field locked" data-field>
                                     <label class="block text-sm font-bold text-gray-700 ml-1">First Name</label>
                                     <input type="text" name="first_name" value="<%= user.first_name %>" required
-                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
+                                        class="w-full p-3 border rounded-xl outline-none text-sm transition-all"
+                                        readonly>
                                 </div>
-                                <div class="space-y-1">
+                                <div class="space-y-1 prof-field locked" data-field>
                                     <label class="block text-sm font-bold text-gray-700 ml-1">Last Name</label>
                                     <input type="text" name="last_name" value="<%= user.last_name %>" required
-                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
+                                        class="w-full p-3 border rounded-xl outline-none text-sm transition-all"
+                                        readonly>
                                 </div>
-                                <div class="space-y-1">
-                                    <label class="block text-sm font-bold text-gray-700 ml-1">M.I. <span
-                                            class="text-gray-400 font-normal">(optional)</span></label>
+                                <div class="space-y-1 prof-field locked" data-field>
+                                    <label class="block text-sm font-bold text-gray-700 ml-1">M.I.
+                                        <span class="text-gray-400 font-normal">(optional)</span>
+                                    </label>
                                     <input type="text" name="middle_initial" value="<%= user.middle_initial || '' %>"
                                         maxlength="2"
-                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm text-center transition-all">
+                                        class="w-full p-3 border rounded-xl outline-none text-sm text-center transition-all"
+                                        readonly>
                                 </div>
                             </div>
 
                             <!-- Course -->
-                            <div class="space-y-1">
+                            <div class="space-y-1 prof-field locked" data-field>
                                 <label class="block text-sm font-bold text-gray-700 ml-1">Course</label>
                                 <div class="relative">
                                     <select name="course" required
-                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm transition-all">
+                                        class="w-full p-3 border rounded-xl outline-none appearance-none text-sm transition-all"
+                                        disabled>
                                         <option value="">Select your course</option>
                                         <optgroup label="🖥️ College of Computer Studies">
-                                            <option value="BSIT" <%=user.course==='BSIT' ? 'selected' : '' %>>BS
-                                                Information Technology</option>
-                                            <option value="BSCS" <%=user.course==='BSCS' ? 'selected' : '' %>>BS
-                                                Computer Science</option>
+                                            <option value="BSIT" <%=user.course==='BSIT' ?'selected':''%>>BS Information
+                                                Technology</option>
+                                            <option value="BSCS" <%=user.course==='BSCS' ?'selected':''%>>BS Computer
+                                                Science</option>
                                         </optgroup>
                                         <optgroup label="💼 College of Business and Accountancy">
-                                            <option value="BSA" <%=user.course==='BSA' ? 'selected' : '' %>>BS
-                                                Accountancy</option>
-                                            <option value="BSBA-FM" <%=user.course==='BSBA-FM' ? 'selected' : '' %>>BSBA
-                                                - Financial Management</option>
-                                            <option value="BSBA-MM" <%=user.course==='BSBA-MM' ? 'selected' : '' %>>BSBA
-                                                - Marketing Management</option>
-                                            <option value="BSBA-HRM" <%=user.course==='BSBA-HRM' ? 'selected' : '' %>
-                                                >BSBA - Human Resource Management</option>
-                                            <option value="BSEntrep" <%=user.course==='BSEntrep' ? 'selected' : '' %>>BS
+                                            <option value="BSA" <%=user.course==='BSA' ?'selected':''%>>BS Accountancy
+                                            </option>
+                                            <option value="BSBA-FM" <%=user.course==='BSBA-FM' ?'selected':''%>>BSBA -
+                                                Financial Management</option>
+                                            <option value="BSBA-MM" <%=user.course==='BSBA-MM' ?'selected':''%>>BSBA -
+                                                Marketing Management</option>
+                                            <option value="BSBA-HRM" <%=user.course==='BSBA-HRM' ?'selected':''%>>BSBA -
+                                                Human Resource Management</option>
+                                            <option value="BSEntrep" <%=user.course==='BSEntrep' ?'selected':''%>>BS
                                                 Entrepreneurship</option>
                                         </optgroup>
                                         <optgroup label="⚙️ College of Engineering">
-                                            <option value="BSCE" <%=user.course==='BSCE' ? 'selected' : '' %>>BS Civil
+                                            <option value="BSCE" <%=user.course==='BSCE' ?'selected':''%>>BS Civil
                                                 Engineering</option>
-                                            <option value="BSEE" <%=user.course==='BSEE' ? 'selected' : '' %>>BS
-                                                Electrical Engineering</option>
-                                            <option value="BSME" <%=user.course==='BSME' ? 'selected' : '' %>>BS
-                                                Mechanical Engineering</option>
-                                            <option value="BSIE" <%=user.course==='BSIE' ? 'selected' : '' %>>BS
-                                                Industrial Engineering</option>
-                                            <option value="BSECE" <%=user.course==='BSECE' ? 'selected' : '' %>>BS
+                                            <option value="BSEE" <%=user.course==='BSEE' ?'selected':''%>>BS Electrical
+                                                Engineering</option>
+                                            <option value="BSME" <%=user.course==='BSME' ?'selected':''%>>BS Mechanical
+                                                Engineering</option>
+                                            <option value="BSIE" <%=user.course==='BSIE' ?'selected':''%>>BS Industrial
+                                                Engineering</option>
+                                            <option value="BSECE" <%=user.course==='BSECE' ?'selected':''%>>BS
                                                 Electronics Engineering</option>
                                         </optgroup>
                                         <optgroup label="📚 College of Education">
-                                            <option value="BEED" <%=user.course==='BEED' ? 'selected' : '' %>>Bachelor
-                                                of Elementary Education</option>
-                                            <option value="BSED-ENG" <%=user.course==='BSED-ENG' ? 'selected' : '' %>
-                                                >BSED - English</option>
-                                            <option value="BSED-MATH" <%=user.course==='BSED-MATH' ? 'selected' : '' %>
-                                                >BSED - Mathematics</option>
-                                            <option value="BSED-SCI" <%=user.course==='BSED-SCI' ? 'selected' : '' %>
-                                                >BSED - Science</option>
+                                            <option value="BEED" <%=user.course==='BEED' ?'selected':''%>>Bachelor of
+                                                Elementary Education</option>
+                                            <option value="BSED-ENG" <%=user.course==='BSED-ENG' ?'selected':''%>>BSED -
+                                                English</option>
+                                            <option value="BSED-MATH" <%=user.course==='BSED-MATH' ?'selected':''%>>BSED
+                                                - Mathematics</option>
+                                            <option value="BSED-SCI" <%=user.course==='BSED-SCI' ?'selected':''%>>BSED -
+                                                Science</option>
                                         </optgroup>
                                         <optgroup label="🏥 College of Nursing">
-                                            <option value="BSN" <%=user.course==='BSN' ? 'selected' : '' %>>BS Nursing
+                                            <option value="BSN" <%=user.course==='BSN' ?'selected':''%>>BS Nursing
                                             </option>
                                         </optgroup>
                                         <optgroup label="🎨 College of Arts and Sciences">
-                                            <option value="ABCOM" <%=user.course==='ABCOM' ? 'selected' : '' %>>AB
+                                            <option value="ABCOM" <%=user.course==='ABCOM' ?'selected':''%>>AB
                                                 Communication</option>
-                                            <option value="BSPSY" <%=user.course==='BSPSY' ? 'selected' : '' %>>BS
+                                            <option value="BSPSY" <%=user.course==='BSPSY' ?'selected':''%>>BS
                                                 Psychology</option>
-                                            <option value="BSBIO" <%=user.course==='BSBIO' ? 'selected' : '' %>>BS
-                                                Biology</option>
-                                            <option value="BSMATH" <%=user.course==='BSMATH' ? 'selected' : '' %>>BS
+                                            <option value="BSBIO" <%=user.course==='BSBIO' ?'selected':''%>>BS Biology
+                                            </option>
+                                            <option value="BSMATH" <%=user.course==='BSMATH' ?'selected':''%>>BS
                                                 Mathematics</option>
                                         </optgroup>
                                         <optgroup label="🏨 College of Tourism and Hospitality Management">
-                                            <option value="BSTM" <%=user.course==='BSTM' ? 'selected' : '' %>>BS Tourism
+                                            <option value="BSTM" <%=user.course==='BSTM' ?'selected':''%>>BS Tourism
                                                 Management</option>
-                                            <option value="BSHM" <%=user.course==='BSHM' ? 'selected' : '' %>>BS
-                                                Hospitality Management</option>
+                                            <option value="BSHM" <%=user.course==='BSHM' ?'selected':''%>>BS Hospitality
+                                                Management</option>
                                         </optgroup>
                                         <optgroup label="⚖️ College of Criminal Justice Education">
-                                            <option value="BSCRIM" <%=user.course==='BSCRIM' ? 'selected' : '' %>>BS
+                                            <option value="BSCRIM" <%=user.course==='BSCRIM' ?'selected':''%>>BS
                                                 Criminology</option>
                                         </optgroup>
                                         <optgroup label="🎓 Senior High School">
-                                            <option value="SHS-STEM" <%=user.course==='SHS-STEM' ? 'selected' : '' %>
-                                                >SHS - STEM</option>
-                                            <option value="SHS-ABM" <%=user.course==='SHS-ABM' ? 'selected' : '' %>>SHS
-                                                - ABM</option>
-                                            <option value="SHS-HUMSS" <%=user.course==='SHS-HUMSS' ? 'selected' : '' %>
-                                                >SHS - HUMSS</option>
-                                            <option value="SHS-TVL" <%=user.course==='SHS-TVL' ? 'selected' : '' %>>SHS
-                                                - TVL</option>
+                                            <option value="SHS-STEM" <%=user.course==='SHS-STEM' ?'selected':''%>>SHS -
+                                                STEM</option>
+                                            <option value="SHS-ABM" <%=user.course==='SHS-ABM' ?'selected':''%>>SHS -
+                                                ABM</option>
+                                            <option value="SHS-HUMSS" <%=user.course==='SHS-HUMSS' ?'selected':''%>>SHS
+                                                - HUMSS</option>
+                                            <option value="SHS-TVL" <%=user.course==='SHS-TVL' ?'selected':''%>>SHS -
+                                                TVL</option>
                                         </optgroup>
                                     </select>
                                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -219,19 +387,20 @@
                             </div>
 
                             <!-- Year Level -->
-                            <div class="space-y-1">
+                            <div class="space-y-1 prof-field locked" data-field>
                                 <label class="block text-sm font-bold text-gray-700 ml-1">Year Level</label>
                                 <div class="relative">
                                     <select name="year_level" required
-                                        class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] outline-none appearance-none text-sm transition-all">
-                                        <option value="1" <%=user.year_level==1 ? 'selected' : '' %>>1st Year</option>
-                                        <option value="2" <%=user.year_level==2 ? 'selected' : '' %>>2nd Year</option>
-                                        <option value="3" <%=user.year_level==3 ? 'selected' : '' %>>3rd Year</option>
-                                        <option value="4" <%=user.year_level==4 ? 'selected' : '' %>>4th Year</option>
-                                        <option value="5" <%=user.year_level==5 ? 'selected' : '' %>>5th Year</option>
-                                        <option value="11" <%=user.year_level==11 ? 'selected' : '' %>>Grade 11 (SHS)
+                                        class="w-full p-3 border rounded-xl outline-none appearance-none text-sm transition-all"
+                                        disabled>
+                                        <option value="1" <%=user.year_level==1 ?'selected':''%>>1st Year</option>
+                                        <option value="2" <%=user.year_level==2 ?'selected':''%>>2nd Year</option>
+                                        <option value="3" <%=user.year_level==3 ?'selected':''%>>3rd Year</option>
+                                        <option value="4" <%=user.year_level==4 ?'selected':''%>>4th Year</option>
+                                        <option value="5" <%=user.year_level==5 ?'selected':''%>>5th Year</option>
+                                        <option value="11" <%=user.year_level==11 ?'selected':''%>>Grade 11 (SHS)
                                         </option>
-                                        <option value="12" <%=user.year_level==12 ? 'selected' : '' %>>Grade 12 (SHS)
+                                        <option value="12" <%=user.year_level==12 ?'selected':''%>>Grade 12 (SHS)
                                         </option>
                                     </select>
                                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -245,27 +414,115 @@
                             </div>
 
                             <!-- Email -->
-                            <div class="space-y-1">
+                            <div class="space-y-1 prof-field locked" data-field>
                                 <label class="block text-sm font-bold text-gray-700 ml-1">Email Address</label>
                                 <input type="email" name="email" value="<%= user.email %>" required
-                                    class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
+                                    class="w-full p-3 border rounded-xl outline-none text-sm transition-all" readonly>
                             </div>
 
                             <!-- Address -->
-                            <div class="space-y-1">
-                                <label class="block text-sm font-bold text-gray-700 ml-1">Address <span
-                                        class="text-gray-400 font-normal">(optional)</span></label>
+                            <div class="space-y-1 prof-field locked" data-field>
+                                <label class="block text-sm font-bold text-gray-700 ml-1">Address
+                                    <span class="text-gray-400 font-normal">(optional)</span>
+                                </label>
                                 <input type="text" name="address" value="<%= user.address || '' %>"
                                     placeholder="e.g. Cebu City, Philippines"
-                                    class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm transition-all">
+                                    class="w-full p-3 border rounded-xl outline-none text-sm transition-all" readonly>
                             </div>
 
-                            <!-- Buttons -->
-                            <div class="flex gap-3 pt-2">
-                                <button type="submit" class="btn-maroon flex-1 py-3 text-base">Save Changes</button>
-                                <a href="/dashboard" class="btn-dark flex-1 py-3 text-base text-center">Cancel</a>
-                            </div>
+                            <!-- ── Bottom Buttons ── -->
+                            <div class="pt-2">
 
+                                <!-- EDIT button — visible by default -->
+                                <div id="editBtnWrapper">
+                                    <button type="button" id="editBtn"
+                                        class="btn-edit-profile w-full py-3 justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            class="size-4">
+                                            <path
+                                                d="M2.695 14.763l-1.262 3.154a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.885L17.5 5.5a2.121 2.121 0 0 0-3-3L3.58 13.42a4 4 0 0 0-.885 1.343Z" />
+                                        </svg>
+                                        Edit Profile
+                                    </button>
+                                </div>
+
+                                <!-- SAVE / CANCEL — hidden by default, shown after Edit clicked -->
+                                <div id="saveCancelWrapper" class="flex gap-3" style="display:none !important;">
+                                    <button type="submit" class="btn-maroon flex-1 py-3 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            class="size-4 mr-1">
+                                            <path fill-rule="evenodd"
+                                                d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Save Changes
+                                    </button>
+                                    <button type="button" id="cancelBtn" class="btn-cancel flex-1 py-3 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                            class="size-4 mr-1">
+                                            <path
+                                                d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                                        </svg>
+                                        Cancel
+                                    </button>
+                                </div>
+
+                            </div>
                         </form>
                     </div>
 </div>
+
+<script>
+    (function () {
+        const editBtn = document.getElementById('editBtn');
+        const editBtnWrapper = document.getElementById('editBtnWrapper');
+        const saveCancelWrapper = document.getElementById('saveCancelWrapper');
+        const editModeBanner = document.getElementById('editModeBanner');
+        const fields = document.querySelectorAll('[data-field]');
+
+        // Store original values so Cancel can restore them
+        const originalValues = {};
+        fields.forEach(function (fieldWrapper, i) {
+            const input = fieldWrapper.querySelector('input, select');
+            if (input) originalValues[i] = input.value;
+        });
+
+        function enableEditing() {
+            // Show banner, hide Edit button, show Save/Cancel
+            editModeBanner.style.display = 'flex';
+            editBtnWrapper.style.display = 'none';
+            saveCancelWrapper.style.removeProperty('display'); // removes the !important none
+            saveCancelWrapper.style.display = 'flex';
+
+            // Unlock all editable fields
+            fields.forEach(function (fieldWrapper) {
+                fieldWrapper.classList.remove('locked');
+                fieldWrapper.classList.add('editable');
+                const input = fieldWrapper.querySelector('input');
+                const select = fieldWrapper.querySelector('select');
+                if (input) { input.removeAttribute('readonly'); }
+                if (select) { select.removeAttribute('disabled'); }
+            });
+        }
+
+        function disableEditing() {
+            // Hide banner, show Edit button, hide Save/Cancel
+            editModeBanner.style.display = 'none';
+            editBtnWrapper.style.display = 'block';
+            saveCancelWrapper.style.display = 'none';
+
+            // Restore original values and re-lock
+            fields.forEach(function (fieldWrapper, i) {
+                fieldWrapper.classList.remove('editable');
+                fieldWrapper.classList.add('locked');
+                const input = fieldWrapper.querySelector('input');
+                const select = fieldWrapper.querySelector('select');
+                if (input) { input.value = originalValues[i]; input.setAttribute('readonly', ''); }
+                if (select) { select.value = originalValues[i]; select.setAttribute('disabled', ''); }
+            });
+        }
+
+        editBtn.addEventListener('click', enableEditing);
+        document.getElementById('cancelBtn').addEventListener('click', disableEditing);
+    })();
+</script>

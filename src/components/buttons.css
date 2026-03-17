@@ -28,4 +28,19 @@
         @apply w-full py-4 rounded-xl font-bold text-xl shadow-lg transform active:scale-[0.98] transition-all text-center bg-emerald-600 text-white hover:bg-emerald-700;
     }
 
+    /* Profile Avatar Container */
+    .profile-avatar-container {
+        @apply w-20 h-20 rounded-full overflow-hidden border-[3px] border-[#5B0E14] shadow-[0_2px_14px_rgba(91, 14, 20, 0.2)] shrink-0;
+    }
+
+    /* Placeholder Avatar Background */
+    .avatar-placeholder {
+        @apply w-20 h-20 bg-linear-to-br from-[#5B0E14] to-[#273F4F] flex items-center justify-center leading-0;
+    }
+
+    /* Upload Label Button */
+    .btn-upload-photo {
+        @apply cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-[#5B0E14] text-[#5B0E14] text-sm font-semibold hover:bg-[#5B0E14]/5 transition-colors;
+    }
+
 }
