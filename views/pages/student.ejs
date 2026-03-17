@@ -1,0 +1,773 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+    .stud-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
+
+    /* ── Header band ── */
+    .stud-header {
+        background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
+        padding: 28px 32px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stud-header::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(241, 225, 148, 0.07);
+    }
+
+    .stud-header::after {
+        content: '';
+        position: absolute;
+        bottom: -60px;
+        left: 20%;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: rgba(91, 14, 20, 0.15);
+    }
+
+    .stud-header-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .stud-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+    }
+
+    .stud-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .stud-total-badge {
+        background: rgba(241, 225, 148, 0.15);
+        border: 1px solid rgba(241, 225, 148, 0.3);
+        color: #F1E194;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 999px;
+        letter-spacing: 0.04em;
+    }
+
+    /* ── Toolbar ── */
+    .stud-toolbar {
+        padding: 20px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: #F0EDE8;
+        border-bottom: 1px solid #E2DDD8;
+    }
+
+    .stud-search-wrap {
+        position: relative;
+    }
+
+    .stud-search-wrap svg {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        pointer-events: none;
+        width: 15px;
+        height: 15px;
+    }
+
+    .stud-search-wrap input {
+        padding: 9px 14px 9px 36px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 10px;
+        background: #fff;
+        font-size: 13px;
+        color: #1C2B35;
+        outline: none;
+        width: 220px;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .stud-search-wrap input:focus {
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.1);
+    }
+
+    .stud-entries {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: #6B7280;
+    }
+
+    .stud-entries select {
+        padding: 6px 10px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 8px;
+        background: #fff;
+        font-size: 12px;
+        color: #374151;
+        outline: none;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+    }
+
+    .btn-reset-sessions {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 16px;
+        background: #5B0E14;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: background 0.15s, transform 0.1s;
+        text-decoration: none;
+    }
+
+    .btn-reset-sessions:hover {
+        background: #7a131b;
+        transform: translateY(-1px);
+    }
+
+    /* ── Table container ── */
+    .stud-table-wrap {
+        padding: 0 32px 32px;
+        background: #F0EDE8;
+    }
+
+    .stud-table-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E8E3DD;
+    }
+
+    table.stud-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .stud-table thead tr {
+        background: #F7F5F2;
+        border-bottom: 2px solid #E8E3DD;
+    }
+
+    .stud-table th {
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+        white-space: nowrap;
+    }
+
+    .stud-table tbody tr {
+        border-bottom: 1px solid #F3F0EC;
+        transition: background 0.12s;
+    }
+
+    .stud-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .stud-table tbody tr:hover {
+        background: #FAF9F7;
+    }
+
+    .stud-table td {
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    /* ── Cell components ── */
+    .cell-avatar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .cell-avatar-img {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: #F1E194;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .cell-avatar-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cell-name {
+        font-weight: 600;
+        color: #1C2B35;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .cell-id {
+        font-family: 'DM Mono', 'Courier New', monospace;
+        font-size: 11px;
+        color: #9CA3AF;
+        margin-top: 1px;
+    }
+
+    .cell-course {
+        display: inline-flex;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        letter-spacing: 0.02em;
+    }
+
+    .cell-year {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #F3F0EC;
+        color: #4B5563;
+    }
+
+    /* Session bar */
+    .session-bar-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 80px;
+    }
+
+    .session-bar-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+    }
+
+    .session-count {
+        font-weight: 700;
+        font-size: 13px;
+        color: #1C2B35;
+        min-width: 22px;
+    }
+
+    .session-bar {
+        flex: 1;
+        height: 5px;
+        background: #E8E3DD;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .session-bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.3s ease;
+    }
+
+    .session-bar-fill.high {
+        background: linear-gradient(90deg, #059669, #34D399);
+    }
+
+    .session-bar-fill.mid {
+        background: linear-gradient(90deg, #D97706, #FBBF24);
+    }
+
+    .session-bar-fill.low {
+        background: linear-gradient(90deg, #DC2626, #F87171);
+    }
+
+    /* Actions */
+    .cell-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-view {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #1C2B35;
+        color: #fff;
+        text-decoration: none;
+        transition: background 0.15s, transform 0.1s;
+        white-space: nowrap;
+    }
+
+    .btn-view:hover {
+        background: #273F4F;
+        transform: translateY(-1px);
+    }
+
+    .btn-sitin {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #5B0E14, #7a131b);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.1s;
+        font-family: 'DM Sans', sans-serif;
+        white-space: nowrap;
+    }
+
+    .btn-sitin:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+
+    .btn-edit-s {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #F3F0EC;
+        color: #374151;
+        border: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: background 0.15s;
+    }
+
+    .btn-edit-s:hover {
+        background: #E8E3DD;
+    }
+
+    /* Empty state */
+    .stud-empty {
+        padding: 64px 24px;
+        text-align: center;
+    }
+
+    /* Footer */
+    .stud-table-footer {
+        padding: 14px 20px;
+        border-top: 1px solid #F3F0EC;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #9CA3AF;
+        background: #FAFAF9;
+    }
+
+    /* Pagination dots */
+    .stud-pagination {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .pg-btn {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 7px;
+        border: 1px solid #E8E3DD;
+        background: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        color: #6B7280;
+        cursor: pointer;
+        transition: all 0.12s;
+    }
+
+    .pg-btn:hover,
+    .pg-btn.active {
+        background: #1C2B35;
+        border-color: #1C2B35;
+        color: #fff;
+    }
+</style>
+
+<div class="stud-page">
+
+    <!-- Header -->
+    <div class="stud-header">
+        <div class="stud-header-inner">
+            <div>
+                <h1>Students</h1>
+                <p>All registered students in the CCS laboratory system</p>
+            </div>
+            <span class="stud-total-badge">
+                <%= students ? students.length : 0 %> registered
+            </span>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="stud-toolbar">
+        <div class="flex items-center gap-3" style="display:flex;align-items:center;gap:12px;">
+            <!-- Show entries -->
+            <div class="stud-entries">
+                <span>Show</span>
+                <select id="entriesSelect">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span>entries</span>
+            </div>
+
+            <!-- Reset Sessions -->
+            <button class="btn-reset-sessions" onclick="return confirm('Reset ALL student sessions to 30?')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                    <path fill-rule="evenodd"
+                        d="M13.836 2.477a.75.75 0 0 1 .75.75v3.182a.75.75 0 0 1-.75.75h-3.182a.75.75 0 0 1 0-1.5h1.37l-.84-.841a4.5 4.5 0 0 0-7.08.932.75.75 0 0 1-1.3-.75 6 6 0 0 1 9.44-1.242l.842.84V3.227a.75.75 0 0 1 .75-.75Zm-.911 7.5A.75.75 0 0 1 13.199 11a6 6 0 0 1-9.44 1.241l-.84-.84v1.371a.75.75 0 0 1-1.5 0V9.591a.75.75 0 0 1 .75-.75H5.35a.75.75 0 0 1 0 1.5H3.98l.841.841a4.5 4.5 0 0 0 7.08-.932.75.75 0 0 1 1.025-.273Z"
+                        clip-rule="evenodd" />
+                </svg>
+                Reset All Sessions
+            </button>
+        </div>
+
+        <!-- Search -->
+        <div class="stud-search-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                    clip-rule="evenodd" />
+            </svg>
+            <input type="text" id="studentSearch" placeholder="Search students...">
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="stud-table-wrap">
+        <div class="stud-table-card">
+            <div style="overflow-x:auto;">
+                <table class="stud-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>ID Number</th>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th>Sessions Left</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentBody">
+                        <% if (students && students.length> 0) { %>
+                            <% students.forEach(function(s) { %>
+                                <% var sessions=s.remaining_sessions ?? 30; var pct=Math.round((sessions / 30) * 100);
+                                    var barClass=pct> 60 ? 'high' : pct > 30 ? 'mid' : 'low';
+                                    var initials = (s.first_name ? s.first_name[0] : '') + (s.last_name ? s.last_name[0]
+                                    : '');
+                                    %>
+                                    <tr class="stud-row">
+                                        <td>
+                                            <div class="cell-avatar">
+                                                <div class="cell-avatar-img">
+                                                    <% if (s.profile_picture && s.profile_picture !=='' ) { %>
+                                                        <img src="<%= s.profile_picture %>" alt="">
+                                                        <% } else { %>
+                                                            <%= initials.toUpperCase() %>
+                                                                <% } %>
+                                                </div>
+                                                <div>
+                                                    <div class="cell-name">
+                                                        <%= s.last_name %>, <%= s.first_name %>
+                                                                <%= s.middle_initial ? ' ' + s.middle_initial + '.' : ''
+                                                                    %>
+                                                    </div>
+                                                    <div class="cell-id">
+                                                        <%= s.email %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span
+                                                style="font-family:monospace;font-size:12px;color:#4B5563;background:#F3F0EC;padding:3px 8px;border-radius:5px;">
+                                                <%= s.id_number %>
+                                            </span>
+                                        </td>
+                                        <td><span class="cell-course">
+                                                <%= s.course %>
+                                            </span></td>
+                                        <td><span class="cell-year">
+                                                <%= s.year_level %>
+                                            </span></td>
+                                        <td>
+                                            <div class="session-bar-wrap">
+                                                <div class="session-bar-row">
+                                                    <span class="session-count">
+                                                        <%= sessions %>
+                                                    </span>
+                                                    <div class="session-bar">
+                                                        <div class="session-bar-fill <%= barClass %>"
+                                                            style="width:<%= Math.min(pct, 100) %>%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="cell-actions">
+                                                <a href="/admin/students/<%= s.id %>" class="btn-view">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                        fill="currentColor" width="11" height="11">
+                                                        <path d="M7 9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+                                                        <path fill-rule="evenodd"
+                                                            d="M.664 6.897a.875.875 0 0 0 0 .206A7.003 7.003 0 0 0 13.336 7.1a.875.875 0 0 0 0-.206A7.003 7.003 0 0 0 .664 6.897ZM7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    View
+                                                </a>
+                                                <button class="btn-sitin"
+                                                    onclick="openSitinModal('<%= s.id %>', '<%= s.id_number %>', '<%= s.last_name %>, <%= s.first_name %><%= s.middle_initial ? " " + s.middle_initial + "
+                                                    ." : "" %>', '<%= sessions %>')">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                            fill="currentColor" width="11" height="11">
+                                                            <path
+                                                                d="M7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM10.735 13c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                                                        </svg>
+                                                        Sit-in
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="6">
+                                                    <div class="stud-empty">
+                                                        <div
+                                                            style="width:56px;height:56px;border-radius:50%;background:#F3F0EC;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                fill="#D1CBC4" width="28" height="28">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </div>
+                                                        <p
+                                                            style="font-size:14px;font-weight:600;color:#9CA3AF;margin:0;">
+                                                            No students registered yet</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="stud-table-footer">
+                <span id="showingCount">Showing <strong>
+                        <%= students ? students.length : 0 %>
+                    </strong> entries</span>
+                <div class="stud-pagination" id="pagination"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ SIT-IN MODAL ═══ -->
+<div id="sitinModal" style="display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;">
+    <div style="position:absolute;inset:0;background:rgba(28,43,53,0.6);backdrop-filter:blur(4px);"
+        onclick="closeSitinModal()"></div>
+    <div
+        style="position:relative;background:#fff;border-radius:20px;box-shadow:0 24px 60px rgba(28,43,53,0.25);width:100%;max-width:420px;margin:0 16px;overflow:hidden;font-family:'DM Sans',sans-serif;">
+
+        <!-- Modal header -->
+        <div
+            style="background:linear-gradient(135deg,#1C2B35,#273F4F);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div
+                    style="width:32px;height:32px;border-radius:8px;background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.25);display:flex;align-items:center;justify-content:center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#F1E194" width="15" height="15">
+                        <path fill-rule="evenodd"
+                            d="M4.5 2A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4.5Zm1 5.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5Zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5Zm0-5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <span
+                    style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:0.01em;">Sit-in
+                    Registration</span>
+            </div>
+            <button onclick="closeSitinModal()"
+                style="width:28px;height:28px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:7px;color:rgba(255,255,255,0.6);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">✕</button>
+        </div>
+
+        <!-- Student info strip -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #F3F0EC;">
+            <div style="padding:14px 20px;border-right:1px solid #F3F0EC;">
+                <div
+                    style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9CA3AF;margin-bottom:4px;">
+                    ID Number</div>
+                <div id="mIdNumber" style="font-size:14px;font-weight:700;color:#1C2B35;font-family:monospace;"></div>
+            </div>
+            <div style="padding:14px 20px;background:#FFF9F0;">
+                <div
+                    style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9CA3AF;margin-bottom:4px;">
+                    Sessions Left</div>
+                <div id="mSessions" style="font-size:14px;font-weight:800;color:#5B0E14;"></div>
+            </div>
+            <div style="padding:14px 20px;grid-column:span 2;border-top:1px solid #F3F0EC;">
+                <div
+                    style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9CA3AF;margin-bottom:4px;">
+                    Student Name</div>
+                <div id="mName" style="font-size:14px;font-weight:700;color:#1C2B35;"></div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form action="/admin/sitin/start" method="POST" style="padding:20px 24px 0;">
+            <input type="hidden" name="user_id" id="mUserId">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div>
+                    <label
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">Purpose
+                        <span style="color:#DC2626;">*</span></label>
+                    <div style="position:relative;">
+                        <select name="purpose" required
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;font-family:'DM Sans',sans-serif;cursor:pointer;">
+                            <option value="" disabled selected>Select...</option>
+                            <option>C Programming</option>
+                            <option>Java Programming</option>
+                            <option>C# Programming</option>
+                            <option>ASP.Net</option>
+                            <option>PHP Programming</option>
+                            <option>Database</option>
+                            <option>Research</option>
+                            <option>Other</option>
+                        </select>
+                        <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9CA3AF;"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                            height="12">
+                            <path fill-rule="evenodd"
+                                d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <label
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">Laboratory
+                        <span style="color:#DC2626;">*</span></label>
+                    <div style="position:relative;">
+                        <select name="lab_room" required
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;font-family:'DM Sans',sans-serif;cursor:pointer;">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="524">Lab 524</option>
+                            <option value="526">Lab 526</option>
+                            <option value="528">Lab 528</option>
+                            <option value="530">Lab 530</option>
+                            <option value="Mac Lab">Mac Lab</option>
+                        </select>
+                        <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9CA3AF;"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                            height="12">
+                            <path fill-rule="evenodd"
+                                d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;padding:16px 0 20px;">
+                <button type="button" onclick="closeSitinModal()"
+                    style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;">Cancel</button>
+                <button type="submit"
+                    style="flex:2;padding:11px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s;">Confirm
+                    Sit-in</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openSitinModal(id, idNumber, name, sessions) {
+        document.getElementById('mUserId').value = id;
+        document.getElementById('mIdNumber').textContent = idNumber;
+        document.getElementById('mName').textContent = name;
+        document.getElementById('mSessions').textContent = sessions + ' sessions';
+        const m = document.getElementById('sitinModal');
+        m.style.display = 'flex';
+    }
+    function closeSitinModal() {
+        document.getElementById('sitinModal').style.display = 'none';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSitinModal(); });
+
+    // Search
+    document.getElementById('studentSearch').addEventListener('input', function () {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.stud-row').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+        updateCount();
+    });
+
+    function updateCount() {
+        const visible = document.querySelectorAll('.stud-row:not([style*="none"])').length;
+        document.getElementById('showingCount').innerHTML = `Showing <strong>${visible}</strong> entries`;
+    }
+</script>

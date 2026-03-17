@@ -1,165 +1,599 @@
-<div class="p-6">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
 
-    <div class="mb-6">
-        <h1 class="text-2xl font-extrabold text-[#273F4F]">Current Sit-in</h1>
-        <p class="text-gray-500 text-sm mt-1">Students currently active in the laboratory.</p>
+
+    .sitin-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
+
+    /* ── Header ── */
+    .sitin-header {
+        padding: 28px 32px 20px;
+        background: #F0EDE8;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        border-bottom: 1px solid #E2DDD8;
+    }
+
+    .sitin-header-left h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        color: #1C2B35;
+        margin: 0 0 4px;
+        letter-spacing: -0.5px;
+    }
+
+    .sitin-header-left p {
+        font-size: 13px;
+        color: #9CA3AF;
+        margin: 0;
+    }
+
+    /* Live pulse pill */
+    .live-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 14px;
+        background: #fff;
+        border: 1.5px solid #DCFCE7;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #059669;
+        box-shadow: 0 2px 8px rgba(5, 150, 105, 0.1);
+    }
+
+    .live-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #10B981;
+        animation: livePulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+    }
+
+    /* ── Stats ribbon ── */
+    .sitin-stats {
+        display: flex;
+        gap: 12px;
+        padding: 16px 32px;
+        background: #F0EDE8;
+    }
+
+    .stat-chip {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #E8E3DD;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .stat-chip-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .stat-chip-icon.green {
+        background: #DCFCE7;
+    }
+
+    .stat-chip-icon.dark {
+        background: #E8EFF4;
+    }
+
+    .stat-chip-icon.amber {
+        background: #FEF3C7;
+    }
+
+    .stat-chip-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        color: #1C2B35;
+        line-height: 1;
+    }
+
+    .stat-chip-label {
+        font-size: 11px;
+        color: #9CA3AF;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    /* ── Main table card ── */
+    .sitin-card {
+        margin: 0 32px 32px;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E8E3DD;
+    }
+
+    /* Card toolbar */
+    .sitin-card-toolbar {
+        padding: 14px 20px;
+        border-bottom: 1px solid #F3F0EC;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: #FAFAF9;
+    }
+
+    .sitin-card-toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .label-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #059669;
+    }
+
+    .sitin-toolbar-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+    }
+
+    .sitin-search-wrap {
+        position: relative;
+    }
+
+    .sitin-search-wrap svg {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        width: 13px;
+        height: 13px;
+        pointer-events: none;
+    }
+
+    .sitin-search-wrap input {
+        padding: 8px 12px 8px 30px;
+        border: 1.5px solid #E2DDD8;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        color: #1C2B35;
+        outline: none;
+        width: 180px;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s;
+    }
+
+    .sitin-search-wrap input:focus {
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+    }
+
+    .sitin-entries-select {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: #6B7280;
+    }
+
+    .sitin-entries-select select {
+        padding: 5px 8px;
+        border: 1.5px solid #E2DDD8;
+        border-radius: 7px;
+        background: #fff;
+        font-size: 11px;
+        color: #374151;
+        outline: none;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+    }
+
+    /* ── Table ── */
+    table.sitin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .sitin-table thead tr {
+        background: #F7F5F2;
+        border-bottom: 2px solid #EDE9E4;
+    }
+
+    .sitin-table th {
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 9.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+        white-space: nowrap;
+    }
+
+    .sitin-table tbody tr {
+        border-bottom: 1px solid #F7F5F2;
+        transition: background 0.1s;
+    }
+
+    .sitin-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .sitin-table tbody tr:hover {
+        background: #FAFAF8;
+    }
+
+    .sitin-table td {
+        padding: 13px 16px;
+        vertical-align: middle;
+    }
+
+    /* ── Sit ID ── */
+    .sit-id {
+        font-family: monospace;
+        font-size: 11px;
+        color: #9CA3AF;
+        background: #F3F0EC;
+        padding: 3px 7px;
+        border-radius: 5px;
+    }
+
+    /* ── Name cell ── */
+    .name-cell {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .name-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: #F1E194;
+        flex-shrink: 0;
+    }
+
+    .name-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1C2B35;
+        white-space: nowrap;
+    }
+
+    .id-text {
+        font-size: 11px;
+        color: #9CA3AF;
+    }
+
+    /* ── Purpose tag ── */
+    .purpose-tag {
+        display: inline-flex;
+        padding: 4px 9px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        white-space: nowrap;
+    }
+
+    /* ── Lab tag ── */
+    .lab-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 9px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #1C2B35;
+        color: #F1E194;
+        white-space: nowrap;
+    }
+
+    /* ── Time in ── */
+    .time-cell {
+        font-size: 12px;
+        color: #4B5563;
+        font-weight: 500;
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Status badge ── */
+    .status-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 7px;
+        font-size: 10px;
+        font-weight: 700;
+        background: #ECFDF5;
+        color: #059669;
+        border: 1px solid #A7F3D0;
+        white-space: nowrap;
+    }
+
+    /* ── Logout button ── */
+    .btn-logout {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 13px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #FFF1F2;
+        color: #BE123C;
+        border: 1.5px solid #FECDD3;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: background 0.15s, border-color 0.15s, transform 0.1s;
+        white-space: nowrap;
+    }
+
+    .btn-logout:hover {
+        background: #DC2626;
+        border-color: #DC2626;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    /* ── Empty state ── */
+    .sitin-empty {
+        padding: 72px 24px;
+        text-align: center;
+    }
+
+    .sitin-empty-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #F3F0EC, #E8E3DD);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 14px;
+    }
+
+    /* Footer */
+    .sitin-card-footer {
+        padding: 12px 20px;
+        border-top: 1px solid #F3F0EC;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #9CA3AF;
+        background: #FAFAF9;
+    }
+</style>
+
+<div class="sitin-page">
+
+    <!-- Header -->
+    <div class="sitin-header">
+        <div class="sitin-header-left">
+            <h1>Current Sit-in</h1>
+            <p>Live view of students active in the laboratory</p>
+        </div>
+        <div class="live-pill">
+            <span class="live-dot"></span>
+            Live Session
+        </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-        <!-- Table toolbar -->
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
-            <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
-                    style="background:#F0FDF4; color:#059669;">
-                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                    Live
-                </span>
-                <span class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">Active Sessions</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2">
-                    <label class="text-xs text-gray-500">Show</label>
-                    <select id="entriesPerPage"
-                        class="border border-gray-200 rounded-lg px-2 py-1 text-xs text-gray-600 focus:outline-none">
+    <!-- Table card -->
+    <div class="sitin-card">
+
+        <div class="sitin-card-toolbar">
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                <div class="sitin-card-toolbar-left">
+                    <div class="label-dot"></div>
+                    <span class="sitin-toolbar-title">Active Sessions</span>
+                </div>
+                <div class="sitin-entries-select">
+                    <span>Show</span>
+                    <select id="entriesPerPage">
                         <option>10</option>
                         <option>25</option>
                         <option>50</option>
                     </select>
-                    <label class="text-xs text-gray-500">entries</label>
+                    <span>entries</span>
                 </div>
-                <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Search..."
-                        class="border border-gray-200 rounded-lg pl-8 pr-3 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#273F4F] w-40">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="size-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2">
-                        <path fill-rule="evenodd"
-                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
+            </div>
+            <div class="sitin-search-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search sessions...">
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm">
+        <div style="overflow-x:auto;">
+            <table class="sitin-table">
                 <thead>
-                    <tr class="bg-gray-50 border-b border-gray-100">
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Sit ID
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">ID
-                            Number</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Name
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Course
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                            Purpose</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Lab
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                            Session</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Time
-                            In</th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">Status
-                        </th>
-                        <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                            Actions</th>
+                    <tr>
+                        <th>Sit ID</th>
+                        <th>Student</th>
+                        <th>ID Number</th>
+                        <th>Course</th>
+                        <th>Purpose</th>
+                        <th>Lab</th>
+                        <th>Session</th>
+                        <th>Time In</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50" id="sitinBody">
+                <tbody id="sitinBody">
                     <% if (typeof sessions !=='undefined' && sessions && sessions.length> 0) { %>
                         <% sessions.forEach(function(s) { %>
-                            <tr class="hover:bg-gray-50 transition-colors sitin-row">
-                                <td class="px-4 py-3 font-mono text-xs text-gray-500">#<%= s.id %>
-                                </td>
-                                <td class="px-4 py-3 font-medium text-gray-700">
-                                    <%= s.id_number %>
-                                </td>
-                                <td class="px-4 py-3 text-gray-700">
-                                    <%= s.last_name %>, <%= s.first_name %>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span
-                                        class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
-                                        <%= s.course %>
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-gray-600 text-xs">
-                                    <%= s.purpose || '—' %>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span
-                                        class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-[#273F4F]/10 text-[#273F4F]">
-                                        <%= s.lab_room %>
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3 text-center font-bold text-[#5B0E14]">
-                                    <%= s.remaining_sessions ?? 30 %>
-                                </td>
-                                <td class="px-4 py-3 text-xs text-gray-600">
-                                    <%= s.time_in ? new Date(s.time_in).toLocaleTimeString('en-US', {hour:'2-digit',
-                                        minute:'2-digit'}) : '—' %>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <span
-                                        class="inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
-                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                                        Active
-                                    </span>
-                                </td>
-                                <td class="px-4 py-3">
-                                    <form action="/admin/sitin/<%= s.id %>/end" method="POST"
-                                        onsubmit="return confirm('Log out this student?')">
-                                        <button type="submit"
-                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5 cursor-pointer"
-                                            style="background: linear-gradient(135deg, #DC2626, #B91C1C);">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                fill="currentColor" class="size-3">
+                            <% var initials=(s.first_name ? s.first_name[0] : '' ) + (s.last_name ? s.last_name[0] : ''
+                                ); %>
+                                <tr class="sitin-row">
+                                    <td><span class="sit-id">#<%= s.id %></span></td>
+                                    <td>
+                                        <div class="name-cell">
+                                            <div class="name-avatar">
+                                                <%= initials.toUpperCase() %>
+                                            </div>
+                                            <div>
+                                                <div class="name-text">
+                                                    <%= s.last_name %>, <%= s.first_name %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="id-text"
+                                            style="font-family:monospace;font-size:12px;color:#4B5563;">
+                                            <%= s.id_number %>
+                                        </span></td>
+                                    <td>
+                                        <span
+                                            style="display:inline-flex;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;">
+                                            <%= s.course %>
+                                        </span>
+                                    </td>
+                                    <td><span class="purpose-tag">
+                                            <%= s.purpose || '—' %>
+                                        </span></td>
+                                    <td><span class="lab-tag">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                fill="currentColor" width="10" height="10">
                                                 <path fill-rule="evenodd"
-                                                    d="M2 4.75A2.75 2.75 0 0 1 4.75 2h3a2.75 2.75 0 0 1 2.75 2.75v.5a.75.75 0 0 1-1.5 0v-.5c0-.69-.56-1.25-1.25-1.25h-3c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h3c.69 0 1.25-.56 1.25-1.25v-.5a.75.75 0 0 1 1.5 0v.5A2.75 2.75 0 0 1 7.75 14h-3A2.75 2.75 0 0 1 2 11.25v-6.5Zm9.47.47a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 1 1-1.06-1.06l.97-.97H5.75a.75.75 0 0 1 0-1.5h6.69l-.97-.97a.75.75 0 0 1 0-1.06Z"
+                                                    d="M5 2a1 1 0 0 0-1 1v7.5a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 .5-.5V5.621a1 1 0 0 0-.293-.707l-2.328-2.328A1 1 0 0 0 7.672 2H5Z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            Log Out
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                            <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="10" class="px-4 py-16 text-center">
-                                            <div class="flex flex-col items-center gap-3">
-                                                <div
-                                                    class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                        fill="currentColor" class="size-7 text-gray-300">
-                                                        <path fill-rule="evenodd"
-                                                            d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
+                                            <%= s.lab_room %>
+                                        </span></td>
+                                    <td>
+                                        <span
+                                            style="font-size:13px;font-weight:700;color:<%= (s.remaining_sessions ?? 30) > 10 ? '#059669' : '#DC2626' %>;">
+                                            <%= s.remaining_sessions ?? 30 %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="time-cell">
+                                            <%= s.time_in ? new Date(s.time_in).toLocaleTimeString('en-US',
+                                                {hour:'2-digit', minute:'2-digit'}) : '—' %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="status-active">
+                                            <span
+                                                style="width:5px;height:5px;background:#10B981;border-radius:50%;animation:livePulse 1.5s ease-in-out infinite;"></span>
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form action="/admin/sitin/<%= s.id %>/end" method="POST"
+                                            onsubmit="return confirm('Log out this student from the lab?')">
+                                            <button type="submit" class="btn-logout">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                    fill="currentColor" width="11" height="11">
+                                                    <path fill-rule="evenodd"
+                                                        d="M2 3.75A1.75 1.75 0 0 1 3.75 2h4a1.75 1.75 0 0 1 1.75 1.75v.5a.75.75 0 0 1-1.5 0v-.5a.25.25 0 0 0-.25-.25h-4a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h4a.25.25 0 0 0 .25-.25v-.5a.75.75 0 0 1 1.5 0v.5A1.75 1.75 0 0 1 7.75 12h-4A1.75 1.75 0 0 1 2 10.25v-6.5Zm9.22.97a.75.75 0 0 1 1.06 0l1.75 1.75a.75.75 0 0 1 0 1.06l-1.75 1.75a.75.75 0 1 1-1.06-1.06l.47-.47H5.75a.75.75 0 0 1 0-1.5h5.69l-.47-.47a.75.75 0 0 1 0-1.06Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                Log Out
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="10">
+                                                <div class="sitin-empty">
+                                                    <div class="sitin-empty-icon">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                            fill="#C4BDB6" width="28" height="28">
+                                                            <path fill-rule="evenodd"
+                                                                d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </div>
+                                                    <p
+                                                        style="font-size:15px;font-weight:700;color:#4B5563;margin:0 0 4px;">
+                                                        No active sessions</p>
+                                                    <p style="font-size:12px;color:#9CA3AF;margin:0;">Students will
+                                                        appear here once they sit in</p>
                                                 </div>
-                                                <p class="text-sm text-gray-400 font-medium">No active sit-in sessions
-                                                </p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <% } %>
+                                            </td>
+                                        </tr>
+                                        <% } %>
                 </tbody>
             </table>
         </div>
 
-        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-            <span>Showing <%= sessions ? sessions.length : 0 %> active entries</span>
+        <div class="sitin-card-footer">
+            <span>Showing <strong id="countDisplay">
+                    <%= sessions ? sessions.length : 0 %>
+                </strong> active entries</span>
+            <span style="font-size:11px;color:#C4BDB6;">Auto-refreshes when you navigate back</span>
         </div>
     </div>
 </div>
 
 <script>
+
+    // Search
     document.getElementById('searchInput').addEventListener('input', function () {
         const q = this.value.toLowerCase();
+        let count = 0;
         document.querySelectorAll('.sitin-row').forEach(row => {
-            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+            const show = row.textContent.toLowerCase().includes(q);
+            row.style.display = show ? '' : 'none';
+            if (show) count++;
         });
+        document.getElementById('countDisplay').textContent = count;
     });
 </script>
