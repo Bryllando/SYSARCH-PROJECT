@@ -7,7 +7,6 @@
         min-height: 100%;
     }
 
-    /* ── Header band ── */
     .stud-header {
         background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
         padding: 28px 32px 24px;
@@ -73,7 +72,6 @@
         letter-spacing: 0.04em;
     }
 
-    /* ── Toolbar ── */
     .stud-toolbar {
         padding: 20px 32px;
         display: flex;
@@ -160,7 +158,6 @@
         transform: translateY(-1px);
     }
 
-    /* ── Table container ── */
     .stud-table-wrap {
         padding: 0 32px 32px;
         background: #F0EDE8;
@@ -214,7 +211,6 @@
         vertical-align: middle;
     }
 
-    /* ── Cell components ── */
     .cell-avatar {
         display: flex;
         align-items: center;
@@ -280,7 +276,6 @@
         color: #4B5563;
     }
 
-    /* Session bar */
     .session-bar-wrap {
         display: flex;
         flex-direction: column;
@@ -328,7 +323,6 @@
         background: linear-gradient(90deg, #DC2626, #F87171);
     }
 
-    /* Actions */
     .cell-actions {
         display: flex;
         align-items: center;
@@ -377,32 +371,11 @@
         transform: translateY(-1px);
     }
 
-    .btn-edit-s {
-        display: inline-flex;
-        align-items: center;
-        padding: 6px 10px;
-        border-radius: 7px;
-        font-size: 11px;
-        font-weight: 700;
-        background: #F3F0EC;
-        color: #374151;
-        border: none;
-        cursor: pointer;
-        font-family: 'DM Sans', sans-serif;
-        transition: background 0.15s;
-    }
-
-    .btn-edit-s:hover {
-        background: #E8E3DD;
-    }
-
-    /* Empty state */
     .stud-empty {
         padding: 64px 24px;
         text-align: center;
     }
 
-    /* Footer */
     .stud-table-footer {
         padding: 14px 20px;
         border-top: 1px solid #F3F0EC;
@@ -412,36 +385,6 @@
         font-size: 11px;
         color: #9CA3AF;
         background: #FAFAF9;
-    }
-
-    /* Pagination dots */
-    .stud-pagination {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .pg-btn {
-        width: 28px;
-        height: 28px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 7px;
-        border: 1px solid #E8E3DD;
-        background: #fff;
-        font-size: 11px;
-        font-weight: 600;
-        color: #6B7280;
-        cursor: pointer;
-        transition: all 0.12s;
-    }
-
-    .pg-btn:hover,
-    .pg-btn.active {
-        background: #1C2B35;
-        border-color: #1C2B35;
-        color: #fff;
     }
 </style>
 
@@ -462,8 +405,7 @@
 
     <!-- Toolbar -->
     <div class="stud-toolbar">
-        <div class="flex items-center gap-3" style="display:flex;align-items:center;gap:12px;">
-            <!-- Show entries -->
+        <div style="display:flex;align-items:center;gap:12px;">
             <div class="stud-entries">
                 <span>Show</span>
                 <select id="entriesSelect">
@@ -475,18 +417,21 @@
                 <span>entries</span>
             </div>
 
-            <!-- Reset Sessions -->
-            <button class="btn-reset-sessions" onclick="return confirm('Reset ALL student sessions to 30?')">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
-                    <path fill-rule="evenodd"
-                        d="M13.836 2.477a.75.75 0 0 1 .75.75v3.182a.75.75 0 0 1-.75.75h-3.182a.75.75 0 0 1 0-1.5h1.37l-.84-.841a4.5 4.5 0 0 0-7.08.932.75.75 0 0 1-1.3-.75 6 6 0 0 1 9.44-1.242l.842.84V3.227a.75.75 0 0 1 .75-.75Zm-.911 7.5A.75.75 0 0 1 13.199 11a6 6 0 0 1-9.44 1.241l-.84-.84v1.371a.75.75 0 0 1-1.5 0V9.591a.75.75 0 0 1 .75-.75H5.35a.75.75 0 0 1 0 1.5H3.98l.841.841a4.5 4.5 0 0 0 7.08-.932.75.75 0 0 1 1.025-.273Z"
-                        clip-rule="evenodd" />
-                </svg>
-                Reset All Sessions
-            </button>
+            <!-- Reset Sessions — POST form so it hits the correct route -->
+            <form action="/admin/students/reset-sessions" method="POST" style="margin:0;"
+                onsubmit="return confirm('Reset ALL student sessions to 30?')">
+                <button type="submit" class="btn-reset-sessions">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12"
+                        height="12">
+                        <path fill-rule="evenodd"
+                            d="M13.836 2.477a.75.75 0 0 1 .75.75v3.182a.75.75 0 0 1-.75.75h-3.182a.75.75 0 0 1 0-1.5h1.37l-.84-.841a4.5 4.5 0 0 0-7.08.932.75.75 0 0 1-1.3-.75 6 6 0 0 1 9.44-1.242l.842.84V3.227a.75.75 0 0 1 .75-.75Zm-.911 7.5A.75.75 0 0 1 13.199 11a6 6 0 0 1-9.44 1.241l-.84-.84v1.371a.75.75 0 0 1-1.5 0V9.591a.75.75 0 0 1 .75-.75H5.35a.75.75 0 0 1 0 1.5H3.98l.841.841a4.5 4.5 0 0 0 7.08-.932.75.75 0 0 1 1.025-.273Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Reset All Sessions
+                </button>
+            </form>
         </div>
 
-        <!-- Search -->
         <div class="stud-search-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd"
@@ -514,105 +459,106 @@
                     </thead>
                     <tbody id="studentBody">
                         <% if (students && students.length> 0) { %>
-                            <% students.forEach(function(s) { %>
-                                <% var sessions=s.remaining_sessions ?? 30; var pct=Math.round((sessions / 30) * 100);
-                                    var barClass=pct> 60 ? 'high' : pct > 30 ? 'mid' : 'low';
-                                    var initials = (s.first_name ? s.first_name[0] : '') + (s.last_name ? s.last_name[0]
-                                    : '');
-                                    %>
-                                    <tr class="stud-row">
-                                        <td>
-                                            <div class="cell-avatar">
-                                                <div class="cell-avatar-img">
-                                                    <% if (s.profile_picture && s.profile_picture !=='' ) { %>
-                                                        <img src="<%= s.profile_picture %>" alt="">
-                                                        <% } else { %>
-                                                            <%= initials.toUpperCase() %>
-                                                                <% } %>
+                            <% students.forEach(function(s) { var sessions=s.remaining_sessions ?? 30; var
+                                pct=Math.round((sessions / 30) * 100); var barClass=pct> 60 ? 'high' : pct > 30 ? 'mid'
+                                : 'low';
+                                var initials = (s.first_name ? s.first_name[0] : '') + (s.last_name ? s.last_name[0] :
+                                '');
+                                var mi = s.middle_initial ? ' ' + s.middle_initial + '.' : '';
+                                var fullName = s.last_name + ', ' + s.first_name + mi;
+                                %>
+                                <tr class="stud-row">
+                                    <td>
+                                        <div class="cell-avatar">
+                                            <div class="cell-avatar-img">
+                                                <% if (s.profile_picture && s.profile_picture !=='' ) { %>
+                                                    <img src="<%= s.profile_picture %>" alt="">
+                                                    <% } else { %>
+                                                        <%= initials.toUpperCase() %>
+                                                            <% } %>
+                                            </div>
+                                            <div>
+                                                <div class="cell-name">
+                                                    <%= s.last_name %>, <%= s.first_name %>
+                                                            <%= mi %>
                                                 </div>
-                                                <div>
-                                                    <div class="cell-name">
-                                                        <%= s.last_name %>, <%= s.first_name %>
-                                                                <%= s.middle_initial ? ' ' + s.middle_initial + '.' : ''
-                                                                    %>
-                                                    </div>
-                                                    <div class="cell-id">
-                                                        <%= s.email %>
-                                                    </div>
+                                                <div class="cell-id">
+                                                    <%= s.email %>
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <span
-                                                style="font-family:monospace;font-size:12px;color:#4B5563;background:#F3F0EC;padding:3px 8px;border-radius:5px;">
-                                                <%= s.id_number %>
-                                            </span>
-                                        </td>
-                                        <td><span class="cell-course">
-                                                <%= s.course %>
-                                            </span></td>
-                                        <td><span class="cell-year">
-                                                <%= s.year_level %>
-                                            </span></td>
-                                        <td>
-                                            <div class="session-bar-wrap">
-                                                <div class="session-bar-row">
-                                                    <span class="session-count">
-                                                        <%= sessions %>
-                                                    </span>
-                                                    <div class="session-bar">
-                                                        <div class="session-bar-fill <%= barClass %>"
-                                                            style="width:<%= Math.min(pct, 100) %>%"></div>
-                                                    </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span
+                                            style="font-family:monospace;font-size:12px;color:#4B5563;background:#F3F0EC;padding:3px 8px;border-radius:5px;">
+                                            <%= s.id_number %>
+                                        </span>
+                                    </td>
+                                    <td><span class="cell-course">
+                                            <%= s.course %>
+                                        </span></td>
+                                    <td><span class="cell-year">
+                                            <%= s.year_level %>
+                                        </span></td>
+                                    <td>
+                                        <div class="session-bar-wrap">
+                                            <div class="session-bar-row">
+                                                <span class="session-count">
+                                                    <%= sessions %>
+                                                </span>
+                                                <div class="session-bar">
+                                                    <div class="session-bar-fill <%= barClass %>"
+                                                        style="width:<%= Math.min(pct,100) %>%"></div>
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td>
-                                            <div class="cell-actions">
-                                                <a href="/admin/students/<%= s.id %>" class="btn-view">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
-                                                        fill="currentColor" width="11" height="11">
-                                                        <path d="M7 9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-                                                        <path fill-rule="evenodd"
-                                                            d="M.664 6.897a.875.875 0 0 0 0 .206A7.003 7.003 0 0 0 13.336 7.1a.875.875 0 0 0 0-.206A7.003 7.003 0 0 0 .664 6.897ZM7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                    View
-                                                </a>
-                                                <button class="btn-sitin"
-                                                    onclick="openSitinModal('<%= s.id %>', '<%= s.id_number %>', '<%= s.last_name %>, <%= s.first_name %><%= s.middle_initial ? " " + s.middle_initial + "
-                                                    ." : "" %>', '<%= sessions %>')">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
-                                                            fill="currentColor" width="11" height="11">
-                                                            <path
-                                                                d="M7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM10.735 13c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="cell-actions">
+                                            <a href="/admin/students/<%= s.id %>" class="btn-view">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                    fill="currentColor" width="11" height="11">
+                                                    <path d="M7 9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+                                                    <path fill-rule="evenodd"
+                                                        d="M.664 6.897a.875.875 0 0 0 0 .206A7.003 7.003 0 0 0 13.336 7.1a.875.875 0 0 0 0-.206A7.003 7.003 0 0 0 .664 6.897ZM7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                View
+                                            </a>
+                                            <button class="btn-sitin" data-id="<%= s.id %>"
+                                                data-idnumber="<%= s.id_number %>" data-name='<%= fullName %>'
+                                                data-sessions="<%= sessions %>"
+                                                onclick="openSitinModal(this.dataset.id, this.dataset.idnumber, this.dataset.name, this.dataset.sessions)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                    fill="currentColor" width="11" height="11">
+                                                    <path
+                                                        d="M7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM10.735 13c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                                                </svg>
+                                                Sit-in
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="6">
+                                                <div class="stud-empty">
+                                                    <div
+                                                        style="width:56px;height:56px;border-radius:50%;background:#F3F0EC;display:flex;align-items:center;justify-content:margin:0 auto 12px;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                            fill="#D1CBC4" width="28" height="28">
+                                                            <path fill-rule="evenodd"
+                                                                d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
+                                                                clip-rule="evenodd" />
                                                         </svg>
-                                                        Sit-in
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                                        <% } else { %>
-                                            <tr>
-                                                <td colspan="6">
-                                                    <div class="stud-empty">
-                                                        <div
-                                                            style="width:56px;height:56px;border-radius:50%;background:#F3F0EC;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="#D1CBC4" width="28" height="28">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
-                                                                    clip-rule="evenodd" />
-                                                            </svg>
-                                                        </div>
-                                                        <p
-                                                            style="font-size:14px;font-weight:600;color:#9CA3AF;margin:0;">
-                                                            No students registered yet</p>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                            <% } %>
+                                                    <p style="font-size:14px;font-weight:600;color:#9CA3AF;margin:0;">No
+                                                        students registered yet</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% } %>
                     </tbody>
                 </table>
             </div>
@@ -621,7 +567,6 @@
                 <span id="showingCount">Showing <strong>
                         <%= students ? students.length : 0 %>
                     </strong> entries</span>
-                <div class="stud-pagination" id="pagination"></div>
             </div>
         </div>
     </div>
@@ -634,7 +579,6 @@
     <div
         style="position:relative;background:#fff;border-radius:20px;box-shadow:0 24px 60px rgba(28,43,53,0.25);width:100%;max-width:420px;margin:0 16px;overflow:hidden;font-family:'DM Sans',sans-serif;">
 
-        <!-- Modal header -->
         <div
             style="background:linear-gradient(135deg,#1C2B35,#273F4F);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:10px;">
@@ -646,15 +590,13 @@
                             clip-rule="evenodd" />
                     </svg>
                 </div>
-                <span
-                    style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:0.01em;">Sit-in
+                <span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;">Sit-in
                     Registration</span>
             </div>
             <button onclick="closeSitinModal()"
                 style="width:28px;height:28px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:7px;color:rgba(255,255,255,0.6);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">✕</button>
         </div>
 
-        <!-- Student info strip -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #F3F0EC;">
             <div style="padding:14px 20px;border-right:1px solid #F3F0EC;">
                 <div
@@ -676,15 +618,15 @@
             </div>
         </div>
 
-        <!-- Form -->
         <form action="/admin/sitin/start" method="POST" style="padding:20px 24px 0;">
             <input type="hidden" name="user_id" id="mUserId">
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
                 <div>
                     <label
-                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">Purpose
-                        <span style="color:#DC2626;">*</span></label>
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">
+                        Purpose <span style="color:#DC2626;">*</span>
+                    </label>
                     <div style="position:relative;">
                         <select name="purpose" required
                             style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;font-family:'DM Sans',sans-serif;cursor:pointer;">
@@ -709,8 +651,9 @@
                 </div>
                 <div>
                     <label
-                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">Laboratory
-                        <span style="color:#DC2626;">*</span></label>
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">
+                        Laboratory <span style="color:#DC2626;">*</span>
+                    </label>
                     <div style="position:relative;">
                         <select name="lab_room" required
                             style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;font-family:'DM Sans',sans-serif;cursor:pointer;">
@@ -734,9 +677,9 @@
 
             <div style="display:flex;gap:10px;padding:16px 0 20px;">
                 <button type="button" onclick="closeSitinModal()"
-                    style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;">Cancel</button>
+                    style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
                 <button type="submit"
-                    style="flex:2;padding:11px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity 0.15s;">Confirm
+                    style="flex:2;padding:11px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Confirm
                     Sit-in</button>
             </div>
         </form>
@@ -749,25 +692,24 @@
         document.getElementById('mIdNumber').textContent = idNumber;
         document.getElementById('mName').textContent = name;
         document.getElementById('mSessions').textContent = sessions + ' sessions';
-        const m = document.getElementById('sitinModal');
+        var m = document.getElementById('sitinModal');
         m.style.display = 'flex';
     }
     function closeSitinModal() {
         document.getElementById('sitinModal').style.display = 'none';
     }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSitinModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSitinModal(); });
 
-    // Search
     document.getElementById('studentSearch').addEventListener('input', function () {
-        const q = this.value.toLowerCase();
-        document.querySelectorAll('.stud-row').forEach(row => {
+        var q = this.value.toLowerCase();
+        document.querySelectorAll('.stud-row').forEach(function (row) {
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
         updateCount();
     });
 
     function updateCount() {
-        const visible = document.querySelectorAll('.stud-row:not([style*="none"])').length;
-        document.getElementById('showingCount').innerHTML = `Showing <strong>${visible}</strong> entries`;
+        var visible = document.querySelectorAll('.stud-row:not([style*="none"])').length;
+        document.getElementById('showingCount').innerHTML = 'Showing <strong>' + visible + '</strong> entries';
     }
 </script>

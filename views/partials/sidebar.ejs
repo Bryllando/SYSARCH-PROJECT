@@ -15,7 +15,6 @@
         width: 56px;
     }
 
-    /* Hide text labels when collapsed */
     #sidebar.collapsed .sidebar-text {
         opacity: 0;
         width: 0;
@@ -23,7 +22,6 @@
         pointer-events: none;
     }
 
-    /* Centre icons when collapsed */
     #sidebar.collapsed .sidebar-link {
         justify-content: center;
         padding-left: 0;
@@ -46,14 +44,6 @@
         padding-right: 0;
     }
 
-    /* Hide toggle label when collapsed */
-    #sidebar.collapsed #toggleLabel {
-        opacity: 0;
-        width: 0;
-        overflow: hidden;
-        pointer-events: none;
-    }
-
     .sidebar-text {
         transition: opacity 0.2s ease, width 0.2s ease;
         white-space: nowrap;
@@ -71,6 +61,12 @@
         color: rgba(255, 255, 255, 0.75);
         text-decoration: none;
         transition: background 0.15s, color 0.15s;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+        font-family: inherit;
     }
 
     .sidebar-link:hover {
@@ -83,7 +79,6 @@
         color: #F1E194;
     }
 
-    /* Toggle button — lives inside the sidebar header, flush with the top */
     #sidebarHeader {
         display: flex;
         align-items: center;
@@ -149,18 +144,15 @@
 
 <aside id="sidebar">
 
-    <!-- Sidebar header with inline toggle button -->
     <div id="sidebarHeader">
         <span class="header-label">Navigation</span>
         <button id="sidebarToggle" aria-label="Toggle sidebar" title="Toggle sidebar">
-            <!-- Collapse arrow (shown when expanded) -->
             <svg id="iconCollapse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                 style="width:14px;height:14px;color:rgba(255,255,255,0.7);">
                 <path fill-rule="evenodd"
                     d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
                     clip-rule="evenodd" />
             </svg>
-            <!-- Expand arrow (shown when collapsed) -->
             <svg id="iconExpand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                 style="width:14px;height:14px;color:rgba(255,255,255,0.7);display:none;">
                 <path fill-rule="evenodd"
@@ -170,7 +162,6 @@
         </button>
     </div>
 
-    <!-- Nav Links -->
     <nav id="sidebarNav"
         style="flex:1; padding:0.75rem 0.5rem; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
 
@@ -219,6 +210,7 @@
 
             <% } else if (locals.user && user.role==='admin' ) { %>
 
+                <!-- Home -->
                 <a href="/admin" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -230,7 +222,8 @@
                     <span class="sidebar-text">Home</span>
                 </a>
 
-                <a href="/admin/search" class="sidebar-link">
+                <!-- Search — always navigates to /admin/search (no modal interception here) -->
+                <a href="/admin/search" class="sidebar-link" id="sidebarSearchLink">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
                         <path fill-rule="evenodd"
@@ -240,6 +233,7 @@
                     <span class="sidebar-text">Search</span>
                 </a>
 
+                <!-- Students -->
                 <a href="/admin/students" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -251,6 +245,7 @@
                     <span class="sidebar-text">Students</span>
                 </a>
 
+                <!-- Sit-in -->
                 <a href="/admin/sitin" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -261,17 +256,7 @@
                     <span class="sidebar-text">Sit-in</span>
                 </a>
 
-                <a href="/admin/students" class="sidebar-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                        style="width:20px;height:20px;flex-shrink:0;">
-                        <path
-                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a1.875 1.875 0 0 1-1.875-1.875V5.25A3.75 3.75 0 0 0 9 1.5H5.625Z" />
-                        <path
-                            d="M12.971 1.816A5.23 5.23 0 0 1 14.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 0 1 3.434 1.279 9.768 9.768 0 0 0-6.963-6.963Z" />
-                    </svg>
-                    <span class="sidebar-text">Student Records</span>
-                </a>
-
+                <!-- Sit-in Reports -->
                 <a href="/admin/reports" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -282,6 +267,7 @@
                     <span class="sidebar-text">Sit-in Reports</span>
                 </a>
 
+                <!-- Feedback Reports -->
                 <a href="/admin/feedback" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -292,6 +278,7 @@
                     <span class="sidebar-text">Feedback Reports</span>
                 </a>
 
+                <!-- Reservation -->
                 <a href="/admin/reservations" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -345,9 +332,28 @@
         document.querySelectorAll('.sidebar-link').forEach(link => {
             const href = link.getAttribute('href');
             if (!href) return;
+            // Exact match OR prefix match (but avoid /admin matching /admin/students etc. too broadly)
             const exact = path === href;
-            const prefix = href !== '/' && href.length > 1 && path.startsWith(href);
+            const prefix = href !== '/admin' && href.length > 1 && path.startsWith(href);
             if (exact || prefix) link.classList.add('active');
+            // Special case: /admin home exact only
+            if (href === '/admin' && path === '/admin') link.classList.add('active');
         });
+
+        /*
+         * Search sidebar link behaviour:
+         * - On the /admin (home) page: intercept and open the search modal
+         * - On any OTHER admin page: navigate normally to /admin/search
+         */
+        const searchLink = document.getElementById('sidebarSearchLink');
+        if (searchLink) {
+            searchLink.addEventListener('click', function (e) {
+                if (window.location.pathname === '/admin' && typeof openSearchModal === 'function') {
+                    e.preventDefault();
+                    openSearchModal();
+                }
+                // Otherwise let the default href navigation happen
+            });
+        }
     })();
 </script>

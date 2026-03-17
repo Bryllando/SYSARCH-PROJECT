@@ -3,8 +3,6 @@ const router = express.Router();
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 const db = require('../database/database');
 
-// Layout is set globally in server.js — do NOT set it here.
-
 // Admin Home
 router.get('/', isAuthenticated, isAdmin, (req, res) => {
     db.get(`SELECT COUNT(*) as total FROM users WHERE role='user'`, (err, row) => {
@@ -62,14 +60,14 @@ router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
     });
 });
 
-// Students list
+// Students list — renders student.ejs
 router.get('/students', isAuthenticated, isAdmin, (req, res) => {
     db.all(`SELECT * FROM users WHERE role='user' ORDER BY last_name`, (err, students) => {
         res.render('pages/admin-students', { students: students || [] });
     });
 });
 
-// Student record
+// Student record (individual) — renders admin-student-record.ejs
 router.get('/students/:id', isAuthenticated, isAdmin, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.params.id], (err, student) => {
         db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`,
@@ -120,6 +118,13 @@ router.get('/reservations', isAuthenticated, isAdmin, (req, res) => {
          FROM reservations r JOIN users u ON r.user_id = u.id ORDER BY r.date DESC`,
         (err, reservations) => res.render('pages/admin-reservations', { reservations: reservations || [] })
     );
+});
+
+// Reset all sessions
+router.post('/students/reset-sessions', isAuthenticated, isAdmin, (req, res) => {
+    db.run(`UPDATE users SET remaining_sessions = 30 WHERE role = 'user'`, () => {
+        res.redirect('/admin/students');
+    });
 });
 
 module.exports = router;
