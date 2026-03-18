@@ -140,6 +140,40 @@
         background: rgba(220, 38, 38, 0.25);
         color: rgba(255, 255, 255, 0.85);
     }
+
+    /* ── Sidebar modals (shared overlay style) ── */
+    .sidebar-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+
+    .sidebar-modal-overlay.open {
+        display: flex;
+    }
+
+    .sidebar-modal-overlay.open .sidebar-modal-card {
+        animation: sidebarModalIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes sidebarModalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.94) translateY(8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
 </style>
 
 <aside id="sidebar">
@@ -222,7 +256,7 @@
                     <span class="sidebar-text">Home</span>
                 </a>
 
-                <!-- Search — always navigates to /admin/search (no modal interception here) -->
+                <!-- Search — always opens modal via JS below -->
                 <a href="/admin/search" class="sidebar-link" id="sidebarSearchLink">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -307,53 +341,293 @@
 
 </aside>
 
-<script>
-    (function () {
-        const sidebar = document.getElementById('sidebar');
-        const iconCollapse = document.getElementById('iconCollapse');
-        const iconExpand = document.getElementById('iconExpand');
+<!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR SEARCH MODAL  — available on ALL admin pages
+     ═══════════════════════════════════════════════════════════ -->
+<% if (locals.user && user.role==='admin' ) { %>
+    <div id="sidebarSearchModal" class="sidebar-modal-overlay"
+        onclick="if(event.target===this) closeSidebarSearchModal()">
+        <div class="sidebar-modal-card"
+            style="background:#fff;border-radius:16px;box-shadow:0 20px 60px -10px rgba(0,0,0,0.25),0 0 0 1px rgba(0,0,0,0.06);width:100%;max-width:380px;overflow:hidden;">
 
-        function applyState(collapsed) {
-            sidebar.classList.toggle('collapsed', collapsed);
-            iconCollapse.style.display = collapsed ? 'none' : 'block';
-            iconExpand.style.display = collapsed ? 'block' : 'none';
-        }
+            <div
+                style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f1f5f9;">
+                <div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#1e293b;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16"
+                        height="16" style="color:#273F4F;">
+                        <path fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Search Student
+                </div>
+                <button onclick="closeSidebarSearchModal()"
+                    style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid #e2e8f0;background:transparent;color:#94a3b8;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.15s;">✕</button>
+            </div>
 
-        applyState(localStorage.getItem('sidebarCollapsed') === 'true');
+            <div style="padding:20px;display:flex;flex-direction:column;gap:12px;">
+                <div style="position:relative;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="15"
+                        height="15"
+                        style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none;">
+                        <path fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <input type="text" id="sidebarSearchInput" placeholder="Enter student ID number..."
+                        onkeydown="if(event.key==='Enter') runSidebarSearch()" autocomplete="off"
+                        style="width:100%;padding:10px 12px 10px 38px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13.5px;color:#1e293b;background:#f8fafc;outline:none;transition:all 0.15s;box-sizing:border-box;"
+                        onfocus="this.style.borderColor='#273F4F';this.style.background='#fff';this.style.boxShadow='0 0 0 3px rgba(39,63,79,0.08)'"
+                        onblur="this.style.borderColor='#e2e8f0';this.style.background='#f8fafc';this.style.boxShadow='none'">
+                </div>
 
-        document.getElementById('sidebarToggle').addEventListener('click', () => {
-            const willCollapse = !sidebar.classList.contains('collapsed');
-            applyState(willCollapse);
-            localStorage.setItem('sidebarCollapsed', String(willCollapse));
-        });
+                <div id="sidebarSearchError"
+                    style="display:none;align-items:center;gap:6px;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:12px;font-weight:500;color:#dc2626;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
+                        height="13">
+                        <path fill-rule="evenodd"
+                            d="M6.701 2.25c.577-1 2.02-1 2.598 0l5.196 9a1.5 1.5 0 0 1-1.299 2.25H2.804a1.5 1.5 0 0 1-1.3-2.25l5.197-9ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 1 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    No student found with that ID. Please try again.
+                </div>
+            </div>
 
-        /* Highlight active link based on current path */
-        const path = window.location.pathname;
-        document.querySelectorAll('.sidebar-link').forEach(link => {
-            const href = link.getAttribute('href');
-            if (!href) return;
-            // Exact match OR prefix match (but avoid /admin matching /admin/students etc. too broadly)
-            const exact = path === href;
-            const prefix = href !== '/admin' && href.length > 1 && path.startsWith(href);
-            if (exact || prefix) link.classList.add('active');
-            // Special case: /admin home exact only
-            if (href === '/admin' && path === '/admin') link.classList.add('active');
-        });
+            <div style="display:flex;justify-content:flex-end;padding:0 20px 20px;">
+                <button onclick="runSidebarSearch()"
+                    style="display:inline-flex;align-items:center;gap:6px;padding:9px 20px;background:#273F4F;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.01em;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
+                        height="13">
+                        <path fill-rule="evenodd"
+                            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
 
-        /*
-         * Search sidebar link behaviour:
-         * - On the /admin (home) page: intercept and open the search modal
-         * - On any OTHER admin page: navigate normally to /admin/search
-         */
-        const searchLink = document.getElementById('sidebarSearchLink');
-        if (searchLink) {
-            searchLink.addEventListener('click', function (e) {
-                if (window.location.pathname === '/admin' && typeof openSearchModal === 'function') {
-                    e.preventDefault();
-                    openSearchModal();
+    <!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR SIT-IN MODAL  — shown after a successful search
+     ═══════════════════════════════════════════════════════════ -->
+    <div id="sidebarSitinModal" class="sidebar-modal-overlay"
+        onclick="if(event.target===this) closeSidebarSitinModal()">
+        <div class="sidebar-modal-card"
+            style="background:#fff;border-radius:18px;box-shadow:0 24px 64px -12px rgba(0,0,0,0.28),0 0 0 1px rgba(0,0,0,0.06);width:100%;max-width:480px;overflow:hidden;">
+
+            <div
+                style="padding:18px 24px;background:linear-gradient(135deg,#5B0E14 0%,#3A0910 100%);display:flex;align-items:center;justify-content:space-between;">
+                <div
+                    style="display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:#fff;letter-spacing:0.01em;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="17"
+                        height="17">
+                        <path fill-rule="evenodd"
+                            d="M4.5 2A1.5 1.5 0 0 0 3 3.5v13A1.5 1.5 0 0 0 4.5 18h11a1.5 1.5 0 0 0 1.5-1.5V7.621a1.5 1.5 0 0 0-.44-1.06l-4.12-4.122A1.5 1.5 0 0 0 11.378 2H4.5Zm2.25 8.5a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Zm0 3a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Sit In Form
+                </div>
+                <button onclick="closeSidebarSitinModal()"
+                    style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.15s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14"
+                        height="14">
+                        <path
+                            d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+                    </svg>
+                </button>
+            </div>
+
+            <form action="/admin/sitin/start" method="POST">
+                <input type="hidden" name="user_id" id="sidebarSitinUserId">
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #F3F0EC;">
+                    <div style="padding:14px 20px;border-right:1px solid #F3F0EC;">
+                        <div
+                            style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:4px;">
+                            ID Number</div>
+                        <div id="sidebarSitinIdNumber"
+                            style="font-size:14px;font-weight:700;color:#1C2B35;font-family:monospace;"></div>
+                    </div>
+                    <div style="padding:14px 20px;background:#FFF9F0;">
+                        <div
+                            style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:4px;">
+                            Sessions Left</div>
+                        <div id="sidebarSitinSessions" style="font-size:14px;font-weight:800;color:#5B0E14;"></div>
+                    </div>
+                    <div style="padding:14px 20px;grid-column:span 2;border-top:1px solid #F3F0EC;">
+                        <div
+                            style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#94a3b8;margin-bottom:4px;">
+                            Student Name</div>
+                        <div id="sidebarSitinName" style="font-size:14px;font-weight:700;color:#1C2B35;"></div>
+                    </div>
+                </div>
+
+                <div
+                    style="padding:20px 24px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                    <div>
+                        <label
+                            style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">
+                            Purpose <span style="color:#DC2626;">*</span>
+                        </label>
+                        <div style="position:relative;">
+                            <select name="purpose" required
+                                style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;cursor:pointer;">
+                                <option value="" disabled selected>Select...</option>
+                                <option>C Programming</option>
+                                <option>Java Programming</option>
+                                <option>C# Programming</option>
+                                <option>ASP.Net</option>
+                                <option>PHP Programming</option>
+                                <option>Database</option>
+                                <option>Research</option>
+                                <option>Other</option>
+                            </select>
+                            <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9CA3AF;"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                                height="12">
+                                <path fill-rule="evenodd"
+                                    d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">
+                            Laboratory <span style="color:#DC2626;">*</span>
+                        </label>
+                        <div style="position:relative;">
+                            <select name="lab_room" required
+                                style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;cursor:pointer;">
+                                <option value="" disabled selected>Select...</option>
+                                <option value="524">Lab 524</option>
+                                <option value="526">Lab 526</option>
+                                <option value="528">Lab 528</option>
+                                <option value="530">Lab 530</option>
+                                <option value="Mac Lab">Mac Lab</option>
+                            </select>
+                            <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9CA3AF;"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                                height="12">
+                                <path fill-rule="evenodd"
+                                    d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;padding:0 24px 22px;">
+                    <button type="button" onclick="closeSidebarSitinModal()"
+                        style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+                    <button type="submit"
+                        style="flex:2;padding:11px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Confirm
+                        Sit-in</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <% } %>
+
+        <script>
+            (function () {
+                const sidebar = document.getElementById('sidebar');
+                const iconCollapse = document.getElementById('iconCollapse');
+                const iconExpand = document.getElementById('iconExpand');
+
+                function applyState(collapsed) {
+                    sidebar.classList.toggle('collapsed', collapsed);
+                    iconCollapse.style.display = collapsed ? 'none' : 'block';
+                    iconExpand.style.display = collapsed ? 'block' : 'none';
                 }
-                // Otherwise let the default href navigation happen
+
+                applyState(localStorage.getItem('sidebarCollapsed') === 'true');
+
+                document.getElementById('sidebarToggle').addEventListener('click', () => {
+                    const willCollapse = !sidebar.classList.contains('collapsed');
+                    applyState(willCollapse);
+                    localStorage.setItem('sidebarCollapsed', String(willCollapse));
+                });
+
+                /* Highlight active link based on current path */
+                const path = window.location.pathname;
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (!href) return;
+                    const exact = path === href;
+                    const prefix = href !== '/admin' && href.length > 1 && path.startsWith(href);
+                    if (exact || prefix) link.classList.add('active');
+                    if (href === '/admin' && path === '/admin') link.classList.add('active');
+                });
+
+                /* Search link — always intercept and open the sidebar search modal */
+                const searchLink = document.getElementById('sidebarSearchLink');
+                if (searchLink) {
+                    searchLink.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        openSidebarSearchModal();
+                    });
+                }
+            })();
+
+            /* ── Sidebar Search Modal functions ── */
+            function openSidebarSearchModal() {
+                document.getElementById('sidebarSearchModal').classList.add('open');
+                setTimeout(() => document.getElementById('sidebarSearchInput').focus(), 120);
+            }
+
+            function closeSidebarSearchModal() {
+                document.getElementById('sidebarSearchModal').classList.remove('open');
+                document.getElementById('sidebarSearchInput').value = '';
+                var errEl = document.getElementById('sidebarSearchError');
+                if (errEl) errEl.style.display = 'none';
+            }
+
+            async function runSidebarSearch() {
+                var q = document.getElementById('sidebarSearchInput').value.trim();
+                if (!q) return;
+
+                var errEl = document.getElementById('sidebarSearchError');
+                errEl.style.display = 'none';
+
+                try {
+                    var res = await fetch('/admin/search-student?q=' + encodeURIComponent(q));
+                    var data = await res.json();
+
+                    if (!data || data.error) {
+                        errEl.style.display = 'flex';
+                        return;
+                    }
+
+                    var name = data.last_name + ', ' + data.first_name +
+                        (data.middle_initial ? ' ' + data.middle_initial + '.' : '');
+                    var sessions = (data.remaining_sessions ?? 30) + ' sessions';
+
+                    closeSidebarSearchModal();
+                    setTimeout(function () {
+                        openSidebarSitinModal(data.id, data.id_number, name, sessions);
+                    }, 150);
+                } catch (e) {
+                    errEl.style.display = 'flex';
+                }
+            }
+
+            function openSidebarSitinModal(id, idNumber, name, sessions) {
+                document.getElementById('sidebarSitinUserId').value = id;
+                document.getElementById('sidebarSitinIdNumber').textContent = idNumber;
+                document.getElementById('sidebarSitinName').textContent = name;
+                document.getElementById('sidebarSitinSessions').textContent = sessions;
+                document.getElementById('sidebarSitinModal').classList.add('open');
+            }
+
+            function closeSidebarSitinModal() {
+                document.getElementById('sidebarSitinModal').classList.remove('open');
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key !== 'Escape') return;
+                closeSidebarSearchModal();
+                closeSidebarSitinModal();
             });
-        }
-    })();
-</script>
+        </script>

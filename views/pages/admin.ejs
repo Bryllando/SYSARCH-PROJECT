@@ -724,15 +724,15 @@
         }
     }
 
-    // ── Sidebar Search link → open modal ────────────────────
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('a[href="/admin/search"]').forEach(link => {
-            link.addEventListener('click', e => {
-                e.preventDefault();
-                openSearchModal();
-            });
-        });
-    });
+    // // ── Sidebar Search link → open modal ────────────────────
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     document.querySelectorAll('a[href="/admin/search"]').forEach(link => {
+    //         link.addEventListener('click', e => {
+    //             e.preventDefault();
+    //             openSearchModal();
+    //         });
+    //     });
+    // });
 
     // ── ESC key closes open modal ────────────────────────────
     document.addEventListener('keydown', e => {
