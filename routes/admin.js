@@ -47,16 +47,22 @@ router.get('/search', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// Start sit-in
+// Start sit-in — uses datetime('now','localtime') so stored time matches the server's local clock
 router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
     const { user_id, purpose, lab_room } = req.body;
     db.get(`SELECT * FROM sitin_sessions WHERE user_id = ? AND status = 'active'`, [user_id], (err, existing) => {
         if (existing) return res.redirect('/admin/sitin');
-        db.run(`UPDATE users SET remaining_sessions = remaining_sessions - 1 WHERE id = ? AND remaining_sessions > 0`,
+        db.run(
+            `UPDATE users SET remaining_sessions = remaining_sessions - 1 WHERE id = ? AND remaining_sessions > 0`,
             [user_id], () => {
-                db.run(`INSERT INTO sitin_sessions (user_id, purpose, lab_room) VALUES (?, ?, ?)`,
-                    [user_id, purpose, lab_room], () => res.redirect('/admin/sitin'));
-            });
+                db.run(
+                    `INSERT INTO sitin_sessions (user_id, purpose, lab_room, time_in)
+                     VALUES (?, ?, ?, datetime('now','localtime'))`,
+                    [user_id, purpose, lab_room],
+                    () => res.redirect('/admin/sitin')
+                );
+            }
+        );
     });
 });
 
@@ -87,10 +93,13 @@ router.get('/sitin', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// End sit-in
+// End sit-in — also use localtime for time_out
 router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
-    db.run(`UPDATE sitin_sessions SET time_out = CURRENT_TIMESTAMP, status = 'done' WHERE id = ?`,
-        [req.params.id], () => res.redirect('/admin/sitin'));
+    db.run(
+        `UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'done' WHERE id = ?`,
+        [req.params.id],
+        () => res.redirect('/admin/sitin')
+    );
 });
 
 // Reports

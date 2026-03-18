@@ -21,7 +21,7 @@ db.serialize(() => {
         remaining_sessions INTEGER DEFAULT 30,
         address TEXT DEFAULT '',
         profile_picture TEXT DEFAULT '',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 
     // Migration: add address and profile_picture columns if they don't exist yet
@@ -33,7 +33,7 @@ db.serialize(() => {
         user_id INTEGER NOT NULL,
         lab_room TEXT,
         purpose TEXT,
-        time_in DATETIME DEFAULT CURRENT_TIMESTAMP,
+        time_in DATETIME DEFAULT (datetime('now','localtime')),
         time_out DATETIME,
         status TEXT DEFAULT 'active',
         FOREIGN KEY (user_id) REFERENCES users(id)
@@ -47,7 +47,7 @@ db.serialize(() => {
         time_slot TEXT NOT NULL,
         purpose TEXT,
         status TEXT DEFAULT 'pending',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT (datetime('now','localtime')),
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
 
@@ -57,7 +57,7 @@ db.serialize(() => {
         session_id INTEGER,
         message TEXT NOT NULL,
         rating INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT (datetime('now','localtime')),
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
 
@@ -66,7 +66,7 @@ db.serialize(() => {
         user_id INTEGER NOT NULL,
         message TEXT NOT NULL,
         is_read INTEGER DEFAULT 0,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        created_at DATETIME DEFAULT (datetime('now','localtime')),
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
 
@@ -74,7 +74,7 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         admin_id INTEGER,
         message TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 });
 
