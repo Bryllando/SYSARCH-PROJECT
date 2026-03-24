@@ -1,70 +1,105 @@
-<div class="min-h-screen bg-[#F0EDE8] font-['DM_Sans']">
-
-    <div class="relative overflow-hidden bg-gradient-to-br from-[#1C2B35] to-[#273F4F] px-8 py-7 md:py-8">
-        <div class="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-[#F1E194]/10"></div>
-
-        <div class="relative z-10 flex flex-wrap items-end justify-between gap-4">
-            <div>
-                <h1 class="font-['Syne'] text-3xl font-extrabold tracking-tight text-white">Reservations</h1>
-                <p class="text-xs text-white/50">Manage and approve student laboratory reservation requests</p>
-            </div>
-        </div>
-    </div>
+<div class="min-h-screen bg-gray-50">
 
     <% var pending=reservations.filter(r=> r.status === 'pending').length;
         var approved = reservations.filter(r => r.status === 'approved').length;
         var rejected = reservations.filter(r => r.status === 'rejected').length;
         %>
-        <div class="flex flex-wrap gap-3 bg-[#F0EDE8] px-8 py-4">
-            <div
-                class="flex min-w-[120px] flex-1 items-center gap-4 rounded-xl border border-[#E8E3DD] bg-white p-4 shadow-sm">
+
+        <!-- ── Header ── -->
+        <div class="relative overflow-hidden px-8 py-7" style="background: linear-gradient(135deg, #1C2B35, #273F4F);">
+            <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full opacity-10 bg-white"></div>
+            <div class="absolute -left-6 -bottom-8 w-32 h-32 rounded-full opacity-5 bg-white"></div>
+            <div class="relative z-10 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                    <div class="font-['Syne'] text-2xl font-extrabold text-[#D97706]">
-                        <%= pending %>
-                    </div>
-                    <div class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Pending</div>
-                </div>
-            </div>
-            <div
-                class="flex min-w-[120px] flex-1 items-center gap-4 rounded-xl border border-[#E8E3DD] bg-white p-4 shadow-sm">
-                <div>
-                    <div class="font-['Syne'] text-2xl font-extrabold text-[#059669]">
-                        <%= approved %>
-                    </div>
-                    <div class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Approved</div>
-                </div>
-            </div>
-            <div
-                class="flex min-w-[120px] flex-1 items-center gap-4 rounded-xl border border-[#E8E3DD] bg-white p-4 shadow-sm">
-                <div>
-                    <div class="font-['Syne'] text-2xl font-extrabold text-[#DC2626]">
-                        <%= rejected %>
-                    </div>
-                    <div class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Rejected</div>
-                </div>
-            </div>
-            <div
-                class="flex min-w-[120px] flex-1 items-center gap-4 rounded-xl border border-[#E8E3DD] bg-white p-4 shadow-sm border-l-4 border-l-[#1C2B35]">
-                <div>
-                    <div class="font-['Syne'] text-2xl font-extrabold text-[#1C2B35]">
-                        <%= reservations.length %>
-                    </div>
-                    <div class="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Total</div>
+                    <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color: rgba(241,225,148,0.7);">
+                        Admin Panel</p>
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Reservations</h1>
+                    <p class="text-sm mt-1" style="color: rgba(255,255,255,0.5);">Manage and approve student laboratory
+                        reservation requests</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#E2DDD8] bg-[#F0EDE8] px-8 py-4">
-            <div class="flex items-center gap-3">
+        <!-- ── Stats ── -->
+        <div class="flex flex-wrap gap-3 px-8 py-4 bg-gray-50 border-b border-gray-200">
+            <div
+                class="flex flex-1 min-w-28 items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 bg-amber-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#D97706" class="size-5">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-extrabold" style="color:#D97706;">
+                        <%= pending %>
+                    </p>
+                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Pending</p>
+                </div>
+            </div>
+            <div
+                class="flex flex-1 min-w-28 items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 bg-green-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" class="size-5">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-extrabold text-green-600">
+                        <%= approved %>
+                    </p>
+                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Approved</p>
+                </div>
+            </div>
+            <div
+                class="flex flex-1 min-w-28 items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 bg-red-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#DC2626" class="size-5">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-extrabold text-red-600">
+                        <%= rejected %>
+                    </p>
+                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Rejected</p>
+                </div>
+            </div>
+            <div class="flex flex-1 min-w-28 items-center gap-3 bg-white rounded-xl border-l-4 border border-gray-100 shadow-sm p-4"
+                style="border-left-color: #273F4F;">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:#E8EFF4;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#273F4F" class="size-5">
+                        <path fill-rule="evenodd"
+                            d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-extrabold" style="color:#273F4F;">
+                        <%= reservations.length %>
+                    </p>
+                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Toolbar ── -->
+        <div class="flex flex-wrap items-center justify-between gap-3 px-8 py-4 bg-gray-50 border-b border-gray-200">
+            <div class="flex items-center gap-2 flex-wrap">
                 <select id="statusFilter"
-                    class="cursor-pointer rounded-lg border-1.5 border-[#D6D0CA] bg-white px-3 py-1.5 text-xs font-medium text-gray-700 outline-none focus:border-[#273F4F]">
+                    class="cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 outline-none">
                     <option value="">All Status</option>
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
                     <option value="rejected">Rejected</option>
                 </select>
                 <select id="labFilter"
-                    class="cursor-pointer rounded-lg border-1.5 border-[#D6D0CA] bg-white px-3 py-1.5 text-xs font-medium text-gray-700 outline-none focus:border-[#273F4F]">
+                    class="cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 outline-none">
                     <option value="">All Labs</option>
                     <option value="524">Lab 524</option>
                     <option value="526">Lab 526</option>
@@ -73,131 +108,157 @@
                     <option value="Mac Lab">Mac Lab</option>
                 </select>
             </div>
-
-            <div class="relative w-full sm:w-auto">
-                <svg class="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400"
+            <div class="relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-gray-400"
                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd"
                         d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
                         clip-rule="evenodd" />
                 </svg>
                 <input type="text" id="searchInput" placeholder="Search reservations..."
-                    class="w-full rounded-xl border-1.5 border-[#D6D0CA] bg-white py-2 pl-9 pr-4 text-xs text-[#1C2B35] outline-none transition-all focus:border-[#273F4F] focus:ring-4 focus:ring-[#273F4F]/10 sm:w-64">
+                    class="rounded-xl border border-gray-300 bg-white py-2 pl-9 pr-4 text-xs text-gray-700 outline-none w-56 focus:border-gray-500">
             </div>
         </div>
 
-        <div class="px-8 pb-8 pt-0">
-            <div class="overflow-hidden rounded-2xl border border-[#E8E3DD] bg-white shadow-lg shadow-[#273F4F]/5">
+        <!-- ── Table ── -->
+        <div class="px-8 pb-8 pt-4">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="border-b-2 border-[#E8E3DD] bg-[#F7F5F2]">
-                            <tr>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 border-b-2 border-gray-100">
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
                                     Student</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">ID
-                                    Number</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
+                                    ID Number</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
                                     Course</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Lab
-                                </th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
+                                    Lab</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
                                     Purpose</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Date
-                                </th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">Time
-                                    Slot</th>
-                                <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
+                                    Date</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
+                                    Time Slot</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
                                     Status</th>
                                 <th
-                                    class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-500 text-center">
+                                    class="px-4 py-3 text-center text-xs font-bold uppercase tracking-widest text-gray-500">
                                     Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="resBody" class="divide-y divide-[#F3F0EC]">
+                        <tbody id="resBody" class="divide-y divide-gray-50">
                             <% if (reservations && reservations.length> 0) { %>
                                 <% reservations.forEach(function(r) { var initials=(r.first_name ? r.first_name[0] : ''
                                     ) + (r.last_name ? r.last_name[0] : '' ); %>
-                                    <tr class="res-row transition-colors hover:bg-[#FAF9F7]"
-                                        data-status="<%= r.status %>" data-lab="<%= r.lab_room %>">
+                                    <tr class="res-row hover:bg-gray-50 transition-colors" data-status="<%= r.status %>"
+                                        data-lab="<%= r.lab_room %>">
+
+                                        <!-- Student -->
                                         <td class="px-4 py-4">
                                             <div class="flex items-center gap-2.5">
-                                                <div
-                                                    class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#273F4F] to-[#5B0E14] text-[11px] font-bold text-[#F1E194]">
+                                                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
+                                                    style="background: linear-gradient(135deg,#273F4F,#5B0E14); color:#F1E194;">
                                                     <%= initials.toUpperCase() %>
                                                 </div>
-                                                <div class="whitespace-nowrap text-[13px] font-semibold text-[#1C2B35]">
+                                                <span class="whitespace-nowrap text-xs font-semibold text-gray-800">
                                                     <%= r.last_name %>, <%= r.first_name %>
-                                                </div>
+                                                </span>
                                             </div>
                                         </td>
+
+                                        <!-- ID -->
                                         <td class="px-4 py-4">
                                             <span
-                                                class="rounded-md bg-[#F3F0EC] px-2 py-1 font-mono text-[11px] text-gray-600">
+                                                class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600">
                                                 <%= r.id_number %>
                                             </span>
                                         </td>
+
+                                        <!-- Course -->
                                         <td class="px-4 py-4">
                                             <span
-                                                class="rounded-md bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-700">
+                                                class="rounded-md bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700">
                                                 <%= r.course %>
                                             </span>
                                         </td>
+
+                                        <!-- Lab -->
                                         <td class="px-4 py-4">
-                                            <span
-                                                class="rounded-md bg-[#1C2B35] px-2 py-1 text-[11px] font-bold text-[#F1E194]">
+                                            <span class="rounded-md px-2 py-1 text-xs font-bold"
+                                                style="background:#1C2B35; color:#F1E194;">
                                                 <%= r.lab_room %>
                                             </span>
                                         </td>
+
+                                        <!-- Purpose -->
                                         <td class="px-4 py-4 text-xs text-gray-600">
                                             <%= r.purpose || '—' %>
                                         </td>
-                                        <td class="px-4 py-4 text-xs whitespace-nowrap text-gray-600">
+
+                                        <!-- Date -->
+                                        <td class="px-4 py-4 text-xs text-gray-600 whitespace-nowrap">
                                             <%= r.date %>
                                         </td>
-                                        <td class="px-4 py-4 text-[11px] whitespace-nowrap text-gray-400">
+
+                                        <!-- Time Slot -->
+                                        <td class="px-4 py-4 text-xs text-gray-400 whitespace-nowrap">
                                             <%= r.time_slot %>
                                         </td>
+
+                                        <!-- Status badge -->
                                         <td class="px-4 py-4">
                                             <% if (r.status==='approved' ) { %>
                                                 <span
-                                                    class="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-600">
-                                                    <span
-                                                        class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Approved
+                                                    class="inline-flex items-center gap-1.5 rounded-md border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Approved
                                                 </span>
                                                 <% } else if (r.status==='rejected' ) { %>
                                                     <span
-                                                        class="inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-2.5 py-1 text-[10px] font-bold text-red-600">
+                                                        class="inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-bold text-red-600">
                                                         <span
-                                                            class="h-1.5 w-1.5 rounded-full bg-red-500"></span>Rejected
+                                                            class="w-1.5 h-1.5 rounded-full bg-red-500"></span>Rejected
                                                     </span>
                                                     <% } else { %>
                                                         <span
-                                                            class="inline-flex items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold text-amber-600">
-                                                            <span
-                                                                class="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500"></span>Pending
+                                                            class="inline-flex items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-600">
+                                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"
+                                                                style="animation: pulse 1.5s infinite;"></span>Pending
                                                         </span>
                                                         <% } %>
                                         </td>
+
+                                        <!-- Actions -->
                                         <td class="px-4 py-4">
                                             <% if (r.status==='pending' ) { %>
                                                 <div class="flex items-center justify-center gap-2">
                                                     <form action="/admin/reservations/<%= r.id %>/approve" method="POST"
                                                         onsubmit="return confirm('Approve this reservation?')">
                                                         <button type="submit"
-                                                            class="flex items-center gap-1 rounded-md bg-gradient-to-br from-emerald-600 to-emerald-700 px-3 py-1.5 text-[11px] font-bold text-white transition-transform hover:scale-105 active:scale-95">
+                                                            class="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold text-white transition-all hover:-translate-y-0.5 cursor-pointer"
+                                                            style="background: linear-gradient(135deg,#059669,#047857);">
                                                             Approve
                                                         </button>
                                                     </form>
                                                     <form action="/admin/reservations/<%= r.id %>/reject" method="POST"
                                                         onsubmit="return confirm('Reject this reservation?')">
                                                         <button type="submit"
-                                                            class="rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-[11px] font-bold text-red-700 transition-colors hover:bg-red-600 hover:text-white active:scale-95">
+                                                            class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 transition-all hover:bg-red-600 hover:text-white cursor-pointer">
                                                             Reject
                                                         </button>
                                                     </form>
                                                 </div>
                                                 <% } else { %>
-                                                    <div class="text-center text-[11px] italic text-gray-300">Processed
+                                                    <div class="text-center text-xs italic text-gray-300">Processed
                                                     </div>
                                                     <% } %>
                                         </td>
@@ -206,65 +267,68 @@
                                         <% } else { %>
                                             <tr>
                                                 <td colspan="9" class="px-4 py-20 text-center">
-                                                    <div
-                                                        class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#F3F0EC] to-[#E8E3DD]">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                            fill="#C4BDB6" class="h-7 w-7">
-                                                            <path fill-rule="evenodd"
-                                                                d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
+                                                    <div class="flex flex-col items-center gap-3">
+                                                        <div
+                                                            class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                fill="currentColor" class="size-7 text-gray-300">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </div>
+                                                        <p class="text-sm font-semibold text-gray-400">No reservations
+                                                            yet</p>
+                                                        <p class="text-xs text-gray-300">Student reservation requests
+                                                            will appear here.</p>
                                                     </div>
-                                                    <p class="text-base font-bold text-gray-600">No reservations yet</p>
-                                                    <p class="text-xs text-gray-400">Student reservation requests will
-                                                        appear here.</p>
                                                 </td>
                                             </tr>
                                             <% } %>
                         </tbody>
                     </table>
                 </div>
-                <div class="flex items-center justify-between bg-gray-50 px-5 py-3 text-[11px] text-gray-400">
-                    <span>Showing <strong id="visibleCount" class="text-gray-600">
+
+                <!-- Footer -->
+                <div
+                    class="flex items-center justify-between bg-gray-50 border-t border-gray-100 px-5 py-3 text-xs text-gray-400">
+                    <span>
+                        Showing <strong id="visibleCount" class="text-gray-600">
                             <%= reservations.length %>
-                        </strong> of <strong>
+                        </strong>
+                        of <strong>
                             <%= reservations.length %>
-                        </strong> reservations</span>
+                        </strong> reservations
+                    </span>
                     <span>Students receive notifications on status change</span>
                 </div>
             </div>
         </div>
+
 </div>
 
 <script>
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const labFilter = document.getElementById('labFilter');
-    const visibleCount = document.getElementById('visibleCount');
+    const countEl = document.getElementById('visibleCount');
 
     function applyFilters() {
         const q = searchInput.value.toLowerCase();
         const status = statusFilter.value;
         const lab = labFilter.value;
-        let shown = 0;
+        let count = 0;
 
         document.querySelectorAll('.res-row').forEach(row => {
-            const text = row.textContent.toLowerCase();
-            const rowStatus = row.dataset.status;
-            const rowLab = row.dataset.lab;
-
-            const matchQ = text.includes(q);
-            const matchStatus = !status || rowStatus === status;
-            const matchLab = !lab || rowLab === lab;
-
-            if (matchQ && matchStatus && matchLab) {
-                row.style.display = '';
-                shown++;
-            } else {
-                row.style.display = 'none';
-            }
+            const matchQ = row.textContent.toLowerCase().includes(q);
+            const matchStatus = !status || row.dataset.status === status;
+            const matchLab = !lab || row.dataset.lab === lab;
+            const show = matchQ && matchStatus && matchLab;
+            row.style.display = show ? '' : 'none';
+            if (show) count++;
         });
-        visibleCount.textContent = shown;
+
+        countEl.textContent = count;
     }
 
     searchInput.addEventListener('input', applyFilters);
