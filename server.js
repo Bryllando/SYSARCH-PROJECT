@@ -30,19 +30,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('layout', 'layouts/main');   // global fallback (guest layout)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ─── Global middleware: expose user + choose layout ────────────────────────────
-// express-ejs-layouts reads res.locals.layout to decide which wrapper to use.
-//   No session  →  layouts/main      (public navbar, background image, no sidebar)
-//   Logged in   →  layouts/dashboard (dashboard navbar + sidebar, no public nav)
+// ─── Global middleware: expose user, toast, and choose layout ──────────────────
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     res.locals.layout = req.session.user ? 'layouts/dashboard' : 'layouts/main';
+
+    // Flash toast: read once then clear from session
+    res.locals.toast = req.session.toast || null;
+    if (req.session.toast) delete req.session.toast;
+
     next();
 });
 
 // ─── Public homepage ───────────────────────────────────────────────────────────
-// Guests  → pages/index.ejs  wrapped in  layouts/main   (landing page)
-// Members → redirect to their own dashboard immediately
 app.get('/', (req, res) => {
     if (req.session.user) {
         return req.session.user.role === 'admin'

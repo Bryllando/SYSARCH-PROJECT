@@ -4,7 +4,6 @@
 <head>
     <%- include('../partials/head') %>
         <style>
-            /* Ensure no background image bleeds into the dashboard from cached/guest styles */
             html,
             body {
                 background: #f3f4f6 !important;
@@ -28,6 +27,8 @@
             &copy; <%= new Date().getFullYear() %> University of Cebu — College of Computer Studies. All rights
                 reserved.
         </footer>
+
+        <%- include('../partials/toast') %>
 
 </body>
 

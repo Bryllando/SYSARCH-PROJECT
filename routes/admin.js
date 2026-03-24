@@ -47,33 +47,28 @@ router.get('/search', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// Start sit-in — uses datetime('now','localtime') so stored time matches the server's local clock
+// Start sit-in — does NOT deduct sessions here; deducted on logout instead
 router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
     const { user_id, purpose, lab_room } = req.body;
     db.get(`SELECT * FROM sitin_sessions WHERE user_id = ? AND status = 'active'`, [user_id], (err, existing) => {
         if (existing) return res.redirect('/admin/sitin');
         db.run(
-            `UPDATE users SET remaining_sessions = remaining_sessions - 1 WHERE id = ? AND remaining_sessions > 0`,
-            [user_id], () => {
-                db.run(
-                    `INSERT INTO sitin_sessions (user_id, purpose, lab_room, time_in)
-                     VALUES (?, ?, ?, datetime('now','localtime'))`,
-                    [user_id, purpose, lab_room],
-                    () => res.redirect('/admin/sitin')
-                );
-            }
+            `INSERT INTO sitin_sessions (user_id, purpose, lab_room, time_in)
+             VALUES (?, ?, ?, datetime('now','localtime'))`,
+            [user_id, purpose, lab_room],
+            () => res.redirect('/admin/sitin')
         );
     });
 });
 
-// Students list — renders student.ejs
+// Students list
 router.get('/students', isAuthenticated, isAdmin, (req, res) => {
     db.all(`SELECT * FROM users WHERE role='user' ORDER BY last_name`, (err, students) => {
         res.render('pages/admin-students', { students: students || [] });
     });
 });
 
-// Student record (individual) — renders admin-student-record.ejs
+// Student record (individual)
 router.get('/students/:id', isAuthenticated, isAdmin, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.params.id], (err, student) => {
         db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`,
@@ -83,7 +78,7 @@ router.get('/students/:id', isAuthenticated, isAdmin, (req, res) => {
     });
 });
 
-// Current sit-in
+// Current sit-in list
 router.get('/sitin', isAuthenticated, isAdmin, (req, res) => {
     db.all(
         `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, u.remaining_sessions
@@ -93,13 +88,28 @@ router.get('/sitin', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// End sit-in — also use localtime for time_out
+// End sit-in — deduct one session NOW (on logout)
 router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
-    db.run(
-        `UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'done' WHERE id = ?`,
-        [req.params.id],
-        () => res.redirect('/admin/sitin')
-    );
+    // First grab the user_id so we can deduct their session
+    db.get(`SELECT user_id FROM sitin_sessions WHERE id = ?`, [req.params.id], (err, row) => {
+        db.run(
+            `UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'done' WHERE id = ?`,
+            [req.params.id],
+            () => {
+                if (row && row.user_id) {
+                    // Deduct one session on logout
+                    db.run(
+                        `UPDATE users SET remaining_sessions = remaining_sessions - 1
+                         WHERE id = ? AND remaining_sessions > 0`,
+                        [row.user_id],
+                        () => res.redirect('/admin/sitin')
+                    );
+                } else {
+                    res.redirect('/admin/sitin');
+                }
+            }
+        );
+    });
 });
 
 // Reports

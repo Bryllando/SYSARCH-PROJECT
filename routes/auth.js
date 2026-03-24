@@ -3,8 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../database/database');
 
-// Layout is set globally in server.js — do NOT set it here.
-
 // GET Login
 router.get('/login', (req, res) => {
     if (req.session.user) {
@@ -44,6 +42,13 @@ router.post('/login', (req, res) => {
             address: user.address || '',
             profile_picture: user.profile_picture || ''
         };
+
+        // ── Flash toast for the next page ──────────────────────────────────────
+        req.session.toast = {
+            type: 'success',
+            message: 'Welcome back, ' + user.first_name + '! You are now logged in.'
+        };
+
         return user.role === 'admin'
             ? res.redirect('/admin')
             : res.redirect('/dashboard');
@@ -76,6 +81,13 @@ router.post('/register', async (req, res) => {
                         : 'Registration failed. Please try again.';
                     return res.render('pages/register', { messages: [{ type: 'error', text: msg }] });
                 }
+
+                // ── Flash toast for the login page ─────────────────────────────
+                req.session.toast = {
+                    type: 'success',
+                    message: 'Account created successfully! Please log in to continue.'
+                };
+
                 res.redirect('/login');
             }
         );
