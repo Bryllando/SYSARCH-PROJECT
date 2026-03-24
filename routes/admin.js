@@ -47,17 +47,36 @@ router.get('/search', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// Start sit-in — does NOT deduct sessions here; deducted on logout instead
+// ── Start sit-in ──────────────────────────────────────────────────────────────
+// Does NOT deduct sessions (deducted on logout).
+// Accepts hidden `return_to` field to redirect back to originating page.
 router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
-    const { user_id, purpose, lab_room } = req.body;
+    const { user_id, purpose, lab_room, return_to } = req.body;
+    const redirectTo = return_to || '/admin';
+
     db.get(`SELECT * FROM sitin_sessions WHERE user_id = ? AND status = 'active'`, [user_id], (err, existing) => {
-        if (existing) return res.redirect('/admin/sitin');
-        db.run(
-            `INSERT INTO sitin_sessions (user_id, purpose, lab_room, time_in)
-             VALUES (?, ?, ?, datetime('now','localtime'))`,
-            [user_id, purpose, lab_room],
-            () => res.redirect('/admin/sitin')
-        );
+        if (existing) {
+            req.session.toast = { type: 'error', message: 'This student already has an active sit-in session.' };
+            return res.redirect(redirectTo);
+        }
+        db.get(`SELECT first_name, last_name, remaining_sessions FROM users WHERE id = ?`, [user_id], (err2, student) => {
+            if (!student || student.remaining_sessions <= 0) {
+                req.session.toast = { type: 'error', message: 'Student has no remaining sessions left.' };
+                return res.redirect(redirectTo);
+            }
+            db.run(
+                `INSERT INTO sitin_sessions (user_id, purpose, lab_room, time_in)
+                 VALUES (?, ?, ?, datetime('now','localtime'))`,
+                [user_id, purpose, lab_room],
+                () => {
+                    req.session.toast = {
+                        type: 'success',
+                        message: `Sit-in started for ${student.first_name} ${student.last_name} in Lab ${lab_room}.`
+                    };
+                    res.redirect(redirectTo);
+                }
+            );
+        });
     });
 });
 
@@ -88,28 +107,45 @@ router.get('/sitin', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// End sit-in — deduct one session NOW (on logout)
+// ── End sit-in — deduct session on logout ─────────────────────────────────────
 router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
-    // First grab the user_id so we can deduct their session
-    db.get(`SELECT user_id FROM sitin_sessions WHERE id = ?`, [req.params.id], (err, row) => {
-        db.run(
-            `UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'done' WHERE id = ?`,
-            [req.params.id],
-            () => {
-                if (row && row.user_id) {
-                    // Deduct one session on logout
-                    db.run(
-                        `UPDATE users SET remaining_sessions = remaining_sessions - 1
-                         WHERE id = ? AND remaining_sessions > 0`,
-                        [row.user_id],
-                        () => res.redirect('/admin/sitin')
-                    );
-                } else {
-                    res.redirect('/admin/sitin');
+    db.get(
+        `SELECT s.user_id, u.first_name, u.last_name FROM sitin_sessions s
+         JOIN users u ON s.user_id = u.id WHERE s.id = ?`,
+        [req.params.id], (err, row) => {
+            db.run(
+                `UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'done' WHERE id = ?`,
+                [req.params.id],
+                () => {
+                    if (row && row.user_id) {
+                        db.run(
+                            `UPDATE users SET remaining_sessions = remaining_sessions - 1
+                             WHERE id = ? AND remaining_sessions > 0`,
+                            [row.user_id],
+                            () => {
+                                req.session.toast = {
+                                    type: 'success',
+                                    message: `${row.first_name} ${row.last_name} has been logged out of the lab.`
+                                };
+                                res.redirect('/admin/sitin');
+                            }
+                        );
+                    } else {
+                        res.redirect('/admin/sitin');
+                    }
                 }
-            }
-        );
-    });
+            );
+        });
+});
+
+// ── Sit-in History (all completed & active sessions) ──────────────────────────
+router.get('/history', isAuthenticated, isAdmin, (req, res) => {
+    db.all(
+        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, u.year_level
+         FROM sitin_sessions s JOIN users u ON s.user_id = u.id
+         ORDER BY s.time_in DESC`,
+        (err, sessions) => res.render('pages/admin-history', { sessions: sessions || [] })
+    );
 });
 
 // Reports
@@ -130,18 +166,53 @@ router.get('/feedback', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// Reservations
+// ── Reservations ──────────────────────────────────────────────────────────────
 router.get('/reservations', isAuthenticated, isAdmin, (req, res) => {
     db.all(
         `SELECT r.*, u.id_number, u.first_name, u.last_name, u.course
-         FROM reservations r JOIN users u ON r.user_id = u.id ORDER BY r.date DESC`,
+         FROM reservations r JOIN users u ON r.user_id = u.id ORDER BY r.date DESC, r.created_at DESC`,
         (err, reservations) => res.render('pages/admin-reservations', { reservations: reservations || [] })
     );
+});
+
+// Approve reservation
+router.post('/reservations/:id/approve', isAuthenticated, isAdmin, (req, res) => {
+    db.get(`SELECT r.*, u.id as uid FROM reservations r JOIN users u ON r.user_id = u.id WHERE r.id = ?`,
+        [req.params.id], (err, r) => {
+            db.run(`UPDATE reservations SET status = 'approved' WHERE id = ?`, [req.params.id], () => {
+                if (r) {
+                    db.run(
+                        `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
+                        [r.user_id, `Your reservation for Lab ${r.lab_room} on ${r.date} (${r.time_slot}) has been APPROVED.`]
+                    );
+                }
+                req.session.toast = { type: 'success', message: 'Reservation approved successfully.' };
+                res.redirect('/admin/reservations');
+            });
+        });
+});
+
+// Reject reservation
+router.post('/reservations/:id/reject', isAuthenticated, isAdmin, (req, res) => {
+    db.get(`SELECT r.*, u.id as uid FROM reservations r JOIN users u ON r.user_id = u.id WHERE r.id = ?`,
+        [req.params.id], (err, r) => {
+            db.run(`UPDATE reservations SET status = 'rejected' WHERE id = ?`, [req.params.id], () => {
+                if (r) {
+                    db.run(
+                        `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
+                        [r.user_id, `Your reservation for Lab ${r.lab_room} on ${r.date} (${r.time_slot}) has been REJECTED.`]
+                    );
+                }
+                req.session.toast = { type: 'error', message: 'Reservation has been rejected.' };
+                res.redirect('/admin/reservations');
+            });
+        });
 });
 
 // Reset all sessions
 router.post('/students/reset-sessions', isAuthenticated, isAdmin, (req, res) => {
     db.run(`UPDATE users SET remaining_sessions = 30 WHERE role = 'user'`, () => {
+        req.session.toast = { type: 'success', message: 'All student sessions have been reset to 30.' };
         res.redirect('/admin/students');
     });
 });

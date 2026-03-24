@@ -141,7 +141,8 @@
                                                         </svg>
                                                     </div>
                                                     <p class="text-sm text-gray-400 font-medium">No students found for "
-                                                        <%= query %>"</p>
+                                                        <%= query %>"
+                                                    </p>
                                                 </div>
                                             </td>
                                         </tr>
@@ -170,6 +171,7 @@
 
         <!-- Form — label left, value right (matches screenshot) -->
         <form action="/admin/sitin/start" method="POST" class="px-5 py-4 space-y-3">
+            <input type="hidden" name="return_to" value="/admin/search">
             <input type="hidden" name="user_id" id="sitinUserId">
 
             <div class="flex items-center gap-3">
