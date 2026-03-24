@@ -1,92 +1,614 @@
-<div class="min-h-screen bg-gray-50">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@700;800&display=swap');
 
-    <% var allSessions=(typeof sessions !=='undefined' && sessions) ? sessions : []; var
-        activeSessions=allSessions.filter(s=> s.status === 'active').length;
-        var doneSessions = allSessions.filter(s => s.status === 'done').length;
-        %>
+    .hist-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
 
-        <!-- ── Header ── -->
-        <div class="relative overflow-hidden px-8 py-7" style="background: linear-gradient(135deg, #1C2B35, #273F4F);">
-            <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full opacity-10 bg-white"></div>
-            <div class="absolute -left-6 -bottom-8 w-32 h-32 rounded-full opacity-5 bg-white"></div>
-            <div class="relative z-10 flex flex-wrap items-end justify-between gap-4">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color: rgba(241,225,148,0.7);">
-                        Admin Panel</p>
-                    <h1 class="text-3xl font-extrabold text-white tracking-tight">Sit-in History</h1>
-                    <p class="text-sm mt-1" style="color: rgba(255,255,255,0.5);">Complete log of all student laboratory
-                        sessions</p>
-                </div>
-                <span class="text-xs font-bold px-3 py-1.5 rounded-full border"
-                    style="background: rgba(241,225,148,0.12); color: #F1E194; border-color: rgba(241,225,148,0.25);">
-                    <%= allSessions.length %> total records
-                </span>
+    /* ── Header ── */
+    .hist-header {
+        background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
+        padding: 28px 32px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hist-header::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(241, 225, 148, 0.07);
+        pointer-events: none;
+    }
+
+    .hist-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: 15%;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: rgba(91, 14, 20, 0.15);
+        pointer-events: none;
+    }
+
+    .hist-header-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .hist-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+    }
+
+    .hist-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .hist-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(241, 225, 148, 0.7);
+        margin: 0 0 6px;
+    }
+
+    /* ── Stats ── */
+    .hist-stats {
+        display: flex;
+        gap: 12px;
+        padding: 16px 32px;
+        background: #F0EDE8;
+        flex-wrap: wrap;
+    }
+
+    .hist-stat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #E8E3DD;
+        flex: 1;
+        min-width: 120px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .hist-stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .hist-stat-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .hist-stat-label {
+        font-size: 11px;
+        color: #9CA3AF;
+        font-weight: 500;
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* ── Toolbar ── */
+    .hist-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 32px;
+        background: #F0EDE8;
+        border-bottom: 1px solid #E2DDD8;
+    }
+
+    .hist-filter-select {
+        padding: 8px 14px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 500;
+        color: #374151;
+        outline: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s;
+    }
+
+    .hist-filter-select:focus {
+        border-color: #273F4F;
+    }
+
+    .hist-search-wrap {
+        position: relative;
+    }
+
+    .hist-search-wrap svg {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        pointer-events: none;
+        width: 14px;
+        height: 14px;
+    }
+
+    .hist-search-wrap input {
+        padding: 8px 14px 8px 32px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        color: #1C2B35;
+        outline: none;
+        width: 200px;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .hist-search-wrap input:focus {
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+    }
+
+    /* ── Table card ── */
+    .hist-table-wrap {
+        padding: 0 32px 32px;
+        background: #F0EDE8;
+    }
+
+    .hist-table-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E8E3DD;
+    }
+
+    table.hist-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .hist-table thead tr {
+        background: #F7F5F2;
+        border-bottom: 2px solid #E8E3DD;
+    }
+
+    .hist-table th {
+        padding: 13px 16px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+        white-space: nowrap;
+    }
+
+    .hist-table tbody tr {
+        border-bottom: 1px solid #F3F0EC;
+        transition: background 0.12s;
+    }
+
+    .hist-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .hist-table tbody tr:hover {
+        background: #FAF9F7;
+    }
+
+    .hist-table td {
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    /* ── Badges ── */
+    .badge-purpose {
+        display: inline-flex;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        white-space: nowrap;
+    }
+
+    .badge-lab {
+        display: inline-flex;
+        padding: 4px 9px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #1C2B35;
+        color: #F1E194;
+        white-space: nowrap;
+    }
+
+    /* ── Status pills ── */
+    .pill-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #ECFDF5;
+        color: #065F46;
+        border: 1px solid #A7F3D0;
+        white-space: nowrap;
+    }
+
+    .pill-done {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #F3F4F6;
+        color: #6B7280;
+        border: 1px solid #E5E7EB;
+        white-space: nowrap;
+    }
+
+    @keyframes livePulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+    }
+
+    /* ── Feedback button ── */
+    .btn-feedback {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(135deg, #059669, #047857);
+        border: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s, transform 0.1s;
+        white-space: nowrap;
+    }
+
+    .btn-feedback:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+
+    /* ── Empty state ── */
+    .hist-empty {
+        padding: 72px 24px;
+        text-align: center;
+    }
+
+    .hist-table-footer {
+        padding: 12px 20px;
+        border-top: 1px solid #F3F0EC;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #9CA3AF;
+        background: #FAFAF9;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* ── Feedback Modal ── */
+    .feedback-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+
+    .feedback-overlay.open {
+        display: flex;
+    }
+
+    .feedback-overlay.open .feedback-card {
+        animation: fbModalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes fbModalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.92) translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .feedback-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 440px;
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .feedback-header {
+        background: linear-gradient(135deg, #5B0E14, #3A0910);
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .feedback-header-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .feedback-close {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        transition: all 0.15s;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .feedback-close:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+    }
+
+    .feedback-body {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .fb-label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6B7280;
+        margin-bottom: 8px;
+    }
+
+    /* ── Star rating ── */
+    .star-row {
+        display: flex;
+        gap: 4px;
+    }
+
+    .star-btn {
+        font-size: 32px;
+        color: #E5E7EB;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0 2px;
+        transition: color 0.1s, transform 0.1s;
+        line-height: 1;
+    }
+
+    .star-btn:hover,
+    .star-btn.active {
+        color: #F59E0B;
+        transform: scale(1.15);
+    }
+
+    .feedback-textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid #E5E7EB;
+        border-radius: 12px;
+        font-size: 13px;
+        color: #1C2B35;
+        background: #F9FAFB;
+        resize: vertical;
+        outline: none;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+        box-sizing: border-box;
+        min-height: 100px;
+    }
+
+    .feedback-textarea:focus {
+        border-color: #5B0E14;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(91, 14, 20, 0.08);
+    }
+
+    .feedback-footer {
+        display: flex;
+        gap: 10px;
+        padding: 0 24px 24px;
+    }
+
+    .btn-fb-submit {
+        flex: 2;
+        padding: 12px;
+        background: linear-gradient(135deg, #5B0E14, #7a131b);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-fb-submit:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .btn-fb-cancel {
+        flex: 1;
+        padding: 12px;
+        background: #F3F4F6;
+        color: #374151;
+        border: 1.5px solid #E5E7EB;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: background 0.15s;
+    }
+
+    .btn-fb-cancel:hover {
+        background: #E5E7EB;
+    }
+</style>
+
+<div class="hist-page">
+
+    <!-- Header -->
+    <div class="hist-header">
+        <div class="hist-header-inner">
+            <div>
+                <p class="hist-eyebrow">Student Portal</p>
+                <h1>Sit-in History</h1>
+                <p>Your complete laboratory session records</p>
             </div>
         </div>
+    </div>
 
-        <!-- ── Stats ── -->
-        <div class="flex flex-wrap gap-3 px-8 py-4 bg-gray-50 border-b border-gray-200">
-            <div
-                class="flex flex-1 min-w-28 items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                    style="background: linear-gradient(135deg,#EFF6FF,#DBEAFE);">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#1D4ED8" class="size-5">
+    <% var safeSessions=(typeof sessions !=='undefined' && sessions) ? sessions : []; var
+        doneSessions=safeSessions.filter(s=> s.status === 'done').length;
+        var activeSessions = safeSessions.filter(s => s.status === 'active').length;
+        %>
+
+        <!-- Stats -->
+        <div class="hist-stats">
+            <div class="hist-stat">
+                <div class="hist-stat-icon" style="background:#E8EFF4;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#273F4F" width="18" height="18">
                         <path fill-rule="evenodd"
                             d="M3 6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm4.5 7.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25a.75.75 0 0 1 .75-.75Zm3.75-1.5a.75.75 0 0 0-1.5 0v4.5a.75.75 0 0 0 1.5 0V12Zm2.25-3a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 13.5 9Z"
                             clip-rule="evenodd" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-2xl font-extrabold" style="color:#273F4F;">
-                        <%= allSessions.length %>
-                    </p>
-                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total</p>
+                    <div class="hist-stat-val" style="color:#273F4F;">
+                        <%= safeSessions.length %>
+                    </div>
+                    <div class="hist-stat-label">Total</div>
                 </div>
             </div>
-            <div
-                class="flex flex-1 min-w-28 items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                    style="background: linear-gradient(135deg,#ECFDF5,#D1FAE5);">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" class="size-5">
+            <div class="hist-stat">
+                <div class="hist-stat-icon" style="background:#ECFDF5;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" width="18" height="18">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
                             clip-rule="evenodd" />
                     </svg>
                 </div>
                 <div>
-                    <p class="text-2xl font-extrabold text-green-600">
+                    <div class="hist-stat-val" style="color:#059669;">
                         <%= doneSessions %>
-                    </p>
-                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Completed</p>
+                    </div>
+                    <div class="hist-stat-label">Completed</div>
                 </div>
             </div>
-            <div
-                class="flex flex-1 min-w-28 items-center gap-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                    style="background: linear-gradient(135deg,#ECFDF5,#DCFCE7);">
-                    <div class="w-2 h-2 rounded-full bg-green-500" style="animation: pulse 1.5s ease-in-out infinite;">
+            <div class="hist-stat">
+                <div class="hist-stat-icon" style="background:#ECFDF5;">
+                    <div
+                        style="width:10px;height:10px;border-radius:50%;background:#10B981;animation:livePulse 1.5s ease-in-out infinite;margin:auto;">
                     </div>
                 </div>
                 <div>
-                    <p class="text-2xl font-extrabold text-green-600">
+                    <div class="hist-stat-val" style="color:#10B981;">
                         <%= activeSessions %>
-                    </p>
-                    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active</p>
+                    </div>
+                    <div class="hist-stat-label">Active</div>
                 </div>
             </div>
         </div>
 
-        <!-- ── Toolbar ── -->
-        <div class="flex flex-wrap items-center justify-between gap-3 px-8 py-4 bg-gray-50 border-b border-gray-200">
-            <div class="flex items-center gap-2 flex-wrap">
-                <select id="statusFilter"
-                    class="cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 outline-none">
+        <!-- Toolbar -->
+        <div class="hist-toolbar">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <select id="statusFilter" class="hist-filter-select">
                     <option value="">All Status</option>
                     <option value="active">Active</option>
                     <option value="done">Completed</option>
                 </select>
-                <select id="labFilter"
-                    class="cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 outline-none">
+                <select id="labFilter" class="hist-filter-select">
                     <option value="">All Labs</option>
                     <option value="524">Lab 524</option>
                     <option value="526">Lab 526</option>
@@ -95,150 +617,151 @@
                     <option value="Mac Lab">Mac Lab</option>
                 </select>
             </div>
-            <div class="relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <div class="hist-search-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd"
                         d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
                         clip-rule="evenodd" />
                 </svg>
-                <input type="text" id="searchInput" placeholder="Search sessions..."
-                    class="rounded-xl border border-gray-300 bg-white py-2 pl-9 pr-4 text-xs text-gray-700 outline-none w-56 focus:border-gray-500">
+                <input type="text" id="searchInput" placeholder="Search sessions...">
             </div>
         </div>
 
-        <!-- ── Table ── -->
-        <div class="px-8 pb-8 pt-4">
-            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm border-collapse">
+        <!-- Table -->
+        <div class="hist-table-wrap">
+            <div class="hist-table-card">
+                <div style="overflow-x:auto;">
+                    <table class="hist-table">
                         <thead>
-                            <tr class="bg-gray-50 border-b-2 border-gray-100">
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    #</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Student</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    ID Number</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Course</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Purpose</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Lab</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Time In</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Time Out</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Date</th>
-                                <th
-                                    class="px-4 py-3 text-left text-xs font-bold uppercase tracking-widest text-gray-500">
-                                    Status</th>
+                            <tr>
+                                <th>ID Number</th>
+                                <th>Name</th>
+                                <th>Purpose</th>
+                                <th>Laboratory</th>
+                                <th>Time In</th>
+                                <th>Time Out</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody id="historyBody" class="divide-y divide-gray-50">
-                            <% if (allSessions.length> 0) { %>
-                                <% allSessions.forEach(function(s, idx) { var initials=(s.first_name ? s.first_name[0]
-                                    : '' ) + (s.last_name ? s.last_name[0] : '' ); %>
-                                    <tr class="history-row hover:bg-gray-50 transition-colors"
-                                        data-status="<%= s.status %>" data-lab="<%= s.lab_room %>">
-                                        <td class="px-4 py-3 text-xs font-mono text-gray-400">#<%= s.id %>
+                        <tbody id="historyBody">
+                            <% if (safeSessions.length> 0) { %>
+                                <% safeSessions.forEach(function(s) { %>
+                                    <tr class="hist-row" data-status="<%= s.status %>"
+                                        data-lab="<%= s.lab_room || '' %>">
+
+                                        <!-- ID -->
+                                        <td
+                                            style="font-family:monospace;font-size:12px;color:#4B5563;white-space:nowrap;">
+                                            <%= user.id_number %>
                                         </td>
-                                        <td class="px-4 py-3">
-                                            <div class="flex items-center gap-2.5">
-                                                <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
-                                                    style="background: linear-gradient(135deg,#273F4F,#5B0E14); color:#F1E194;">
-                                                    <%= initials.toUpperCase() %>
-                                                </div>
-                                                <div class="text-xs font-semibold text-gray-800 whitespace-nowrap">
-                                                    <%= s.last_name %>, <%= s.first_name %>
-                                                </div>
-                                            </div>
+
+                                        <!-- Name -->
+                                        <td style="font-size:12px;font-weight:600;color:#1C2B35;white-space:nowrap;">
+                                            <%= user.last_name %>, <%= user.first_name %>
                                         </td>
-                                        <td class="px-4 py-3">
-                                            <span
-                                                class="rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600">
-                                                <%= s.id_number %>
+
+                                        <!-- Purpose -->
+                                        <td>
+                                            <span class="badge-purpose">
+                                                <%= s.purpose || '—' %>
                                             </span>
                                         </td>
-                                        <td class="px-4 py-3">
-                                            <span
-                                                class="rounded-md bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700">
-                                                <%= s.course %>
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">
-                                            <%= s.purpose || '—' %>
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            <span class="rounded-md px-2 py-1 text-xs font-bold"
-                                                style="background:#1C2B35; color:#F1E194;">
+
+                                        <!-- Lab -->
+                                        <td>
+                                            <span class="badge-lab">
                                                 <%= s.lab_room || '—' %>
                                             </span>
                                         </td>
-                                        <td class="px-4 py-3 text-xs text-gray-600 whitespace-nowrap font-mono">
+
+                                        <!-- Time In -->
+                                        <td
+                                            style="font-size:12px;color:#4B5563;white-space:nowrap;font-variant-numeric:tabular-nums;">
                                             <%= s.time_in ? new Date(s.time_in).toLocaleTimeString('en-US',
                                                 {hour:'2-digit', minute:'2-digit'}) : '—' %>
                                         </td>
-                                        <td class="px-4 py-3 text-xs whitespace-nowrap font-mono">
+
+                                        <!-- Time Out -->
+                                        <td
+                                            style="font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums;">
                                             <% if (s.time_out) { %>
-                                                <span class="text-gray-600">
+                                                <span style="color:#4B5563;">
                                                     <%= new Date(s.time_out).toLocaleTimeString('en-US',
                                                         {hour:'2-digit', minute:'2-digit'}) %>
                                                 </span>
                                                 <% } else { %>
-                                                    <span class="text-green-600 font-medium">Still in</span>
+                                                    <span
+                                                        style="display:inline-flex;align-items:center;gap:4px;color:#059669;font-weight:600;font-size:11px;">
+                                                        <span
+                                                            style="width:6px;height:6px;border-radius:50%;background:#10B981;animation:livePulse 1.5s ease-in-out infinite;flex-shrink:0;"></span>
+                                                        Still In
+                                                    </span>
                                                     <% } %>
                                         </td>
-                                        <td class="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
+
+                                        <!-- Date -->
+                                        <td style="font-size:12px;color:#4B5563;white-space:nowrap;">
                                             <%= s.time_in ? new Date(s.time_in).toLocaleDateString('en-US',
                                                 {year:'numeric', month:'short', day:'numeric'}) : '—' %>
                                         </td>
-                                        <td class="px-4 py-3">
+
+                                        <!-- Status -->
+                                        <td>
                                             <% if (s.status==='active' ) { %>
-                                                <span
-                                                    class="inline-flex items-center gap-1.5 rounded-md border border-green-200 bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"
-                                                        style="animation: pulse 1.5s infinite;"></span>
+                                                <span class="pill-active">
+                                                    <span
+                                                        style="width:5px;height:5px;border-radius:50%;background:#10B981;animation:livePulse 1.5s ease-in-out infinite;flex-shrink:0;"></span>
                                                     Active
                                                 </span>
                                                 <% } else { %>
-                                                    <span
-                                                        class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-bold text-gray-500">
-                                                        <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                                                    <span class="pill-done">
+                                                        <span
+                                                            style="width:5px;height:5px;border-radius:50%;background:#9CA3AF;flex-shrink:0;"></span>
                                                         Done
                                                     </span>
                                                     <% } %>
                                         </td>
+
+                                        <!-- Action -->
+                                        <td>
+                                            <% if (s.status==='done' ) { %>
+                                                <button class="btn-feedback" onclick="openFeedbackModal('<%= s.id %>')">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                        fill="currentColor" width="11" height="11">
+                                                        <path fill-rule="evenodd"
+                                                            d="M1 8.74c0 .983.713 1.825 1.69 1.943L3 10.72v2.03a.75.75 0 0 0 1.28.53l1.5-1.5.31-.03H9a2.26 2.26 0 0 0 2.25-2.25v-5.5A2.25 2.25 0 0 0 9 1.75H4A2.25 2.25 0 0 0 1.75 4v4.74H1Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Feedback
+                                                </button>
+                                                <% } else { %>
+                                                    <span
+                                                        style="font-size:11px;color:#D1D5DB;font-style:italic;">—</span>
+                                                    <% } %>
+                                        </td>
+
                                     </tr>
                                     <% }) %>
                                         <% } else { %>
                                             <tr>
-                                                <td colspan="10" class="px-4 py-20 text-center">
-                                                    <div class="flex flex-col items-center gap-3">
+                                                <td colspan="9">
+                                                    <div class="hist-empty">
                                                         <div
-                                                            class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center">
+                                                            style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F3F0EC,#E8E3DD);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                                fill="currentColor" class="size-7 text-gray-300">
+                                                                fill="#C4BDB6" width="28" height="28">
                                                                 <path fill-rule="evenodd"
                                                                     d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z"
                                                                     clip-rule="evenodd" />
                                                             </svg>
                                                         </div>
-                                                        <p class="text-sm font-semibold text-gray-400">No sit-in history
-                                                            found</p>
-                                                        <p class="text-xs text-gray-300">Session records will appear
-                                                            here once students log in.</p>
+                                                        <p
+                                                            style="font-size:15px;font-weight:700;color:#4B5563;margin:0 0 6px;">
+                                                            No sit-in history yet</p>
+                                                        <p style="font-size:12px;color:#9CA3AF;margin:0;">Your
+                                                            laboratory sessions will appear here once recorded.</p>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -246,13 +769,12 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- Footer -->
-                <div
-                    class="flex items-center justify-between bg-gray-50 border-t border-gray-100 px-5 py-3 text-xs text-gray-400">
-                    <span>Showing <strong id="visibleCount" class="text-gray-600">
-                            <%= allSessions.length %>
-                        </strong> of <strong>
-                            <%= allSessions.length %>
+
+                <div class="hist-table-footer">
+                    <span>Showing <strong id="visibleCount" style="color:#1C2B35;">
+                            <%= safeSessions.length %>
+                        </strong> of <strong style="color:#1C2B35;">
+                            <%= safeSessions.length %>
                         </strong> records</span>
                     <span>CCS Laboratory Sit-in Monitoring System</span>
                 </div>
@@ -261,7 +783,120 @@
 
 </div>
 
+<!-- ═══════════════════════════════════════
+     FEEDBACK MODAL
+═══════════════════════════════════════ -->
+<div id="feedbackOverlay" class="feedback-overlay" onclick="if(event.target===this) closeFeedbackModal()">
+    <div class="feedback-card">
+
+        <!-- Header -->
+        <div class="feedback-header">
+            <div class="feedback-header-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="17" height="17">
+                    <path fill-rule="evenodd"
+                        d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.671 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 0 0 1.28.53l3.58-3.579a.78.78 0 0 1 .527-.224 41.202 41.202 0 0 0 5.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0 0 10 2Zm0 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM8 9a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm5 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                        clip-rule="evenodd" />
+                </svg>
+                Submit Feedback
+            </div>
+            <button class="feedback-close" onclick="closeFeedbackModal()">✕</button>
+        </div>
+
+        <!-- Body -->
+        <form action="/feedback" method="POST" id="feedbackForm">
+            <input type="hidden" name="session_id" id="feedbackSessionId">
+
+            <div class="feedback-body">
+
+                <!-- Rating -->
+                <div>
+                    <label class="fb-label">Your Rating</label>
+                    <div class="star-row" id="starRow">
+                        <% for (let i=1; i <=5; i++) { %>
+                            <button type="button" class="star-btn" data-star="<%= i %>"
+                                onclick="setRating(<%= i %>)">★</button>
+                            <% } %>
+                    </div>
+                    <input type="hidden" name="rating" id="ratingInput" value="0">
+                    <p id="ratingLabel" style="font-size:11px;color:#9CA3AF;margin:6px 0 0;font-style:italic;">Click a
+                        star to rate your experience</p>
+                </div>
+
+                <!-- Message -->
+                <div>
+                    <label class="fb-label">Your Message</label>
+                    <textarea name="message" id="feedbackMessage" rows="4" required
+                        placeholder="Share your experience with us..." class="feedback-textarea"></textarea>
+                </div>
+
+            </div>
+
+            <div class="feedback-footer">
+                <button type="button" class="btn-fb-cancel" onclick="closeFeedbackModal()">Cancel</button>
+                <button type="submit" class="btn-fb-submit">Submit Feedback</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
 <script>
+    // ── Feedback Modal ──────────────────────────────────────────────────────────
+    function openFeedbackModal(sessionId) {
+        document.getElementById('feedbackSessionId').value = sessionId;
+        // reset stars and message each open
+        setRating(0);
+        document.getElementById('feedbackMessage').value = '';
+        document.getElementById('feedbackOverlay').classList.add('open');
+    }
+
+    function closeFeedbackModal() {
+        document.getElementById('feedbackOverlay').classList.remove('open');
+    }
+
+    const ratingLabels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+
+    function setRating(val) {
+        document.getElementById('ratingInput').value = val;
+        const stars = document.querySelectorAll('.star-btn');
+        stars.forEach((s, i) => {
+            if (i < val) {
+                s.style.color = '#F59E0B';
+                s.classList.add('active');
+            } else {
+                s.style.color = '#E5E7EB';
+                s.classList.remove('active');
+            }
+        });
+        const lbl = document.getElementById('ratingLabel');
+        lbl.textContent = val > 0 ? ratingLabels[val] : 'Click a star to rate your experience';
+        lbl.style.color = val > 0 ? '#D97706' : '#9CA3AF';
+        lbl.style.fontStyle = val > 0 ? 'normal' : 'italic';
+        lbl.style.fontWeight = val > 0 ? '700' : '400';
+    }
+
+    // Hover effect on stars
+    document.querySelectorAll('.star-btn').forEach(btn => {
+        btn.addEventListener('mouseenter', function () {
+            const hoverVal = parseInt(this.dataset.star);
+            document.querySelectorAll('.star-btn').forEach((s, i) => {
+                s.style.color = i < hoverVal ? '#FBBF24' : '#E5E7EB';
+            });
+        });
+        btn.addEventListener('mouseleave', function () {
+            const currentRating = parseInt(document.getElementById('ratingInput').value) || 0;
+            document.querySelectorAll('.star-btn').forEach((s, i) => {
+                s.style.color = i < currentRating ? '#F59E0B' : '#E5E7EB';
+            });
+        });
+    });
+
+    // ESC to close
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeFeedbackModal();
+    });
+
+    // ── Filters ──────────────────────────────────────────────────────────────
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const labFilter = document.getElementById('labFilter');
@@ -273,7 +908,7 @@
         const lab = labFilter.value;
         let count = 0;
 
-        document.querySelectorAll('.history-row').forEach(row => {
+        document.querySelectorAll('.hist-row').forEach(row => {
             const matchQ = row.textContent.toLowerCase().includes(q);
             const matchStatus = !status || row.dataset.status === status;
             const matchLab = !lab || row.dataset.lab === lab;

@@ -1,0 +1,735 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@700;800&display=swap');
+
+    .res-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
+
+    /* ── Header ── */
+    .res-header {
+        background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
+        padding: 28px 32px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .res-header::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(241, 225, 148, 0.07);
+        pointer-events: none;
+    }
+
+    .res-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: 15%;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: rgba(91, 14, 20, 0.15);
+        pointer-events: none;
+    }
+
+    .res-header-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .res-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+    }
+
+    .res-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .res-header-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(241, 225, 148, 0.7);
+        margin: 0 0 6px;
+    }
+
+    /* ── Stats ribbon ── */
+    .res-stats {
+        display: flex;
+        gap: 12px;
+        padding: 16px 32px;
+        background: #F0EDE8;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #E8E3DD;
+        flex: 1;
+        min-width: 120px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .stat-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #9CA3AF;
+        font-weight: 500;
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* ── Toolbar ── */
+    .res-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 32px;
+        background: #F0EDE8;
+        border-bottom: 1px solid #E2DDD8;
+    }
+
+    .res-filter-select {
+        padding: 8px 14px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 500;
+        color: #374151;
+        outline: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s;
+    }
+
+    .res-filter-select:focus {
+        border-color: #273F4F;
+    }
+
+    .res-search-wrap {
+        position: relative;
+    }
+
+    .res-search-wrap svg {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        pointer-events: none;
+        width: 14px;
+        height: 14px;
+    }
+
+    .res-search-wrap input {
+        padding: 8px 14px 8px 32px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        color: #1C2B35;
+        outline: none;
+        width: 200px;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .res-search-wrap input:focus {
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+    }
+
+    /* ── Table card ── */
+    .res-table-wrap {
+        padding: 0 32px 32px;
+        background: #F0EDE8;
+    }
+
+    .res-table-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+        border: 1px solid #E8E3DD;
+    }
+
+    table.res-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .res-table thead tr {
+        background: #F7F5F2;
+        border-bottom: 2px solid #E8E3DD;
+    }
+
+    .res-table th {
+        padding: 13px 16px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+        white-space: nowrap;
+    }
+
+    .res-table tbody tr {
+        border-bottom: 1px solid #F3F0EC;
+        transition: background 0.12s;
+    }
+
+    .res-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .res-table tbody tr:hover {
+        background: #FAF9F7;
+    }
+
+    .res-table td {
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    /* ── Avatar cell ── */
+    .name-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .name-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #F1E194;
+        flex-shrink: 0;
+    }
+
+    .name-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1C2B35;
+        white-space: nowrap;
+    }
+
+    /* ── Badges ── */
+    .badge-id {
+        font-family: monospace;
+        font-size: 11px;
+        color: #4B5563;
+        background: #F3F0EC;
+        padding: 3px 8px;
+        border-radius: 5px;
+    }
+
+    .badge-course {
+        display: inline-flex;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #EFF6FF;
+        color: #1D4ED8;
+    }
+
+    .badge-lab {
+        display: inline-flex;
+        padding: 4px 9px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #1C2B35;
+        color: #F1E194;
+        white-space: nowrap;
+    }
+
+    /* ── Status pills ── */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-pill .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .status-pending {
+        background: #FEF3C7;
+        color: #92400E;
+        border: 1px solid #FDE68A;
+    }
+
+    .status-pending .dot {
+        background: #D97706;
+        animation: pulse 1.5s infinite;
+    }
+
+    .status-approved {
+        background: #ECFDF5;
+        color: #065F46;
+        border: 1px solid #A7F3D0;
+    }
+
+    .status-approved .dot {
+        background: #059669;
+    }
+
+    .status-rejected {
+        background: #FEF2F2;
+        color: #991B1B;
+        border: 1px solid #FECACA;
+    }
+
+    .status-rejected .dot {
+        background: #DC2626;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+    }
+
+    /* ── Action buttons ── */
+    .btn-approve {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(135deg, #059669, #047857);
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.1s;
+        font-family: 'DM Sans', sans-serif;
+        white-space: nowrap;
+    }
+
+    .btn-approve:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+
+    .btn-reject {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #DC2626;
+        background: #FEF2F2;
+        border: 1.5px solid #FECACA;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: 'DM Sans', sans-serif;
+        white-space: nowrap;
+    }
+
+    .btn-reject:hover {
+        background: #DC2626;
+        color: #fff;
+        border-color: #DC2626;
+        transform: translateY(-1px);
+    }
+
+    /* ── Empty state ── */
+    .res-empty {
+        padding: 72px 24px;
+        text-align: center;
+    }
+
+    /* ── Footer ── */
+    .res-table-footer {
+        padding: 12px 20px;
+        border-top: 1px solid #F3F0EC;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #9CA3AF;
+        background: #FAFAF9;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+</style>
+
+<div class="res-page">
+
+    <!-- Header -->
+    <div class="res-header">
+        <div class="res-header-inner">
+            <div>
+                <p class="res-header-eyebrow">Admin Panel</p>
+                <h1>Reservations</h1>
+                <p>Manage and approve student laboratory reservation requests</p>
+            </div>
+            <span
+                style="background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);color:#F1E194;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:0.04em;">
+                <%= reservations ? reservations.length : 0 %> total
+            </span>
+        </div>
+    </div>
+
+    <% var pending=reservations.filter(r=> r.status === 'pending').length;
+        var approved = reservations.filter(r => r.status === 'approved').length;
+        var rejected = reservations.filter(r => r.status === 'rejected').length;
+        %>
+
+        <!-- Stats -->
+        <div class="res-stats">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#FEF3C7;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#D97706" width="18" height="18">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-val" style="color:#D97706;">
+                        <%= pending %>
+                    </div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#ECFDF5;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" width="18" height="18">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-val" style="color:#059669;">
+                        <%= approved %>
+                    </div>
+                    <div class="stat-label">Approved</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#FEF2F2;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#DC2626" width="18" height="18">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-val" style="color:#DC2626;">
+                        <%= rejected %>
+                    </div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            </div>
+            <div class="stat-card" style="border-left: 3px solid #273F4F;">
+                <div class="stat-icon" style="background:#E8EFF4;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#273F4F" width="18" height="18">
+                        <path fill-rule="evenodd"
+                            d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="stat-val" style="color:#273F4F;">
+                        <%= reservations.length %>
+                    </div>
+                    <div class="stat-label">Total</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="res-toolbar">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <select id="statusFilter" class="res-filter-select">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+                <select id="labFilter" class="res-filter-select">
+                    <option value="">All Labs</option>
+                    <option value="524">Lab 524</option>
+                    <option value="526">Lab 526</option>
+                    <option value="528">Lab 528</option>
+                    <option value="530">Lab 530</option>
+                    <option value="Mac Lab">Mac Lab</option>
+                </select>
+            </div>
+            <div class="res-search-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search reservations...">
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="res-table-wrap">
+            <div class="res-table-card">
+                <div style="overflow-x:auto;">
+                    <table class="res-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>ID Number</th>
+                                <th>Course</th>
+                                <th>Lab</th>
+                                <th>Purpose</th>
+                                <th>Date</th>
+                                <th>Time Slot</th>
+                                <th>Status</th>
+                                <th style="text-align:center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resBody">
+                            <% if (reservations && reservations.length> 0) { %>
+                                <% reservations.forEach(function(r) { var initials=(r.first_name ? r.first_name[0] : ''
+                                    ) + (r.last_name ? r.last_name[0] : '' ); %>
+                                    <tr class="res-row" data-status="<%= r.status %>" data-lab="<%= r.lab_room %>">
+
+                                        <!-- Student -->
+                                        <td>
+                                            <div class="name-cell">
+                                                <div class="name-avatar">
+                                                    <%= initials.toUpperCase() %>
+                                                </div>
+                                                <span class="name-text">
+                                                    <%= r.last_name %>, <%= r.first_name %>
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <!-- ID -->
+                                        <td><span class="badge-id">
+                                                <%= r.id_number %>
+                                            </span></td>
+
+                                        <!-- Course -->
+                                        <td><span class="badge-course">
+                                                <%= r.course %>
+                                            </span></td>
+
+                                        <!-- Lab -->
+                                        <td><span class="badge-lab">
+                                                <%= r.lab_room %>
+                                            </span></td>
+
+                                        <!-- Purpose -->
+                                        <td style="font-size:12px;color:#4B5563;">
+                                            <%= r.purpose || '—' %>
+                                        </td>
+
+                                        <!-- Date -->
+                                        <td style="font-size:12px;color:#4B5563;white-space:nowrap;">
+                                            <%= r.date %>
+                                        </td>
+
+                                        <!-- Time Slot -->
+                                        <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
+                                            <%= r.time_slot %>
+                                        </td>
+
+                                        <!-- Status -->
+                                        <td>
+                                            <% if (r.status==='approved' ) { %>
+                                                <span class="status-pill status-approved">
+                                                    <span class="dot"></span>Approved
+                                                </span>
+                                                <% } else if (r.status==='rejected' ) { %>
+                                                    <span class="status-pill status-rejected">
+                                                        <span class="dot"></span>Rejected
+                                                    </span>
+                                                    <% } else { %>
+                                                        <span class="status-pill status-pending">
+                                                            <span class="dot"></span>Pending
+                                                        </span>
+                                                        <% } %>
+                                        </td>
+
+                                        <!-- Actions -->
+                                        <td>
+                                            <% if (r.status==='pending' ) { %>
+                                                <div
+                                                    style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                                                    <form action="/admin/reservations/<%= r.id %>/approve" method="POST"
+                                                        style="margin:0;"
+                                                        onsubmit="return confirm('Approve this reservation?')">
+                                                        <button type="submit" class="btn-approve">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                                fill="currentColor" width="11" height="11">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M11.03 2.47a.75.75 0 0 1 0 1.06l-6.5 6.5a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l2.47 2.47 5.97-5.97a.75.75 0 0 1 1.06 0Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                            Approve
+                                                        </button>
+                                                    </form>
+                                                    <form action="/admin/reservations/<%= r.id %>/reject" method="POST"
+                                                        style="margin:0;"
+                                                        onsubmit="return confirm('Reject this reservation?')">
+                                                        <button type="submit" class="btn-reject">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                                fill="currentColor" width="11" height="11">
+                                                                <path
+                                                                    d="M4.22 4.22a.75.75 0 0 1 1.06 0L7 5.94l1.72-1.72a.75.75 0 1 1 1.06 1.06L8.06 7l1.72 1.72a.75.75 0 1 1-1.06 1.06L7 8.06l-1.72 1.72a.75.75 0 0 1-1.06-1.06L5.94 7 4.22 5.28a.75.75 0 0 1 0-1.06Z" />
+                                                            </svg>
+                                                            Reject
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <% } else { %>
+                                                    <div
+                                                        style="text-align:center;font-size:11px;color:#C4BDB6;font-style:italic;">
+                                                        Processed</div>
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="9">
+                                                    <div class="res-empty">
+                                                        <div
+                                                            style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F3F0EC,#E8E3DD);display:flex;align-items:center;justify-content:margin:0 auto 14px;margin:0 auto 14px;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                                fill="#C4BDB6" width="28" height="28"
+                                                                style="margin:auto;">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </div>
+                                                        <p
+                                                            style="font-size:15px;font-weight:700;color:#4B5563;margin:0 0 6px;">
+                                                            No reservations yet</p>
+                                                        <p style="font-size:12px;color:#9CA3AF;margin:0;">Student
+                                                            reservation requests will appear here.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="res-table-footer">
+                    <span>Showing <strong id="visibleCount" style="color:#1C2B35;">
+                            <%= reservations.length %>
+                        </strong> of <strong style="color:#1C2B35;">
+                            <%= reservations.length %>
+                        </strong> reservations</span>
+                    <span>Students receive notifications on status change</span>
+                </div>
+            </div>
+        </div>
+
+</div>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const labFilter = document.getElementById('labFilter');
+    const countEl = document.getElementById('visibleCount');
+
+    function applyFilters() {
+        const q = searchInput.value.toLowerCase();
+        const status = statusFilter.value;
+        const lab = labFilter.value;
+        let count = 0;
+
+        document.querySelectorAll('.res-row').forEach(row => {
+            const matchQ = row.textContent.toLowerCase().includes(q);
+            const matchStatus = !status || row.dataset.status === status;
+            const matchLab = !lab || row.dataset.lab === lab;
+            const show = matchQ && matchStatus && matchLab;
+            row.style.display = show ? '' : 'none';
+            if (show) count++;
+        });
+
+        countEl.textContent = count;
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+    labFilter.addEventListener('change', applyFilters);
+</script>
