@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 const db = require('../database/database');
+const bcrypt = require('bcryptjs');
 
 // Admin Home
 router.get('/', isAuthenticated, isAdmin, (req, res) => {
@@ -48,8 +49,6 @@ router.get('/search', isAuthenticated, isAdmin, (req, res) => {
 });
 
 // ── Start sit-in ──────────────────────────────────────────────────────────────
-// Does NOT deduct sessions (deducted on logout).
-// Accepts hidden `return_to` field to redirect back to originating page.
 router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
     const { user_id, purpose, lab_room, return_to } = req.body;
     const redirectTo = return_to || '/admin';
@@ -87,6 +86,45 @@ router.get('/students', isAuthenticated, isAdmin, (req, res) => {
     });
 });
 
+// ── Add Student Account ───────────────────────────────────────────────────────
+router.post('/students/add', isAuthenticated, isAdmin, async (req, res) => {
+    const { id_number, last_name, first_name, middle_initial, course, year_level, email, password, address } = req.body;
+    if (!/^\d{8}$/.test(id_number)) {
+        req.session.toast = { type: 'error', message: 'ID Number must be exactly 8 digits.' };
+        return res.redirect('/admin/students');
+    }
+    try {
+        const hashed = await bcrypt.hash(password, 10);
+        db.run(
+            `INSERT INTO users (id_number, last_name, first_name, middle_initial, course, year_level, email, password, address)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [id_number, last_name, first_name, middle_initial || '', course, year_level, email, hashed, address || ''],
+            function (err) {
+                if (err) {
+                    const msg = err.message.includes('UNIQUE')
+                        ? 'ID number or email already registered.'
+                        : 'Failed to add student. Please try again.';
+                    req.session.toast = { type: 'error', message: msg };
+                } else {
+                    req.session.toast = { type: 'success', message: `Student account for ${first_name} ${last_name} created successfully!` };
+                }
+                res.redirect('/admin/students');
+            }
+        );
+    } catch (e) {
+        req.session.toast = { type: 'error', message: 'An error occurred. Please try again.' };
+        res.redirect('/admin/students');
+    }
+});
+
+// Reset all sessions — must be before /:id routes
+router.post('/students/reset-sessions', isAuthenticated, isAdmin, (req, res) => {
+    db.run(`UPDATE users SET remaining_sessions = 30 WHERE role = 'user'`, () => {
+        req.session.toast = { type: 'success', message: 'All student sessions have been reset to 30.' };
+        res.redirect('/admin/students');
+    });
+});
+
 // Student record (individual)
 router.get('/students/:id', isAuthenticated, isAdmin, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.params.id], (err, student) => {
@@ -95,6 +133,23 @@ router.get('/students/:id', isAuthenticated, isAdmin, (req, res) => {
                 res.render('pages/admin-student-record', { student, sessions: sessions || [] });
             });
     });
+});
+
+// ── Edit Student ──────────────────────────────────────────────────────────────
+router.post('/students/:id/edit', isAuthenticated, isAdmin, (req, res) => {
+    const { first_name, last_name, middle_initial, course, year_level, email, address, remaining_sessions } = req.body;
+    db.run(
+        `UPDATE users SET first_name=?, last_name=?, middle_initial=?, course=?, year_level=?, email=?, address=?, remaining_sessions=? WHERE id=?`,
+        [first_name, last_name, middle_initial || '', course, year_level, email, address || '', parseInt(remaining_sessions) || 30, req.params.id],
+        function (err) {
+            if (err) {
+                req.session.toast = { type: 'error', message: 'Update failed. Email may already be in use.' };
+            } else {
+                req.session.toast = { type: 'success', message: `Student ${first_name} ${last_name} updated successfully!` };
+            }
+            res.redirect('/admin/students');
+        }
+    );
 });
 
 // Current sit-in list
@@ -107,7 +162,7 @@ router.get('/sitin', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
-// ── End sit-in — deduct session on logout ─────────────────────────────────────
+// ── End sit-in ────────────────────────────────────────────────────────────────
 router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
     db.get(
         `SELECT s.user_id, u.first_name, u.last_name FROM sitin_sessions s
@@ -138,7 +193,7 @@ router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
         });
 });
 
-// ── Sit-in History (all completed & active sessions) ──────────────────────────
+// ── Sit-in History ────────────────────────────────────────────────────────────
 router.get('/history', isAuthenticated, isAdmin, (req, res) => {
     db.all(
         `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, u.year_level
@@ -209,12 +264,16 @@ router.post('/reservations/:id/reject', isAuthenticated, isAdmin, (req, res) => 
         });
 });
 
-// Reset all sessions
-router.post('/students/reset-sessions', isAuthenticated, isAdmin, (req, res) => {
-    db.run(`UPDATE users SET remaining_sessions = 30 WHERE role = 'user'`, () => {
-        req.session.toast = { type: 'success', message: 'All student sessions have been reset to 30.' };
-        res.redirect('/admin/students');
-    });
+// ── Admin Notifications ───────────────────────────────────────────────────────
+router.get('/notifications', isAuthenticated, isAdmin, (req, res) => {
+    db.all(
+        `SELECT * FROM admin_notifications ORDER BY created_at DESC LIMIT 20`,
+        (err, notifs) => res.json(notifs || [])
+    );
+});
+
+router.post('/notifications/read', isAuthenticated, isAdmin, (req, res) => {
+    db.run(`UPDATE admin_notifications SET is_read = 1`, () => res.json({ success: true }));
 });
 
 module.exports = router;

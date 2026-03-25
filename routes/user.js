@@ -109,12 +109,11 @@ router.get('/reservation', isAuthenticated, isUser, (req, res) => {
         });
 });
 
-// Reservation POST — build time_slot server-side from time_start + time_end
+// Reservation POST — notify admin when submitted
 router.post('/reservation', isAuthenticated, isUser, (req, res) => {
     const { lab_room, date, purpose, time_start, time_end } = req.body;
     let time_slot = req.body.time_slot || '';
 
-    // Build time_slot server-side if not provided by JS
     if (!time_slot && time_start && time_end) {
         const to12h = (t) => {
             const [h, m] = t.split(':').map(Number);
@@ -139,7 +138,7 @@ router.post('/reservation', isAuthenticated, isUser, (req, res) => {
     db.run(
         `INSERT INTO reservations (user_id, lab_room, date, time_slot, purpose) VALUES (?, ?, ?, ?, ?)`,
         [req.session.user.id, lab_room, date, time_slot, purpose],
-        (err) => {
+        function (err) {
             if (err) {
                 db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`,
                     [req.session.user.id], (e2, reservations) => {
@@ -150,6 +149,15 @@ router.post('/reservation', isAuthenticated, isUser, (req, res) => {
                     });
                 return;
             }
+
+            // ── Notify admin of new reservation ──────────────────────────────
+            const u = req.session.user;
+            const adminMsg = `New reservation from ${u.first_name} ${u.last_name} (${u.id_number}) for Lab ${lab_room} on ${date} at ${time_slot} — Purpose: ${purpose}.`;
+            db.run(
+                `INSERT INTO admin_notifications (message, type, related_id) VALUES (?, ?, ?)`,
+                [adminMsg, 'reservation', this.lastID]
+            );
+
             req.session.toast = { type: 'success', message: `Reservation for Lab ${lab_room} on ${date} submitted successfully!` };
             res.redirect('/reservation');
         }

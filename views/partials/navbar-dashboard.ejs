@@ -99,6 +99,12 @@
         color: #1D4ED8;
     }
 
+    .notif-item.admin-unread {
+        background: #FFF7ED;
+        font-weight: 600;
+        color: #92400E;
+    }
+
     .notif-item.read {
         color: #6B7280;
     }
@@ -134,8 +140,8 @@
     <!-- Right side -->
     <div class="flex items-center gap-4">
 
+        <!-- ── USER Notification Bell ── -->
         <% if (user && user.role==='user' ) { %>
-            <!-- Notification Bell -->
             <div style="position:relative;">
                 <button id="notifBtn"
                     class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1">
@@ -144,13 +150,11 @@
                             d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
                             clip-rule="evenodd" />
                     </svg>
-                    <!-- Badge -->
                     <span id="notifBadge"
                         style="position:absolute;top:-2px;right:-2px;background:#F1E194;color:#5B0E14;font-size:9px;font-weight:800;border-radius:999px;width:16px;height:16px;display:none;align-items:center;justify-content:center;line-height:1;">
                     </span>
                 </button>
 
-                <!-- Dropdown -->
                 <div id="notifDropdown" class="notif-dropdown">
                     <div class="notif-header">
                         <span class="notif-header-title">Notifications</span>
@@ -163,21 +167,51 @@
             </div>
             <% } %>
 
-                <!-- Name + Role + Avatar -->
-                <div class="flex items-center gap-3">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-white font-semibold text-sm leading-none">
-                            <%= user ? user.first_name + ' ' + user.last_name : '' %>
-                        </p>
-                        <p class="text-white/50 text-xs mt-0.5 capitalize text-center">
-                            <%= user ? user.role : '' %>
-                        </p>
+                <!-- ── ADMIN Notification Bell ── -->
+                <% if (user && user.role==='admin' ) { %>
+                    <div style="position:relative;">
+                        <button id="adminNotifBtn"
+                            class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
+                            title="Notifications">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                class="size-6">
+                                <path fill-rule="evenodd"
+                                    d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span id="adminNotifBadge"
+                                style="position:absolute;top:-2px;right:-2px;background:#F1E194;color:#5B0E14;font-size:9px;font-weight:800;border-radius:999px;width:16px;height:16px;display:none;align-items:center;justify-content:center;line-height:1;">
+                            </span>
+                        </button>
+
+                        <div id="adminNotifDropdown" class="notif-dropdown">
+                            <div class="notif-header">
+                                <span class="notif-header-title">Admin Notifications</span>
+                                <button id="adminMarkAllRead" class="notif-mark-read">Mark all read</button>
+                            </div>
+                            <ul id="adminNotifList" class="notif-list">
+                                <li class="notif-empty">Loading...</li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                    <% } %>
+
+                        <!-- Name + Role -->
+                        <div class="flex items-center gap-3">
+                            <div class="text-right hidden sm:block">
+                                <p class="text-white font-semibold text-sm leading-none">
+                                    <%= user ? user.first_name + ' ' + user.last_name : '' %>
+                                </p>
+                                <p class="text-white/50 text-xs mt-0.5 capitalize text-center">
+                                    <%= user ? user.role : '' %>
+                                </p>
+                            </div>
+                        </div>
 
     </div>
 </header>
 
+<!-- ── USER notifications script ── -->
 <% if (user && user.role==='user' ) { %>
     <script>
         (function () {
@@ -191,12 +225,8 @@
                     const res = await fetch('/notifications');
                     const data = await res.json();
                     const unread = data.filter(n => !n.is_read).length;
-
-                    // Badge
                     notifBadge.textContent = unread > 9 ? '9+' : unread;
                     notifBadge.style.display = unread === 0 ? 'none' : 'inline-flex';
-
-                    // List
                     if (data.length === 0) {
                         notifList.innerHTML = '<li class="notif-empty">No notifications yet</li>';
                     } else {
@@ -230,6 +260,66 @@
             });
 
             loadNotifications();
+            setInterval(loadNotifications, 30000);
         })();
     </script>
     <% } %>
+
+        <!-- ── ADMIN notifications script ── -->
+        <% if (user && user.role==='admin' ) { %>
+            <script>
+                (function () {
+                    const btn = document.getElementById('adminNotifBtn');
+                    const dropdown = document.getElementById('adminNotifDropdown');
+                    const badge = document.getElementById('adminNotifBadge');
+                    const list = document.getElementById('adminNotifList');
+
+                    async function loadAdminNotifications() {
+                        try {
+                            const res = await fetch('/admin/notifications');
+                            const data = await res.json();
+                            const unread = data.filter(n => !n.is_read).length;
+                            badge.textContent = unread > 9 ? '9+' : unread;
+                            badge.style.display = unread === 0 ? 'none' : 'inline-flex';
+                            if (data.length === 0) {
+                                list.innerHTML = '<li class="notif-empty">No notifications yet</li>';
+                            } else {
+                                list.innerHTML = data.map(n => {
+                                    const icon = n.type === 'reservation'
+                                        ? '📅'
+                                        : '🔔';
+                                    return `<li class="notif-item ${n.is_read ? 'read' : 'admin-unread'}">
+                        <p>${icon} ${n.message}</p>
+                        <p class="notif-time">${new Date(n.created_at).toLocaleString()}</p>
+                    </li>`;
+                                }).join('');
+                            }
+                        } catch (e) {
+                            list.innerHTML = '<li class="notif-empty">Could not load notifications</li>';
+                        }
+                    }
+
+                    btn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        const isOpen = dropdown.classList.toggle('open');
+                        if (isOpen) loadAdminNotifications();
+                    });
+
+                    document.getElementById('adminMarkAllRead').addEventListener('click', async function () {
+                        await fetch('/admin/notifications/read', { method: 'POST' });
+                        badge.style.display = 'none';
+                        loadAdminNotifications();
+                    });
+
+                    document.addEventListener('click', function (e) {
+                        if (!dropdown.contains(e.target) && e.target !== btn) {
+                            dropdown.classList.remove('open');
+                        }
+                    });
+
+                    loadAdminNotifications();
+                    // Poll every 20 seconds for new reservation notifications
+                    setInterval(loadAdminNotifications, 20000);
+                })();
+            </script>
+            <% } %>

@@ -116,24 +116,25 @@
         box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.1);
     }
 
-    .stud-entries {
-        display: flex;
+    .btn-add-student {
+        display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+        padding: 9px 16px;
+        background: linear-gradient(135deg, #059669, #047857);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
         font-size: 12px;
-        color: #6B7280;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s, transform 0.1s;
     }
 
-    .stud-entries select {
-        padding: 6px 10px;
-        border: 1.5px solid #D6D0CA;
-        border-radius: 8px;
-        background: #fff;
-        font-size: 12px;
-        color: #374151;
-        outline: none;
-        font-family: 'DM Sans', sans-serif;
-        cursor: pointer;
+    .btn-add-student:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
     }
 
     .btn-reset-sessions {
@@ -246,7 +247,7 @@
     }
 
     .cell-id {
-        font-family: 'DM Mono', 'Courier New', monospace;
+        font-family: monospace;
         font-size: 11px;
         color: #9CA3AF;
         margin-top: 1px;
@@ -260,7 +261,6 @@
         font-weight: 700;
         background: #EFF6FF;
         color: #1D4ED8;
-        letter-spacing: 0.02em;
     }
 
     .cell-year {
@@ -329,7 +329,7 @@
         gap: 6px;
     }
 
-    .btn-view {
+    .btn-edit-row {
         display: inline-flex;
         align-items: center;
         gap: 4px;
@@ -337,15 +337,18 @@
         border-radius: 7px;
         font-size: 11px;
         font-weight: 700;
-        background: #1C2B35;
+        background: linear-gradient(135deg, #273F4F, #1a2d38);
         color: #fff;
         text-decoration: none;
-        transition: background 0.15s, transform 0.1s;
+        transition: opacity 0.15s, transform 0.1s;
         white-space: nowrap;
+        border: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
     }
 
-    .btn-view:hover {
-        background: #273F4F;
+    .btn-edit-row:hover {
+        opacity: 0.88;
         transform: translateY(-1px);
     }
 
@@ -386,6 +389,152 @@
         color: #9CA3AF;
         background: #FAFAF9;
     }
+
+    /* ── Shared modal overlay ── */
+    .stud-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+
+    .stud-modal-overlay.open {
+        display: flex;
+    }
+
+    .stud-modal-overlay.open .stud-modal-card {
+        animation: studModalIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes studModalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.93) translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .stud-modal-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .stud-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+    }
+
+    .stud-modal-close {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.15s;
+    }
+
+    .stud-modal-close:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+    }
+
+    .modal-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .modal-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6B7280;
+    }
+
+    .modal-input {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #F9F8F6;
+        font-size: 13px;
+        color: #1C2B35;
+        outline: none;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        box-sizing: border-box;
+    }
+
+    .modal-input:focus {
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+        background: #fff;
+    }
+
+    .modal-input:disabled {
+        background: #F3F4F6;
+        color: #9CA3AF;
+        cursor: not-allowed;
+    }
+
+    .modal-select {
+        width: 100%;
+        padding: 10px 32px 10px 13px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #F9F8F6;
+        font-size: 13px;
+        color: #1C2B35;
+        appearance: none;
+        outline: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s;
+        box-sizing: border-box;
+    }
+
+    .modal-select:focus {
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+    }
+
+    .select-wrap {
+        position: relative;
+    }
+
+    .select-wrap svg {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #9CA3AF;
+    }
 </style>
 
 <div class="stud-page">
@@ -405,19 +554,18 @@
 
     <!-- Toolbar -->
     <div class="stud-toolbar">
-        <div style="display:flex;align-items:center;gap:12px;">
-            <div class="stud-entries">
-                <span>Show</span>
-                <select id="entriesSelect">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-                <span>entries</span>
-            </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
 
-            <!-- Reset Sessions — POST form so it hits the correct route -->
+            <!-- Add Student Account Button -->
+            <button type="button" class="btn-add-student" onclick="openAddStudentModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13">
+                    <path
+                        d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+                </svg>
+                Add Student Account
+            </button>
+
+            <!-- Reset Sessions -->
             <form action="/admin/students/reset-sessions" method="POST" style="margin:0;"
                 onsubmit="return confirm('Reset ALL student sessions to 30?')">
                 <button type="submit" class="btn-reset-sessions">
@@ -515,20 +663,31 @@
                                     </td>
                                     <td>
                                         <div class="cell-actions">
-                                            <a href="/admin/students/<%= s.id %>" class="btn-view">
+                                            <!-- Edit Button -->
+                                            <button class="btn-edit-row" onclick="openEditModal(
+                                                '<%= s.id %>',
+                                                '<%= s.id_number %>',
+                                                '<%= s.first_name %>',
+                                                '<%= s.last_name %>',
+                                                '<%= s.middle_initial || '' %>',
+                                                '<%= s.course %>',
+                                                '<%= s.year_level %>',
+                                                '<%= s.email %>',
+                                                '<%= (s.address || '').replace(/'/g, '') %>',
+                                                '<%= sessions %>'
+                                            )">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
                                                     fill="currentColor" width="11" height="11">
-                                                    <path d="M7 9.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M.664 6.897a.875.875 0 0 0 0 .206A7.003 7.003 0 0 0 13.336 7.1a.875.875 0 0 0 0-.206A7.003 7.003 0 0 0 .664 6.897ZM7 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                                                        clip-rule="evenodd" />
+                                                    <path
+                                                        d="M2.04 9.367 8.9 2.504a2.121 2.121 0 0 1 3 3L4.96 12.367a2 2 0 0 1-.885.52l-3.164.853a.5.5 0 0 1-.61-.61l.853-3.164a2 2 0 0 1 .52-.885Z" />
                                                 </svg>
-                                                View
-                                            </a>
-                                            <button class="btn-sitin" data-id="<%= s.id %>"
-                                                data-idnumber="<%= s.id_number %>" data-name='<%= fullName %>'
-                                                data-sessions="<%= sessions %>"
-                                                onclick="openSitinModal(this.dataset.id, this.dataset.idnumber, this.dataset.name, this.dataset.sessions)">
+                                                Edit
+                                            </button>
+                                            <!-- Sit-in Button -->
+                                            <button class="btn-sitin"
+                                                onclick="openSitinModal(this.dataset.id, this.dataset.idnumber, this.dataset.name, this.dataset.sessions)"
+                                                data-id="<%= s.id %>" data-idnumber="<%= s.id_number %>"
+                                                data-name='<%= fullName %>' data-sessions="<%= sessions %>">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
                                                     fill="currentColor" width="11" height="11">
                                                     <path
@@ -544,15 +703,6 @@
                                         <tr>
                                             <td colspan="6">
                                                 <div class="stud-empty">
-                                                    <div
-                                                        style="width:56px;height:56px;border-radius:50%;background:#F3F0EC;display:flex;align-items:center;justify-content:margin:0 auto 12px;">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                                            fill="#D1CBC4" width="28" height="28">
-                                                            <path fill-rule="evenodd"
-                                                                d="M8.25 6.75a3.75 3.75 0 1 1 7.5 0 3.75 3.75 0 0 1-7.5 0ZM15.75 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM2.25 9.75a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM6.31 15.117A6.745 6.745 0 0 1 12 12a6.745 6.745 0 0 1 6.709 7.498.75.75 0 0 1-.372.568A12.696 12.696 0 0 1 12 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 0 1-.372-.568 6.787 6.787 0 0 1 1.019-4.38Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    </div>
                                                     <p style="font-size:14px;font-weight:600;color:#9CA3AF;margin:0;">No
                                                         students registered yet</p>
                                                 </div>
@@ -562,7 +712,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="stud-table-footer">
                 <span id="showingCount">Showing <strong>
                         <%= students ? students.length : 0 %>
@@ -572,7 +721,304 @@
     </div>
 </div>
 
-<!-- ═══ SIT-IN MODAL ═══ -->
+<!-- ═══════════════════════════════════
+     EDIT STUDENT MODAL
+═══════════════════════════════════ -->
+<div id="editStudentModal" class="stud-modal-overlay" onclick="if(event.target===this) closeEditModal()">
+    <div class="stud-modal-card" style="max-width:520px;">
+
+        <div class="stud-modal-header" style="background:linear-gradient(135deg,#273F4F,#1a2d38);">
+            <div
+                style="display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="17" height="17">
+                    <path
+                        d="M2.695 14.763l-1.262 3.154a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.885L17.5 5.5a2.121 2.121 0 0 0-3-3L3.58 13.42a4 4 0 0 0-.885 1.343Z" />
+                </svg>
+                Edit Student
+            </div>
+            <button class="stud-modal-close" onclick="closeEditModal()">✕</button>
+        </div>
+
+        <form id="editStudentForm" method="POST" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+            <input type="hidden" name="_method" value="POST">
+
+            <!-- ID Number (read-only) -->
+            <div class="modal-field">
+                <label class="modal-label">ID Number <span
+                        style="color:#9CA3AF;font-weight:400;text-transform:none;">(read-only)</span></label>
+                <input type="text" id="editIdNumber" class="modal-input" disabled>
+            </div>
+
+            <!-- Name row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px;gap:10px;">
+                <div class="modal-field">
+                    <label class="modal-label">First Name <span style="color:#DC2626;">*</span></label>
+                    <input type="text" name="first_name" id="editFirstName" class="modal-input" required>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Last Name <span style="color:#DC2626;">*</span></label>
+                    <input type="text" name="last_name" id="editLastName" class="modal-input" required>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">M.I.</label>
+                    <input type="text" name="middle_initial" id="editMiddleInitial" class="modal-input" maxlength="2"
+                        style="text-align:center;">
+                </div>
+            </div>
+
+            <!-- Course -->
+            <div class="modal-field">
+                <label class="modal-label">Course <span style="color:#DC2626;">*</span></label>
+                <div class="select-wrap">
+                    <select name="course" id="editCourse" class="modal-select" required>
+                        <option value="">Select course...</option>
+                        <optgroup label="College of Computer Studies">
+                            <option value="BSIT">BS Information Technology</option>
+                            <option value="BSCS">BS Computer Science</option>
+                        </optgroup>
+                        <optgroup label="College of Engineering">
+                            <option value="BSCE">BS Civil Engineering</option>
+                            <option value="BSEE">BS Electrical Engineering</option>
+                            <option value="BSME">BS Mechanical Engineering</option>
+                            <option value="BSECE">BS Electronics Engineering</option>
+                        </optgroup>
+                        <optgroup label="College of Business">
+                            <option value="BSA">BS Accountancy</option>
+                            <option value="BSBA-FM">BSBA - Financial Management</option>
+                            <option value="BSBA-MM">BSBA - Marketing Management</option>
+                            <option value="BSEntrep">BS Entrepreneurship</option>
+                        </optgroup>
+                        <optgroup label="Other Courses">
+                            <option value="BSN">BS Nursing</option>
+                            <option value="BSCRIM">BS Criminology</option>
+                            <option value="BSTM">BS Tourism Management</option>
+                            <option value="BSHM">BS Hospitality Management</option>
+                            <option value="SHS-STEM">SHS - STEM</option>
+                            <option value="SHS-ABM">SHS - ABM</option>
+                        </optgroup>
+                    </select>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                        height="12">
+                        <path fill-rule="evenodd"
+                            d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Year + Sessions row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="modal-field">
+                    <label class="modal-label">Year Level <span style="color:#DC2626;">*</span></label>
+                    <div class="select-wrap">
+                        <select name="year_level" id="editYearLevel" class="modal-select" required>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                            <option value="5">5th Year</option>
+                            <option value="11">Grade 11 (SHS)</option>
+                            <option value="12">Grade 12 (SHS)</option>
+                        </select>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                            height="12">
+                            <path fill-rule="evenodd"
+                                d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Remaining Sessions</label>
+                    <input type="number" name="remaining_sessions" id="editSessions" class="modal-input" min="0"
+                        max="30">
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="modal-field">
+                <label class="modal-label">Email <span style="color:#DC2626;">*</span></label>
+                <input type="email" name="email" id="editEmail" class="modal-input" required>
+            </div>
+
+            <!-- Address -->
+            <div class="modal-field">
+                <label class="modal-label">Address <span
+                        style="color:#9CA3AF;font-weight:400;text-transform:none;">(optional)</span></label>
+                <input type="text" name="address" id="editAddress" class="modal-input"
+                    placeholder="e.g. Cebu City, Philippines">
+            </div>
+
+            <!-- Buttons -->
+            <div style="display:flex;gap:10px;padding-top:4px;">
+                <button type="button" onclick="closeEditModal()"
+                    style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                    Cancel
+                </button>
+                <button type="submit"
+                    style="flex:2;padding:11px;background:linear-gradient(135deg,#273F4F,#1a2d38);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     ADD STUDENT MODAL
+═══════════════════════════════════ -->
+<div id="addStudentModal" class="stud-modal-overlay" onclick="if(event.target===this) closeAddStudentModal()">
+    <div class="stud-modal-card" style="max-width:540px;">
+
+        <div class="stud-modal-header" style="background:linear-gradient(135deg,#059669,#047857);">
+            <div
+                style="display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="17" height="17">
+                    <path
+                        d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM2.046 15.253c-.058.468.172.92.57 1.175A9.953 9.953 0 0 0 8 18c1.982 0 3.83-.578 5.384-1.573.398-.255.628-.707.57-1.175a7 7 0 0 0-13.908 0ZM15.5 7.5a.75.75 0 0 1 .75.75v1.5h1.5a.75.75 0 0 1 0 1.5h-1.5v1.5a.75.75 0 0 1-1.5 0v-1.5H13a.75.75 0 0 1 0-1.5h1.5v-1.5a.75.75 0 0 1 .75-.75Z" />
+                </svg>
+                Add Student Account
+            </div>
+            <button class="stud-modal-close" onclick="closeAddStudentModal()">✕</button>
+        </div>
+
+        <form action="/admin/students/add" method="POST"
+            style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+
+            <!-- ID Number -->
+            <div class="modal-field">
+                <label class="modal-label">ID Number <span style="color:#DC2626;">*</span> <span
+                        style="color:#9CA3AF;text-transform:none;font-weight:400;">(8 digits)</span></label>
+                <input type="text" name="id_number" class="modal-input" placeholder="e.g. 20231234" maxlength="8"
+                    required pattern="\d{8}">
+            </div>
+
+            <!-- Name row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 80px;gap:10px;">
+                <div class="modal-field">
+                    <label class="modal-label">First Name <span style="color:#DC2626;">*</span></label>
+                    <input type="text" name="first_name" class="modal-input" required>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Last Name <span style="color:#DC2626;">*</span></label>
+                    <input type="text" name="last_name" class="modal-input" required>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">M.I.</label>
+                    <input type="text" name="middle_initial" class="modal-input" maxlength="2"
+                        style="text-align:center;">
+                </div>
+            </div>
+
+            <!-- Course + Year -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="modal-field">
+                    <label class="modal-label">Course <span style="color:#DC2626;">*</span></label>
+                    <div class="select-wrap">
+                        <select name="course" class="modal-select" required>
+                            <option value="" disabled selected>Select...</option>
+                            <optgroup label="College of Computer Studies">
+                                <option value="BSIT">BS Information Technology</option>
+                                <option value="BSCS">BS Computer Science</option>
+                            </optgroup>
+                            <optgroup label="College of Engineering">
+                                <option value="BSCE">BS Civil Engineering</option>
+                                <option value="BSEE">BS Electrical Engineering</option>
+                                <option value="BSME">BS Mechanical Engineering</option>
+                                <option value="BSECE">BS Electronics Engineering</option>
+                            </optgroup>
+                            <optgroup label="College of Business">
+                                <option value="BSA">BS Accountancy</option>
+                                <option value="BSBA-FM">BSBA - Financial Management</option>
+                                <option value="BSBA-MM">BSBA - Marketing Management</option>
+                                <option value="BSEntrep">BS Entrepreneurship</option>
+                            </optgroup>
+                            <optgroup label="Other Courses">
+                                <option value="BSN">BS Nursing</option>
+                                <option value="BSCRIM">BS Criminology</option>
+                                <option value="BSTM">BS Tourism Management</option>
+                                <option value="SHS-STEM">SHS - STEM</option>
+                                <option value="SHS-ABM">SHS - ABM</option>
+                            </optgroup>
+                        </select>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                            height="12">
+                            <path fill-rule="evenodd"
+                                d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Year Level <span style="color:#DC2626;">*</span></label>
+                    <div class="select-wrap">
+                        <select name="year_level" class="modal-select" required>
+                            <option value="" disabled selected>Select...</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                            <option value="5">5th Year</option>
+                            <option value="11">Grade 11 (SHS)</option>
+                            <option value="12">Grade 12 (SHS)</option>
+                        </select>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                            height="12">
+                            <path fill-rule="evenodd"
+                                d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="modal-field">
+                <label class="modal-label">Email <span style="color:#DC2626;">*</span></label>
+                <input type="email" name="email" class="modal-input" placeholder="student@university.edu" required>
+            </div>
+
+            <!-- Address -->
+            <div class="modal-field">
+                <label class="modal-label">Address <span
+                        style="color:#9CA3AF;font-weight:400;text-transform:none;">(optional)</span></label>
+                <input type="text" name="address" class="modal-input" placeholder="e.g. Cebu City, Philippines">
+            </div>
+
+            <!-- Password -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="modal-field">
+                    <label class="modal-label">Password <span style="color:#DC2626;">*</span></label>
+                    <input type="password" name="password" id="addPassword" class="modal-input" required minlength="8"
+                        placeholder="Min 8 characters">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Confirm Password <span style="color:#DC2626;">*</span></label>
+                    <input type="password" id="addConfirmPassword" class="modal-input" required
+                        placeholder="Re-enter password">
+                </div>
+            </div>
+            <p id="addPasswordMsg" style="font-size:11px;color:#DC2626;margin:0;display:none;">Passwords do not match.
+            </p>
+
+            <!-- Buttons -->
+            <div style="display:flex;gap:10px;padding-top:4px;">
+                <button type="button" onclick="closeAddStudentModal()"
+                    style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                    Cancel
+                </button>
+                <button type="submit" id="addStudentSubmitBtn"
+                    style="flex:2;padding:11px;background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                    Create Account
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     SIT-IN MODAL
+═══════════════════════════════════ -->
 <div id="sitinModal" style="display:none;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;">
     <div style="position:absolute;inset:0;background:rgba(28,43,53,0.6);backdrop-filter:blur(4px);"
         onclick="closeSitinModal()"></div>
@@ -586,7 +1032,7 @@
                     style="width:32px;height:32px;border-radius:8px;background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.25);display:flex;align-items:center;justify-content:center;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#F1E194" width="15" height="15">
                         <path fill-rule="evenodd"
-                            d="M4.5 2A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4.5Zm1 5.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5Zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5Zm0-5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2Z"
+                            d="M4.5 2A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4.5Zm1 5.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5Zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5Z"
                             clip-rule="evenodd" />
                     </svg>
                 </div>
@@ -621,16 +1067,14 @@
         <form action="/admin/sitin/start" method="POST" style="padding:20px 24px 0;">
             <input type="hidden" name="return_to" value="/admin/students">
             <input type="hidden" name="user_id" id="mUserId">
-
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
                 <div>
                     <label
-                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">
-                        Purpose <span style="color:#DC2626;">*</span>
-                    </label>
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">Purpose
+                        <span style="color:#DC2626;">*</span></label>
                     <div style="position:relative;">
                         <select name="purpose" required
-                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;font-family:'DM Sans',sans-serif;cursor:pointer;">
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
                             <option value="" disabled selected>Select...</option>
                             <option>C Programming</option>
                             <option>Java Programming</option>
@@ -652,12 +1096,11 @@
                 </div>
                 <div>
                     <label
-                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">
-                        Laboratory <span style="color:#DC2626;">*</span>
-                    </label>
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:6px;">Laboratory
+                        <span style="color:#DC2626;">*</span></label>
                     <div style="position:relative;">
                         <select name="lab_room" required
-                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;font-family:'DM Sans',sans-serif;cursor:pointer;">
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;color:#1C2B35;appearance:none;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
                             <option value="" disabled selected>Select...</option>
                             <option value="524">Lab 524</option>
                             <option value="526">Lab 526</option>
@@ -675,8 +1118,7 @@
                     </div>
                 </div>
             </div>
-
-            <div style="display:flex;gap:10px;padding:16px 0 20px;">
+            <div style="display:flex;gap:10px;padding:0 0 20px;">
                 <button type="button" onclick="closeSitinModal()"
                     style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
                 <button type="submit"
@@ -688,6 +1130,57 @@
 </div>
 
 <script>
+    /* ── Edit Modal ── */
+    function openEditModal(id, idNumber, firstName, lastName, mi, course, yearLevel, email, address, sessions) {
+        document.getElementById('editStudentForm').action = '/admin/students/' + id + '/edit';
+        document.getElementById('editIdNumber').value = idNumber;
+        document.getElementById('editFirstName').value = firstName;
+        document.getElementById('editLastName').value = lastName;
+        document.getElementById('editMiddleInitial').value = mi;
+        document.getElementById('editEmail').value = email;
+        document.getElementById('editAddress').value = address;
+        document.getElementById('editSessions').value = sessions;
+        // Set course
+        var courseSelect = document.getElementById('editCourse');
+        for (var i = 0; i < courseSelect.options.length; i++) {
+            if (courseSelect.options[i].value === course) { courseSelect.selectedIndex = i; break; }
+        }
+        // Set year level
+        var yearSelect = document.getElementById('editYearLevel');
+        for (var j = 0; j < yearSelect.options.length; j++) {
+            if (yearSelect.options[j].value == yearLevel) { yearSelect.selectedIndex = j; break; }
+        }
+        document.getElementById('editStudentModal').classList.add('open');
+    }
+    function closeEditModal() {
+        document.getElementById('editStudentModal').classList.remove('open');
+    }
+
+    /* ── Add Student Modal ── */
+    function openAddStudentModal() {
+        document.getElementById('addStudentModal').classList.add('open');
+    }
+    function closeAddStudentModal() {
+        document.getElementById('addStudentModal').classList.remove('open');
+    }
+
+    // Password match validation for Add Student
+    document.getElementById('addConfirmPassword').addEventListener('input', function () {
+        var pass = document.getElementById('addPassword').value;
+        var msg = document.getElementById('addPasswordMsg');
+        var btn = document.getElementById('addStudentSubmitBtn');
+        if (this.value && this.value !== pass) {
+            msg.style.display = 'block';
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+        } else {
+            msg.style.display = 'none';
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    });
+
+    /* ── Sit-in Modal ── */
     function openSitinModal(id, idNumber, name, sessions) {
         document.getElementById('mUserId').value = id;
         document.getElementById('mIdNumber').textContent = idNumber;
@@ -699,18 +1192,20 @@
     function closeSitinModal() {
         document.getElementById('sitinModal').style.display = 'none';
     }
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSitinModal(); });
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        closeEditModal();
+        closeAddStudentModal();
+        closeSitinModal();
+    });
 
+    /* ── Search ── */
     document.getElementById('studentSearch').addEventListener('input', function () {
         var q = this.value.toLowerCase();
         document.querySelectorAll('.stud-row').forEach(function (row) {
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
-        updateCount();
-    });
-
-    function updateCount() {
         var visible = document.querySelectorAll('.stud-row:not([style*="none"])').length;
         document.getElementById('showingCount').innerHTML = 'Showing <strong>' + visible + '</strong> entries';
-    }
+    });
 </script>

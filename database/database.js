@@ -24,7 +24,6 @@ db.serialize(() => {
         created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 
-    // Migration: add address and profile_picture columns if they don't exist yet
     db.run(`ALTER TABLE users ADD COLUMN address TEXT DEFAULT ''`, () => { });
     db.run(`ALTER TABLE users ADD COLUMN profile_picture TEXT DEFAULT ''`, () => { });
 
@@ -74,6 +73,16 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         admin_id INTEGER,
         message TEXT NOT NULL,
+        created_at DATETIME DEFAULT (datetime('now','localtime'))
+    )`);
+
+    // Admin notifications table — receives alerts when students submit reservations
+    db.run(`CREATE TABLE IF NOT EXISTS admin_notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        message TEXT NOT NULL,
+        type TEXT DEFAULT 'info',
+        related_id INTEGER,
+        is_read INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 });
