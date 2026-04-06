@@ -116,6 +116,7 @@
         gap: 12px;
         padding: 14px 32px;
         border-bottom: 1px solid #E2DDD8;
+        background: #F0EDE8;
     }
 
     .res-filter-select {
@@ -154,6 +155,27 @@
     .res-search-wrap input:focus {
         border-color: #273F4F;
         box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+    }
+
+    .btn-print-res {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 14px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #374151;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-print-res:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
     }
 
     /* Table */
@@ -331,12 +353,12 @@
         0%,
         100% {
             opacity: 1;
-            transform: scale(1)
+            transform: scale(1);
         }
 
         50% {
             opacity: 0.5;
-            transform: scale(0.8)
+            transform: scale(0.8);
         }
     }
 
@@ -398,9 +420,79 @@
         flex-wrap: wrap;
         gap: 8px;
     }
+
+    /* ── Print Styles ── */
+    @media print {
+
+        .res-header,
+        .res-toolbar,
+        .stat-card,
+        .res-stats,
+        aside,
+        header,
+        footer,
+        .btn-approve,
+        .btn-reject,
+        form[action] {
+            display: none !important;
+        }
+
+        .res-table-wrap {
+            padding: 0 !important;
+        }
+
+        .res-table-card {
+            border: none !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+        }
+
+        .res-page {
+            background: white !important;
+        }
+
+        body {
+            background: white !important;
+        }
+
+        #print-header-area {
+            display: block !important;
+        }
+
+        .res-table th,
+        .res-table td {
+            font-size: 11px !important;
+            padding: 8px 10px !important;
+        }
+
+        /* Hide actions column when printing */
+        .res-table th:last-child,
+        .res-table td:last-child {
+            display: none !important;
+        }
+    }
+
+    #print-header-area {
+        display: none;
+        padding: 16px 0 12px;
+        border-bottom: 2px solid #273F4F;
+        margin-bottom: 12px;
+    }
 </style>
 
 <div class="res-page">
+
+    <!-- Print Header (only shows when printing) -->
+    <div id="print-header-area">
+        <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#1C2B35;margin:0 0 4px;">
+            CCS Lab PC Reservations Report
+        </h2>
+        <p style="font-size:12px;color:#6B7280;margin:0;">
+            Generated: <span id="print-date-label"></span> &nbsp;|&nbsp;
+            Filter: <span id="print-filter-label">All</span> &nbsp;|&nbsp;
+            Total: <span id="print-count-label">0</span> records
+        </p>
+    </div>
 
     <!-- Header -->
     <div class="res-header">
@@ -506,20 +598,32 @@
                     <option value="544">Lab 544</option>
                 </select>
             </div>
-            <div class="res-search-wrap">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                    style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;">
-                    <path fill-rule="evenodd"
-                        d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                        clip-rule="evenodd" />
-                </svg>
-                <input type="text" id="searchInput" placeholder="Search..." oninput="filterTable()">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div class="res-search-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;">
+                        <path fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search..." oninput="filterTable()">
+                </div>
+                <!-- ── PRINT BUTTON ── -->
+                <button class="btn-print-res" onclick="printReservations()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
+                        height="13">
+                        <path fill-rule="evenodd"
+                            d="M4.25 1.5A.75.75 0 0 1 5 .75h6a.75.75 0 0 1 .75.75V3h.5A2.25 2.25 0 0 1 14.5 5.25v4.5A2.25 2.25 0 0 1 12.25 12H12v1.25A1.75 1.75 0 0 1 10.25 15h-4.5A1.75 1.75 0 0 1 4 13.25V12h-.25A2.25 2.25 0 0 1 1.5 9.75v-4.5A2.25 2.25 0 0 1 3.75 3h.5V1.5ZM5.5 3h5V2.25h-5V3Zm-.75 7.5v2.75c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25V10.5h-6Zm7-5.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Print
+                </button>
             </div>
         </div>
 
         <!-- Table -->
         <div class="res-table-wrap">
-            <div class="res-table-card">
+            <div class="res-table-card" id="printArea">
                 <div style="overflow-x:auto;">
                     <table class="res-table">
                         <thead>
@@ -538,8 +642,8 @@
                         </thead>
                         <tbody id="resBody">
                             <% if (allRes.length> 0) { %>
-                                <% allRes.forEach(function(r) { var
-                                    initials=(r.first_name?r.first_name[0]:'')+(r.last_name?r.last_name[0]:''); %>
+                                <% allRes.forEach(function(r) { var initials=(r.first_name ? r.first_name[0] : '' ) +
+                                    (r.last_name ? r.last_name[0] : '' ); %>
                                     <tr class="res-row" data-status="<%= r.status %>" data-lab="<%= r.lab_room %>">
                                         <td>
                                             <div class="name-cell">
@@ -605,7 +709,7 @@
                                                     <% } %>
                                         </td>
                                     </tr>
-                                    <% }) %>
+                                    <% }); %>
                                         <% } else { %>
                                             <tr>
                                                 <td colspan="10"
@@ -641,5 +745,21 @@
             if (show) count++;
         });
         document.getElementById('rowCount').textContent = count;
+    }
+
+    function printReservations() {
+        // Update print header info
+        const statusEl = document.getElementById('statusFilter');
+        const statusText = statusEl.options[statusEl.selectedIndex].text;
+        const visibleCount = document.getElementById('rowCount').textContent;
+
+        document.getElementById('print-date-label').textContent = new Date().toLocaleString('en-US', {
+            year: 'numeric', month: 'long', day: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+        document.getElementById('print-filter-label').textContent = statusText || 'All';
+        document.getElementById('print-count-label').textContent = visibleCount;
+
+        window.print();
     }
 </script>

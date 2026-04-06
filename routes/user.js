@@ -132,24 +132,32 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
 
     if (!message || !message.trim()) {
         req.session.toast = { type: 'error', message: 'Feedback message cannot be empty.' };
-        return res.redirect('/history');
+        return req.session.save(() => res.redirect('/history'));
     }
 
     if (containsVulgar(message)) {
-        req.session.toast = { type: 'error', message: 'Your feedback contains inappropriate language. Please keep it respectful.' };
-        return res.redirect('/history');
+        req.session.toast = {
+            type: 'error',
+            message: '⚠ Your feedback contains inappropriate language. Please keep it respectful and resubmit.'
+        };
+        return req.session.save(() => res.redirect('/history'));
     }
+
+    const ratingVal = parseInt(rating) || 0;
 
     db.run(
         `INSERT INTO feedback (user_id, session_id, message, rating) VALUES (?, ?, ?, ?)`,
-        [req.session.user.id, session_id || null, message.trim(), rating || 0],
-        () => {
-            req.session.toast = { type: 'success', message: 'Thank you for your feedback!' };
-            res.redirect('/history');
+        [req.session.user.id, session_id || null, message.trim(), ratingVal],
+        function (err) {
+            if (err) {
+                req.session.toast = { type: 'error', message: 'Failed to submit feedback. Please try again.' };
+                return req.session.save(() => res.redirect('/history'));
+            }
+            req.session.toast = { type: 'success', message: '✅ Thank you for your feedback! It has been submitted successfully.' };
+            req.session.save(() => res.redirect('/history'));
         }
     );
 });
-
 // ─── Announcement Reactions ───────────────────────────────────────────────────
 router.post('/announcements/:id/react', isAuthenticated, (req, res) => {
     const { emoji } = req.body;

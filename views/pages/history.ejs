@@ -5,40 +5,33 @@
         <p class="text-gray-500 text-sm mt-1">Your complete laboratory sit-in records.</p>
     </div>
 
+    <!-- ── Flash toast for vulgar word / feedback errors shown by session toast partial ── -->
+
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
         <!-- Table toolbar -->
         <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
-
-            <!-- LEFT: TITLE -->
             <div class="flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-[#5B0E14]"></div>
-                <span class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">
-                    History Information
-                </span>
+                <span class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">History Information</span>
             </div>
-
-            <!-- RIGHT: CONTROLS -->
             <div class="flex flex-wrap items-center justify-end gap-4 sm:gap-8 mt-4 sm:mt-0">
-
                 <div class="flex items-center gap-3">
                     <label class="text-xs text-gray-500 whitespace-nowrap">Show entries</label>
-                    <select id="entriesPerPage" class="border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-700 
-        focus:outline-none focus:ring-2 focus:ring-[#273F4F] bg-white cursor-pointer">
+                    <select id="entriesPerPage"
+                        class="border border-gray-300 rounded-lg px-3 py-2 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#273F4F] bg-white cursor-pointer">
                         <option value="10">10</option>
                         <option value="25">25</option>
                         <option value="50">50</option>
                     </select>
                 </div>
-
                 <div class="flex items-center gap-3">
-                    <input type="text" id="searchInput" placeholder="Search..." class="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 
-        placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#273F4F] 
-        bg-white w-full sm:w-52">
+                    <input type="text" id="searchInput" placeholder="Search..."
+                        class="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#273F4F] bg-white w-full sm:w-52">
                 </div>
-
             </div>
         </div>
+
         <!-- Table -->
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -135,7 +128,7 @@
                                                 <% } %>
                                     </td>
                                 </tr>
-                                <% }) %>
+                                <% }); %>
                                     <% } else { %>
                                         <tr>
                                             <td colspan="8" class="px-4 py-16 text-center">
@@ -155,7 +148,6 @@
                                             </td>
                                         </tr>
                                         <% } %>
-
                 </tbody>
             </table>
         </div>
@@ -169,13 +161,24 @@
     </div>
 </div>
 
-<!-- Feedback Modal -->
+<!-- ════════════════════════════════════════════
+     FEEDBACK MODAL — Fixed star rating UX
+════════════════════════════════════════════ -->
 <div id="feedbackModal" class="fixed inset-0 z-50 hidden items-center justify-center">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeFeedbackModal()"></div>
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+
+        <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between"
             style="background: linear-gradient(135deg, #5B0E14, #3A0910);">
-            <h3 class="font-bold text-white">Submit Feedback</h3>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="18" height="18">
+                    <path fill-rule="evenodd"
+                        d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.671 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 0 0 1.28.53l3.58-3.579a.78.78 0 0 1 .527-.224 41.202 41.202 0 0 0 5.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0 0 10 2Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <h3 class="font-bold text-white text-base">Submit Feedback</h3>
+            </div>
             <button onclick="closeFeedbackModal()"
                 class="text-white/60 hover:text-white transition-colors cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
@@ -184,58 +187,168 @@
                 </svg>
             </button>
         </div>
-        <form action="/feedback" method="POST" class="p-6 space-y-4">
+
+        <form action="/feedback" method="POST" class="p-6 space-y-5">
             <input type="hidden" name="session_id" id="feedbackSessionId">
+
+            <!-- ── Star Rating ── -->
             <div class="space-y-2">
-                <label class="block text-sm font-bold text-gray-700">Rating</label>
-                <div class="flex gap-1" id="starRating">
-                    <% for (let i=1; i <=5; i++) { %>
-                        <button type="button" data-star="<%= i %>"
-                            class="star-btn text-3xl text-gray-300 hover:text-yellow-400 transition-colors cursor-pointer">★</button>
+                <label class="block text-sm font-bold text-gray-700">
+                    Rating <span style="color:#9CA3AF;font-weight:400;">(click a star)</span>
+                </label>
+
+                <!-- Star row -->
+                <div id="starRating" style="display:flex;gap:6px;align-items:center;">
+                    <% for (var i=1; i <=5; i++) { %>
+                        <button type="button" data-star="<%= i %>" class="star-btn"
+                            style="font-size:32px;color:#D1D5DB;cursor:pointer;background:none;border:none;padding:2px;line-height:1;transition:color 0.15s,transform 0.1s;"
+                            title="<%= i %> star<%= i > 1 ? 's' : '' %>">★</button>
                         <% } %>
+                            <span id="ratingLabel"
+                                style="font-size:12px;font-weight:600;color:#9CA3AF;margin-left:8px;min-width:80px;">
+                                No rating
+                            </span>
                 </div>
+
+                <!-- Hidden rating value -->
                 <input type="hidden" name="rating" id="ratingInput" value="0">
+
+                <!-- Clear rating button -->
+                <button type="button" onclick="clearRating()"
+                    style="font-size:11px;color:#9CA3AF;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;display:none;"
+                    id="clearRatingBtn">
+                    Clear rating
+                </button>
             </div>
+
+            <!-- ── Feedback Message ── -->
             <div class="space-y-1">
-                <label class="block text-sm font-bold text-gray-700">Message</label>
-                <textarea name="message" rows="4" required placeholder="Share your experience..."
-                    class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm resize-none transition-all"></textarea>
+                <label class="block text-sm font-bold text-gray-700">
+                    Message <span style="color:#DC2626;">*</span>
+                </label>
+                <textarea name="message" rows="4" required
+                    placeholder="Share your experience about the laboratory sit-in session..." id="feedbackMessage"
+                    class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#273F4F] focus:bg-white outline-none text-sm resize-none transition-all"
+                    oninput="updateCharCount(this)"></textarea>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:11px;color:#9CA3AF;" id="charCount">0 / 500 characters</span>
+                    <!-- Profanity warning hint -->
+                    <span style="font-size:10px;color:#9CA3AF;">⚠ Keep language respectful</span>
+                </div>
             </div>
+
+            <!-- Action Buttons -->
             <div class="flex gap-3">
-                <button type="submit" class="btn-maroon flex-1 py-3 text-base">Submit</button>
+                <button type="submit"
+                    style="flex:2;padding:12px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.15s;">
+                    Submit Feedback
+                </button>
                 <button type="button" onclick="closeFeedbackModal()"
-                    class="btn-dark flex-1 py-3 text-base">Cancel</button>
+                    style="flex:1;padding:12px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;">
+                    Cancel
+                </button>
             </div>
         </form>
     </div>
 </div>
 
+<style>
+    .star-btn:hover {
+        transform: scale(1.15);
+    }
+</style>
+
 <script>
+    /* ── Feedback Modal ── */
     function openFeedbackModal(sessionId) {
         document.getElementById('feedbackSessionId').value = sessionId;
         document.getElementById('feedbackModal').classList.remove('hidden');
         document.getElementById('feedbackModal').classList.add('flex');
+        // Reset form state
+        clearRating();
+        document.getElementById('feedbackMessage').value = '';
+        document.getElementById('charCount').textContent = '0 / 500 characters';
     }
+
     function closeFeedbackModal() {
         document.getElementById('feedbackModal').classList.add('hidden');
         document.getElementById('feedbackModal').classList.remove('flex');
     }
 
-    document.querySelectorAll('.star-btn').forEach(star => {
-        star.addEventListener('click', () => {
-            const val = parseInt(star.dataset.star);
-            document.getElementById('ratingInput').value = val;
-            document.querySelectorAll('.star-btn').forEach((s, i) => {
-                s.classList.toggle('text-yellow-400', i < val);
-                s.classList.toggle('text-gray-300', i >= val);
+    /* ── Star Rating Logic ── */
+    var RATING_LABELS = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+    var RATING_COLORS = ['', '#DC2626', '#F59E0B', '#3B82F6', '#059669', '#F59E0B'];
+    var currentRating = 0;
+
+    function setRating(val) {
+        currentRating = val;
+        document.getElementById('ratingInput').value = val;
+
+        // Update star colors
+        document.querySelectorAll('.star-btn').forEach(function (btn) {
+            var s = parseInt(btn.dataset.star);
+            btn.style.color = s <= val ? '#F59E0B' : '#D1D5DB';
+            btn.style.textShadow = s <= val ? '0 0 8px rgba(245,158,11,0.4)' : 'none';
+        });
+
+        // Update label
+        var label = document.getElementById('ratingLabel');
+        label.textContent = RATING_LABELS[val] || 'No rating';
+        label.style.color = RATING_COLORS[val] || '#9CA3AF';
+        label.style.fontWeight = val > 0 ? '700' : '600';
+
+        // Show/hide clear button
+        document.getElementById('clearRatingBtn').style.display = val > 0 ? 'inline' : 'none';
+    }
+
+    function clearRating() {
+        setRating(0);
+    }
+
+    /* ── Attach star click + hover events ── */
+    document.querySelectorAll('.star-btn').forEach(function (star) {
+        star.addEventListener('click', function () {
+            setRating(parseInt(this.dataset.star));
+        });
+
+        star.addEventListener('mouseenter', function () {
+            var hoverVal = parseInt(this.dataset.star);
+            document.querySelectorAll('.star-btn').forEach(function (s) {
+                s.style.color = parseInt(s.dataset.star) <= hoverVal ? '#FBBF24' : '#D1D5DB';
+            });
+        });
+
+        star.addEventListener('mouseleave', function () {
+            // Restore to currently selected rating
+            document.querySelectorAll('.star-btn').forEach(function (s) {
+                s.style.color = parseInt(s.dataset.star) <= currentRating ? '#F59E0B' : '#D1D5DB';
+                s.style.textShadow = parseInt(s.dataset.star) <= currentRating ? '0 0 8px rgba(245,158,11,0.4)' : 'none';
             });
         });
     });
 
+    /* ── Char counter ── */
+    function updateCharCount(el) {
+        var len = el.value.length;
+        var counter = document.getElementById('charCount');
+        counter.textContent = len + ' / 500 characters';
+        counter.style.color = len > 450 ? '#DC2626' : '#9CA3AF';
+        if (len > 500) {
+            el.value = el.value.substring(0, 500);
+            counter.textContent = '500 / 500 characters';
+        }
+    }
+
+    /* ── Table search ── */
     document.getElementById('searchInput').addEventListener('input', function () {
-        const q = this.value.toLowerCase();
-        document.querySelectorAll('.history-row').forEach(row => {
+        var q = this.value.toLowerCase();
+        document.querySelectorAll('.history-row').forEach(function (row) {
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
+    });
+
+    /* ── ESC closes modal ── */
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeFeedbackModal();
     });
 </script>
