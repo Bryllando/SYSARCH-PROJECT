@@ -31,12 +31,16 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
         lab_room TEXT,
+        computer_number INTEGER DEFAULT NULL,
         purpose TEXT,
         time_in DATETIME DEFAULT (datetime('now','localtime')),
         time_out DATETIME,
         status TEXT DEFAULT 'active',
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
+
+    // Add computer_number to existing sitin_sessions if it doesn't exist
+    db.run(`ALTER TABLE sitin_sessions ADD COLUMN computer_number INTEGER DEFAULT NULL`, () => { });
 
     db.run(`CREATE TABLE IF NOT EXISTS reservations (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,6 +53,9 @@ db.serialize(() => {
         created_at DATETIME DEFAULT (datetime('now','localtime')),
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
+
+    db.run(`ALTER TABLE reservations ADD COLUMN computer_number INTEGER DEFAULT NULL`, () => { });
+    db.run(`ALTER TABLE reservations ADD COLUMN computer_id INTEGER DEFAULT NULL`, () => { });
 
     db.run(`CREATE TABLE IF NOT EXISTS feedback (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -111,15 +118,13 @@ db.serialize(() => {
         created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 
-    // ── ADD THESE TABLES TO database/database.js inside db.serialize() ──
-
     db.run(`CREATE TABLE IF NOT EXISTS lab_computers (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    lab_room TEXT NOT NULL,
-    computer_number INTEGER NOT NULL,
-    status TEXT DEFAULT 'available',
-    UNIQUE(lab_room, computer_number)
-)`);
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        lab_room TEXT NOT NULL,
+        computer_number INTEGER NOT NULL,
+        status TEXT DEFAULT 'available',
+        UNIQUE(lab_room, computer_number)
+    )`);
 
     // Seed computers for each lab on first run
     function seedLabComputers() {
@@ -142,10 +147,6 @@ db.serialize(() => {
         });
     }
     seedLabComputers();
-
-    // Also add computer_number column to reservations table
-    db.run(`ALTER TABLE reservations ADD COLUMN computer_number INTEGER DEFAULT NULL`, () => { });
-    db.run(`ALTER TABLE reservations ADD COLUMN computer_id INTEGER DEFAULT NULL`, () => { });
 });
 
 module.exports = db;

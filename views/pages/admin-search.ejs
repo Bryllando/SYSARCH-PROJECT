@@ -170,89 +170,119 @@
         </div>
 
         <!-- Form — label left, value right (matches screenshot) -->
-        <form action="/admin/sitin/start" method="POST" class="px-5 py-4 space-y-3">
-            <input type="hidden" name="return_to" value="/admin/search">
+        <form id="sitinForm" action="/admin/sitin/start" method="POST">
+            <input type="hidden" name="return_to" value="/admin">
             <input type="hidden" name="user_id" id="sitinUserId">
+            <input type="hidden" name="computer_number" id="sitinComputerNumber" value="">
 
-            <div class="flex items-center gap-3">
-                <label class="w-32 text-sm text-gray-600 text-right shrink-0">ID Number:</label>
-                <p id="sitinIdNumber"
-                    class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-[34px]">
-                </p>
+            <!-- Student info strip -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #F3F0EC;">
+                <div style="padding:14px 20px;border-right:1px solid #F3F0EC;">
+                    <div
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
+                        ID Number</div>
+                    <div id="sitinIdNumber" style="font-size:14px;font-weight:700;color:#1C2B35;font-family:monospace;">
+                    </div>
+                </div>
+                <div style="padding:14px 20px;background:#FFF9F0;">
+                    <div
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
+                        Sessions Left</div>
+                    <div id="sitinSessions" style="font-size:14px;font-weight:800;color:#5B0E14;"></div>
+                </div>
+                <div style="padding:14px 20px;grid-column:span 2;border-top:1px solid #F3F0EC;">
+                    <div
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
+                        Student Name</div>
+                    <div id="sitinName" style="font-size:14px;font-weight:700;color:#1C2B35;"></div>
+                </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Student Name:</label>
-                <p id="sitinName"
-                    class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-[34px]">
-                </p>
-            </div>
 
-            <div class="flex items-center gap-3">
-                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Purpose:</label>
-                <div class="flex-1 relative">
-                    <select name="purpose" required
-                        class="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 appearance-none focus:ring-2 focus:ring-[#273F4F] outline-none">
-                        <option value="" disabled selected>Select...</option>
-                        <option>C Programming</option>
-                        <option>Java Programming</option>
-                        <option>C# Programming</option>
-                        <option>ASP.Net</option>
-                        <option>PHP Programming</option>
-                        <option>Database</option>
-                        <option>Research</option>
-                        <option>Other</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="size-3.5 text-gray-400">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
+            <!-- Purpose + Lab -->
+            <div style="padding:16px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                <div>
+                    <label
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Purpose
+                        *</label>
+                    <div style="position:relative;">
+                        <select name="purpose" required id="sitinPurpose"
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;">
+                            <option value="" disabled selected>Select...</option>
+                            <option>C Programming</option>
+                            <option>Java Programming</option>
+                            <option>C# Programming</option>
+                            <option>ASP.Net</option>
+                            <option>PHP Programming</option>
+                            <option>Database</option>
+                            <option>Research</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Laboratory
+                        *</label>
+                    <div style="position:relative;">
+                        <select name="lab_room" required id="sitinLabRoom"
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;"
+                            onchange="loadSitinPcGrid(this.value)">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="524">Lab 524</option>
+                            <option value="526">Lab 526</option>
+                            <option value="528">Lab 528</option>
+                            <option value="530">Lab 530 - Multimedia Lab</option>
+                            <option value="542">Lab 542 - It Laboratory</option>
+                            <option value="544">Lab 544 - Mac Laboratory</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Lab:</label>
-                <div class="flex-1 relative">
-                    <select name="lab_room" required
-                        class="w-full px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 appearance-none focus:ring-2 focus:ring-[#273F4F] outline-none">
-                        <option value="" disabled selected>Select...</option>
-                        <option value="524">Lab 524</option>
-                        <option value="526">Lab 526</option>
-                        <option value="528">Lab 528</option>
-                        <option value="530">Lab 530</option>
-                        <option value="Mac Lab">Mac Lab</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="size-3.5 text-gray-400">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
+            <!-- PC Grid (shown after lab is selected) -->
+            <div id="sitinPcSection" style="display:none;padding:0 20px 12px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <label
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;letter-spacing:0.08em;">
+                        Select PC <span
+                            style="color:#9CA3AF;text-transform:none;font-weight:400;font-size:10px;">(optional)</span>
+                    </label>
+                    <span style="font-size:11px;color:#9CA3AF;" id="sitinSelectedPcLabel">None selected</span>
+                </div>
+                <div id="sitinPcGrid"
+                    style="background:#F9F8F6;border:1.5px solid #E2DDD8;border-radius:12px;padding:12px;max-height:200px;overflow-y:auto;">
+                    <div style="text-align:center;color:#9CA3AF;font-size:12px;padding:16px;">Select a lab to load PCs
                     </div>
+                </div>
+                <!-- Legend -->
+                <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">
+                    <span style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#4B5563;">
+                        <span
+                            style="width:8px;height:8px;border-radius:50%;background:#10B981;border:1.5px solid #A7F3D0;"></span>Available
+                    </span>
+                    <span style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#4B5563;">
+                        <span
+                            style="width:8px;height:8px;border-radius:50%;background:#F59E0B;border:1.5px solid #FDE68A;"></span>In
+                        Use
+                    </span>
+                    <span style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#4B5563;">
+                        <span
+                            style="width:8px;height:8px;border-radius:50%;background:#DC2626;border:1.5px solid #FECACA;"></span>Defective
+                    </span>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <label class="w-32 text-sm text-gray-600 text-right shrink-0">Remaining Session:</label>
-                <p id="sitinSessions"
-                    class="flex-1 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-700 font-medium min-h-8.5">
-                </p>
-            </div>
-
-            <!-- Buttons — Close then Sit In, bottom right -->
-            <div class="flex justify-end gap-2 pt-2">
+            <div style="display:flex;gap:10px;padding:0 20px 18px;">
                 <button type="button" onclick="closeSitinModal()"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer">
-                    Close
-                </button>
+                    style="flex:1;padding:10px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
                 <button type="submit"
-                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white cursor-pointer transition-all hover:-translate-y-0.5"
-                    style="background: linear-gradient(135deg, #273F4F, #1a2d38);">
-                    Sit In
+                    style="flex:2;padding:10px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">
+                    Confirm Sit-in
                 </button>
             </div>
         </form>
+
     </div>
 </div>
 

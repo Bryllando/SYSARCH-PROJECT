@@ -32,13 +32,10 @@ function loadAnnouncementsWithMeta(userId, cb) {
         const result = [];
         announcements.forEach((ann, i) => {
             result[i] = { ...ann, reactions: {}, userReaction: null, commentCount: 0 };
-            // Get reaction counts grouped by emoji
             db.all(`SELECT emoji, COUNT(*) as count FROM announcement_reactions WHERE announcement_id=? GROUP BY emoji`, [ann.id], (e1, reactions) => {
                 (reactions || []).forEach(r => { result[i].reactions[r.emoji] = r.count; });
-                // Get user's reaction
                 db.get(`SELECT emoji FROM announcement_reactions WHERE announcement_id=? AND user_id=?`, [ann.id, userId], (e2, myReaction) => {
                     result[i].userReaction = myReaction ? myReaction.emoji : null;
-                    // Get comment count
                     db.get(`SELECT COUNT(*) as cnt FROM announcement_comments WHERE announcement_id=?`, [ann.id], (e3, cc) => {
                         result[i].commentCount = cc ? cc.cnt : 0;
                         done++;
@@ -160,80 +157,13 @@ router.get('/announcements/:id/comments', isAuthenticated, (req, res) => {
         [req.params.id], (err, comments) => res.json(comments || []));
 });
 
-// Reservation GET
+// ─── RESERVATION (Lab PC only) ────────────────────────────────────────────────
 router.get('/reservation', isAuthenticated, isUser, (req, res) => {
-    // General reservations (no computer_number)
     db.all(
-        `SELECT * FROM reservations WHERE user_id = ? AND computer_number IS NULL ORDER BY created_at DESC`,
+        `SELECT * FROM reservations WHERE user_id = ? AND computer_number IS NOT NULL ORDER BY created_at DESC`,
         [req.session.user.id],
         (err, reservations) => {
-            // Lab/PC reservations (has computer_number)
-            db.all(
-                `SELECT * FROM reservations WHERE user_id = ? AND computer_number IS NOT NULL ORDER BY created_at DESC`,
-                [req.session.user.id],
-                (err2, labReservations) => {
-                    res.render('pages/reservation', {
-                        reservations: reservations || [],
-                        labReservations: labReservations || [],
-                        messages: []
-                    });
-                }
-            );
-        }
-    );
-});
-// Reservation POST
-router.post('/reservation', isAuthenticated, isUser, (req, res) => {
-    const { lab_room, date, purpose, time_start, time_end } = req.body;
-    let time_slot = req.body.time_slot || '';
-    if (!time_slot && time_start && time_end) {
-        const to12h = (t) => {
-            const [h, m] = t.split(':').map(Number);
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            const hour = h % 12 || 12;
-            return `${String(hour).padStart(2, '0')}:${String(m).padStart(2, '0')} ${ampm}`;
-        };
-        time_slot = `${to12h(time_start)} – ${to12h(time_end)}`;
-    }
-    if (!lab_room || !date || !time_slot || !purpose) {
-        db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`, [req.session.user.id], (err, reservations) => {
-            res.render('pages/reservation', { reservations: reservations || [], messages: [{ type: 'error', text: 'Please fill in all required fields.' }] });
-        });
-        return;
-    }
-    db.run(`INSERT INTO reservations (user_id, lab_room, date, time_slot, purpose) VALUES (?, ?, ?, ?, ?)`,
-        [req.session.user.id, lab_room, date, time_slot, purpose], function (err) {
-            if (err) {
-                db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`, [req.session.user.id], (e2, reservations) => {
-                    res.render('pages/reservation', { reservations: reservations || [], messages: [{ type: 'error', text: 'Reservation failed.' }] });
-                });
-                return;
-            }
-            const u = req.session.user;
-            db.run(`INSERT INTO admin_notifications (message, type, related_id) VALUES (?, ?, ?)`,
-                [`New reservation from ${u.first_name} ${u.last_name} (${u.id_number}) for Lab ${lab_room} on ${date} at ${time_slot} — Purpose: ${purpose}.`, 'reservation', this.lastID]);
-            req.session.toast = { type: 'success', message: `Reservation for Lab ${lab_room} on ${date} submitted!` };
-            res.redirect('/reservation');
-        });
-});
-
-// Notifications JSON
-router.get('/notifications', isAuthenticated, isUser, (req, res) => {
-    db.all(`SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10`, [req.session.user.id], (err, notifications) => res.json(notifications || []));
-});
-router.post('/notifications/read', isAuthenticated, isUser, (req, res) => {
-    db.run(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`, [req.session.user.id], () => res.json({ success: true }));
-});
-
-// Lab Reservation Page (GET)
-router.get('/lab-reservation', isAuthenticated, isUser, (req, res) => {
-    db.all(
-        `SELECT r.*, u.first_name, u.last_name, u.id_number
-         FROM reservations r JOIN users u ON r.user_id = u.id
-         WHERE r.user_id = ? ORDER BY r.created_at DESC`,
-        [req.session.user.id],
-        (err, reservations) => {
-            res.render('pages/lab-reservation', { reservations: reservations || [] });
+            res.render('pages/reservation', { reservations: reservations || [] });
         }
     );
 });
@@ -255,16 +185,17 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
 
     if (!lab_room || !computer_number || !date || !time_slot || !purpose) {
         req.session.toast = { type: 'error', message: 'Please fill in all required fields.' };
-        return res.redirect('/reservation');   // ← changed from /lab-reservation
+        return res.redirect('/reservation');
     }
 
+    // Check for conflict: same lab + pc + date already approved
     db.get(
         `SELECT id FROM reservations WHERE lab_room = ? AND computer_number = ? AND date = ? AND status = 'approved'`,
         [lab_room, computer_number, date],
         (err, conflict) => {
             if (conflict) {
                 req.session.toast = { type: 'error', message: `PC-${String(computer_number).padStart(2, '0')} in Lab ${lab_room} is already reserved on ${date}.` };
-                return res.redirect('/reservation');   // ← changed from /lab-reservation
+                return res.redirect('/reservation');
             }
 
             db.run(
@@ -273,7 +204,7 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
                 function (err) {
                     if (err) {
                         req.session.toast = { type: 'error', message: 'Reservation failed. Try again.' };
-                        return res.redirect('/reservation');   // ← changed from /lab-reservation
+                        return res.redirect('/reservation');
                     }
 
                     const u = req.session.user;
@@ -282,14 +213,18 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
                         [`New lab reservation from ${u.first_name} ${u.last_name} (${u.id_number}) — Lab ${lab_room}, PC-${String(computer_number).padStart(2, '0')}, ${date} at ${time_slot}.`, 'reservation', this.lastID]
                     );
 
-                    req.session.toast = { type: 'success', message: `Reservation for Lab ${lab_room} PC-${String(computer_number).padStart(2, '0')} on ${date} submitted! Awaiting approval.` };
-                    res.redirect('/reservation');   // ← changed from /lab-reservation
+                    req.session.toast = {
+                        type: 'success',
+                        message: `Reservation for Lab ${lab_room} PC-${String(computer_number).padStart(2, '0')} on ${date} submitted! Awaiting approval.`
+                    };
+                    res.redirect('/reservation');
                 }
             );
         }
     );
 });
-// Get PC status for a lab (JSON, for AJAX)
+
+// Get PC status for a lab (JSON, for AJAX — used by both reservation.ejs and admin sit-in modal)
 router.get('/lab-computers/:lab_room', isAuthenticated, (req, res) => {
     db.all(
         `SELECT lc.computer_number, lc.status,
@@ -310,5 +245,12 @@ router.get('/lab-computers/:lab_room', isAuthenticated, (req, res) => {
     );
 });
 
+// Notifications JSON
+router.get('/notifications', isAuthenticated, isUser, (req, res) => {
+    db.all(`SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10`, [req.session.user.id], (err, notifications) => res.json(notifications || []));
+});
+router.post('/notifications/read', isAuthenticated, isUser, (req, res) => {
+    db.run(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`, [req.session.user.id], () => res.json({ success: true }));
+});
 
 module.exports = router;

@@ -1,14 +1,12 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
 
-
     .sitin-page {
         font-family: 'DM Sans', sans-serif;
         background: #F0EDE8;
         min-height: 100%;
     }
 
-    /* ── Header ── */
     .sitin-header {
         padding: 28px 32px 20px;
         background: #F0EDE8;
@@ -35,7 +33,6 @@
         margin: 0;
     }
 
-    /* Live pulse pill */
     .live-pill {
         display: inline-flex;
         align-items: center;
@@ -72,66 +69,8 @@
         }
     }
 
-    /* ── Stats ribbon ── */
-    .sitin-stats {
-        display: flex;
-        gap: 12px;
-        padding: 16px 32px;
-        background: #F0EDE8;
-    }
-
-    .stat-chip {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 16px;
-        background: #fff;
-        border-radius: 12px;
-        border: 1px solid #E8E3DD;
-        flex: 1;
-        min-width: 0;
-    }
-
-    .stat-chip-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .stat-chip-icon.green {
-        background: #DCFCE7;
-    }
-
-    .stat-chip-icon.dark {
-        background: #E8EFF4;
-    }
-
-    .stat-chip-icon.amber {
-        background: #FEF3C7;
-    }
-
-    .stat-chip-val {
-        font-family: 'Syne', sans-serif;
-        font-size: 22px;
-        font-weight: 800;
-        color: #1C2B35;
-        line-height: 1;
-    }
-
-    .stat-chip-label {
-        font-size: 11px;
-        color: #9CA3AF;
-        font-weight: 500;
-        margin-top: 2px;
-    }
-
-    /* ── Main table card ── */
     .sitin-card {
-        margin: 0 32px 32px;
+        margin: 16px 32px 32px;
         background: #fff;
         border-radius: 16px;
         overflow: hidden;
@@ -139,7 +78,6 @@
         border: 1px solid #E8E3DD;
     }
 
-    /* Card toolbar */
     .sitin-card-toolbar {
         padding: 14px 20px;
         border-bottom: 1px solid #F3F0EC;
@@ -149,27 +87,6 @@
         flex-wrap: wrap;
         gap: 12px;
         background: #FAFAF9;
-    }
-
-    .sitin-card-toolbar-left {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .label-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: #059669;
-    }
-
-    .sitin-toolbar-title {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #6B7280;
     }
 
     .sitin-search-wrap {
@@ -205,27 +122,6 @@
         box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
     }
 
-    .sitin-entries-select {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 11px;
-        color: #6B7280;
-    }
-
-    .sitin-entries-select select {
-        padding: 5px 8px;
-        border: 1.5px solid #E2DDD8;
-        border-radius: 7px;
-        background: #fff;
-        font-size: 11px;
-        color: #374151;
-        outline: none;
-        font-family: 'DM Sans', sans-serif;
-        cursor: pointer;
-    }
-
-    /* ── Table ── */
     table.sitin-table {
         width: 100%;
         border-collapse: collapse;
@@ -238,7 +134,7 @@
     }
 
     .sitin-table th {
-        padding: 12px 16px;
+        padding: 12px 14px;
         text-align: left;
         font-size: 9.5px;
         font-weight: 700;
@@ -262,11 +158,10 @@
     }
 
     .sitin-table td {
-        padding: 13px 16px;
+        padding: 13px 14px;
         vertical-align: middle;
     }
 
-    /* ── Sit ID ── */
     .sit-id {
         font-family: monospace;
         font-size: 11px;
@@ -276,7 +171,6 @@
         border-radius: 5px;
     }
 
-    /* ── Name cell ── */
     .name-cell {
         display: flex;
         align-items: center;
@@ -304,12 +198,6 @@
         white-space: nowrap;
     }
 
-    .id-text {
-        font-size: 11px;
-        color: #9CA3AF;
-    }
-
-    /* ── Purpose tag ── */
     .purpose-tag {
         display: inline-flex;
         padding: 4px 9px;
@@ -321,7 +209,6 @@
         white-space: nowrap;
     }
 
-    /* ── Lab tag ── */
     .lab-tag {
         display: inline-flex;
         align-items: center;
@@ -335,7 +222,24 @@
         white-space: nowrap;
     }
 
-    /* ── Time in ── */
+    .pc-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        white-space: nowrap;
+    }
+
+    .pc-tag.no-pc {
+        background: #F3F4F6;
+        color: #9CA3AF;
+    }
+
     .time-cell {
         font-size: 12px;
         color: #4B5563;
@@ -343,7 +247,6 @@
         font-variant-numeric: tabular-nums;
     }
 
-    /* ── Status badge ── */
     .status-active {
         display: inline-flex;
         align-items: center;
@@ -358,12 +261,11 @@
         white-space: nowrap;
     }
 
-    /* ── Logout button ── */
     .btn-logout {
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        padding: 7px 13px;
+        padding: 6px 12px;
         border-radius: 8px;
         font-size: 11px;
         font-weight: 700;
@@ -383,24 +285,35 @@
         transform: translateY(-1px);
     }
 
-    /* ── Empty state ── */
+    .btn-edit-pc {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #F0F9FF;
+        color: #0369A1;
+        border: 1.5px solid #BAE6FD;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.15s;
+        white-space: nowrap;
+    }
+
+    .btn-edit-pc:hover {
+        background: #0369A1;
+        border-color: #0369A1;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
     .sitin-empty {
         padding: 72px 24px;
         text-align: center;
     }
 
-    .sitin-empty-icon {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #F3F0EC, #E8E3DD);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 14px;
-    }
-
-    /* Footer */
     .sitin-card-footer {
         padding: 12px 20px;
         border-top: 1px solid #F3F0EC;
@@ -410,6 +323,335 @@
         font-size: 11px;
         color: #9CA3AF;
         background: #FAFAF9;
+    }
+
+    /* ── Edit PC Modal ── */
+    .edit-pc-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .edit-pc-overlay.open {
+        display: flex;
+    }
+
+    .edit-pc-overlay.open .edit-pc-card {
+        animation: epIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes epIn {
+        from {
+            opacity: 0;
+            transform: scale(0.88) translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .edit-pc-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+        width: 100%;
+        max-width: 860px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .edit-pc-header {
+        background: linear-gradient(135deg, #0369A1, #0284C7);
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+    }
+
+    .edit-pc-close {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 9px;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.15s;
+    }
+
+    .edit-pc-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .edit-pc-legend {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 24px;
+        background: #F7F5F2;
+        border-bottom: 1px solid #E8E3DD;
+        flex-wrap: wrap;
+        font-size: 11px;
+        font-weight: 600;
+        color: #4B5563;
+        flex-shrink: 0;
+    }
+
+    .edit-pc-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid;
+    }
+
+    .edit-pc-body {
+        padding: 20px 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .pc-teacher-area {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .pc-row-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #C4BDB6;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 14px 0 8px;
+    }
+
+    .pc-grid-10 {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    .pc-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        padding: 8px 4px;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        transition: all 0.18s;
+        position: relative;
+    }
+
+    .pc-unit:hover:not(.pc-defect) {
+        border-color: #0369A1;
+        background: rgba(3, 105, 161, 0.07);
+        transform: translateY(-2px);
+    }
+
+    .pc-unit.selected {
+        border-color: #0369A1 !important;
+        background: rgba(3, 105, 161, 0.12) !important;
+    }
+
+    .pc-unit.pc-current {
+        border-color: #059669 !important;
+        background: rgba(5, 150, 105, 0.1) !important;
+    }
+
+    .pc-unit.pc-defect {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
+    .pc-unit.pc-occupied-other {
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .pc-icon-wrap {
+        width: 38px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 2px solid;
+    }
+
+    .pc-avail .pc-icon-wrap {
+        background: #ECFDF5;
+        border-color: #A7F3D0;
+    }
+
+    .pc-in-use .pc-icon-wrap {
+        background: #FFF7ED;
+        border-color: #FDE68A;
+    }
+
+    .pc-defect .pc-icon-wrap {
+        background: #FEF2F2;
+        border-color: #FECACA;
+    }
+
+    .pc-reserved .pc-icon-wrap {
+        background: #EFF6FF;
+        border-color: #BFDBFE;
+    }
+
+    .pc-current .pc-icon-wrap {
+        background: #ECFDF5;
+        border-color: #6EE7B7;
+    }
+
+    .pc-status-dot {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+    }
+
+    .pc-avail .pc-status-dot {
+        background: #10B981;
+    }
+
+    .pc-in-use .pc-status-dot {
+        background: #F59E0B;
+        animation: livePulse 1.5s infinite;
+    }
+
+    .pc-defect .pc-status-dot {
+        background: #DC2626;
+    }
+
+    .pc-reserved .pc-status-dot {
+        background: #3B82F6;
+    }
+
+    .pc-current .pc-status-dot {
+        background: #059669;
+    }
+
+    .pc-number {
+        font-size: 9px;
+        font-weight: 700;
+    }
+
+    .pc-avail .pc-number {
+        color: #065F46;
+    }
+
+    .pc-in-use .pc-number {
+        color: #92400E;
+    }
+
+    .pc-defect .pc-number {
+        color: #991B1B;
+    }
+
+    .pc-reserved .pc-number {
+        color: #1D4ED8;
+    }
+
+    .pc-current .pc-number {
+        color: #065F46;
+    }
+
+    .pc-label {
+        font-size: 7.5px;
+        font-weight: 600;
+        color: #9CA3AF;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .edit-pc-footer {
+        padding: 14px 24px;
+        border-top: 1px solid #E8E3DD;
+        background: #FAFAF9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .btn-save-pc {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #0369A1, #0284C7);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-save-pc:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+
+    .btn-clear-pc {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 16px;
+        background: #F3F4F6;
+        color: #6B7280;
+        border: 1.5px solid #E5E7EB;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-clear-pc:hover {
+        background: #E5E7EB;
     }
 </style>
 
@@ -427,24 +669,16 @@
         </div>
     </div>
 
-
     <!-- Table card -->
     <div class="sitin-card">
 
         <div class="sitin-card-toolbar">
             <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-                <div class="sitin-card-toolbar-left">
-                    <div class="label-dot"></div>
-                    <span class="sitin-toolbar-title">Active Sessions</span>
-                </div>
-                <div class="sitin-entries-select">
-                    <span>Show</span>
-                    <select id="entriesPerPage">
-                        <option>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                    <span>entries</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="width:6px;height:6px;border-radius:50%;background:#059669;"></div>
+                    <span
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">Active
+                        Sessions</span>
                 </div>
             </div>
             <div class="sitin-search-wrap">
@@ -467,10 +701,11 @@
                         <th>Course</th>
                         <th>Purpose</th>
                         <th>Lab</th>
+                        <th>PC</th>
                         <th>Session</th>
                         <th>Time In</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="sitinBody">
@@ -485,17 +720,14 @@
                                             <div class="name-avatar">
                                                 <%= initials.toUpperCase() %>
                                             </div>
-                                            <div>
-                                                <div class="name-text">
-                                                    <%= s.last_name %>, <%= s.first_name %>
-                                                </div>
+                                            <div class="name-text">
+                                                <%= s.last_name %>, <%= s.first_name %>
                                             </div>
                                         </div>
                                     </td>
-                                    <td><span class="id-text"
-                                            style="font-family:monospace;font-size:12px;color:#4B5563;">
-                                            <%= s.id_number %>
-                                        </span></td>
+                                    <td style="font-family:monospace;font-size:12px;color:#4B5563;">
+                                        <%= s.id_number %>
+                                    </td>
                                     <td>
                                         <span
                                             style="display:inline-flex;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;">
@@ -505,7 +737,8 @@
                                     <td><span class="purpose-tag">
                                             <%= s.purpose || '—' %>
                                         </span></td>
-                                    <td><span class="lab-tag">
+                                    <td>
+                                        <span class="lab-tag">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
                                                 fill="currentColor" width="10" height="10">
                                                 <path fill-rule="evenodd"
@@ -513,7 +746,23 @@
                                                     clip-rule="evenodd" />
                                             </svg>
                                             <%= s.lab_room %>
-                                        </span></td>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <% if (s.computer_number) { %>
+                                            <span class="pc-tag">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                    fill="currentColor" width="10" height="10">
+                                                    <path clip-rule="evenodd"
+                                                        d="M1 3.25A2.25 2.25 0 0 1 3.25 1h7.5A2.25 2.25 0 0 1 13 3.25v5.5A2.25 2.25 0 0 1 10.75 11H8.59a2.5 2.5 0 0 1 .66 1.07.5.5 0 0 1-.482.68H5.23a.5.5 0 0 1-.482-.68A2.5 2.5 0 0 1 5.41 11H3.25A2.25 2.25 0 0 1 1 8.75v-5.5Z"
+                                                        fill-rule="evenodd" />
+                                                </svg>
+                                                PC-<%= String(s.computer_number).padStart(2,'0') %>
+                                            </span>
+                                            <% } else { %>
+                                                <span class="pc-tag no-pc">No PC</span>
+                                                <% } %>
+                                    </td>
                                     <td>
                                         <span
                                             style="font-size:13px;font-weight:700;color:<%= (s.remaining_sessions ?? 30) > 10 ? '#059669' : '#DC2626' %>;">
@@ -534,26 +783,41 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <form action="/admin/sitin/<%= s.id %>/end" method="POST"
-                                            onsubmit="return confirm('Log out this student from the lab?')">
-                                            <button type="submit" class="btn-logout">
+                                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
+                                            <!-- Edit PC button -->
+                                            <button class="btn-edit-pc"
+                                                onclick="openEditPcModal(<%= s.id %>, '<%= s.lab_room %>', <%= s.computer_number || 'null' %>)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
                                                     fill="currentColor" width="11" height="11">
-                                                    <path fill-rule="evenodd"
-                                                        d="M2 3.75A1.75 1.75 0 0 1 3.75 2h4a1.75 1.75 0 0 1 1.75 1.75v.5a.75.75 0 0 1-1.5 0v-.5a.25.25 0 0 0-.25-.25h-4a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h4a.25.25 0 0 0 .25-.25v-.5a.75.75 0 0 1 1.5 0v.5A1.75 1.75 0 0 1 7.75 12h-4A1.75 1.75 0 0 1 2 10.25v-6.5Zm9.22.97a.75.75 0 0 1 1.06 0l1.75 1.75a.75.75 0 0 1 0 1.06l-1.75 1.75a.75.75 0 1 1-1.06-1.06l.47-.47H5.75a.75.75 0 0 1 0-1.5h5.69l-.47-.47a.75.75 0 0 1 0-1.06Z"
-                                                        clip-rule="evenodd" />
+                                                    <path clip-rule="evenodd"
+                                                        d="M1 3.25A2.25 2.25 0 0 1 3.25 1h7.5A2.25 2.25 0 0 1 13 3.25v5.5A2.25 2.25 0 0 1 10.75 11H8.59a2.5 2.5 0 0 1 .66 1.07.5.5 0 0 1-.482.68H5.23a.5.5 0 0 1-.482-.68A2.5 2.5 0 0 1 5.41 11H3.25A2.25 2.25 0 0 1 1 8.75v-5.5Z"
+                                                        fill-rule="evenodd" />
                                                 </svg>
-                                                Log Out
+                                                Edit PC
                                             </button>
-                                        </form>
+                                            <!-- Logout -->
+                                            <form action="/admin/sitin/<%= s.id %>/end" method="POST"
+                                                onsubmit="return confirm('Log out this student from the lab?')">
+                                                <button type="submit" class="btn-logout">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                        fill="currentColor" width="11" height="11">
+                                                        <path fill-rule="evenodd"
+                                                            d="M2 3.75A1.75 1.75 0 0 1 3.75 2h4a1.75 1.75 0 0 1 1.75 1.75v.5a.75.75 0 0 1-1.5 0v-.5a.25.25 0 0 0-.25-.25h-4a.25.25 0 0 0-.25.25v6.5c0 .138.112.25.25.25h4a.25.25 0 0 0 .25-.25v-.5a.75.75 0 0 1 1.5 0v.5A1.75 1.75 0 0 1 7.75 12h-4A1.75 1.75 0 0 1 2 10.25v-6.5Zm9.22.97a.75.75 0 0 1 1.06 0l1.75 1.75a.75.75 0 0 1 0 1.06l-1.75 1.75a.75.75 0 1 1-1.06-1.06l.47-.47H5.75a.75.75 0 0 1 0-1.5h5.69l-.47-.47a.75.75 0 0 1 0-1.06Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    Log Out
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 <% }) %>
                                     <% } else { %>
                                         <tr>
-                                            <td colspan="10">
+                                            <td colspan="11">
                                                 <div class="sitin-empty">
-                                                    <div class="sitin-empty-icon">
+                                                    <div
+                                                        style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#F3F0EC,#E8E3DD);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                             fill="#C4BDB6" width="28" height="28">
                                                             <path fill-rule="evenodd"
@@ -583,10 +847,88 @@
     </div>
 </div>
 
+<!-- ══════════════════════════════════════
+     EDIT PC MODAL
+══════════════════════════════════════ -->
+<div id="editPcModal" class="edit-pc-overlay" onclick="if(event.target===this) closeEditPcModal()">
+    <div class="edit-pc-card">
+        <div class="edit-pc-header">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <div
+                    style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white" width="22" height="22">
+                        <path clip-rule="evenodd"
+                            d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z"
+                            fill-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <p style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:#fff;margin:0 0 2px;"
+                        id="editPcTitle">Edit PC Assignment</p>
+                    <p style="font-size:11px;color:rgba(255,255,255,0.55);margin:0;" id="editPcSub">Select a new PC or
+                        clear the assignment</p>
+                </div>
+            </div>
+            <button class="edit-pc-close" onclick="closeEditPcModal()">✕</button>
+        </div>
+
+        <div class="edit-pc-legend">
+            <div class="edit-pc-legend-item">
+                <div class="legend-dot" style="background:#10B981;border-color:#A7F3D0;"></div>Available
+            </div>
+            <div class="edit-pc-legend-item">
+                <div class="legend-dot" style="background:#059669;border-color:#6EE7B7;"></div>Current PC
+            </div>
+            <div class="edit-pc-legend-item">
+                <div class="legend-dot" style="background:#F59E0B;border-color:#FDE68A;"></div>In Use (other)
+            </div>
+            <div class="edit-pc-legend-item">
+                <div class="legend-dot" style="background:#3B82F6;border-color:#BFDBFE;"></div>Reserved
+            </div>
+            <div class="edit-pc-legend-item">
+                <div class="legend-dot" style="background:#DC2626;border-color:#FECACA;"></div>Defective
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:#9CA3AF;font-style:italic;">Click any available PC
+                (including current) to select</span>
+        </div>
+
+        <div class="edit-pc-body" id="editPcBody">
+            <div style="text-align:center;padding:40px;color:#9CA3AF;">Loading PC layout…</div>
+        </div>
+
+        <div class="edit-pc-footer">
+            <div>
+                <div style="font-size:12px;color:#9CA3AF;margin-bottom:2px;">Selected:</div>
+                <div style="font-size:13px;font-weight:700;color:#1C2B35;" id="editPcSelectedLabel">None</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button class="btn-clear-pc" onclick="clearPcSelection()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12"
+                        height="12">
+                        <path
+                            d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+                    </svg>
+                    Clear (No PC)
+                </button>
+                <form id="editPcForm" method="POST" style="margin:0;">
+                    <input type="hidden" name="computer_number" id="editPcInput">
+                    <button type="submit" class="btn-save-pc">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
+                            height="13">
+                            <path fill-rule="evenodd"
+                                d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Save PC Assignment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-
-
-    // Search
+    // ── Search ──────────────────────────────────────────────────────────────────
     document.getElementById('searchInput').addEventListener('input', function () {
         const q = this.value.toLowerCase();
         let count = 0;
@@ -596,5 +938,150 @@
             if (show) count++;
         });
         document.getElementById('countDisplay').textContent = count;
+    });
+
+    // ── Edit PC Modal state ─────────────────────────────────────────────────────
+    let editSessionId = null;
+    let editLabRoom = null;
+    let editCurrentPc = null;
+    let editSelectedPc = null; // null = clear, number = selected
+
+    async function openEditPcModal(sessionId, labRoom, currentPc) {
+        editSessionId = sessionId;
+        editLabRoom = labRoom;
+        editCurrentPc = currentPc;
+        editSelectedPc = currentPc; // default to current
+
+        document.getElementById('editPcTitle').textContent = `Edit PC — Session #${sessionId}`;
+        document.getElementById('editPcSub').textContent = `Lab ${labRoom}${currentPc ? ` · Currently on PC-${String(currentPc).padStart(2, '0')}` : ' · No PC assigned'}`;
+        document.getElementById('editPcModal').classList.add('open');
+        document.getElementById('editPcBody').innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;">Loading PC layout…</div>';
+
+        updateEditPcForm();
+        await loadEditPcGrid(labRoom, currentPc);
+    }
+
+    function closeEditPcModal() {
+        document.getElementById('editPcModal').classList.remove('open');
+        editSessionId = null;
+        editLabRoom = null;
+        editCurrentPc = null;
+        editSelectedPc = null;
+    }
+
+    function clearPcSelection() {
+        editSelectedPc = null;
+        updateEditPcForm();
+        // Re-highlight grid
+        document.querySelectorAll('.pc-unit').forEach(el => el.classList.remove('selected'));
+        document.getElementById('editPcSelectedLabel').textContent = 'None (will clear PC assignment)';
+    }
+
+    function updateEditPcForm() {
+        const form = document.getElementById('editPcForm');
+        form.action = `/admin/sitin/${editSessionId}/edit-pc`;
+        document.getElementById('editPcInput').value = editSelectedPc || '';
+        document.getElementById('editPcSelectedLabel').textContent = editSelectedPc
+            ? `PC-${String(editSelectedPc).padStart(2, '0')}`
+            : 'None (clear assignment)';
+    }
+
+    async function loadEditPcGrid(labRoom, currentPc) {
+        try {
+            const res = await fetch(`/lab-computers/${labRoom}`);
+            const data = await res.json();
+            const pcMap = {};
+            data.forEach(pc => { pcMap[pc.computer_number] = pc; });
+            renderEditPcGrid(labRoom, pcMap, currentPc);
+        } catch (e) {
+            document.getElementById('editPcBody').innerHTML =
+                '<div style="text-align:center;padding:40px;color:#DC2626;">Failed to load PC data.</div>';
+        }
+    }
+
+    function pcSvgColor(color) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="${color}" width="20" height="20"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg>`;
+    }
+
+    function renderEditPcGrid(labRoom, pcMap, currentPc) {
+        const totalPcs = 50;
+        const rows = 5, cols = 10;
+        let html = `<div class="pc-teacher-area">🖥 Teacher / Instructor Station</div>`;
+        let pcNum = 1;
+
+        for (let row = 0; row < rows; row++) {
+            const rowLetter = String.fromCharCode(65 + row);
+            html += `<div class="pc-row-label">Row ${rowLetter}</div><div class="pc-grid-10">`;
+
+            for (let col = 0; col < cols && pcNum <= totalPcs; col++) {
+                const pc = pcMap[pcNum] || { status: 'available' };
+                const isCurrent = pcNum === currentPc;
+                const status = pc.status || 'available';
+
+                let unitClass, iconColor, labelText, canClick;
+
+                if (isCurrent) {
+                    unitClass = 'pc-unit pc-current';
+                    iconColor = '#059669';
+                    labelText = 'Current';
+                    canClick = true;
+                } else if (status === 'available') {
+                    unitClass = 'pc-unit pc-avail';
+                    iconColor = '#059669';
+                    labelText = 'Free';
+                    canClick = true;
+                } else if (status === 'in_use') {
+                    unitClass = 'pc-unit pc-in-use pc-occupied-other';
+                    iconColor = '#D97706';
+                    labelText = 'In Use';
+                    canClick = false;
+                } else if (status === 'reserved') {
+                    unitClass = 'pc-unit pc-reserved';
+                    iconColor = '#2563EB';
+                    labelText = 'Reserved';
+                    canClick = true; // admin can override
+                } else {
+                    unitClass = 'pc-unit pc-defect';
+                    iconColor = '#DC2626';
+                    labelText = 'Defective';
+                    canClick = false;
+                }
+
+                const clickAttr = canClick ? `onclick="selectEditPc(${pcNum})"` : '';
+                const selectedClass = (editSelectedPc === pcNum) ? ' selected' : '';
+
+                html += `
+                <div class="${unitClass}${selectedClass}" id="epc-${pcNum}" data-pc="${pcNum}" ${clickAttr}
+                     title="PC-${String(pcNum).padStart(2, '0')} — ${labelText}">
+                    <div class="pc-icon-wrap">
+                        ${pcSvgColor(iconColor)}
+                        <span class="pc-status-dot"></span>
+                    </div>
+                    <span class="pc-number">PC-${String(pcNum).padStart(2, '0')}</span>
+                    <span class="pc-label">${labelText}</span>
+                </div>`;
+                pcNum++;
+            }
+            html += `</div>`;
+        }
+
+        document.getElementById('editPcBody').innerHTML = html;
+        // Restore selection highlight
+        if (editSelectedPc) {
+            const el = document.getElementById(`epc-${editSelectedPc}`);
+            if (el) el.classList.add('selected');
+        }
+    }
+
+    function selectEditPc(pcNum) {
+        document.querySelectorAll('.pc-unit').forEach(el => el.classList.remove('selected'));
+        editSelectedPc = pcNum;
+        const el = document.getElementById(`epc-${pcNum}`);
+        if (el) el.classList.add('selected');
+        updateEditPcForm();
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeEditPcModal();
     });
 </script>

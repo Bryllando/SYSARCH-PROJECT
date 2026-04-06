@@ -998,88 +998,115 @@
         <form id="sitinForm" action="/admin/sitin/start" method="POST">
             <input type="hidden" name="return_to" value="/admin">
             <input type="hidden" name="user_id" id="sitinUserId">
-            <div class="modal-body" style="gap:0;padding:0;">
-                <div style="display:grid;grid-template-columns:1fr 1fr;">
-                    <div style="padding:14px 20px;border-right:1px solid #F3F0EC;border-bottom:1px solid #F3F0EC;">
-                        <div
-                            style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
-                            ID Number</div>
-                        <div id="sitinIdNumber"
-                            style="font-size:13px;font-weight:700;color:#1C2B35;font-family:monospace;"></div>
-                    </div>
-                    <div style="padding:14px 20px;background:#FFF9F0;border-bottom:1px solid #F3F0EC;">
-                        <div
-                            style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
-                            Sessions Left</div>
-                        <div id="sitinSessions" style="font-size:13px;font-weight:800;color:#5B0E14;"></div>
-                    </div>
-                    <div style="padding:14px 20px;grid-column:span 2;border-bottom:1px solid #F3F0EC;">
-                        <div
-                            style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
-                            Student Name</div>
-                        <div id="sitinName" style="font-size:13px;font-weight:700;color:#1C2B35;"></div>
+            <input type="hidden" name="computer_number" id="sitinComputerNumber" value="">
+
+            <!-- Student info strip -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #F3F0EC;">
+                <div style="padding:14px 20px;border-right:1px solid #F3F0EC;">
+                    <div
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
+                        ID Number</div>
+                    <div id="sitinIdNumber" style="font-size:14px;font-weight:700;color:#1C2B35;font-family:monospace;">
                     </div>
                 </div>
-                <div style="padding:16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div>
-                        <label
-                            style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Purpose
-                            *</label>
-                        <div style="position:relative;">
-                            <select name="purpose" required
-                                style="width:100%;padding:9px 32px 9px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;">
-                                <option value="" disabled selected>Select...</option>
-                                <option>C Programming</option>
-                                <option>Java Programming</option>
-                                <option>C# Programming</option>
-                                <option>ASP.Net</option>
-                                <option>PHP Programming</option>
-                                <option>Database</option>
-                                <option>Research</option>
-                                <option>Other</option>
-                            </select>
-                            <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9CA3AF;"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
-                                height="12">
-                                <path fill-rule="evenodd"
-                                    d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
+                <div style="padding:14px 20px;background:#FFF9F0;">
+                    <div
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
+                        Sessions Left</div>
+                    <div id="sitinSessions" style="font-size:14px;font-weight:800;color:#5B0E14;"></div>
+                </div>
+                <div style="padding:14px 20px;grid-column:span 2;border-top:1px solid #F3F0EC;">
+                    <div
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
+                        Student Name</div>
+                    <div id="sitinName" style="font-size:14px;font-weight:700;color:#1C2B35;"></div>
+                </div>
+            </div>
+
+            <!-- Purpose + Lab -->
+            <div style="padding:16px 20px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                <div>
+                    <label
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Purpose
+                        *</label>
+                    <div style="position:relative;">
+                        <select name="purpose" required id="sitinPurpose"
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;">
+                            <option value="" disabled selected>Select...</option>
+                            <option>C Programming</option>
+                            <option>Java Programming</option>
+                            <option>C# Programming</option>
+                            <option>ASP.Net</option>
+                            <option>PHP Programming</option>
+                            <option>Database</option>
+                            <option>Research</option>
+                            <option>Other</option>
+                        </select>
                     </div>
-                    <div>
-                        <label
-                            style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Laboratory
-                            *</label>
-                        <div style="position:relative;">
-                            <select name="lab_room" required
-                                style="width:100%;padding:9px 32px 9px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;">
-                                <option value="" disabled selected>Select...</option>
-                                <option value="524">Lab 524</option>
-                                <option value="526">Lab 526</option>
-                                <option value="528">Lab 528</option>
-                                <option value="530">Lab 530</option>
-                                <option value="Mac Lab">Mac Lab</option>
-                            </select>
-                            <svg style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:#9CA3AF;"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
-                                height="12">
-                                <path fill-rule="evenodd"
-                                    d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </div>
+                </div>
+                <div>
+                    <label
+                        style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Laboratory
+                        *</label>
+                    <div style="position:relative;">
+                        <select name="lab_room" required id="sitinLabRoom"
+                            style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;"
+                            onchange="loadSitinPcGrid(this.value)">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="524">Lab 524</option>
+                            <option value="526">Lab 526</option>
+                            <option value="528">Lab 528</option>
+                            <option value="530">Lab 530</option>
+                            <option value="542">Lab 542</option>
+                            <option value="544">Lab 544</option>
+                        </select>
                     </div>
                 </div>
             </div>
+
+            <!-- PC Grid (shown after lab is selected) -->
+            <div id="sitinPcSection" style="display:none;padding:0 20px 12px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                    <label
+                        style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;letter-spacing:0.08em;">
+                        Select PC <span
+                            style="color:#9CA3AF;text-transform:none;font-weight:400;font-size:10px;">(optional)</span>
+                    </label>
+                    <span style="font-size:11px;color:#9CA3AF;" id="sitinSelectedPcLabel">None selected</span>
+                </div>
+                <div id="sitinPcGrid"
+                    style="background:#F9F8F6;border:1.5px solid #E2DDD8;border-radius:12px;padding:12px;max-height:200px;overflow-y:auto;">
+                    <div style="text-align:center;color:#9CA3AF;font-size:12px;padding:16px;">Select a lab to load PCs
+                    </div>
+                </div>
+                <!-- Legend -->
+                <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">
+                    <span style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#4B5563;">
+                        <span
+                            style="width:8px;height:8px;border-radius:50%;background:#10B981;border:1.5px solid #A7F3D0;"></span>Available
+                    </span>
+                    <span style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#4B5563;">
+                        <span
+                            style="width:8px;height:8px;border-radius:50%;background:#F59E0B;border:1.5px solid #FDE68A;"></span>In
+                        Use
+                    </span>
+                    <span style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#4B5563;">
+                        <span
+                            style="width:8px;height:8px;border-radius:50%;background:#DC2626;border:1.5px solid #FECACA;"></span>Defective
+                    </span>
+                </div>
+            </div>
+
             <div style="display:flex;gap:10px;padding:0 20px 18px;">
                 <button type="button" onclick="closeSitinModal()"
                     style="flex:1;padding:10px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
                 <button type="submit"
-                    style="flex:2;padding:10px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Confirm
-                    Sit In</button>
+                    style="flex:2;padding:10px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">
+                    Confirm Sit-in
+                </button>
             </div>
         </form>
+
     </div>
 </div>
 
