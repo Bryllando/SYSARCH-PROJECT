@@ -1,0 +1,917 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+    .lc-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
+
+    .lc-header {
+        background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
+        padding: 28px 32px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .lc-header::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(241, 225, 148, 0.07);
+        pointer-events: none;
+    }
+
+    .lc-header-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .lc-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+    }
+
+    .lc-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .lc-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(241, 225, 148, 0.7);
+        margin: 0 0 6px;
+    }
+
+    /* ── Stats ── */
+    .lc-stats {
+        display: flex;
+        gap: 12px;
+        padding: 16px 32px;
+        flex-wrap: wrap;
+    }
+
+    .lc-stat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #E8E3DD;
+        flex: 1;
+        min-width: 120px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .lc-stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .lc-stat-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .lc-stat-label {
+        font-size: 11px;
+        color: #9CA3AF;
+        font-weight: 500;
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* ── Lab tabs ── */
+    .lc-tabs {
+        display: flex;
+        gap: 6px;
+        padding: 16px 32px 0;
+        flex-wrap: wrap;
+    }
+
+    .lc-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1.5px solid #E2DDD8;
+        background: #fff;
+        color: #374151;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.15s;
+    }
+
+    .lc-tab:hover {
+        border-color: #273F4F;
+        color: #273F4F;
+    }
+
+    .lc-tab.active {
+        background: #273F4F;
+        border-color: #273F4F;
+        color: #F1E194;
+    }
+
+    /* ── PC Grid card ── */
+    .lc-grid-card {
+        margin: 16px 32px 32px;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
+        border: 1px solid #E8E3DD;
+    }
+
+    .lc-grid-card-head {
+        padding: 14px 20px;
+        background: #F7F5F2;
+        border-bottom: 1px solid #E8E3DD;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .lc-legend {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .lc-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #4B5563;
+    }
+
+    .lc-legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid;
+    }
+
+    .lc-grid-body {
+        padding: 20px 24px;
+    }
+
+    /* ── Teacher station ── */
+    .lc-teacher {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .lc-row-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #C4BDB6;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 14px 0 8px;
+    }
+
+    /* ── 10-column PC grid ── */
+    .lc-pc-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    .lc-pc-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        padding: 8px 4px;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        transition: all 0.18s;
+        position: relative;
+        user-select: none;
+    }
+
+    .lc-pc-unit:hover {
+        transform: translateY(-2px);
+    }
+
+    .lc-pc-unit.pc-avail:hover {
+        border-color: #059669;
+        background: rgba(5, 150, 105, 0.07);
+    }
+
+    .lc-pc-unit.pc-inuse:hover {
+        border-color: #D97706;
+        background: rgba(217, 119, 6, 0.07);
+    }
+
+    .lc-pc-unit.pc-defect:hover {
+        border-color: #DC2626;
+        background: rgba(220, 38, 38, 0.07);
+    }
+
+    .lc-pc-unit.pc-reserved:hover {
+        border-color: #2563EB;
+        background: rgba(37, 99, 235, 0.07);
+    }
+
+    .lc-pc-unit.pc-selecting {
+        border-color: #5B0E14 !important;
+        background: rgba(91, 14, 20, 0.1) !important;
+        transform: scale(1.05);
+    }
+
+    .lc-pc-icon-wrap {
+        width: 42px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 2px solid;
+    }
+
+    .pc-avail .lc-pc-icon-wrap {
+        background: #ECFDF5;
+        border-color: #A7F3D0;
+    }
+
+    .pc-inuse .lc-pc-icon-wrap {
+        background: #FFF7ED;
+        border-color: #FDE68A;
+    }
+
+    .pc-defect .lc-pc-icon-wrap {
+        background: #FEF2F2;
+        border-color: #FECACA;
+    }
+
+    .pc-reserved .lc-pc-icon-wrap {
+        background: #EFF6FF;
+        border-color: #BFDBFE;
+    }
+
+    .lc-pc-dot {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+    }
+
+    .pc-avail .lc-pc-dot {
+        background: #10B981;
+    }
+
+    .pc-inuse .lc-pc-dot {
+        background: #F59E0B;
+        animation: lcPulse 1.5s infinite;
+    }
+
+    .pc-defect .lc-pc-dot {
+        background: #DC2626;
+    }
+
+    .pc-reserved .lc-pc-dot {
+        background: #3B82F6;
+    }
+
+    @keyframes lcPulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1)
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.8)
+        }
+    }
+
+    .lc-pc-number {
+        font-size: 9px;
+        font-weight: 700;
+    }
+
+    .pc-avail .lc-pc-number {
+        color: #065F46;
+    }
+
+    .pc-inuse .lc-pc-number {
+        color: #92400E;
+    }
+
+    .pc-defect .lc-pc-number {
+        color: #991B1B;
+    }
+
+    .pc-reserved .lc-pc-number {
+        color: #1D4ED8;
+    }
+
+    .lc-pc-label {
+        font-size: 7.5px;
+        font-weight: 600;
+        color: #9CA3AF;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    /* ── Status Change Modal ── */
+    .sc-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .sc-overlay.open {
+        display: flex;
+    }
+
+    .sc-overlay.open .sc-card {
+        animation: scIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes scIn {
+        from {
+            opacity: 0;
+            transform: scale(0.88) translateY(16px)
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0)
+        }
+    }
+
+    .sc-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+        width: 100%;
+        max-width: 400px;
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .sc-header {
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(135deg, #273F4F, #1a2d38);
+    }
+
+    .sc-header-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .sc-close {
+        width: 30px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all 0.15s;
+    }
+
+    .sc-close:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+    }
+
+    .sc-pc-badge {
+        padding: 14px 24px;
+        background: linear-gradient(135deg, #F9F8F6, #F0EDE8);
+        border-bottom: 1px solid #E8E3DD;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .sc-pc-num {
+        font-weight: 800;
+        color: #1C2B35;
+        font-size: 14px;
+    }
+
+    .sc-pc-lab {
+        font-size: 11px;
+        color: #6B7280;
+    }
+
+    .sc-body {
+        padding: 20px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sc-status-btn {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 2px solid;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-size: 13px;
+        font-weight: 700;
+        background: #fff;
+        font-family: 'DM Sans', sans-serif;
+        text-align: left;
+        width: 100%;
+    }
+
+    .sc-status-btn:hover {
+        transform: translateX(4px);
+    }
+
+    .sc-status-btn.btn-avail {
+        border-color: #A7F3D0;
+        color: #065F46;
+    }
+
+    .sc-status-btn.btn-avail:hover {
+        background: #ECFDF5;
+    }
+
+    .sc-status-btn.btn-inuse {
+        border-color: #FDE68A;
+        color: #92400E;
+    }
+
+    .sc-status-btn.btn-inuse:hover {
+        background: #FFF7ED;
+    }
+
+    .sc-status-btn.btn-defect {
+        border-color: #FECACA;
+        color: #991B1B;
+    }
+
+    .sc-status-btn.btn-defect:hover {
+        background: #FEF2F2;
+    }
+
+    .sc-status-btn.btn-reserved {
+        border-color: #BFDBFE;
+        color: #1D4ED8;
+    }
+
+    .sc-status-btn.btn-reserved:hover {
+        background: #EFF6FF;
+    }
+
+    .sc-status-btn .sc-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .sc-status-btn.btn-avail .sc-dot {
+        background: #10B981;
+    }
+
+    .sc-status-btn.btn-inuse .sc-dot {
+        background: #F59E0B;
+    }
+
+    .sc-status-btn.btn-defect .sc-dot {
+        background: #DC2626;
+    }
+
+    .sc-status-btn.btn-reserved .sc-dot {
+        background: #3B82F6;
+    }
+
+    .sc-status-btn .sc-current-badge {
+        margin-left: auto;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.06);
+        color: #6B7280;
+    }
+
+    .sc-footer {
+        padding: 0 24px 20px;
+    }
+
+    .sc-cancel {
+        width: 100%;
+        padding: 11px;
+        background: #F3F0EC;
+        color: #374151;
+        border: 1.5px solid #E8E3DD;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: background 0.15s;
+    }
+
+    .sc-cancel:hover {
+        background: #E8E3DD;
+    }
+</style>
+
+<div class="lc-page">
+
+    <!-- Header -->
+    <div class="lc-header">
+        <div class="lc-header-inner">
+            <div>
+                <p class="lc-eyebrow">Admin Panel</p>
+                <h1>Lab Computer Management</h1>
+                <p>Click any PC to change its status — available, in use, defective, or reserved</p>
+            </div>
+            <span
+                style="background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);color:#F1E194;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:0.04em;">
+                6 Laboratories · 300 PCs
+            </span>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="lc-stats">
+        <div class="lc-stat">
+            <div class="lc-stat-icon" style="background:#ECFDF5;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#10B981;"></div>
+            </div>
+            <div>
+                <div class="lc-stat-val" style="color:#059669;" id="lcStatAvail">—</div>
+                <div class="lc-stat-label">Available</div>
+            </div>
+        </div>
+        <div class="lc-stat">
+            <div class="lc-stat-icon" style="background:#FFF7ED;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#F59E0B;"></div>
+            </div>
+            <div>
+                <div class="lc-stat-val" style="color:#D97706;" id="lcStatInuse">—</div>
+                <div class="lc-stat-label">In Use</div>
+            </div>
+        </div>
+        <div class="lc-stat">
+            <div class="lc-stat-icon" style="background:#FEF2F2;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#DC2626;"></div>
+            </div>
+            <div>
+                <div class="lc-stat-val" style="color:#DC2626;" id="lcStatDefect">—</div>
+                <div class="lc-stat-label">Defective</div>
+            </div>
+        </div>
+        <div class="lc-stat">
+            <div class="lc-stat-icon" style="background:#EFF6FF;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#3B82F6;"></div>
+            </div>
+            <div>
+                <div class="lc-stat-val" style="color:#1D4ED8;" id="lcStatReserved">—</div>
+                <div class="lc-stat-label">Reserved</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lab Tabs -->
+    <div class="lc-tabs" id="lcTabs"></div>
+
+    <!-- PC Grid Card -->
+    <div class="lc-grid-card">
+        <div class="lc-grid-card-head">
+            <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;"
+                id="lcCurrentLabTitle">Select a lab</div>
+            <div class="lc-legend">
+                <div class="lc-legend-item">
+                    <div class="lc-legend-dot" style="background:#10B981;border-color:#A7F3D0;"></div>Available
+                </div>
+                <div class="lc-legend-item">
+                    <div class="lc-legend-dot" style="background:#F59E0B;border-color:#FDE68A;"></div>In Use
+                </div>
+                <div class="lc-legend-item">
+                    <div class="lc-legend-dot" style="background:#DC2626;border-color:#FECACA;"></div>Defective
+                </div>
+                <div class="lc-legend-item">
+                    <div class="lc-legend-dot" style="background:#3B82F6;border-color:#BFDBFE;"></div>Reserved
+                </div>
+                <span style="font-size:11px;color:#9CA3AF;font-style:italic;margin-left:8px;">Click any PC to change
+                    status</span>
+            </div>
+        </div>
+        <div class="lc-grid-body" id="lcGridBody">
+            <div style="text-align:center;padding:60px 24px;color:#C4BDB6;">
+                <div style="font-size:32px;margin-bottom:12px;">🖥</div>
+                <p style="font-size:14px;font-weight:700;color:#4B5563;margin:0 0 4px;">Select a laboratory tab above
+                </p>
+                <p style="font-size:12px;color:#9CA3AF;margin:0;">Click any PC to change its status</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ Status Change Modal ══ -->
+<div id="scOverlay" class="sc-overlay" onclick="if(event.target===this) closeStatusModal()">
+    <div class="sc-card">
+        <div class="sc-header">
+            <span class="sc-header-title">Change PC Status</span>
+            <button class="sc-close" onclick="closeStatusModal()">✕</button>
+        </div>
+        <div class="sc-pc-badge">
+            <div
+                style="width:42px;height:36px;border-radius:9px;background:#E8EFF4;border:2px solid #C7D8E4;display:flex;align-items:center;justify-content:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#273F4F" width="18" height="18">
+                    <path clip-rule="evenodd"
+                        d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z"
+                        fill-rule="evenodd" />
+                </svg>
+            </div>
+            <div>
+                <div class="sc-pc-num" id="scPcNum">PC-01</div>
+                <div class="sc-pc-lab" id="scPcLab">Lab 524</div>
+            </div>
+        </div>
+        <div class="sc-body">
+            <p
+                style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin:0 0 6px;">
+                Set Status To:</p>
+            <button class="sc-status-btn btn-avail" onclick="applyStatus('available')">
+                <span class="sc-dot"></span>
+                Available
+                <span class="sc-current-badge" id="scBadgeAvail" style="display:none;">Current</span>
+            </button>
+            <button class="sc-status-btn btn-inuse" onclick="applyStatus('in_use')">
+                <span class="sc-dot"></span>
+                In Use
+                <span class="sc-current-badge" id="scBadgeInuse" style="display:none;">Current</span>
+            </button>
+            <button class="sc-status-btn btn-defect" onclick="applyStatus('defective')">
+                <span class="sc-dot"></span>
+                🔧 Defective / Maintenance
+                <span class="sc-current-badge" id="scBadgeDefect" style="display:none;">Current</span>
+            </button>
+            <button class="sc-status-btn btn-reserved" onclick="applyStatus('reserved')">
+                <span class="sc-dot"></span>
+                Reserved
+                <span class="sc-current-badge" id="scBadgeReserved" style="display:none;">Current</span>
+            </button>
+        </div>
+        <div class="sc-footer">
+            <button class="sc-cancel" onclick="closeStatusModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const LABS = [
+        { room: '524', name: 'Lab 524', desc: 'General Purpose' },
+        { room: '526', name: 'Lab 526', desc: 'General Purpose' },
+        { room: '528', name: 'Lab 528', desc: 'General Purpose' },
+        { room: '530', name: 'Lab 530', desc: 'Multimedia Lab' },
+        { room: '542', name: 'Lab 542', desc: 'IT Laboratory' },
+        { room: '544', name: 'Lab 544', desc: 'Mac Laboratory' },
+    ];
+
+    let currentLabRoom = null;
+    let currentPcData = {};   // pcNum → {status, ...}
+    let modalPcNum = null;
+    let modalCurrentStatus = null;
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    (async function init() {
+        renderTabs();
+        await loadLab(LABS[0].room);
+        await updateGlobalStats();
+    })();
+
+    function renderTabs() {
+        const wrap = document.getElementById('lcTabs');
+        wrap.innerHTML = LABS.map((lab, i) => `
+            <button class="lc-tab ${i === 0 ? 'active' : ''}" id="tab-${lab.room}"
+                onclick="switchTab('${lab.room}')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                    <path clip-rule="evenodd" d="M1 3.25A2.25 2.25 0 0 1 3.25 1h9.5A2.25 2.25 0 0 1 15 3.25v5.5A2.25 2.25 0 0 1 12.75 11H9.28a3.5 3.5 0 0 1 .67 1.344.5.5 0 0 1-.482.656H6.53a.5.5 0 0 1-.482-.656A3.5 3.5 0 0 1 6.72 11H3.25A2.25 2.25 0 0 1 1 8.75v-5.5Z" fill-rule="evenodd"/>
+                </svg>
+                ${lab.name}
+            </button>`).join('');
+    }
+
+    async function switchTab(labRoom) {
+        LABS.forEach(l => {
+            const t = document.getElementById('tab-' + l.room);
+            if (t) t.classList.toggle('active', l.room === labRoom);
+        });
+        await loadLab(labRoom);
+    }
+
+    async function loadLab(labRoom) {
+        currentLabRoom = labRoom;
+        const lab = LABS.find(l => l.room === labRoom);
+        document.getElementById('lcCurrentLabTitle').textContent = lab.name + ' — ' + lab.desc + ' · 50 PCs';
+        document.getElementById('lcGridBody').innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:13px;">Loading PC layout…</div>';
+        try {
+            const res = await fetch('/lab-computers/' + labRoom);
+            const data = await res.json();
+            currentPcData = {};
+            data.forEach(pc => { currentPcData[pc.computer_number] = pc; });
+            renderPcGrid();
+        } catch (e) {
+            document.getElementById('lcGridBody').innerHTML = '<div style="text-align:center;padding:40px;color:#DC2626;font-size:13px;">Failed to load PCs. Please refresh.</div>';
+        }
+    }
+
+    function pcSvg(color) {
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="${color}" width="20" height="20"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg>`;
+    }
+
+    function renderPcGrid() {
+        const rows = 5, cols = 10, total = 50;
+        let html = `<div class="lc-teacher">🖥 Teacher / Instructor Station</div>`;
+        let pcNum = 1;
+
+        for (let r = 0; r < rows; r++) {
+            html += `<div class="lc-row-label">Row ${String.fromCharCode(65 + r)}</div><div class="lc-pc-grid">`;
+            for (let c = 0; c < cols && pcNum <= total; c++) {
+                const pc = currentPcData[pcNum] || { status: 'available' };
+                const st = pc.status || 'available';
+                const cls = st === 'available' ? 'pc-avail' : st === 'in_use' ? 'pc-inuse' : st === 'reserved' ? 'pc-reserved' : 'pc-defect';
+                const ic = st === 'available' ? '#059669' : st === 'in_use' ? '#D97706' : st === 'reserved' ? '#2563EB' : '#DC2626';
+                const lbl = st === 'available' ? 'Free' : st === 'in_use' ? 'In Use' : st === 'reserved' ? 'Reserved' : 'Defective';
+                const emoji = st === 'defective' ? '🔧' : '';
+                html += `<div class="lc-pc-unit ${cls}" id="lcpc-${pcNum}" onclick="openStatusModal(${pcNum})" title="PC-${String(pcNum).padStart(2, '0')} — ${lbl}">
+                    <div class="lc-pc-icon-wrap">${pcSvg(ic)}<span class="lc-pc-dot"></span></div>
+                    <span class="lc-pc-number">${String(pcNum).padStart(2, '0')}</span>
+                    <span class="lc-pc-label">${emoji}${lbl}</span>
+                </div>`;
+                pcNum++;
+            }
+            html += `</div>`;
+        }
+
+        document.getElementById('lcGridBody').innerHTML = html;
+        updateLabStats();
+    }
+
+    function updateLabStats() {
+        // Update global stat display from all labs combined — but just show for current lab context
+    }
+
+    async function updateGlobalStats() {
+        let avail = 0, inuse = 0, defect = 0, reserved = 0;
+        await Promise.all(LABS.map(async lab => {
+            try {
+                const res = await fetch('/lab-computers/' + lab.room);
+                const data = await res.json();
+                data.forEach(pc => {
+                    const s = pc.status || 'available';
+                    if (s === 'available') avail++;
+                    else if (s === 'in_use') inuse++;
+                    else if (s === 'defective') defect++;
+                    else if (s === 'reserved') reserved++;
+                });
+            } catch (e) { }
+        }));
+        document.getElementById('lcStatAvail').textContent = avail;
+        document.getElementById('lcStatInuse').textContent = inuse;
+        document.getElementById('lcStatDefect').textContent = defect;
+        document.getElementById('lcStatReserved').textContent = reserved;
+    }
+
+    // ── Status Change Modal ───────────────────────────────────────────────────
+    function openStatusModal(pcNum) {
+        modalPcNum = pcNum;
+        const pc = currentPcData[pcNum] || { status: 'available' };
+        modalCurrentStatus = pc.status || 'available';
+
+        const lab = LABS.find(l => l.room === currentLabRoom);
+        document.getElementById('scPcNum').textContent = `PC-${String(pcNum).padStart(2, '0')}`;
+        document.getElementById('scPcLab').textContent = lab.name + ' — ' + lab.desc;
+
+        // Show "Current" badge on the right button
+        ['Avail', 'Inuse', 'Defect', 'Reserved'].forEach(n => {
+            document.getElementById('scBadge' + n).style.display = 'none';
+        });
+        const map = { available: 'Avail', in_use: 'Inuse', defective: 'Defect', reserved: 'Reserved' };
+        const badge = document.getElementById('scBadge' + (map[modalCurrentStatus] || 'Avail'));
+        if (badge) badge.style.display = 'inline-block';
+
+        // Flash the PC unit
+        const el = document.getElementById('lcpc-' + pcNum);
+        if (el) el.classList.add('pc-selecting');
+
+        document.getElementById('scOverlay').classList.add('open');
+    }
+
+    function closeStatusModal() {
+        document.getElementById('scOverlay').classList.remove('open');
+        if (modalPcNum) {
+            const el = document.getElementById('lcpc-' + modalPcNum);
+            if (el) el.classList.remove('pc-selecting');
+        }
+        modalPcNum = null;
+    }
+
+    async function applyStatus(newStatus) {
+        if (!modalPcNum || !currentLabRoom) return;
+        const pcNum = modalPcNum;
+        closeStatusModal();
+
+        try {
+            const res = await fetch('/admin/lab-computers/status', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lab_room: currentLabRoom, computer_number: pcNum, status: newStatus })
+            });
+            const data = await res.json();
+            if (data.success) {
+                // Update local cache
+                if (!currentPcData[pcNum]) currentPcData[pcNum] = {};
+                currentPcData[pcNum].status = newStatus;
+                renderPcGrid();
+                updateGlobalStats();
+                showToast(newStatus, pcNum);
+            }
+        } catch (e) {
+            console.error('Failed to update PC status', e);
+        }
+    }
+
+    function showToast(status, pcNum) {
+        const labels = { available: 'Available ✅', in_use: 'In Use 🟡', defective: 'Defective 🔧', reserved: 'Reserved 🔵' };
+        const toastEl = document.createElement('div');
+        toastEl.style.cssText = `position:fixed;top:20px;right:20px;z-index:99999;padding:12px 18px;background:#1C2B35;color:#fff;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.2);display:flex;align-items:center;gap:10px;animation:scIn 0.25s ease both;`;
+        toastEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="16" height="16"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg> PC-${String(pcNum).padStart(2, '0')} → <span style="color:#F1E194;">${labels[status] || status}</span>`;
+        document.body.appendChild(toastEl);
+        setTimeout(() => toastEl.remove(), 2500);
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatusModal(); });
+</script>

@@ -173,6 +173,121 @@
             transform: scale(1) translateY(0);
         }
     }
+
+    /* ── PC grid (sidebar sitin modal) ── */
+    .sb-pc-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 5px;
+        margin-bottom: 4px;
+    }
+
+    .sb-pc-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        cursor: pointer;
+        padding: 5px 2px;
+        border-radius: 7px;
+        border: 2px solid transparent;
+        transition: all 0.15s;
+        position: relative;
+    }
+
+    .sb-pc-unit:hover:not(.sb-pc-inuse):not(.sb-pc-defect) {
+        border-color: #5B0E14;
+        background: rgba(91, 14, 20, 0.07);
+    }
+
+    .sb-pc-unit.sb-selected {
+        border-color: #5B0E14 !important;
+        background: rgba(91, 14, 20, 0.1) !important;
+    }
+
+    .sb-pc-unit.sb-pc-inuse,
+    .sb-pc-unit.sb-pc-defect {
+        cursor: not-allowed;
+        opacity: 0.65;
+    }
+
+    .sb-pc-icon {
+        width: 30px;
+        height: 25px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 1.5px solid;
+    }
+
+    .sb-pc-avail .sb-pc-icon {
+        background: #ECFDF5;
+        border-color: #A7F3D0;
+    }
+
+    .sb-pc-inuse .sb-pc-icon {
+        background: #FFF7ED;
+        border-color: #FDE68A;
+    }
+
+    .sb-pc-defect .sb-pc-icon {
+        background: #FEF2F2;
+        border-color: #FECACA;
+    }
+
+    .sb-pc-reserved .sb-pc-icon {
+        background: #EFF6FF;
+        border-color: #BFDBFE;
+    }
+
+    .sb-pc-dot {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: 1.5px solid #fff;
+    }
+
+    .sb-pc-avail .sb-pc-dot {
+        background: #10B981;
+    }
+
+    .sb-pc-inuse .sb-pc-dot {
+        background: #F59E0B;
+    }
+
+    .sb-pc-defect .sb-pc-dot {
+        background: #DC2626;
+    }
+
+    .sb-pc-reserved .sb-pc-dot {
+        background: #3B82F6;
+    }
+
+    .sb-pc-num {
+        font-size: 8px;
+        font-weight: 700;
+    }
+
+    .sb-pc-avail .sb-pc-num {
+        color: #065F46;
+    }
+
+    .sb-pc-inuse .sb-pc-num {
+        color: #92400E;
+    }
+
+    .sb-pc-defect .sb-pc-num {
+        color: #991B1B;
+    }
+
+    .sb-pc-reserved .sb-pc-num {
+        color: #1D4ED8;
+    }
 </style>
 
 <aside id="sidebar">
@@ -198,7 +313,6 @@
         style="flex:1;padding:0.75rem 0.5rem;display:flex;flex-direction:column;gap:2px;overflow:hidden;">
 
         <% if (locals.user && user.role==='user' ) { %>
-
             <a href="/dashboard" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
@@ -209,7 +323,6 @@
                 </svg>
                 <span class="sidebar-text">Home</span>
             </a>
-
             <a href="/profile" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
@@ -219,7 +332,6 @@
                 </svg>
                 <span class="sidebar-text">Edit Profile</span>
             </a>
-
             <a href="/history" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
@@ -229,7 +341,6 @@
                 </svg>
                 <span class="sidebar-text">Sit-in History</span>
             </a>
-
             <a href="/reservation" class="sidebar-link">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                     style="width:20px;height:20px;flex-shrink:0;">
@@ -239,9 +350,7 @@
                 </svg>
                 <span class="sidebar-text">Reservation</span>
             </a>
-
             <% } else if (locals.user && user.role==='admin' ) { %>
-
                 <a href="/admin" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -252,7 +361,6 @@
                     </svg>
                     <span class="sidebar-text">Home</span>
                 </a>
-
                 <a href="/admin/search" class="sidebar-link" id="sidebarSearchLink">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -262,7 +370,6 @@
                     </svg>
                     <span class="sidebar-text">Search</span>
                 </a>
-
                 <a href="/admin/students" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -273,7 +380,6 @@
                     </svg>
                     <span class="sidebar-text">Students</span>
                 </a>
-
                 <a href="/admin/sitin" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -283,7 +389,6 @@
                     </svg>
                     <span class="sidebar-text">Sit-in</span>
                 </a>
-
                 <a href="/admin/history" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -293,7 +398,6 @@
                     </svg>
                     <span class="sidebar-text">Student History</span>
                 </a>
-
                 <a href="/admin/reports" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -303,7 +407,6 @@
                     </svg>
                     <span class="sidebar-text">Sit-in Reports</span>
                 </a>
-
                 <a href="/admin/feedback" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -313,7 +416,6 @@
                     </svg>
                     <span class="sidebar-text">Feedback Reports</span>
                 </a>
-
                 <a href="/admin/reservations" class="sidebar-link">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         style="width:20px;height:20px;flex-shrink:0;">
@@ -323,7 +425,15 @@
                     </svg>
                     <span class="sidebar-text">Reservations</span>
                 </a>
-
+                <a href="/admin/lab-computers" class="sidebar-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        style="width:20px;height:20px;flex-shrink:0;">
+                        <path fill-rule="evenodd"
+                            d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6Zm14.5 8H20v.25a2.25 2.25 0 0 1-2.25 2.25H6.25A2.25 2.25 0 0 1 4 14.25V14h3.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span class="sidebar-text">Lab Computers</span>
+                </a>
                 <% } %>
     </nav>
 
@@ -340,16 +450,16 @@
     </div>
 </aside>
 
+<!-- ══ ADMIN: Search Modal ══ -->
 <% if (locals.user && user.role==='admin' ) { %>
     <div id="sidebarSearchModal" class="sidebar-modal-overlay"
         onclick="if(event.target===this) closeSidebarSearchModal()">
         <div class="sidebar-modal-card"
-            style="background:#fff;border-radius:16px;box-shadow:0 20px 60px -10px rgba(0,0,0,0.25),0 0 0 1px rgba(0,0,0,0.06);width:100%;max-width:380px;overflow:hidden;">
+            style="background:#fff;border-radius:16px;box-shadow:0 20px 60px -10px rgba(0,0,0,0.25);width:100%;max-width:380px;overflow:hidden;">
             <div
                 style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f1f5f9;">
                 <div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#1e293b;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16"
-                        height="16" style="color:#273F4F;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#273F4F" width="16" height="16">
                         <path fill-rule="evenodd"
                             d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
                             clip-rule="evenodd" />
@@ -363,7 +473,13 @@
                 <div style="position:relative;">
                     <input type="text" id="sidebarSearchInput" placeholder="Enter student ID number..."
                         onkeydown="if(event.key==='Enter') runSidebarSearch()" autocomplete="off"
-                        style="width:100%;padding:10px 12px 10px 38px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13.5px;color:#1e293b;background:#f8fafc;outline:none;box-sizing:border-box;">
+                        style="width:100%;padding:10px 12px 10px 38px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13.5px;color:#1e293b;background:#f8fafc;outline:none;box-sizing:border-box;font-family:inherit;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#94a3b8" width="15" height="15"
+                        style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;">
+                        <path fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd" />
+                    </svg>
                 </div>
                 <div id="sidebarSearchError"
                     style="display:none;align-items:center;gap:6px;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:12px;font-weight:500;color:#dc2626;">
@@ -372,25 +488,36 @@
             </div>
             <div style="display:flex;justify-content:flex-end;padding:0 20px 20px;">
                 <button onclick="runSidebarSearch()"
-                    style="padding:9px 20px;background:#273F4F;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;">Search</button>
+                    style="padding:9px 20px;background:#273F4F;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Search</button>
             </div>
         </div>
     </div>
 
+    <!-- ══ ADMIN: Sit-in Modal (uses sb- prefixed IDs to avoid conflicts) ══ -->
     <div id="sidebarSitinModal" class="sidebar-modal-overlay"
         onclick="if(event.target===this) closeSidebarSitinModal()">
         <div class="sidebar-modal-card"
             style="background:#fff;border-radius:18px;box-shadow:0 24px 64px -12px rgba(0,0,0,0.28);width:100%;max-width:480px;overflow:hidden;">
             <div
                 style="padding:18px 24px;background:linear-gradient(135deg,#5B0E14 0%,#3A0910 100%);display:flex;align-items:center;justify-content:space-between;">
-                <div style="font-size:15px;font-weight:700;color:#fff;">Sit In Form</div>
+                <div style="font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16"
+                        height="16">
+                        <path fill-rule="evenodd"
+                            d="M4.5 2A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4.5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Sit In Form
+                </div>
                 <button onclick="closeSidebarSitinModal()"
                     style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);cursor:pointer;">✕</button>
             </div>
-            <form id="sitinForm" action="/admin/sitin/start" method="POST">
+
+            <form id="sbSitinForm" action="/admin/sitin/start" method="POST">
                 <input type="hidden" name="return_to" value="/admin">
-                <input type="hidden" name="user_id" id="sitinUserId">
-                <input type="hidden" name="computer_number" id="sitinComputerNumber" value="">
+                <!-- ★ All IDs are prefixed with "sb" to avoid conflicts with page modals ★ -->
+                <input type="hidden" name="user_id" id="sbSitinUserId">
+                <input type="hidden" name="computer_number" id="sbSitinComputerNumber" value="">
 
                 <!-- Student info strip -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #F3F0EC;">
@@ -398,24 +525,22 @@
                         <div
                             style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
                             ID Number</div>
-                        <div id="sitinIdNumber"
-                            style="font-size:14px;font-weight:700;color:#1C2B35;font-family:monospace;">
-                        </div>
+                        <div id="sbSitinIdNumber"
+                            style="font-size:14px;font-weight:700;color:#1C2B35;font-family:monospace;"></div>
                     </div>
                     <div style="padding:14px 20px;background:#FFF9F0;">
                         <div
                             style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
                             Sessions Left</div>
-                        <div id="sitinSessions" style="font-size:14px;font-weight:800;color:#5B0E14;"></div>
+                        <div id="sbSitinSessions" style="font-size:14px;font-weight:800;color:#5B0E14;"></div>
                     </div>
                     <div style="padding:14px 20px;grid-column:span 2;border-top:1px solid #F3F0EC;">
                         <div
                             style="font-size:10px;font-weight:700;text-transform:uppercase;color:#94a3b8;margin-bottom:4px;">
                             Student Name</div>
-                        <div id="sitinName" style="font-size:14px;font-weight:700;color:#1C2B35;"></div>
+                        <div id="sbSitinName" style="font-size:14px;font-weight:700;color:#1C2B35;"></div>
                     </div>
                 </div>
-
 
                 <!-- Purpose + Lab -->
                 <div
@@ -424,58 +549,52 @@
                         <label
                             style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Purpose
                             *</label>
-                        <div style="position:relative;">
-                            <select name="purpose" required id="sitinPurpose"
-                                style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;">
-                                <option value="" disabled selected>Select...</option>
-                                <option>C Programming</option>
-                                <option>Java Programming</option>
-                                <option>C# Programming</option>
-                                <option>ASP.Net</option>
-                                <option>PHP Programming</option>
-                                <option>Database</option>
-                                <option>Research</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
+                        <select name="purpose" required id="sbSitinPurpose"
+                            style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;cursor:pointer;font-family:inherit;">
+                            <option value="" disabled selected>Select...</option>
+                            <option>C Programming</option>
+                            <option>Java Programming</option>
+                            <option>C# Programming</option>
+                            <option>ASP.Net</option>
+                            <option>PHP Programming</option>
+                            <option>Database</option>
+                            <option>Research</option>
+                            <option>Other</option>
+                        </select>
                     </div>
                     <div>
                         <label
                             style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Laboratory
                             *</label>
-                        <div style="position:relative;">
-                            <select name="lab_room" required id="sitinLabRoom"
-                                style="width:100%;padding:10px 32px 10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;appearance:none;outline:none;cursor:pointer;"
-                                onchange="loadSitinPcGrid(this.value)">
-                                <option value="" disabled selected>Select...</option>
-                                <option value="524">Lab 524</option>
-                                <option value="526">Lab 526</option>
-                                <option value="528">Lab 528</option>
-                                <option value="530">Lab 530 - Multimedia Lab</option>
-                                <option value="542">Lab 542 - It Laboratory</option>
-                                <option value="544">Lab 544 - Mac Laboratory</option>
-                            </select>
-                        </div>
+                        <select name="lab_room" required id="sbSitinLabRoom"
+                            style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;cursor:pointer;font-family:inherit;"
+                            onchange="sbLoadPcGrid(this.value)">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="524">Lab 524</option>
+                            <option value="526">Lab 526</option>
+                            <option value="528">Lab 528</option>
+                            <option value="530">Lab 530 - Multimedia Lab</option>
+                            <option value="542">Lab 542 - IT Laboratory</option>
+                            <option value="544">Lab 544 - Mac Laboratory</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- PC Grid (shown after lab is selected) -->
-                <div id="sitinPcSection" style="display:none;padding:0 20px 12px;">
+                <!-- PC Grid -->
+                <div id="sbSitinPcSection" style="display:none;padding:0 20px 12px;">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                         <label
                             style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;letter-spacing:0.08em;">
                             Select PC <span
                                 style="color:#9CA3AF;text-transform:none;font-weight:400;font-size:10px;">(optional)</span>
                         </label>
-                        <span style="font-size:11px;color:#9CA3AF;" id="sitinSelectedPcLabel">None selected</span>
+                        <span style="font-size:11px;color:#9CA3AF;" id="sbSitinSelectedPcLabel">None selected</span>
                     </div>
-                    <div id="sitinPcGrid"
-                        style="background:#F9F8F6;border:1.5px solid #E2DDD8;border-radius:12px;padding:12px;max-height:200px;overflow-y:auto;">
-                        <div style="text-align:center;color:#9CA3AF;font-size:12px;padding:16px;">Select a lab to load
-                            PCs
-                        </div>
+                    <div id="sbSitinPcGrid"
+                        style="background:#F9F8F6;border:1.5px solid #E2DDD8;border-radius:12px;padding:10px;max-height:190px;overflow-y:auto;">
+                        <div style="text-align:center;color:#9CA3AF;font-size:12px;padding:14px;">Select a lab to load
+                            PCs</div>
                     </div>
-                    <!-- Legend -->
                     <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">
                         <span
                             style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:#4B5563;">
@@ -497,21 +616,21 @@
                 </div>
 
                 <div style="display:flex;gap:10px;padding:0 20px 18px;">
-                    <button type="button" onclick="closeSitinModal()"
-                        style="flex:1;padding:10px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+                    <button type="button" onclick="closeSidebarSitinModal()"
+                        style="flex:1;padding:10px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
                     <button type="submit"
-                        style="flex:2;padding:10px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">
+                        style="flex:2;padding:10px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">
                         Confirm Sit-in
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
     <% } %>
 
         <script>
             (function () {
+                // ── Collapse/Expand ────────────────────────────────────────────────────────
                 const sidebar = document.getElementById('sidebar');
                 const iconCollapse = document.getElementById('iconCollapse');
                 const iconExpand = document.getElementById('iconExpand');
@@ -530,16 +649,17 @@
                     localStorage.setItem('sidebarCollapsed', String(willCollapse));
                 });
 
+                // ── Active link ────────────────────────────────────────────────────────────
                 const path = window.location.pathname;
                 document.querySelectorAll('.sidebar-link').forEach(link => {
                     const href = link.getAttribute('href');
                     if (!href) return;
-                    const exact = path === href;
-                    const prefix = href !== '/admin' && href.length > 1 && path.startsWith(href);
-                    if (exact || prefix) link.classList.add('active');
-                    if (href === '/admin' && path === '/admin') link.classList.add('active');
+                    if (href === '/admin' && path === '/admin') { link.classList.add('active'); return; }
+                    if (href !== '/admin' && href !== '/admin/search' && href.length > 1 && path.startsWith(href)) { link.classList.add('active'); return; }
+                    if (path === href) link.classList.add('active');
                 });
 
+                // ── Intercept search link → open modal ────────────────────────────────────
                 const searchLink = document.getElementById('sidebarSearchLink');
                 if (searchLink) {
                     searchLink.addEventListener('click', function (e) {
@@ -549,45 +669,121 @@
                 }
             })();
 
+            // ════════════════════════════════════════════════════════════════════════
+            //  SEARCH MODAL
+            // ════════════════════════════════════════════════════════════════════════
             function openSidebarSearchModal() {
                 document.getElementById('sidebarSearchModal').classList.add('open');
                 setTimeout(() => document.getElementById('sidebarSearchInput').focus(), 120);
             }
+
             function closeSidebarSearchModal() {
                 document.getElementById('sidebarSearchModal').classList.remove('open');
-                document.getElementById('sidebarSearchInput').value = '';
-                var errEl = document.getElementById('sidebarSearchError');
-                if (errEl) errEl.style.display = 'none';
+                const inp = document.getElementById('sidebarSearchInput');
+                if (inp) inp.value = '';
+                const err = document.getElementById('sidebarSearchError');
+                if (err) err.style.display = 'none';
             }
+
             async function runSidebarSearch() {
-                var q = document.getElementById('sidebarSearchInput').value.trim();
+                const q = document.getElementById('sidebarSearchInput').value.trim();
                 if (!q) return;
-                var errEl = document.getElementById('sidebarSearchError');
+                const errEl = document.getElementById('sidebarSearchError');
                 errEl.style.display = 'none';
                 try {
-                    var res = await fetch('/admin/search-student?q=' + encodeURIComponent(q));
-                    var data = await res.json();
+                    const res = await fetch('/admin/search-student?q=' + encodeURIComponent(q));
+                    const data = await res.json();
                     if (!data || data.error) { errEl.style.display = 'flex'; return; }
-                    var name = data.last_name + ', ' + data.first_name + (data.middle_initial ? ' ' + data.middle_initial + '.' : '');
+                    const name = data.last_name + ', ' + data.first_name + (data.middle_initial ? ' ' + data.middle_initial + '.' : '');
                     closeSidebarSearchModal();
-                    setTimeout(function () {
-                        openSidebarSitinModal(data.id, data.id_number, name, (data.remaining_sessions ?? 30) + ' sessions');
-                    }, 150);
+                    setTimeout(() => openSidebarSitinModal(data.id, data.id_number, name, data.remaining_sessions ?? 30), 150);
                 } catch (e) { errEl.style.display = 'flex'; }
             }
+
+            // ════════════════════════════════════════════════════════════════════════
+            //  SIT-IN MODAL  (all element IDs prefixed with "sb" / "sbSitin")
+            // ════════════════════════════════════════════════════════════════════════
             function openSidebarSitinModal(id, idNumber, name, sessions) {
-                document.getElementById('sidebarSitinUserId').value = id;
-                document.getElementById('sidebarSitinIdNumber').textContent = idNumber;
-                document.getElementById('sidebarSitinName').textContent = name;
-                document.getElementById('sidebarSitinSessions').textContent = sessions;
+                document.getElementById('sbSitinUserId').value = id;
+                document.getElementById('sbSitinIdNumber').textContent = idNumber;
+                document.getElementById('sbSitinName').textContent = name;
+                document.getElementById('sbSitinSessions').textContent = sessions + ' sessions left';
+                // Reset lab/pc selection
+                document.getElementById('sbSitinPurpose').value = '';
+                document.getElementById('sbSitinLabRoom').value = '';
+                document.getElementById('sbSitinPcSection').style.display = 'none';
+                document.getElementById('sbSitinComputerNumber').value = '';
+                document.getElementById('sbSitinSelectedPcLabel').textContent = 'None selected';
+                document.getElementById('sbSitinPcGrid').innerHTML = '<div style="text-align:center;color:#9CA3AF;font-size:12px;padding:14px;">Select a lab to load PCs</div>';
                 document.getElementById('sidebarSitinModal').classList.add('open');
             }
+
             function closeSidebarSitinModal() {
                 document.getElementById('sidebarSitinModal').classList.remove('open');
             }
-            document.addEventListener('keydown', function (e) {
+
+            // ── PC Grid Loader for Sidebar Sit-in Modal ────────────────────────────
+            let _sbSelectedPc = null;
+
+            async function sbLoadPcGrid(labRoom) {
+                if (!labRoom) return;
+                _sbSelectedPc = null;
+                document.getElementById('sbSitinComputerNumber').value = '';
+                document.getElementById('sbSitinSelectedPcLabel').textContent = 'None selected';
+                document.getElementById('sbSitinPcSection').style.display = 'block';
+                const gridEl = document.getElementById('sbSitinPcGrid');
+                gridEl.innerHTML = '<div style="text-align:center;color:#9CA3AF;font-size:12px;padding:14px;">Loading…</div>';
+
+                try {
+                    const res = await fetch('/lab-computers/' + labRoom);
+                    const data = await res.json();
+                    const pcMap = {};
+                    data.forEach(pc => { pcMap[pc.computer_number] = pc; });
+                    gridEl.innerHTML = buildSbPcGrid(labRoom, pcMap);
+                } catch (e) {
+                    gridEl.innerHTML = '<div style="text-align:center;color:#DC2626;font-size:12px;padding:14px;">Failed to load PCs.</div>';
+                }
+            }
+
+            function buildSbPcGrid(labRoom, pcMap) {
+                const rows = 5, cols = 10, total = 50;
+                const pcSvg = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="${color}" width="16" height="16"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg>`;
+                let html = `<div style="background:#1C2B35;border-radius:6px;padding:6px 10px;text-align:center;font-size:10px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">🖥 Teacher Station</div>`;
+                let pcNum = 1;
+                for (let r = 0; r < rows; r++) {
+                    html += `<div style="font-size:9px;font-weight:700;color:#C4BDB6;text-align:center;text-transform:uppercase;letter-spacing:0.06em;margin:8px 0 4px;">Row ${String.fromCharCode(65 + r)}</div>`;
+                    html += `<div class="sb-pc-grid">`;
+                    for (let c = 0; c < cols && pcNum <= total; c++) {
+                        const pc = pcMap[pcNum] || { status: 'available' };
+                        const st = pc.status || 'available';
+                        const cls = st === 'available' ? 'sb-pc-avail' : st === 'in_use' ? 'sb-pc-inuse' : st === 'reserved' ? 'sb-pc-reserved' : 'sb-pc-defect';
+                        const ic = st === 'available' ? '#059669' : st === 'in_use' ? '#D97706' : st === 'reserved' ? '#2563EB' : '#DC2626';
+                        const lbl = st === 'available' ? 'Free' : st === 'in_use' ? 'In Use' : st === 'reserved' ? 'Rsv' : 'Defect';
+                        const click = st === 'available' ? `onclick="sbSelectPc(${pcNum},'${labRoom}')"` : '';
+                        html += `<div class="sb-pc-unit ${cls}" id="sbpc-${pcNum}" ${click} title="PC-${String(pcNum).padStart(2, '0')} — ${lbl}">
+                <div class="sb-pc-icon">${pcSvg(ic)}<span class="sb-pc-dot"></span></div>
+                <span class="sb-pc-num">${String(pcNum).padStart(2, '0')}</span>
+            </div>`;
+                        pcNum++;
+                    }
+                    html += `</div>`;
+                }
+                return html;
+            }
+
+            function sbSelectPc(pcNum, labRoom) {
+                document.querySelectorAll('.sb-pc-unit').forEach(el => el.classList.remove('sb-selected'));
+                const el = document.getElementById('sbpc-' + pcNum);
+                if (el) el.classList.add('sb-selected');
+                _sbSelectedPc = pcNum;
+                document.getElementById('sbSitinComputerNumber').value = pcNum;
+                document.getElementById('sbSitinSelectedPcLabel').textContent = 'PC-' + String(pcNum).padStart(2, '0') + ' — Lab ' + labRoom;
+            }
+
+            // ── ESC closes any open sidebar modal ────────────────────────────────────
+            document.addEventListener('keydown', e => {
                 if (e.key !== 'Escape') return;
-                closeSidebarSearchModal && closeSidebarSearchModal();
-                closeSidebarSitinModal && closeSidebarSitinModal();
+                closeSidebarSearchModal();
+                closeSidebarSitinModal();
             });
         </script>

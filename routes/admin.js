@@ -448,6 +448,14 @@ router.post('/lab-computers/status', isAuthenticated, isAdmin, (req, res) => {
             res.json({ success: true, lab_room, computer_number, status });
         }
     );
+
+
 });
+
+
+router.get('/lab-computers', isAuthenticated, isAdmin, (req, res) => {
+    res.render('pages/admin-lab-computers');
+});
+
 
 module.exports = router;
