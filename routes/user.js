@@ -6,6 +6,23 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+// ─── Profanity Filter ─────────────────────────────────────────────────────────
+const VULGAR_WORDS = [
+    // English
+    'fuck', 'shit', 'ass', 'bitch', 'damn', 'bastard', 'dick', 'pussy', 'cock',
+    'nigger', 'nigga', 'whore', 'slut', 'cunt', 'piss', 'fag', 'faggot', 'retard',
+    // Filipino/Cebuano
+    'puta', 'gago', 'bobo', 'tanga', 'putangina', 'tangina', 'tarantado', 'ulol',
+    'leche', 'pakyu', 'animal', 'hunghang', 'buang', 'yawa', 'linti', 'hayop',
+    'inutil', 'buwisit', 'bwisit', 'ampota', 'ampotah', 'shet', 'punyeta', 'boga'
+];
+
+function containsVulgar(text) {
+    if (!text) return false;
+    const lower = text.toLowerCase();
+    return VULGAR_WORDS.some(word => lower.includes(word));
+}
+
 // ─── Multer for profile pictures ─────────────────────────────────────────────
 const uploadDir = path.join(__dirname, '../public/uploads/profiles');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
@@ -109,12 +126,23 @@ router.get('/history', isAuthenticated, isUser, (req, res) => {
     });
 });
 
-// Submit Feedback
+// Submit Feedback — with profanity check
 router.post('/feedback', isAuthenticated, isUser, (req, res) => {
     const { session_id, message, rating } = req.body;
+
+    if (!message || !message.trim()) {
+        req.session.toast = { type: 'error', message: 'Feedback message cannot be empty.' };
+        return res.redirect('/history');
+    }
+
+    if (containsVulgar(message)) {
+        req.session.toast = { type: 'error', message: 'Your feedback contains inappropriate language. Please keep it respectful.' };
+        return res.redirect('/history');
+    }
+
     db.run(
         `INSERT INTO feedback (user_id, session_id, message, rating) VALUES (?, ?, ?, ?)`,
-        [req.session.user.id, session_id || null, message, rating || 0],
+        [req.session.user.id, session_id || null, message.trim(), rating || 0],
         () => {
             req.session.toast = { type: 'success', message: 'Thank you for your feedback!' };
             res.redirect('/history');
@@ -140,13 +168,18 @@ router.post('/announcements/:id/react', isAuthenticated, (req, res) => {
     });
 });
 
-// ─── Announcement Comments ────────────────────────────────────────────────────
+// ─── Announcement Comments — with profanity check ─────────────────────────────
 router.post('/announcements/:id/comment', isAuthenticated, (req, res) => {
     const { message } = req.body;
-    if (!message || !message.trim()) return res.json({ error: 'Empty comment' });
+    if (!message || !message.trim()) return res.json({ error: 'Comment cannot be empty.' });
+
+    if (containsVulgar(message)) {
+        return res.json({ error: 'Your comment contains inappropriate language. Please keep it respectful.' });
+    }
+
     db.run(`INSERT INTO announcement_comments (announcement_id, user_id, message) VALUES (?, ?, ?)`,
         [req.params.id, req.session.user.id, message.trim()], function (err) {
-            if (err) return res.json({ error: 'Failed' });
+            if (err) return res.json({ error: 'Failed to post comment.' });
             db.get(`SELECT c.*, u.first_name, u.last_name, u.profile_picture FROM announcement_comments c JOIN users u ON c.user_id = u.id WHERE c.id=?`,
                 [this.lastID], (e2, comment) => res.json({ success: true, comment }));
         });
@@ -188,7 +221,6 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
         return res.redirect('/reservation');
     }
 
-    // Check for conflict: same lab + pc + date already approved
     db.get(
         `SELECT id FROM reservations WHERE lab_room = ? AND computer_number = ? AND date = ? AND status = 'approved'`,
         [lab_room, computer_number, date],
@@ -224,7 +256,7 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
     );
 });
 
-// Get PC status for a lab (JSON, for AJAX — used by both reservation.ejs and admin sit-in modal)
+// Get PC status for a lab (JSON, for AJAX)
 router.get('/lab-computers/:lab_room', isAuthenticated, (req, res) => {
     db.all(
         `SELECT lc.computer_number, lc.status,
