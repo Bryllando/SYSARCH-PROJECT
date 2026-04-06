@@ -637,7 +637,6 @@
                                 </div>
                             </div>
 
-                            <!-- Media (if any) -->
                             <% if (ann.media_url && ann.media_url !=='' ) { %>
                                 <div class="ann-feed-media">
                                     <% if (ann.media_type==='video' ) { %>
@@ -650,7 +649,6 @@
                                 </div>
                                 <% } %>
 
-                                    <!-- Message -->
                                     <div class="ann-feed-body">
                                         <%= ann.message %>
                                     </div>
@@ -671,8 +669,6 @@
                                                     </button>
                                                     <% } %>
                                                         <% }); %>
-
-                                                            <!-- Add reaction button -->
                                                             <div class="react-add-wrap">
                                                                 <button class="react-add-btn"
                                                                     onclick="toggleReactPicker(<%= ann.id %>, event)"
@@ -749,27 +745,27 @@
                     <p class="text-xs text-gray-400 mt-0.5">College of Information & Computer Studies</p>
                 </div>
                 <div class="sic-section-label mb-3"><span>Laboratory Rules</span></div>
-                <ol style="list-style:none;padding:0;margin:0;width:100%;">
-                    <% ['Maintain silence, proper decorum, and discipline inside the laboratory. Mobile phones and
-                        personal devices must be switched off.','Games are not allowed inside the lab. This includes
-                        computer-related games and card games that may disturb operations.','Surfing the Internet is
-                        allowed only with the permission of the instructor. Downloading and installing software are
-                        strictly prohibited.','Getting access to websites not related to the course is strictly
-                        prohibited.','Deleting computer files and changing the set-up of the computer is a major
-                        offense.','Observe computer time. All times consumed beyond the allowable number of hours are
-                        charged accordingly.','No food and drinks are allowed inside the laboratory.','Students are not
-                        allowed to go outside during laboratory hours without permission.'].forEach(function(rule, idx)
-                        { %>
-                        <li class="sic-rule-item">
-                            <span class="sic-rule-num">
-                                <%= idx + 1 %>
-                            </span>
-                            <p class="sic-rule-text">
-                                <%= rule %>
-                            </p>
-                        </li>
-                        <% }); %>
-                </ol>
+                <% var
+                    labRules=[ 'Maintain silence, proper decorum, and discipline inside the laboratory. Mobile phones and personal devices must be switched off.'
+                    , 'Games are not allowed inside the lab. This includes computer-related games and card games that may disturb operations.'
+                    , 'Surfing the Internet is allowed only with the permission of the instructor. Downloading and installing software are strictly prohibited.'
+                    , 'Getting access to websites not related to the course is strictly prohibited.'
+                    , 'Deleting computer files and changing the set-up of the computer is a major offense.'
+                    , 'Observe computer time. All times consumed beyond the allowable number of hours are charged accordingly.'
+                    , 'No food and drinks are allowed inside the laboratory.'
+                    , 'Students are not allowed to go outside during laboratory hours without permission.' ]; %>
+                    <ol style="list-style:none;padding:0;margin:0;width:100%;">
+                        <% labRules.forEach(function(rule, idx) { %>
+                            <li class="sic-rule-item">
+                                <span class="sic-rule-num">
+                                    <%= idx + 1 %>
+                                </span>
+                                <p class="sic-rule-text">
+                                    <%= rule %>
+                                </p>
+                            </li>
+                            <% }); %>
+                    </ol>
             </div>
         </div>
 
@@ -803,7 +799,6 @@
                 else { existingBtn.querySelector('.react-count').textContent = count; existingBtn.classList.remove('reacted'); }
             }
         } else if (action === 'added') {
-            // Remove reacted class from all others
             container.querySelectorAll('.react-btn.reacted').forEach(b => b.classList.remove('reacted'));
             if (existingBtn) {
                 existingBtn.querySelector('.react-count').textContent = parseInt(existingBtn.querySelector('.react-count').textContent) + 1;
@@ -895,7 +890,6 @@
                 div.className = 'ann-comment-item';
                 div.innerHTML = `<div class="ann-comment-avatar">${avatarHtml}</div><div class="ann-comment-bubble"><div class="ann-comment-name">${c.first_name} ${c.last_name}</div><div class="ann-comment-msg">${escHtml(c.message)}</div><div class="ann-comment-time">Just now</div></div>`;
                 list.appendChild(div);
-                // Update counter
                 const toggle = document.getElementById('ctoggle-' + annId);
                 if (toggle) {
                     const current = parseInt(toggle.textContent) || 0;
