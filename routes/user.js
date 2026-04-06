@@ -162,11 +162,26 @@ router.get('/announcements/:id/comments', isAuthenticated, (req, res) => {
 
 // Reservation GET
 router.get('/reservation', isAuthenticated, isUser, (req, res) => {
-    db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`, [req.session.user.id], (err, reservations) => {
-        res.render('pages/reservation', { reservations: reservations || [], messages: [] });
-    });
+    // General reservations (no computer_number)
+    db.all(
+        `SELECT * FROM reservations WHERE user_id = ? AND computer_number IS NULL ORDER BY created_at DESC`,
+        [req.session.user.id],
+        (err, reservations) => {
+            // Lab/PC reservations (has computer_number)
+            db.all(
+                `SELECT * FROM reservations WHERE user_id = ? AND computer_number IS NOT NULL ORDER BY created_at DESC`,
+                [req.session.user.id],
+                (err2, labReservations) => {
+                    res.render('pages/reservation', {
+                        reservations: reservations || [],
+                        labReservations: labReservations || [],
+                        messages: []
+                    });
+                }
+            );
+        }
+    );
 });
-
 // Reservation POST
 router.post('/reservation', isAuthenticated, isUser, (req, res) => {
     const { lab_room, date, purpose, time_start, time_end } = req.body;
@@ -240,28 +255,25 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
 
     if (!lab_room || !computer_number || !date || !time_slot || !purpose) {
         req.session.toast = { type: 'error', message: 'Please fill in all required fields.' };
-        return res.redirect('/lab-reservation');
+        return res.redirect('/reservation');   // ← changed from /lab-reservation
     }
 
-    // Check for conflicting reservation on same PC/date/time
     db.get(
-        `SELECT id FROM reservations
-         WHERE lab_room = ? AND computer_number = ? AND date = ? AND status = 'approved'`,
+        `SELECT id FROM reservations WHERE lab_room = ? AND computer_number = ? AND date = ? AND status = 'approved'`,
         [lab_room, computer_number, date],
         (err, conflict) => {
             if (conflict) {
                 req.session.toast = { type: 'error', message: `PC-${String(computer_number).padStart(2, '0')} in Lab ${lab_room} is already reserved on ${date}.` };
-                return res.redirect('/lab-reservation');
+                return res.redirect('/reservation');   // ← changed from /lab-reservation
             }
 
             db.run(
-                `INSERT INTO reservations (user_id, lab_room, computer_number, date, time_slot, purpose, status)
-                 VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
+                `INSERT INTO reservations (user_id, lab_room, computer_number, date, time_slot, purpose, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
                 [req.session.user.id, lab_room, computer_number, date, time_slot, purpose],
                 function (err) {
                     if (err) {
                         req.session.toast = { type: 'error', message: 'Reservation failed. Try again.' };
-                        return res.redirect('/lab-reservation');
+                        return res.redirect('/reservation');   // ← changed from /lab-reservation
                     }
 
                     const u = req.session.user;
@@ -271,13 +283,12 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
                     );
 
                     req.session.toast = { type: 'success', message: `Reservation for Lab ${lab_room} PC-${String(computer_number).padStart(2, '0')} on ${date} submitted! Awaiting approval.` };
-                    res.redirect('/lab-reservation');
+                    res.redirect('/reservation');   // ← changed from /lab-reservation
                 }
             );
         }
     );
 });
-
 // Get PC status for a lab (JSON, for AJAX)
 router.get('/lab-computers/:lab_room', isAuthenticated, (req, res) => {
     db.all(
