@@ -210,4 +210,94 @@ router.post('/notifications/read', isAuthenticated, isUser, (req, res) => {
     db.run(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`, [req.session.user.id], () => res.json({ success: true }));
 });
 
+// Lab Reservation Page (GET)
+router.get('/lab-reservation', isAuthenticated, isUser, (req, res) => {
+    db.all(
+        `SELECT r.*, u.first_name, u.last_name, u.id_number
+         FROM reservations r JOIN users u ON r.user_id = u.id
+         WHERE r.user_id = ? ORDER BY r.created_at DESC`,
+        [req.session.user.id],
+        (err, reservations) => {
+            res.render('pages/lab-reservation', { reservations: reservations || [] });
+        }
+    );
+});
+
+// Lab Reservation POST (submit)
+router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
+    const { lab_room, computer_number, date, purpose, time_start, time_end } = req.body;
+    let time_slot = req.body.time_slot || '';
+
+    if (!time_slot && time_start && time_end) {
+        const to12h = (t) => {
+            const [h, m] = t.split(':').map(Number);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const hour = h % 12 || 12;
+            return `${String(hour).padStart(2, '0')}:${String(m).padStart(2, '0')} ${ampm}`;
+        };
+        time_slot = `${to12h(time_start)} – ${to12h(time_end)}`;
+    }
+
+    if (!lab_room || !computer_number || !date || !time_slot || !purpose) {
+        req.session.toast = { type: 'error', message: 'Please fill in all required fields.' };
+        return res.redirect('/lab-reservation');
+    }
+
+    // Check for conflicting reservation on same PC/date/time
+    db.get(
+        `SELECT id FROM reservations
+         WHERE lab_room = ? AND computer_number = ? AND date = ? AND status = 'approved'`,
+        [lab_room, computer_number, date],
+        (err, conflict) => {
+            if (conflict) {
+                req.session.toast = { type: 'error', message: `PC-${String(computer_number).padStart(2, '0')} in Lab ${lab_room} is already reserved on ${date}.` };
+                return res.redirect('/lab-reservation');
+            }
+
+            db.run(
+                `INSERT INTO reservations (user_id, lab_room, computer_number, date, time_slot, purpose, status)
+                 VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
+                [req.session.user.id, lab_room, computer_number, date, time_slot, purpose],
+                function (err) {
+                    if (err) {
+                        req.session.toast = { type: 'error', message: 'Reservation failed. Try again.' };
+                        return res.redirect('/lab-reservation');
+                    }
+
+                    const u = req.session.user;
+                    db.run(
+                        `INSERT INTO admin_notifications (message, type, related_id) VALUES (?, ?, ?)`,
+                        [`New lab reservation from ${u.first_name} ${u.last_name} (${u.id_number}) — Lab ${lab_room}, PC-${String(computer_number).padStart(2, '0')}, ${date} at ${time_slot}.`, 'reservation', this.lastID]
+                    );
+
+                    req.session.toast = { type: 'success', message: `Reservation for Lab ${lab_room} PC-${String(computer_number).padStart(2, '0')} on ${date} submitted! Awaiting approval.` };
+                    res.redirect('/lab-reservation');
+                }
+            );
+        }
+    );
+});
+
+// Get PC status for a lab (JSON, for AJAX)
+router.get('/lab-computers/:lab_room', isAuthenticated, (req, res) => {
+    db.all(
+        `SELECT lc.computer_number, lc.status,
+                r.id as reservation_id, r.date, r.time_slot, r.user_id,
+                u.first_name, u.last_name
+         FROM lab_computers lc
+         LEFT JOIN reservations r ON r.lab_room = lc.lab_room
+             AND r.computer_number = lc.computer_number
+             AND r.status = 'approved'
+             AND r.date = date('now','localtime')
+         LEFT JOIN users u ON r.user_id = u.id
+         WHERE lc.lab_room = ?
+         ORDER BY lc.computer_number`,
+        [req.params.lab_room],
+        (err, computers) => {
+            res.json(computers || []);
+        }
+    );
+});
+
+
 module.exports = router;

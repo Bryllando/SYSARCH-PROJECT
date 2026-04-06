@@ -1,0 +1,1662 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+    .labres-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
+
+    /* ── Header ── */
+    .labres-header {
+        background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
+        padding: 28px 32px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .labres-header::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(241, 225, 148, 0.07);
+        pointer-events: none;
+    }
+
+    .labres-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50px;
+        left: 15%;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: rgba(91, 14, 20, 0.15);
+        pointer-events: none;
+    }
+
+    .labres-header-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .labres-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+    }
+
+    .labres-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .labres-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(241, 225, 148, 0.7);
+        margin: 0 0 6px;
+    }
+
+    /* ── Stats ── */
+    .labres-stats {
+        display: flex;
+        gap: 12px;
+        padding: 16px 32px;
+        flex-wrap: wrap;
+        background: #F0EDE8;
+    }
+
+    .labres-stat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #E8E3DD;
+        flex: 1;
+        min-width: 120px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .labres-stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .labres-stat-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .labres-stat-label {
+        font-size: 11px;
+        color: #9CA3AF;
+        font-weight: 500;
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* ── Lab Grid ── */
+    .labres-grid-section {
+        padding: 0 32px 32px;
+    }
+
+    .labres-grid-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 0 12px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+    }
+
+    .labres-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .lab-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #E8E3DD;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .lab-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        border-radius: 16px 0 0 16px;
+        background: linear-gradient(135deg, #5B0E14, #3A0910);
+    }
+
+    .lab-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(39, 63, 79, 0.13);
+        border-color: #5B0E14;
+    }
+
+    .lab-card:active {
+        transform: translateY(-1px);
+    }
+
+    .lab-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+    }
+
+    .lab-card-name {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        color: #1C2B35;
+        margin: 0 0 2px;
+    }
+
+    .lab-card-desc {
+        font-size: 11px;
+        color: #9CA3AF;
+        margin: 0 0 14px;
+    }
+
+    .lab-card-pills {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .lab-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 9px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        border: 1px solid;
+    }
+
+    .lab-pill-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+    }
+
+    .pill-avail {
+        background: #ECFDF5;
+        color: #065F46;
+        border-color: #A7F3D0;
+    }
+
+    .pill-avail .lab-pill-dot {
+        background: #10B981;
+    }
+
+    .pill-inuse {
+        background: #FFF7ED;
+        color: #92400E;
+        border-color: #FDE68A;
+    }
+
+    .pill-inuse .lab-pill-dot {
+        background: #F59E0B;
+        animation: pulse 1.5s infinite;
+    }
+
+    .pill-defect {
+        background: #FEF2F2;
+        color: #991B1B;
+        border-color: #FECACA;
+    }
+
+    .pill-defect .lab-pill-dot {
+        background: #DC2626;
+    }
+
+    .lab-card-arrow {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 28px;
+        height: 28px;
+        background: #F3F0EC;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+    }
+
+    .lab-card:hover .lab-card-arrow {
+        background: #5B0E14;
+    }
+
+    .lab-card:hover .lab-card-arrow svg {
+        color: #F1E194;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.8);
+        }
+    }
+
+    /* ── PC Grid Modal ── */
+    .pcmodal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .pcmodal-overlay.open {
+        display: flex;
+    }
+
+    .pcmodal-overlay.open .pcmodal-card {
+        animation: pcModalIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes pcModalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.88) translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .pcmodal-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+        width: 100%;
+        max-width: 860px;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .pcmodal-header {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        padding: 20px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+    }
+
+    .pcmodal-header-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .pcmodal-header-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(241, 225, 148, 0.15);
+        border: 1px solid rgba(241, 225, 148, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pcmodal-header-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        color: #fff;
+        margin: 0 0 2px;
+    }
+
+    .pcmodal-header-sub {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .pcmodal-close {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 9px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.15s;
+    }
+
+    .pcmodal-close:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+    }
+
+    /* Legend */
+    .pcmodal-legend {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 24px;
+        background: #F7F5F2;
+        border-bottom: 1px solid #E8E3DD;
+        flex-wrap: wrap;
+    }
+
+    .pcmodal-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #4B5563;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid;
+    }
+
+    /* PC Layout */
+    .pcmodal-body {
+        padding: 20px 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .pc-teacher-area {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .pc-row-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #C4BDB6;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 14px 0 8px;
+    }
+
+    .pc-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        margin-bottom: 4px;
+    }
+
+    .pc-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        padding: 10px 6px;
+        border-radius: 12px;
+        border: 2px solid transparent;
+        transition: all 0.18s;
+        position: relative;
+    }
+
+    .pc-unit:hover:not(.pc-inuse):not(.pc-defect) {
+        border-color: #5B0E14;
+        background: rgba(91, 14, 20, 0.07);
+        transform: translateY(-2px);
+    }
+
+    .pc-unit.selected {
+        border-color: #5B0E14 !important;
+        background: rgba(91, 14, 20, 0.1) !important;
+    }
+
+    .pc-unit.pc-inuse {
+        cursor: not-allowed;
+        opacity: 0.75;
+    }
+
+    .pc-unit.pc-defect {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
+    .pc-unit.pc-reserved {
+        cursor: not-allowed;
+    }
+
+    .pc-icon-wrap {
+        width: 52px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 2px solid;
+    }
+
+    .pc-avail .pc-icon-wrap {
+        background: #ECFDF5;
+        border-color: #A7F3D0;
+    }
+
+    .pc-inuse .pc-icon-wrap {
+        background: #FFF7ED;
+        border-color: #FDE68A;
+    }
+
+    .pc-defect .pc-icon-wrap {
+        background: #FEF2F2;
+        border-color: #FECACA;
+    }
+
+    .pc-reserved .pc-icon-wrap {
+        background: #EFF6FF;
+        border-color: #BFDBFE;
+    }
+
+    .pc-status-dot {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+    }
+
+    .pc-avail .pc-status-dot {
+        background: #10B981;
+    }
+
+    .pc-inuse .pc-status-dot {
+        background: #F59E0B;
+        animation: pulse 1.5s infinite;
+    }
+
+    .pc-defect .pc-status-dot {
+        background: #DC2626;
+    }
+
+    .pc-reserved .pc-status-dot {
+        background: #3B82F6;
+    }
+
+    .pc-number {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .pc-avail .pc-number {
+        color: #065F46;
+    }
+
+    .pc-inuse .pc-number {
+        color: #92400E;
+    }
+
+    .pc-defect .pc-number {
+        color: #991B1B;
+    }
+
+    .pc-reserved .pc-number {
+        color: #1D4ED8;
+    }
+
+    .pc-label {
+        font-size: 9px;
+        font-weight: 600;
+        color: #9CA3AF;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    /* Admin status badge on PC */
+    .pc-admin-tag {
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #5B0E14;
+        color: #F1E194;
+        font-size: 8px;
+        font-weight: 800;
+        padding: 1px 5px;
+        border-radius: 999px;
+        white-space: nowrap;
+        letter-spacing: 0.05em;
+        z-index: 2;
+    }
+
+    /* Footer */
+    .pcmodal-footer {
+        padding: 14px 24px;
+        border-top: 1px solid #E8E3DD;
+        background: #FAFAF9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .pcmodal-footer-info {
+        font-size: 12px;
+        color: #9CA3AF;
+    }
+
+    .pcmodal-footer-info strong {
+        color: #1C2B35;
+    }
+
+    .btn-reserve {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #5B0E14, #7a131b);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-reserve:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+
+    .btn-reserve:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* ── Reserve Form Modal ── */
+    .resform-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 300;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(8px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .resform-overlay.open {
+        display: flex;
+    }
+
+    .resform-overlay.open .resform-card {
+        animation: pcModalIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .resform-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 480px;
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .resform-header {
+        background: linear-gradient(135deg, #5B0E14, #3A0910);
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .resform-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        color: #fff;
+    }
+
+    .resform-close {
+        width: 30px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all 0.15s;
+    }
+
+    .resform-close:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: #fff;
+    }
+
+    .resform-pc-badge {
+        margin: 0;
+        padding: 14px 24px;
+        background: linear-gradient(135deg, #F9F8F6, #F0EDE8);
+        border-bottom: 1px solid #E8E3DD;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .resform-pc-icon {
+        width: 42px;
+        height: 36px;
+        border-radius: 9px;
+        background: #ECFDF5;
+        border: 2px solid #A7F3D0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .resform-pc-info {
+        font-size: 13px;
+    }
+
+    .resform-pc-num {
+        font-weight: 800;
+        color: #1C2B35;
+    }
+
+    .resform-pc-lab {
+        font-size: 11px;
+        color: #6B7280;
+    }
+
+    .resform-body {
+        padding: 20px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .resform-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .resform-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6B7280;
+    }
+
+    .resform-input {
+        width: 100%;
+        padding: 10px 13px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #F9F8F6;
+        font-size: 13px;
+        color: #1C2B35;
+        outline: none;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        box-sizing: border-box;
+    }
+
+    .resform-input:focus {
+        border-color: #5B0E14;
+        box-shadow: 0 0 0 3px rgba(91, 14, 20, 0.08);
+        background: #fff;
+    }
+
+    .resform-select {
+        appearance: none;
+        cursor: pointer;
+    }
+
+    .select-wrap {
+        position: relative;
+    }
+
+    .select-wrap svg {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #9CA3AF;
+    }
+
+    .resform-time-row {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .resform-time-sep {
+        font-size: 12px;
+        color: #9CA3AF;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .resform-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #FFF7ED;
+        border: 1px solid #FDE68A;
+        border-radius: 9px;
+        font-size: 11px;
+        color: #92400E;
+    }
+
+    .resform-footer {
+        display: flex;
+        gap: 10px;
+        padding: 0 24px 22px;
+    }
+
+    .btn-rescancel {
+        flex: 1;
+        padding: 11px;
+        background: #F3F0EC;
+        color: #374151;
+        border: 1.5px solid #E8E3DD;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: background 0.15s;
+    }
+
+    .btn-rescancel:hover {
+        background: #E8E3DD;
+    }
+
+    .btn-ressubmit {
+        flex: 2;
+        padding: 11px;
+        background: linear-gradient(135deg, #5B0E14, #7a131b);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-ressubmit:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+
+    /* ── Admin: PC Context Menu ── */
+    .pc-ctx-menu {
+        position: fixed;
+        z-index: 400;
+        background: #fff;
+        border: 1px solid #E8E3DD;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        padding: 6px;
+        min-width: 180px;
+        display: none;
+        animation: ctxIn 0.15s ease;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .pc-ctx-menu.open {
+        display: block;
+    }
+
+    @keyframes ctxIn {
+        from {
+            opacity: 0;
+            transform: scale(0.92) translateY(-4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .ctx-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        color: #374151;
+        transition: background 0.12s;
+    }
+
+    .ctx-item:hover {
+        background: #F7F5F2;
+    }
+
+    .ctx-item.danger {
+        color: #DC2626;
+    }
+
+    .ctx-item.danger:hover {
+        background: #FEF2F2;
+    }
+
+    .ctx-item.success {
+        color: #059669;
+    }
+
+    .ctx-item.success:hover {
+        background: #ECFDF5;
+    }
+
+    .ctx-sep {
+        height: 1px;
+        background: #F3F0EC;
+        margin: 4px 0;
+    }
+
+    /* ── Reservations list (bottom) ── */
+    .labres-reservations-section {
+        padding: 0 32px 40px;
+    }
+</style>
+
+<div class="labres-page">
+
+    <!-- Header -->
+    <div class="labres-header">
+        <div class="labres-header-inner">
+            <div>
+                <p class="labres-eyebrow">
+                    <% if (typeof user !=='undefined' && user.role==='admin' ) { %>Admin Panel<% } else { %>Student
+                            Portal<% } %>
+                </p>
+                <h1>Computer Laboratory Reservation</h1>
+                <p>Select a lab and choose an available computer to reserve your seat</p>
+            </div>
+            <span
+                style="background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);color:#F1E194;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:0.04em;">
+                <%= labs ? labs.length : 6 %> Labs Available
+            </span>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="labres-stats">
+        <div class="labres-stat">
+            <div class="labres-stat-icon" style="background:#ECFDF5;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#10B981;"></div>
+            </div>
+            <div>
+                <div class="labres-stat-val" style="color:#059669;" id="stat-avail">—</div>
+                <div class="labres-stat-label">Available PCs</div>
+            </div>
+        </div>
+        <div class="labres-stat">
+            <div class="labres-stat-icon" style="background:#FFF7ED;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#F59E0B;"></div>
+            </div>
+            <div>
+                <div class="labres-stat-val" style="color:#D97706;" id="stat-inuse">—</div>
+                <div class="labres-stat-label">In Use</div>
+            </div>
+        </div>
+        <div class="labres-stat">
+            <div class="labres-stat-icon" style="background:#EFF6FF;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#3B82F6;"></div>
+            </div>
+            <div>
+                <div class="labres-stat-val" style="color:#1D4ED8;" id="stat-reserved">—</div>
+                <div class="labres-stat-label">Reserved</div>
+            </div>
+        </div>
+        <div class="labres-stat">
+            <div class="labres-stat-icon" style="background:#FEF2F2;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#DC2626;"></div>
+            </div>
+            <div>
+                <div class="labres-stat-val" style="color:#DC2626;" id="stat-defect">—</div>
+                <div class="labres-stat-label">Defective</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lab Grid -->
+    <div class="labres-grid-section">
+        <div class="labres-grid-title">
+            <div style="width:6px;height:6px;border-radius:50%;background:#5B0E14;"></div>
+            Computer Labs — Click a lab to view available seats
+        </div>
+        <div class="labres-grid" id="labGrid">
+            <!-- Labs rendered by JS from data -->
+        </div>
+    </div>
+
+    <!-- Reservations -->
+    <div class="labres-reservations-section">
+        <div class="labres-grid-title">
+            <div style="width:6px;height:6px;border-radius:50%;background:#273F4F;"></div>
+            <% if (typeof user !=='undefined' && user.role==='admin' ) { %>
+                All Pending Reservations
+                <% } else { %>
+                    My Reservations
+                    <% } %>
+        </div>
+        <div
+            style="background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E8E3DD;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                    <thead>
+                        <tr style="background:#F7F5F2;border-bottom:2px solid #E8E3DD;">
+                            <th
+                                style="padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                Student</th>
+                            <th
+                                style="padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                Lab</th>
+                            <th
+                                style="padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                PC</th>
+                            <th
+                                style="padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                Purpose</th>
+                            <th
+                                style="padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                Date</th>
+                            <th
+                                style="padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                Time</th>
+                            <th
+                                style="padding:12px 16px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                Status</th>
+                            <% if (typeof user !=='undefined' && user.role==='admin' ) { %>
+                                <th
+                                    style="padding:12px 16px;text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">
+                                    Actions</th>
+                                <% } %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (typeof reservations !=='undefined' && reservations && reservations.length> 0) { %>
+                            <% reservations.forEach(function(r) { %>
+                                <tr style="border-bottom:1px solid #F3F0EC;">
+                                    <td style="padding:13px 16px;">
+                                        <div style="font-weight:600;color:#1C2B35;font-size:13px;">
+                                            <%= r.last_name %>, <%= r.first_name %>
+                                        </div>
+                                        <div style="font-size:11px;color:#9CA3AF;font-family:monospace;">
+                                            <%= r.id_number %>
+                                        </div>
+                                    </td>
+                                    <td style="padding:13px 16px;">
+                                        <span
+                                            style="display:inline-flex;padding:4px 9px;border-radius:7px;font-size:11px;font-weight:700;background:#1C2B35;color:#F1E194;">Lab
+                                            <%= r.lab_room %></span>
+                                    </td>
+                                    <td style="padding:13px 16px;">
+                                        <span
+                                            style="display:inline-flex;padding:4px 9px;border-radius:7px;font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;">PC-
+                                            <%= r.computer_number || '—' %></span>
+                                    </td>
+                                    <td style="padding:13px 16px;font-size:12px;color:#4B5563;">
+                                        <%= r.purpose || '—' %>
+                                    </td>
+                                    <td style="padding:13px 16px;font-size:12px;color:#4B5563;white-space:nowrap;">
+                                        <%= r.date %>
+                                    </td>
+                                    <td style="padding:13px 16px;font-size:11px;color:#9CA3AF;white-space:nowrap;">
+                                        <%= r.time_slot %>
+                                    </td>
+                                    <td style="padding:13px 16px;">
+                                        <% if (r.status==='approved' ) { %>
+                                            <span
+                                                style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;">
+                                                <span
+                                                    style="width:6px;height:6px;border-radius:50%;background:#10B981;"></span>Approved
+                                            </span>
+                                            <% } else if (r.status==='rejected' ) { %>
+                                                <span
+                                                    style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;">
+                                                    <span
+                                                        style="width:6px;height:6px;border-radius:50%;background:#DC2626;"></span>Rejected
+                                                </span>
+                                                <% } else { %>
+                                                    <span
+                                                        style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;">
+                                                        <span
+                                                            style="width:6px;height:6px;border-radius:50%;background:#F59E0B;animation:pulse 1.5s infinite;"></span>Pending
+                                                    </span>
+                                                    <% } %>
+                                    </td>
+                                    <% if (typeof user !=='undefined' && user.role==='admin' ) { %>
+                                        <td style="padding:13px 16px;">
+                                            <% if (r.status==='pending' ) { %>
+                                                <div
+                                                    style="display:flex;align-items:center;justify-content:center;gap:7px;">
+                                                    <form action="/admin/lab-reservations/<%= r.id %>/approve"
+                                                        method="POST" style="margin:0;"
+                                                        onsubmit="return confirm('Approve this reservation? PC-<%= r.computer_number %> will be marked as reserved.')">
+                                                        <button type="submit"
+                                                            style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#059669,#047857);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
+                                                                fill="currentColor" width="11" height="11">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M11.03 2.47a.75.75 0 0 1 0 1.06l-6.5 6.5a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06l2.47 2.47 5.97-5.97a.75.75 0 0 1 1.06 0Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                            Approve
+                                                        </button>
+                                                    </form>
+                                                    <form action="/admin/lab-reservations/<%= r.id %>/reject"
+                                                        method="POST" style="margin:0;"
+                                                        onsubmit="return confirm('Reject this reservation?')">
+                                                        <button type="submit"
+                                                            style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:#DC2626;background:#FEF2F2;border:1.5px solid #FECACA;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;">
+                                                            Reject
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <% } else { %>
+                                                    <div
+                                                        style="text-align:center;font-size:11px;color:#C4BDB6;font-style:italic;">
+                                                        Processed</div>
+                                                    <% } %>
+                                        </td>
+                                        <% } %>
+                                </tr>
+                                <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="<%= typeof user !== 'undefined' && user.role === 'admin' ? 8 : 7 %>"
+                                                style="padding:56px 24px;text-align:center;">
+                                                <div
+                                                    style="width:52px;height:52px;border-radius:50%;background:#F3F0EC;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                        fill="#C4BDB6" width="26" height="26">
+                                                        <path fill-rule="evenodd"
+                                                            d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                </div>
+                                                <p style="font-size:14px;font-weight:700;color:#4B5563;margin:0 0 4px;">
+                                                    No reservations yet</p>
+                                                <p style="font-size:12px;color:#9CA3AF;margin:0;">Choose a lab above to
+                                                    make a reservation.</p>
+                                            </td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ PC GRID MODAL ═══════ -->
+<div id="pcModal" class="pcmodal-overlay" onclick="if(event.target===this) closePcModal()">
+    <div class="pcmodal-card">
+        <div class="pcmodal-header">
+            <div class="pcmodal-header-left">
+                <div class="pcmodal-header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="22" height="22">
+                        <path clip-rule="evenodd"
+                            d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z"
+                            fill-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="pcmodal-header-title" id="pcModalLabName">Lab 524</p>
+                    <p class="pcmodal-header-sub" id="pcModalLabDesc">Select an available computer</p>
+                </div>
+            </div>
+            <button class="pcmodal-close" onclick="closePcModal()">✕</button>
+        </div>
+
+        <!-- Legend -->
+        <div class="pcmodal-legend">
+            <div class="pcmodal-legend-item">
+                <div class="legend-dot" style="background:#10B981;border-color:#A7F3D0;"></div>
+                Available
+            </div>
+            <div class="pcmodal-legend-item">
+                <div class="legend-dot" style="background:#F59E0B;border-color:#FDE68A;"></div>
+                In Use
+            </div>
+            <div class="pcmodal-legend-item">
+                <div class="legend-dot" style="background:#3B82F6;border-color:#BFDBFE;"></div>
+                Reserved
+            </div>
+            <div class="pcmodal-legend-item">
+                <div class="legend-dot" style="background:#DC2626;border-color:#FECACA;"></div>
+                Defective
+            </div>
+            <% if (typeof user !=='undefined' && user.role !=='admin' ) { %>
+                <span style="margin-left:auto;font-size:11px;color:#9CA3AF;font-style:italic;">Click a green PC to
+                    reserve</span>
+                <% } %>
+        </div>
+
+        <!-- PC Grid -->
+        <div class="pcmodal-body" id="pcModalBody">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- Footer -->
+        <div class="pcmodal-footer">
+            <div class="pcmodal-footer-info">
+                Selected: <strong id="selectedPcLabel">None</strong>
+            </div>
+            <% if (typeof user !=='undefined' && user.role !=='admin' ) { %>
+                <button class="btn-reserve" id="btnReserve" disabled onclick="openReserveForm()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14"
+                        height="14">
+                        <path fill-rule="evenodd"
+                            d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Reserve This PC
+                </button>
+                <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ RESERVE FORM MODAL ═══════ -->
+<div id="resFormModal" class="resform-overlay" onclick="if(event.target===this) closeReserveForm()">
+    <div class="resform-card">
+        <div class="resform-header">
+            <span class="resform-title">Confirm Reservation</span>
+            <button class="resform-close" onclick="closeReserveForm()">✕</button>
+        </div>
+        <div class="resform-pc-badge">
+            <div class="resform-pc-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" width="18" height="18">
+                    <path clip-rule="evenodd"
+                        d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z"
+                        fill-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="resform-pc-info">
+                <div class="resform-pc-num" id="formPcLabel">PC-01</div>
+                <div class="resform-pc-lab" id="formLabLabel">Lab 524</div>
+            </div>
+        </div>
+        <form action="/lab-reservation" method="POST" class="resform-body" id="labResForm">
+            <input type="hidden" name="lab_room" id="formLabRoom">
+            <input type="hidden" name="computer_number" id="formPcNumber">
+
+            <div class="resform-field">
+                <label class="resform-label">Purpose <span style="color:#DC2626;">*</span></label>
+                <div class="select-wrap">
+                    <select name="purpose" class="resform-input resform-select" required>
+                        <option value="" disabled selected>Select purpose...</option>
+                        <option>C Programming</option>
+                        <option>Java Programming</option>
+                        <option>C# Programming</option>
+                        <option>ASP.Net</option>
+                        <option>PHP Programming</option>
+                        <option>Database</option>
+                        <option>Research</option>
+                        <option>Other</option>
+                    </select>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12"
+                        height="12">
+                        <path fill-rule="evenodd"
+                            d="M3.636 6.136a.75.75 0 0 1 1.061 0L7 8.439l2.303-2.303a.75.75 0 1 1 1.06 1.06l-2.833 2.834a.75.75 0 0 1-1.06 0L3.636 7.197a.75.75 0 0 1 0-1.06Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+
+            <div class="resform-field">
+                <label class="resform-label">Date <span style="color:#DC2626;">*</span></label>
+                <input type="date" name="date" class="resform-input" id="formDate" required>
+            </div>
+
+            <div class="resform-field">
+                <label class="resform-label">Time Slot <span style="color:#DC2626;">*</span> <span
+                        style="color:#9CA3AF;text-transform:none;font-weight:400;">(max 3 hours)</span></label>
+                <div class="resform-time-row">
+                    <input type="time" name="time_start" id="formTimeStart" class="resform-input" required
+                        oninput="validateTimeRange()">
+                    <div class="resform-time-sep">→</div>
+                    <input type="time" name="time_end" id="formTimeEnd" class="resform-input" required
+                        oninput="validateTimeRange()">
+                </div>
+                <input type="hidden" name="time_slot" id="formTimeSlot">
+                <p id="timeWarning" style="font-size:11px;color:#DC2626;margin:4px 0 0;display:none;">⚠ Maximum sit-in
+                    time is 3 hours.</p>
+                <p id="timePreview" style="font-size:11px;color:#059669;font-weight:600;margin:4px 0 0;display:none;">
+                </p>
+            </div>
+
+            <div class="resform-note">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14"
+                    style="flex-shrink:0;margin-top:1px;">
+                    <path fill-rule="evenodd"
+                        d="M6.701 2.25c.577-1 2.02-1 2.598 0l5.196 9a1.5 1.5 0 0 1-1.299 2.25H2.804a1.5 1.5 0 0 1-1.3-2.25l5.197-9ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 1 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+                        clip-rule="evenodd" />
+                </svg>
+                Your reservation is pending admin approval. The selected PC will be temporarily held and confirmed once
+                approved.
+            </div>
+        </form>
+        <div class="resform-footer">
+            <button class="btn-rescancel" type="button" onclick="closeReserveForm()">Cancel</button>
+            <button class="btn-ressubmit" type="button" onclick="submitReservation()">Submit Reservation</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ ADMIN PC CONTEXT MENU ═══════ -->
+<% if (typeof user !=='undefined' && user.role==='admin' ) { %>
+    <div id="pcCtxMenu" class="pc-ctx-menu">
+        <div class="ctx-item success" onclick="adminSetPcStatus('available')">
+            <div style="width:10px;height:10px;border-radius:50%;background:#10B981;"></div>
+            Mark as Available
+        </div>
+        <div class="ctx-item" onclick="adminSetPcStatus('in_use')" style="color:#92400E;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;"></div>
+            Mark as In Use
+        </div>
+        <div class="ctx-sep"></div>
+        <div class="ctx-item danger" onclick="adminSetPcStatus('defective')">
+            <div style="width:10px;height:10px;border-radius:50%;background:#DC2626;"></div>
+            Mark as Defective
+        </div>
+        <div class="ctx-sep"></div>
+        <div class="ctx-item" onclick="adminViewPcReservations()" style="color:#273F4F;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12" height="12">
+                <path fill-rule="evenodd"
+                    d="M5 2A1.5 1.5 0 0 0 3.5 3.5v9A1.5 1.5 0 0 0 5 14h7a1.5 1.5 0 0 0 1.5-1.5V5.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.44A1.5 1.5 0 0 0 8.878 2H5Zm1 5.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1H6Zm0 2.5a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H6Z"
+                    clip-rule="evenodd" />
+            </svg>
+            View Reservations
+        </div>
+    </div>
+    <% } %>
+
+        <script>
+            const IS_ADMIN = '<%= typeof user !== "undefined" && user.role === "admin" ? "true" : "false" %>' === 'true';
+
+            // ── Lab Data ──────────────────────────────────────────────────────
+            const LABS = [
+                { id: 'lab524', room: '524', name: 'Lab 524', desc: 'General Purpose Laboratory', rows: 4, cols: 5, totalPcs: 20 },
+                { id: 'lab526', room: '526', name: 'Lab 526', desc: 'General Purpose Laboratory', rows: 4, cols: 5, totalPcs: 20 },
+                { id: 'lab528', room: '528', name: 'Lab 528', desc: 'General Purpose Laboratory', rows: 4, cols: 5, totalPcs: 20 },
+                { id: 'lab530', room: '530', name: 'Lab 530', desc: 'Multimedia Laboratory', rows: 3, cols: 5, totalPcs: 15 },
+                { id: 'lab542', room: '542', name: 'Lab 542', desc: 'IT Laboratory', rows: 4, cols: 5, totalPcs: 20 },
+                { id: 'lab544', room: '544', name: 'Lab 544', desc: 'Mac Laboratory', rows: 3, cols: 4, totalPcs: 12 },
+            ];
+
+            // ── PC Status Store (in real app, fetched from server) ──────────
+            const PC_STATUS_STORE = {};
+            function initLabPcs(labId, total) {
+                if (!PC_STATUS_STORE[labId]) {
+                    const pcs = {};
+                    for (let i = 1; i <= total; i++) {
+                        const r = Math.random();
+                        let status = 'available';
+                        if (r < 0.15) status = 'defective';
+                        else if (r < 0.35) status = 'in_use';
+                        else if (r < 0.48) status = 'reserved';
+                        pcs[i] = { status, reservedBy: status === 'reserved' ? 'Sample Student' : null };
+                    }
+                    PC_STATUS_STORE[labId] = pcs;
+                }
+                return PC_STATUS_STORE[labId];
+            }
+
+            function getLabStats(labId, total) {
+                const pcs = initLabPcs(labId, total);
+                const counts = { available: 0, in_use: 0, reserved: 0, defective: 0 };
+                Object.values(pcs).forEach(p => counts[p.status]++);
+                return counts;
+            }
+
+            // ── Render Lab Grid Cards ─────────────────────────────────────────
+            function renderLabGrid() {
+                const grid = document.getElementById('labGrid');
+                let totalAvail = 0, totalInuse = 0, totalReserved = 0, totalDefect = 0;
+
+                grid.innerHTML = LABS.map(lab => {
+                    const stats = getLabStats(lab.id, lab.totalPcs);
+                    totalAvail += stats.available;
+                    totalInuse += stats.in_use;
+                    totalReserved += stats.reserved;
+                    totalDefect += stats.defective;
+
+                    const pillsHtml = [
+                        stats.available > 0 ? `<span class="lab-pill pill-avail"><span class="lab-pill-dot"></span>${stats.available} Available</span>` : '',
+                        stats.in_use > 0 ? `<span class="lab-pill pill-inuse"><span class="lab-pill-dot"></span>${stats.in_use} In Use</span>` : '',
+                        stats.defective > 0 ? `<span class="lab-pill pill-defect"><span class="lab-pill-dot"></span>${stats.defective} Defective</span>` : '',
+                    ].filter(Boolean).join('');
+
+                    return `
+        <div class="lab-card" onclick="openPcModal('${lab.id}')">
+            <div class="lab-card-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12" height="12" style="color:#6B7280;">
+                    <path fill-rule="evenodd" d="M3.036 7.018a.75.75 0 0 1 .75-.75h7.19L8.53 3.822a.75.75 0 0 1 1.06-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.447-2.447H3.786a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="lab-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="24" height="24">
+                    <path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/>
+                </svg>
+            </div>
+            <p class="lab-card-name">${lab.name}</p>
+            <p class="lab-card-desc">${lab.desc} · ${lab.totalPcs} PCs</p>
+            <div class="lab-card-pills">${pillsHtml}</div>
+        </div>`;
+                }).join('');
+
+                document.getElementById('stat-avail').textContent = totalAvail;
+                document.getElementById('stat-inuse').textContent = totalInuse;
+                document.getElementById('stat-reserved').textContent = totalReserved;
+                document.getElementById('stat-defect').textContent = totalDefect;
+            }
+
+            // ── PC Modal ──────────────────────────────────────────────────────
+            let currentLabId = null;
+            let selectedPcNum = null;
+            let ctxTargetPcNum = null;
+
+            function pcSvg(color) {
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="${color}" width="24" height="24">
+        <path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/>
+    </svg>`;
+            }
+
+            function renderPcGrid(labId) {
+                const lab = LABS.find(l => l.id === labId);
+                const pcs = initLabPcs(labId, lab.totalPcs);
+                const body = document.getElementById('pcModalBody');
+
+                document.getElementById('pcModalLabName').textContent = lab.name;
+                document.getElementById('pcModalLabDesc').textContent = `${lab.desc} · ${lab.totalPcs} computers`;
+
+                let html = `<div class="pc-teacher-area">🖥 Teacher / Instructor Station</div>`;
+
+                let pcNum = 1;
+                for (let row = 0; row < lab.rows; row++) {
+                    const rowLetter = String.fromCharCode(65 + row);
+                    html += `<div class="pc-row-label">Row ${rowLetter}</div><div class="pc-grid">`;
+                    for (let col = 0; col < lab.cols && pcNum <= lab.totalPcs; col++) {
+                        const pc = pcs[pcNum];
+                        const statusClass = pc.status === 'available' ? 'pc-avail'
+                            : pc.status === 'in_use' ? 'pc-inuse'
+                                : pc.status === 'reserved' ? 'pc-reserved'
+                                    : 'pc-defect';
+                        const iconColor = pc.status === 'available' ? '#059669'
+                            : pc.status === 'in_use' ? '#D97706'
+                                : pc.status === 'reserved' ? '#2563EB'
+                                    : '#DC2626';
+                        const labelText = pc.status === 'available' ? 'Free'
+                            : pc.status === 'in_use' ? 'In Use'
+                                : pc.status === 'reserved' ? 'Reserved'
+                                    : 'Defective';
+
+                        const clickHandler = IS_ADMIN
+                            ? `oncontextmenu="adminCtxMenu(event, ${pcNum}); return false;" onclick="adminCtxMenu(event, ${pcNum})"`
+                            : (pc.status === 'available' ? `onclick="selectPc(${pcNum})"` : '');
+
+                        const adminBadge = IS_ADMIN && pc.status !== 'available' ? `<div class="pc-admin-tag">${labelText}</div>` : '';
+
+                        html += `
+            <div class="pc-unit ${statusClass}" id="pc-unit-${pcNum}" data-pc="${pcNum}" ${clickHandler} title="PC-${String(pcNum).padStart(2, '0')} — ${labelText}">
+                ${adminBadge}
+                <div class="pc-icon-wrap">
+                    ${pcSvg(iconColor)}
+                    <span class="pc-status-dot"></span>
+                </div>
+                <span class="pc-number">PC-${String(pcNum).padStart(2, '0')}</span>
+                <span class="pc-label">${labelText}</span>
+            </div>`;
+                        pcNum++;
+                    }
+                    html += `</div>`;
+                }
+                body.innerHTML = html;
+            }
+
+            function openPcModal(labId) {
+                currentLabId = labId;
+                selectedPcNum = null;
+                document.getElementById('selectedPcLabel').textContent = 'None';
+                const btn = document.getElementById('btnReserve');
+                if (btn) btn.disabled = true;
+                renderPcGrid(labId);
+                document.getElementById('pcModal').classList.add('open');
+            }
+
+            function closePcModal() {
+                document.getElementById('pcModal').classList.remove('open');
+                closeCtxMenu();
+                currentLabId = null;
+                selectedPcNum = null;
+            }
+
+            function selectPc(pcNum) {
+                if (!currentLabId) return;
+                const lab = LABS.find(l => l.id === currentLabId);
+                const pcs = PC_STATUS_STORE[currentLabId];
+                if (!pcs || pcs[pcNum].status !== 'available') return;
+
+                document.querySelectorAll('.pc-unit').forEach(el => el.classList.remove('selected'));
+                document.getElementById(`pc-unit-${pcNum}`).classList.add('selected');
+
+                selectedPcNum = pcNum;
+                const label = `PC-${String(pcNum).padStart(2, '0')} — ${lab.name}`;
+                document.getElementById('selectedPcLabel').textContent = label;
+                const btn = document.getElementById('btnReserve');
+                if (btn) btn.disabled = false;
+            }
+
+            // ── Reserve Form ──────────────────────────────────────────────────
+            function openReserveForm() {
+                if (!selectedPcNum || !currentLabId) return;
+                const lab = LABS.find(l => l.id === currentLabId);
+                document.getElementById('formPcLabel').textContent = `PC-${String(selectedPcNum).padStart(2, '0')}`;
+                document.getElementById('formLabLabel').textContent = lab.name;
+                document.getElementById('formLabRoom').value = lab.room;
+                document.getElementById('formPcNumber').value = selectedPcNum;
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('formDate').min = today;
+                document.getElementById('resFormModal').classList.add('open');
+            }
+
+            function closeReserveForm() {
+                document.getElementById('resFormModal').classList.remove('open');
+            }
+
+            function validateTimeRange() {
+                const start = document.getElementById('formTimeStart').value;
+                const end = document.getElementById('formTimeEnd').value;
+                const warn = document.getElementById('timeWarning');
+                const preview = document.getElementById('timePreview');
+                const slot = document.getElementById('formTimeSlot');
+
+                if (!start || !end) { warn.style.display = 'none'; preview.style.display = 'none'; return; }
+
+                const [sh, sm] = start.split(':').map(Number);
+                const [eh, em] = end.split(':').map(Number);
+                const diffMin = (eh * 60 + em) - (sh * 60 + sm);
+
+                if (diffMin <= 0) {
+                    warn.textContent = '⚠ End time must be after start time.';
+                    warn.style.display = 'block'; preview.style.display = 'none'; slot.value = ''; return;
+                }
+                if (diffMin > 180) {
+                    warn.textContent = '⚠ Maximum sit-in time is 3 hours.';
+                    warn.style.display = 'block'; preview.style.display = 'none'; slot.value = ''; return;
+                }
+                warn.style.display = 'none';
+
+                const to12 = t => {
+                    const [h, m] = t.split(':').map(Number);
+                    const ap = h >= 12 ? 'PM' : 'AM'; const hr = h % 12 || 12;
+                    return `${String(hr).padStart(2, '0')}:${String(m).padStart(2, '0')} ${ap}`;
+                };
+                const slotStr = `${to12(start)} – ${to12(end)}`;
+                slot.value = slotStr;
+                preview.textContent = `✓ ${slotStr} (${Math.floor(diffMin / 60)}h ${diffMin % 60}m)`;
+                preview.style.display = 'block';
+            }
+
+            function submitReservation() {
+                const form = document.getElementById('labResForm');
+                const slot = document.getElementById('formTimeSlot');
+                if (!slot.value) { alert('Please set a valid time slot (max 3 hours).'); return; }
+                form.submit();
+            }
+
+            // ── Admin PC Context Menu ─────────────────────────────────────────
+            function adminCtxMenu(event, pcNum) {
+                if (!IS_ADMIN) return;
+                event.preventDefault();
+                ctxTargetPcNum = pcNum;
+                const menu = document.getElementById('pcCtxMenu');
+                if (!menu) return;
+                menu.style.left = Math.min(event.clientX, window.innerWidth - 200) + 'px';
+                menu.style.top = Math.min(event.clientY, window.innerHeight - 180) + 'px';
+                menu.classList.add('open');
+            }
+
+            function closeCtxMenu() {
+                const menu = document.getElementById('pcCtxMenu');
+                if (menu) menu.classList.remove('open');
+                ctxTargetPcNum = null;
+            }
+
+            function adminSetPcStatus(status) {
+                if (!currentLabId || !ctxTargetPcNum) return;
+                PC_STATUS_STORE[currentLabId][ctxTargetPcNum].status = status;
+
+                // In real app: POST to /admin/lab-computers/:id/status
+                fetch(`/admin/lab-computers/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lab_room: LABS.find(l => l.id === currentLabId).room, computer_number: ctxTargetPcNum, status })
+                }).catch(() => { });
+
+                closeCtxMenu();
+                renderPcGrid(currentLabId);
+                renderLabGrid();
+            }
+
+            function adminViewPcReservations() {
+                if (!ctxTargetPcNum || !currentLabId) return;
+                const lab = LABS.find(l => l.id === currentLabId);
+                closeCtxMenu();
+                closePcModal();
+                window.location.href = `/admin/lab-reservations?lab=${lab.room}&pc=${ctxTargetPcNum}`;
+            }
+
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('pcCtxMenu')?.contains(e.target)) closeCtxMenu();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') { closePcModal(); closeReserveForm(); closeCtxMenu(); }
+            });
+
+            renderLabGrid();
+        </script>

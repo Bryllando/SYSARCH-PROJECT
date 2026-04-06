@@ -308,4 +308,81 @@ router.post('/notifications/read', isAuthenticated, isAdmin, (req, res) => {
     db.run(`UPDATE admin_notifications SET is_read = 1`, () => res.json({ success: true }));
 });
 
+
+// Lab Reservation Page (admin view)
+router.get('/lab-reservations', isAuthenticated, isAdmin, (req, res) => {
+    const { lab, pc } = req.query;
+    let query = `SELECT r.*, u.first_name, u.last_name, u.id_number, u.course
+                 FROM reservations r JOIN users u ON r.user_id = u.id
+                 WHERE r.computer_number IS NOT NULL`;
+    const params = [];
+    if (lab) { query += ` AND r.lab_room = ?`; params.push(lab); }
+    if (pc) { query += ` AND r.computer_number = ?`; params.push(pc); }
+    query += ` ORDER BY r.date DESC, r.created_at DESC`;
+
+    db.all(query, params, (err, reservations) => {
+        res.render('pages/lab-reservation', { reservations: reservations || [] });
+    });
+});
+
+// Approve lab reservation
+router.post('/lab-reservations/:id/approve', isAuthenticated, isAdmin, (req, res) => {
+    db.get(
+        `SELECT r.*, u.first_name, u.last_name FROM reservations r
+         JOIN users u ON r.user_id = u.id WHERE r.id = ?`,
+        [req.params.id],
+        (err, r) => {
+            if (!r) { req.session.toast = { type: 'error', message: 'Reservation not found.' }; return res.redirect('/admin/lab-reservations'); }
+
+            db.run(`UPDATE reservations SET status = 'approved' WHERE id = ?`, [req.params.id], () => {
+                // Mark the PC as reserved in lab_computers
+                db.run(
+                    `UPDATE lab_computers SET status = 'reserved' WHERE lab_room = ? AND computer_number = ?`,
+                    [r.lab_room, r.computer_number]
+                );
+                // Notify student
+                db.run(
+                    `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
+                    [r.user_id, `Your reservation for Lab ${r.lab_room} PC-${String(r.computer_number).padStart(2, '0')} on ${r.date} (${r.time_slot}) has been APPROVED.`]
+                );
+                req.session.toast = { type: 'success', message: `Reservation approved. PC-${String(r.computer_number).padStart(2, '0')} marked as reserved.` };
+                res.redirect('/admin/lab-reservations');
+            });
+        }
+    );
+});
+
+// Reject lab reservation
+router.post('/lab-reservations/:id/reject', isAuthenticated, isAdmin, (req, res) => {
+    db.get(`SELECT * FROM reservations WHERE id = ?`, [req.params.id], (err, r) => {
+        if (!r) { return res.redirect('/admin/lab-reservations'); }
+        db.run(`UPDATE reservations SET status = 'rejected' WHERE id = ?`, [req.params.id], () => {
+            db.run(
+                `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
+                [r.user_id, `Your reservation for Lab ${r.lab_room} PC-${String(r.computer_number || 0).padStart(2, '0')} on ${r.date} has been REJECTED.`]
+            );
+            req.session.toast = { type: 'error', message: 'Reservation rejected.' };
+            res.redirect('/admin/lab-reservations');
+        });
+    });
+});
+
+// Admin: update PC status
+router.post('/lab-computers/status', isAuthenticated, isAdmin, (req, res) => {
+    const { lab_room, computer_number, status } = req.body;
+    const allowed = ['available', 'in_use', 'defective', 'reserved'];
+    if (!allowed.includes(status)) return res.json({ error: 'Invalid status' });
+
+    db.run(
+        `INSERT INTO lab_computers (lab_room, computer_number, status)
+         VALUES (?, ?, ?)
+         ON CONFLICT(lab_room, computer_number) DO UPDATE SET status = excluded.status`,
+        [lab_room, computer_number, status],
+        (err) => {
+            if (err) return res.json({ error: err.message });
+            res.json({ success: true, lab_room, computer_number, status });
+        }
+    );
+});
+
 module.exports = router;

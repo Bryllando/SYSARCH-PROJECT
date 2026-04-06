@@ -110,6 +110,42 @@ db.serialize(() => {
         is_read INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
+
+    // ── ADD THESE TABLES TO database/database.js inside db.serialize() ──
+
+    db.run(`CREATE TABLE IF NOT EXISTS lab_computers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lab_room TEXT NOT NULL,
+    computer_number INTEGER NOT NULL,
+    status TEXT DEFAULT 'available',
+    UNIQUE(lab_room, computer_number)
+)`);
+
+    // Seed computers for each lab on first run
+    function seedLabComputers() {
+        const labs = [
+            { room: '530', total: 50 },
+            { room: '528', total: 50 },
+            { room: '526', total: 50 },
+            { room: '542', total: 50 },
+            { room: '544', total: 50 },
+            { room: '524', total: 50 },
+        ];
+        labs.forEach(lab => {
+            for (let i = 1; i <= lab.total; i++) {
+                db.run(
+                    `INSERT OR IGNORE INTO lab_computers (lab_room, computer_number, status)
+                 VALUES (?, ?, 'available')`,
+                    [lab.room, i]
+                );
+            }
+        });
+    }
+    seedLabComputers();
+
+    // Also add computer_number column to reservations table
+    db.run(`ALTER TABLE reservations ADD COLUMN computer_number INTEGER DEFAULT NULL`, () => { });
+    db.run(`ALTER TABLE reservations ADD COLUMN computer_id INTEGER DEFAULT NULL`, () => { });
 });
 
 module.exports = db;
