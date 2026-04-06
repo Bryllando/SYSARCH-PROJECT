@@ -73,10 +73,35 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         admin_id INTEGER,
         message TEXT NOT NULL,
+        media_url TEXT DEFAULT '',
+        media_type TEXT DEFAULT '',
         created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 
-    // Admin notifications table — receives alerts when students submit reservations
+    db.run(`ALTER TABLE announcements ADD COLUMN media_url TEXT DEFAULT ''`, () => { });
+    db.run(`ALTER TABLE announcements ADD COLUMN media_type TEXT DEFAULT ''`, () => { });
+
+    db.run(`CREATE TABLE IF NOT EXISTS announcement_reactions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        announcement_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        emoji TEXT NOT NULL,
+        created_at DATETIME DEFAULT (datetime('now','localtime')),
+        UNIQUE(announcement_id, user_id),
+        FOREIGN KEY (announcement_id) REFERENCES announcements(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS announcement_comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        announcement_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        message TEXT NOT NULL,
+        created_at DATETIME DEFAULT (datetime('now','localtime')),
+        FOREIGN KEY (announcement_id) REFERENCES announcements(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )`);
+
     db.run(`CREATE TABLE IF NOT EXISTS admin_notifications (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         message TEXT NOT NULL,

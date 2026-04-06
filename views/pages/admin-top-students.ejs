@@ -1,0 +1,550 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+    .ts-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
+
+    .ts-header {
+        background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
+        padding: 28px 32px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ts-header::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(241, 225, 148, 0.07);
+        pointer-events: none;
+    }
+
+    .ts-header-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .ts-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        margin: 0 0 4px;
+    }
+
+    .ts-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .ts-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(241, 225, 148, 0.7);
+        margin: 0 0 6px;
+    }
+
+    .ts-body {
+        padding: 24px 32px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Top students table */
+    .ts-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
+        border: 1px solid #E8E3DD;
+    }
+
+    .ts-card-header {
+        padding: 16px 20px;
+        background: #F7F5F2;
+        border-bottom: 2px solid #E8E3DD;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .ts-card-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Syne', sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        color: #1C2B35;
+    }
+
+    table.ts-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .ts-table th {
+        padding: 11px 16px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+    }
+
+    .ts-table td {
+        padding: 13px 16px;
+        border-top: 1px solid #F3F0EC;
+        vertical-align: middle;
+    }
+
+    .ts-table tbody tr:hover {
+        background: #FAF9F7;
+    }
+
+    .rank-badge {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .rank-1 {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+
+    .rank-2 {
+        background: #F3F4F6;
+        color: #374151;
+    }
+
+    .rank-3 {
+        background: #FEF2E7;
+        color: #92400E;
+    }
+
+    .rank-other {
+        background: #F3F4F6;
+        color: #9CA3AF;
+    }
+
+    /* Charts row */
+    .ts-charts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .chart-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
+        border: 1px solid #E8E3DD;
+    }
+
+    .chart-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        color: #1C2B35;
+        margin: 0 0 16px;
+    }
+
+    /* Bar chart */
+    .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .bar-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #374151;
+        min-width: 70px;
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    .bar-track {
+        flex: 1;
+        background: #F3F0EC;
+        border-radius: 999px;
+        height: 10px;
+        overflow: hidden;
+    }
+
+    .bar-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.6s ease;
+    }
+
+    .bar-count {
+        font-size: 11px;
+        font-weight: 700;
+        color: #6B7280;
+        min-width: 30px;
+        text-align: left;
+        flex-shrink: 0;
+    }
+
+    /* Share form */
+    .share-card {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        border-radius: 16px;
+        padding: 24px;
+    }
+
+    .share-card h2 {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        color: #F1E194;
+        margin: 0 0 6px;
+    }
+
+    .share-card p {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0 0 16px;
+    }
+
+    .share-textarea {
+        width: 100%;
+        padding: 14px;
+        border: 1.5px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 13px;
+        font-family: 'DM Sans', sans-serif;
+        resize: vertical;
+        outline: none;
+        min-height: 100px;
+        box-sizing: border-box;
+        transition: border-color 0.15s;
+    }
+
+    .share-textarea:focus {
+        border-color: rgba(241, 225, 148, 0.5);
+    }
+
+    .share-textarea::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    .btn-share {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        background: #F1E194;
+        color: #1C2B35;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.1s;
+        margin-top: 12px;
+    }
+
+    .btn-share:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .btn-fill-stats {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 14px;
+        background: rgba(241, 225, 148, 0.15);
+        color: #F1E194;
+        border: 1px solid rgba(241, 225, 148, 0.3);
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s;
+        margin-bottom: 12px;
+    }
+
+    .btn-fill-stats:hover {
+        background: rgba(241, 225, 148, 0.25);
+    }
+
+    /* Avatar */
+    .mini-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #F1E194;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .mini-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .name-cell {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+</style>
+
+<div class="ts-page">
+
+    <!-- Header -->
+    <div class="ts-header">
+        <div class="ts-header-inner">
+            <div>
+                <p class="ts-eyebrow">Admin Panel</p>
+                <h1>🏆 Top Students</h1>
+                <p>Sit-in usage analytics and leaderboard</p>
+            </div>
+            <span
+                style="background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);color:#F1E194;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;">
+                <%= totalSessions %> total sessions
+            </span>
+        </div>
+    </div>
+
+    <div class="ts-body">
+
+        <!-- Top Students Table -->
+        <div class="ts-card">
+            <div class="ts-card-header">
+                <div class="ts-card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F59E0B" width="18" height="18">
+                        <path fill-rule="evenodd"
+                            d="M10 1c-1.828 0-3.623.149-5.371.435a.75.75 0 0 0-.629.74v.387c-.827.157-1.642.345-2.445.563a.75.75 0 0 0-.552.698 5 5 0 0 0 4.503 5.152 6 6 0 0 0 2.946 1.822A6.451 6.451 0 0 1 7.768 13H7.5A1.5 1.5 0 0 0 6 14.5V17h-.75C4.56 17 4 17.56 4 18.25v.75h12v-.75c0-.69-.56-1.25-1.25-1.25H14v-2.5a1.5 1.5 0 0 0-1.5-1.5h-.268a6.453 6.453 0 0 1-.684-2.202 6 6 0 0 0 2.946-1.822 5 5 0 0 0 4.503-5.152.75.75 0 0 0-.552-.698A31.804 31.804 0 0 0 16 2.562v-.387a.75.75 0 0 0-.629-.74A33.227 33.227 0 0 0 10 1Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Most Active Students
+                </div>
+                <button class="btn-fill-stats" onclick="fillStatsMessage()">
+                    📢 Share as Announcement
+                </button>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="ts-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Student</th>
+                            <th>ID Number</th>
+                            <th>Course</th>
+                            <th>Year</th>
+                            <th>Total Sit-ins</th>
+                            <th>Last Visit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (topStudents && topStudents.length> 0) { %>
+                            <% topStudents.forEach(function(s, i) { var initials=(s.first_name ? s.first_name[0] : '' )
+                                + (s.last_name ? s.last_name[0] : '' ); var rankClass=i===0 ? 'rank-1' : i===1
+                                ? 'rank-2' : i===2 ? 'rank-3' : 'rank-other' ; var rankEmoji=i===0 ? '🥇' : i===1 ? '🥈'
+                                : i===2 ? '🥉' : (i+1); %>
+                                <tr>
+                                    <td><span class="rank-badge <%= rankClass %>">
+                                            <%= rankEmoji %>
+                                        </span></td>
+                                    <td>
+                                        <div class="name-cell">
+                                            <div class="mini-avatar">
+                                                <% if (s.profile_picture && s.profile_picture !=='' ) { %>
+                                                    <img src="<%= s.profile_picture %>" alt="">
+                                                    <% } else { %>
+                                                        <%= initials.toUpperCase() %>
+                                                            <% } %>
+                                            </div>
+                                            <span style="font-size:13px;font-weight:600;color:#1C2B35;">
+                                                <%= s.last_name %>, <%= s.first_name %>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="font-family:monospace;font-size:12px;color:#4B5563;">
+                                        <%= s.id_number %>
+                                    </td>
+                                    <td><span
+                                            style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
+                                            <%= s.course %>
+                                        </span></td>
+                                    <td style="font-size:13px;color:#4B5563;">
+                                        <%= s.year_level %>
+                                    </td>
+                                    <td>
+                                        <span
+                                            style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:<%= i===0?'#D97706':i===1?'#6B7280':i===2?'#92400E':'#273F4F' %>;">
+                                            <%= s.sitin_count %>
+                                        </span>
+                                        <span style="font-size:11px;color:#9CA3AF;"> sessions</span>
+                                    </td>
+                                    <td style="font-size:12px;color:#9CA3AF;">
+                                        <%= s.last_sitin ? new
+                                            Date(s.last_sitin).toLocaleDateString('en-US',{month:'short',day:'numeric'})
+                                            : '—' %>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="7"
+                                                style="padding:48px;text-align:center;color:#9CA3AF;font-size:13px;">No
+                                                sit-in data yet.</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="ts-charts">
+
+            <!-- Lab Usage -->
+            <div class="chart-card">
+                <p class="chart-title">🏫 Lab Usage</p>
+                <% var labTotal=labStats.reduce(function(a,b){ return a+b.count; },0); %>
+                    <% labStats.forEach(function(lab) { var pct=labTotal> 0 ? Math.round((lab.count/labTotal)*100) : 0;
+                        var colors = {'524':'#5B0E14','526':'#273F4F','528':'#059669','530':'#D97706','Mac
+                        Lab':'#7C3AED'};
+                        var color = colors[lab.lab_room] || '#9CA3AF';
+                        %>
+                        <div class="bar-row">
+                            <span class="bar-label" style="font-size:11px;">Lab <%= lab.lab_room %></span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:<%= pct %>%;background:<%= color %>;"></div>
+                            </div>
+                            <span class="bar-count">
+                                <%= lab.count %>
+                            </span>
+                        </div>
+                        <% }); %>
+                            <% if (labStats.length===0) { %>
+                                <p style="color:#9CA3AF;font-size:13px;text-align:center;padding:24px 0;">No data yet
+                                </p>
+                                <% } %>
+            </div>
+
+            <!-- Purpose Breakdown -->
+            <div class="chart-card">
+                <p class="chart-title">💻 Purpose Breakdown</p>
+                <% var purpTotal=purposeStats.reduce(function(a,b){ return a+b.count; },0); %>
+                    <% var purpColors=['#5B0E14','#273F4F','#059669','#D97706','#7C3AED','#DC2626','#0891B2','#65A30D'];
+                        %>
+                        <% purposeStats.forEach(function(p, pi) { var pct2=purpTotal> 0 ?
+                            Math.round((p.count/purpTotal)*100) : 0; %>
+                            <div class="bar-row">
+                                <span class="bar-label"
+                                    style="font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;">
+                                    <%= p.purpose %>
+                                </span>
+                                <div class="bar-track">
+                                    <div class="bar-fill"
+                                        style="width:<%= pct2 %>%;background:<%= purpColors[pi%purpColors.length] %>;">
+                                    </div>
+                                </div>
+                                <span class="bar-count">
+                                    <%= p.count %>
+                                </span>
+                            </div>
+                            <% }); %>
+                                <% if (purposeStats.length===0) { %>
+                                    <p style="color:#9CA3AF;font-size:13px;text-align:center;padding:24px 0;">No data
+                                        yet</p>
+                                    <% } %>
+            </div>
+        </div>
+
+        <!-- Share to Announcement -->
+        <div class="share-card">
+            <h2>📢 Share Stats as Announcement</h2>
+            <p>Generate a message with the current top students data and post it for everyone to see.</p>
+
+            <button class="btn-fill-stats" onclick="fillStatsMessage()">
+                ✨ Auto-fill from current data
+            </button>
+
+            <form action="/admin/top-students/share" method="POST">
+                <textarea class="share-textarea" name="message" id="shareMsg"
+                    placeholder="Write your announcement here..."></textarea>
+                <button type="submit" class="btn-share">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
+                        height="13">
+                        <path
+                            d="M13.5 2.5a.5.5 0 0 1 0 1h-11a.5.5 0 0 1 0-1h11ZM8 5.854 11.354 9.5a.5.5 0 0 1-.708.708L8.5 8.06V12.5a.5.5 0 0 1-1 0V8.06L5.354 10.208a.5.5 0 1 1-.708-.708L8 5.854Z" />
+                    </svg>
+                    Post to Announcements
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function fillStatsMessage() {
+        var topStudents = <% - JSON.stringify(topStudents.slice(0, 5)) %>;
+        var labStats = <% - JSON.stringify(labStats) %>;
+        var purposeStats = <% - JSON.stringify(purposeStats.slice(0, 3)) %>;
+
+        var lines = ['🏆 CCS Laboratory — Top Students Leaderboard\n'];
+
+        topStudents.forEach(function (s, i) {
+            var medal = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][i] || (i + 1) + 'th';
+            lines.push(medal + ' ' + s.last_name + ', ' + s.first_name + ' (' + s.course + ') — ' + s.sitin_count + ' sessions');
+        });
+
+        if (labStats.length > 0) {
+            lines.push('\n🏫 Most Used Lab: Lab ' + labStats[0].lab_room + ' (' + labStats[0].count + ' sessions)');
+        }
+        if (purposeStats.length > 0) {
+            lines.push('💻 Top Purpose: ' + purposeStats[0].purpose + ' (' + purposeStats[0].count + ' sessions)');
+        }
+
+        lines.push('\nKeep up the great work! 💪');
+        document.getElementById('shareMsg').value = lines.join('\n');
+
+        document.getElementById('shareMsg').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+</script>

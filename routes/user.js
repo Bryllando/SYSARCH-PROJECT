@@ -6,7 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// ─── Multer setup ─────────────────────────────────────────────────────────────
+// ─── Multer for profile pictures ─────────────────────────────────────────────
 const uploadDir = path.join(__dirname, '../public/uploads/profiles');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
@@ -24,12 +24,38 @@ const fileFilter = (req, file, cb) => {
 };
 const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
 
+// ─── Helper: load announcements with reactions and comments ───────────────────
+function loadAnnouncementsWithMeta(userId, cb) {
+    db.all(`SELECT a.*, u.first_name, u.last_name FROM announcements a LEFT JOIN users u ON a.admin_id = u.id ORDER BY a.created_at DESC LIMIT 15`, (err, announcements) => {
+        if (!announcements || announcements.length === 0) return cb([]);
+        let done = 0;
+        const result = [];
+        announcements.forEach((ann, i) => {
+            result[i] = { ...ann, reactions: {}, userReaction: null, commentCount: 0 };
+            // Get reaction counts grouped by emoji
+            db.all(`SELECT emoji, COUNT(*) as count FROM announcement_reactions WHERE announcement_id=? GROUP BY emoji`, [ann.id], (e1, reactions) => {
+                (reactions || []).forEach(r => { result[i].reactions[r.emoji] = r.count; });
+                // Get user's reaction
+                db.get(`SELECT emoji FROM announcement_reactions WHERE announcement_id=? AND user_id=?`, [ann.id, userId], (e2, myReaction) => {
+                    result[i].userReaction = myReaction ? myReaction.emoji : null;
+                    // Get comment count
+                    db.get(`SELECT COUNT(*) as cnt FROM announcement_comments WHERE announcement_id=?`, [ann.id], (e3, cc) => {
+                        result[i].commentCount = cc ? cc.cnt : 0;
+                        done++;
+                        if (done === announcements.length) cb(result);
+                    });
+                });
+            });
+        });
+    });
+}
+
 // User Dashboard
 router.get('/dashboard', isAuthenticated, isUser, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err, userData) => {
-        db.all(`SELECT * FROM announcements ORDER BY created_at DESC LIMIT 10`, (err2, announcements) => {
-            if (userData) req.session.user = { ...req.session.user, ...userData };
-            res.render('pages/dashboard', { announcements: announcements || [] });
+        if (userData) req.session.user = { ...req.session.user, ...userData };
+        loadAnnouncementsWithMeta(req.session.user.id, (announcements) => {
+            res.render('pages/dashboard', { announcements });
         });
     });
 });
@@ -49,13 +75,9 @@ router.post('/profile', isAuthenticated, isUser, (req, res) => {
         `UPDATE users SET first_name=?, last_name=?, middle_initial=?, course=?, year_level=?, email=?, address=? WHERE id=?`,
         [first_name, last_name, middle_initial || '', course, year_level, email, address || '', req.session.user.id],
         function (err) {
-            if (err) {
-                return res.render('pages/profile', {
-                    messages: [{ type: 'error', text: 'Update failed. Email may already be in use.' }]
-                });
-            }
+            if (err) return res.render('pages/profile', { messages: [{ type: 'error', text: 'Update failed.' }] });
             req.session.user = { ...req.session.user, first_name, last_name, middle_initial, course, year_level, email, address };
-            res.render('pages/profile', { messages: [{ type: 'success', text: 'Profile updated successfully!' }] });
+            res.render('pages/profile', { messages: [{ type: 'success', text: 'Profile updated!' }] });
         }
     );
 });
@@ -78,17 +100,16 @@ router.post('/profile/picture', isAuthenticated, isUser, upload.single('profile_
     db.run(`UPDATE users SET profile_picture=? WHERE id=?`, [picturePath, req.session.user.id], () => {
         db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err2, userData) => {
             if (userData) req.session.user = { ...req.session.user, ...userData };
-            res.render('pages/profile', { messages: [{ type: 'success', text: 'Profile picture updated successfully!' }] });
+            res.render('pages/profile', { messages: [{ type: 'success', text: 'Profile picture updated!' }] });
         });
     });
 });
 
 // Sit-in History
 router.get('/history', isAuthenticated, isUser, (req, res) => {
-    db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`,
-        [req.session.user.id], (err, sessions) => {
-            res.render('pages/history', { sessions: sessions || [] });
-        });
+    db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`, [req.session.user.id], (err, sessions) => {
+        res.render('pages/history', { sessions: sessions || [] });
+    });
 });
 
 // Submit Feedback
@@ -97,23 +118,59 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
     db.run(
         `INSERT INTO feedback (user_id, session_id, message, rating) VALUES (?, ?, ?, ?)`,
         [req.session.user.id, session_id || null, message, rating || 0],
-        () => res.redirect('/history')
+        () => {
+            req.session.toast = { type: 'success', message: 'Thank you for your feedback!' };
+            res.redirect('/history');
+        }
     );
+});
+
+// ─── Announcement Reactions ───────────────────────────────────────────────────
+router.post('/announcements/:id/react', isAuthenticated, (req, res) => {
+    const { emoji } = req.body;
+    const annId = req.params.id;
+    const userId = req.session.user.id;
+    db.get(`SELECT * FROM announcement_reactions WHERE announcement_id=? AND user_id=?`, [annId, userId], (err, existing) => {
+        if (existing) {
+            if (existing.emoji === emoji) {
+                db.run(`DELETE FROM announcement_reactions WHERE id=?`, [existing.id], () => res.json({ success: true, action: 'removed' }));
+            } else {
+                db.run(`UPDATE announcement_reactions SET emoji=? WHERE id=?`, [emoji, existing.id], () => res.json({ success: true, action: 'changed' }));
+            }
+        } else {
+            db.run(`INSERT INTO announcement_reactions (announcement_id, user_id, emoji) VALUES (?, ?, ?)`, [annId, userId, emoji], () => res.json({ success: true, action: 'added' }));
+        }
+    });
+});
+
+// ─── Announcement Comments ────────────────────────────────────────────────────
+router.post('/announcements/:id/comment', isAuthenticated, (req, res) => {
+    const { message } = req.body;
+    if (!message || !message.trim()) return res.json({ error: 'Empty comment' });
+    db.run(`INSERT INTO announcement_comments (announcement_id, user_id, message) VALUES (?, ?, ?)`,
+        [req.params.id, req.session.user.id, message.trim()], function (err) {
+            if (err) return res.json({ error: 'Failed' });
+            db.get(`SELECT c.*, u.first_name, u.last_name, u.profile_picture FROM announcement_comments c JOIN users u ON c.user_id = u.id WHERE c.id=?`,
+                [this.lastID], (e2, comment) => res.json({ success: true, comment }));
+        });
+});
+
+router.get('/announcements/:id/comments', isAuthenticated, (req, res) => {
+    db.all(`SELECT c.*, u.first_name, u.last_name, u.profile_picture FROM announcement_comments c JOIN users u ON c.user_id = u.id WHERE c.announcement_id=? ORDER BY c.created_at ASC`,
+        [req.params.id], (err, comments) => res.json(comments || []));
 });
 
 // Reservation GET
 router.get('/reservation', isAuthenticated, isUser, (req, res) => {
-    db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`,
-        [req.session.user.id], (err, reservations) => {
-            res.render('pages/reservation', { reservations: reservations || [], messages: [] });
-        });
+    db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`, [req.session.user.id], (err, reservations) => {
+        res.render('pages/reservation', { reservations: reservations || [], messages: [] });
+    });
 });
 
-// Reservation POST — notify admin when submitted
+// Reservation POST
 router.post('/reservation', isAuthenticated, isUser, (req, res) => {
     const { lab_room, date, purpose, time_start, time_end } = req.body;
     let time_slot = req.body.time_slot || '';
-
     if (!time_slot && time_start && time_end) {
         const to12h = (t) => {
             const [h, m] = t.split(':').map(Number);
@@ -123,56 +180,34 @@ router.post('/reservation', isAuthenticated, isUser, (req, res) => {
         };
         time_slot = `${to12h(time_start)} – ${to12h(time_end)}`;
     }
-
     if (!lab_room || !date || !time_slot || !purpose) {
-        db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`,
-            [req.session.user.id], (err, reservations) => {
-                res.render('pages/reservation', {
-                    reservations: reservations || [],
-                    messages: [{ type: 'error', text: 'Please fill in all required fields including time slot.' }]
-                });
-            });
+        db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`, [req.session.user.id], (err, reservations) => {
+            res.render('pages/reservation', { reservations: reservations || [], messages: [{ type: 'error', text: 'Please fill in all required fields.' }] });
+        });
         return;
     }
-
-    db.run(
-        `INSERT INTO reservations (user_id, lab_room, date, time_slot, purpose) VALUES (?, ?, ?, ?, ?)`,
-        [req.session.user.id, lab_room, date, time_slot, purpose],
-        function (err) {
+    db.run(`INSERT INTO reservations (user_id, lab_room, date, time_slot, purpose) VALUES (?, ?, ?, ?, ?)`,
+        [req.session.user.id, lab_room, date, time_slot, purpose], function (err) {
             if (err) {
-                db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`,
-                    [req.session.user.id], (e2, reservations) => {
-                        res.render('pages/reservation', {
-                            reservations: reservations || [],
-                            messages: [{ type: 'error', text: 'Reservation failed. Please try again.' }]
-                        });
-                    });
+                db.all(`SELECT * FROM reservations WHERE user_id = ? ORDER BY created_at DESC`, [req.session.user.id], (e2, reservations) => {
+                    res.render('pages/reservation', { reservations: reservations || [], messages: [{ type: 'error', text: 'Reservation failed.' }] });
+                });
                 return;
             }
-
-            // ── Notify admin of new reservation ──────────────────────────────
             const u = req.session.user;
-            const adminMsg = `New reservation from ${u.first_name} ${u.last_name} (${u.id_number}) for Lab ${lab_room} on ${date} at ${time_slot} — Purpose: ${purpose}.`;
-            db.run(
-                `INSERT INTO admin_notifications (message, type, related_id) VALUES (?, ?, ?)`,
-                [adminMsg, 'reservation', this.lastID]
-            );
-
-            req.session.toast = { type: 'success', message: `Reservation for Lab ${lab_room} on ${date} submitted successfully!` };
+            db.run(`INSERT INTO admin_notifications (message, type, related_id) VALUES (?, ?, ?)`,
+                [`New reservation from ${u.first_name} ${u.last_name} (${u.id_number}) for Lab ${lab_room} on ${date} at ${time_slot} — Purpose: ${purpose}.`, 'reservation', this.lastID]);
+            req.session.toast = { type: 'success', message: `Reservation for Lab ${lab_room} on ${date} submitted!` };
             res.redirect('/reservation');
-        }
-    );
+        });
 });
 
 // Notifications JSON
 router.get('/notifications', isAuthenticated, isUser, (req, res) => {
-    db.all(`SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10`,
-        [req.session.user.id], (err, notifications) => res.json(notifications || []));
+    db.all(`SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT 10`, [req.session.user.id], (err, notifications) => res.json(notifications || []));
 });
-
 router.post('/notifications/read', isAuthenticated, isUser, (req, res) => {
-    db.run(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`,
-        [req.session.user.id], () => res.json({ success: true }));
+    db.run(`UPDATE notifications SET is_read = 1 WHERE user_id = ?`, [req.session.user.id], () => res.json({ success: true }));
 });
 
 module.exports = router;

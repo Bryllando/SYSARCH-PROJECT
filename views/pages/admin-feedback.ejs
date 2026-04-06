@@ -1,0 +1,566 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+    .fb-page {
+        font-family: 'DM Sans', sans-serif;
+        background: #F0EDE8;
+        min-height: 100%;
+    }
+
+    .fb-header {
+        background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
+        padding: 28px 32px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fb-header::before {
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(241, 225, 148, 0.07);
+        pointer-events: none;
+    }
+
+    .fb-header-inner {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .fb-header h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 28px;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: -0.5px;
+        margin: 0 0 4px;
+    }
+
+    .fb-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0;
+    }
+
+    .fb-eyebrow {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(241, 225, 148, 0.7);
+        margin: 0 0 6px;
+    }
+
+    /* ── Stats ── */
+    .fb-stats {
+        display: flex;
+        gap: 12px;
+        padding: 16px 32px;
+        flex-wrap: wrap;
+    }
+
+    .fb-stat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #E8E3DD;
+        flex: 1;
+        min-width: 120px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .fb-stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .fb-stat-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .fb-stat-label {
+        font-size: 11px;
+        color: #9CA3AF;
+        font-weight: 500;
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* ── Toolbar ── */
+    .fb-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 32px;
+        background: #F0EDE8;
+        border-bottom: 1px solid #E2DDD8;
+    }
+
+    .fb-filter-select {
+        padding: 8px 14px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 500;
+        color: #374151;
+        outline: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s;
+    }
+
+    .fb-filter-select:focus {
+        border-color: #273F4F;
+    }
+
+    .fb-search-wrap {
+        position: relative;
+    }
+
+    .fb-search-wrap svg {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        pointer-events: none;
+        width: 14px;
+        height: 14px;
+    }
+
+    .fb-search-wrap input {
+        padding: 8px 14px 8px 32px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        color: #1C2B35;
+        outline: none;
+        width: 200px;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .fb-search-wrap input:focus {
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+    }
+
+    /* ── Table ── */
+    .fb-table-wrap {
+        padding: 0 32px 32px;
+        background: #F0EDE8;
+    }
+
+    .fb-table-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
+        border: 1px solid #E8E3DD;
+    }
+
+    table.fb-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    .fb-table thead tr {
+        background: #F7F5F2;
+        border-bottom: 2px solid #E8E3DD;
+    }
+
+    .fb-table th {
+        padding: 13px 16px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #6B7280;
+        white-space: nowrap;
+    }
+
+    .fb-table tbody tr {
+        border-bottom: 1px solid #F3F0EC;
+        transition: background 0.12s;
+    }
+
+    .fb-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .fb-table tbody tr:hover {
+        background: #FAF9F7;
+    }
+
+    .fb-table td {
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+    /* ── Stars ── */
+    .star-display {
+        display: inline-flex;
+        gap: 1px;
+    }
+
+    .star-on {
+        color: #F59E0B;
+        font-size: 15px;
+    }
+
+    .star-off {
+        color: #E5E7EB;
+        font-size: 15px;
+    }
+
+    /* ── Avatar ── */
+    .name-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .name-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #F1E194;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .name-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .name-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1C2B35;
+        white-space: nowrap;
+    }
+
+    /* ── Rating badge ── */
+    .rating-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 7px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .rating-5 {
+        background: #FEF3C7;
+        color: #92400E;
+    }
+
+    .rating-4 {
+        background: #DCFCE7;
+        color: #065F46;
+    }
+
+    .rating-3 {
+        background: #EFF6FF;
+        color: #1D4ED8;
+    }
+
+    .rating-2 {
+        background: #FEF2F2;
+        color: #991B1B;
+    }
+
+    .rating-1 {
+        background: #FEF2F2;
+        color: #991B1B;
+    }
+
+    .rating-0 {
+        background: #F3F4F6;
+        color: #6B7280;
+    }
+
+    .fb-empty {
+        padding: 64px 24px;
+        text-align: center;
+    }
+
+    .fb-table-footer {
+        padding: 12px 20px;
+        border-top: 1px solid #F3F0EC;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 11px;
+        color: #9CA3AF;
+        background: #FAFAF9;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+</style>
+
+<div class="fb-page">
+
+    <!-- Header -->
+    <div class="fb-header">
+        <div class="fb-header-inner">
+            <div>
+                <p class="fb-eyebrow">Admin Panel</p>
+                <h1>Feedback Reports</h1>
+                <p>Student feedback and ratings for laboratory sit-in sessions</p>
+            </div>
+            <span
+                style="background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);color:#F1E194;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:0.04em;">
+                <%= feedbacks.length %> total feedbacks
+            </span>
+        </div>
+    </div>
+
+    <% var totalFb=feedbacks.length; var rated=feedbacks.filter(f=> f.rating > 0);
+        var avgRating = rated.length > 0 ? (rated.reduce((s,f) => s + f.rating, 0) / rated.length).toFixed(1) : '—';
+        var fiveStars = feedbacks.filter(f => f.rating === 5).length;
+        var oneStars = feedbacks.filter(f => f.rating <= 2 && f.rating> 0).length;
+            %>
+
+            <!-- Stats -->
+            <div class="fb-stats">
+                <div class="fb-stat">
+                    <div class="fb-stat-icon" style="background:#E8EFF4;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#273F4F" width="18"
+                            height="18">
+                            <path fill-rule="evenodd"
+                                d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.671 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 0 0 1.28.53l3.58-3.579a.78.78 0 0 1 .527-.224 41.202 41.202 0 0 0 5.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0 0 10 2Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="fb-stat-val" style="color:#273F4F;">
+                            <%= totalFb %>
+                        </div>
+                        <div class="fb-stat-label">Total</div>
+                    </div>
+                </div>
+                <div class="fb-stat">
+                    <div class="fb-stat-icon" style="background:#FEF3C7;">
+                        <span style="font-size:18px;">⭐</span>
+                    </div>
+                    <div>
+                        <div class="fb-stat-val" style="color:#D97706;">
+                            <%= avgRating %>
+                        </div>
+                        <div class="fb-stat-label">Avg Rating</div>
+                    </div>
+                </div>
+                <div class="fb-stat">
+                    <div class="fb-stat-icon" style="background:#ECFDF5;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" width="18"
+                            height="18">
+                            <path
+                                d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-2.184C4.504 12.21 3 9.981 3 7.5a4.5 4.5 0 018-2.828A4.5 4.5 0 0119 7.5c0 2.48-1.504 4.71-2.885 6.036a22.045 22.045 0 01-2.582 2.184 20.759 20.759 0 01-1.162.682l-.019.01-.005.003h-.003a.75.75 0 01-.69 0l-.003-.001z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="fb-stat-val" style="color:#059669;">
+                            <%= fiveStars %>
+                        </div>
+                        <div class="fb-stat-label">5-Star</div>
+                    </div>
+                </div>
+                <div class="fb-stat">
+                    <div class="fb-stat-icon" style="background:#FEF2F2;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#DC2626" width="18"
+                            height="18">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="fb-stat-val" style="color:#DC2626;">
+                            <%= oneStars %>
+                        </div>
+                        <div class="fb-stat-label">Low Ratings</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="fb-toolbar">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <select id="ratingFilter" class="fb-filter-select">
+                        <option value="">All Ratings</option>
+                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                        <option value="3">⭐⭐⭐ (3)</option>
+                        <option value="2">⭐⭐ (2)</option>
+                        <option value="1">⭐ (1)</option>
+                        <option value="0">No Rating</option>
+                    </select>
+                </div>
+                <div class="fb-search-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search feedback...">
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="fb-table-wrap">
+                <div class="fb-table-card">
+                    <div style="overflow-x:auto;">
+                        <table class="fb-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>ID Number</th>
+                                    <th>Course</th>
+                                    <th>Rating</th>
+                                    <th>Stars</th>
+                                    <th>Feedback Message</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fbBody">
+                                <% if (feedbacks && feedbacks.length> 0) { %>
+                                    <% feedbacks.forEach(function(f) { var initials=(f.first_name ? f.first_name[0] : ''
+                                        ) + (f.last_name ? f.last_name[0] : '' ); %>
+                                        <tr class="fb-row" data-rating="<%= f.rating %>">
+                                            <td>
+                                                <div class="name-cell">
+                                                    <div class="name-avatar">
+                                                        <% if (f.profile_picture && f.profile_picture !=='' ) { %><img
+                                                                src="<%= f.profile_picture %>">
+                                                            <% } else { %>
+                                                                <%= initials.toUpperCase() %>
+                                                                    <% } %>
+                                                    </div>
+                                                    <span class="name-text">
+                                                        <%= f.last_name %>, <%= f.first_name %>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td><span
+                                                    style="font-family:monospace;font-size:11px;color:#4B5563;background:#F3F0EC;padding:3px 8px;border-radius:5px;">
+                                                    <%= f.id_number %>
+                                                </span></td>
+                                            <td><span
+                                                    style="display:inline-flex;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;">
+                                                    <%= f.course %>
+                                                </span></td>
+                                            <td>
+                                                <span class="rating-badge rating-<%= f.rating %>">
+                                                    <%= f.rating===5 ? 'Excellent' : f.rating===4 ? 'Very Good' :
+                                                        f.rating===3 ? 'Good' : f.rating===2 ? 'Fair' : f.rating===1
+                                                        ? 'Poor' : 'No Rating' %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="star-display">
+                                                    <% for(let s=1;s<=5;s++){ %><span
+                                                            class="<%= s<=f.rating?'star-on':'star-off' %>">★</span>
+                                                        <% } %>
+                                                </div>
+                                            </td>
+                                            <td style="max-width:280px;">
+                                                <p style="font-size:12px;color:#4B5563;margin:0;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"
+                                                    title="<%= f.message %>">
+                                                    <%= f.message %>
+                                                </p>
+                                            </td>
+                                            <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
+                                                <%= new Date(f.created_at).toLocaleDateString('en-US',
+                                                    {year:'numeric',month:'short',day:'numeric'}) %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="7">
+                                                        <div class="fb-empty">
+                                                            <div
+                                                                style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F3F0EC,#E8E3DD);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;">
+                                                                💬</div>
+                                                            <p
+                                                                style="font-size:15px;font-weight:700;color:#4B5563;margin:0 0 6px;">
+                                                                No feedback yet</p>
+                                                            <p style="font-size:12px;color:#9CA3AF;margin:0;">Student
+                                                                feedback from sit-in sessions will appear here.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="fb-table-footer">
+                        <span>Showing <strong id="visibleCount" style="color:#1C2B35;">
+                                <%= feedbacks.length %>
+                            </strong> of <strong style="color:#1C2B35;">
+                                <%= feedbacks.length %>
+                            </strong> records</span>
+                        <span>CCS Laboratory Sit-in Monitoring System</span>
+                    </div>
+                </div>
+            </div>
+</div>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const ratingFilter = document.getElementById('ratingFilter');
+    const countEl = document.getElementById('visibleCount');
+
+    function applyFilters() {
+        const q = searchInput.value.toLowerCase();
+        const rating = ratingFilter.value;
+        let count = 0;
+        document.querySelectorAll('.fb-row').forEach(row => {
+            const matchQ = !q || row.textContent.toLowerCase().includes(q);
+            const matchRating = !rating || row.dataset.rating == rating;
+            const show = matchQ && matchRating;
+            row.style.display = show ? '' : 'none';
+            if (show) count++;
+        });
+        countEl.textContent = count;
+    }
+    searchInput.addEventListener('input', applyFilters);
+    ratingFilter.addEventListener('change', applyFilters);
+</script>
