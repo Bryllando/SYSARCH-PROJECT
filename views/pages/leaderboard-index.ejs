@@ -1,69 +1,94 @@
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800;900&display=swap');
 
-    .lb-page {
+    .lb-wrap {
         font-family: 'DM Sans', sans-serif;
         background: #F0EDE8;
         min-height: 100%;
     }
 
+    /* ── Header ── */
     .lb-header {
         background: linear-gradient(135deg, #1C2B35 0%, #273F4F 60%, #1a3040 100%);
-        padding: 28px 32px 24px;
+        padding: 32px 24px 28px;
         position: relative;
         overflow: hidden;
+        text-align: center;
     }
 
     .lb-header::before {
         content: '';
         position: absolute;
-        top: -40px;
-        right: -40px;
-        width: 180px;
-        height: 180px;
+        top: -60px;
+        right: -60px;
+        width: 220px;
+        height: 220px;
         border-radius: 50%;
-        background: rgba(241, 225, 148, 0.07);
+        background: rgba(241, 225, 148, 0.06);
+        pointer-events: none;
+    }
+
+    .lb-header::after {
+        content: '';
+        position: absolute;
+        bottom: -40px;
+        left: -20px;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: rgba(91, 14, 20, 0.12);
         pointer-events: none;
     }
 
     .lb-header-inner {
         position: relative;
         z-index: 1;
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 16px;
+        max-width: 700px;
+        margin: 0 auto;
     }
 
     .lb-header h1 {
         font-family: 'Syne', sans-serif;
-        font-size: 28px;
-        font-weight: 800;
+        font-size: 36px;
+        font-weight: 900;
         color: #fff;
-        letter-spacing: -0.5px;
-        margin: 0 0 4px;
-    }
-
-    .lb-eyebrow {
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: rgba(241, 225, 148, 0.7);
+        letter-spacing: -1px;
         margin: 0 0 6px;
     }
 
-    .lb-body {
-        padding: 24px 32px 40px;
+    .lb-header p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0 0 16px;
     }
 
-    /* ── Formula Cards ── */
+    .lb-max-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(241, 225, 148, 0.15);
+        border: 1px solid rgba(241, 225, 148, 0.3);
+        color: #F1E194;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 999px;
+        letter-spacing: 0.04em;
+    }
+
+    /* ── Body container ── */
+    .lb-body {
+        padding: 28px 24px 48px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* ── Formula strip ── */
     .lb-formula {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        margin-bottom: 24px;
+        gap: 12px;
+        margin-bottom: 28px;
     }
 
     .lb-formula-card {
@@ -75,12 +100,18 @@
         display: flex;
         align-items: center;
         gap: 14px;
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .lb-formula-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(39, 63, 79, 0.1);
     }
 
     .lb-formula-icon {
-        width: 46px;
-        height: 46px;
-        border-radius: 12px;
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -90,47 +121,73 @@
 
     .lb-formula-pct {
         font-family: 'Syne', sans-serif;
-        font-size: 26px;
-        font-weight: 800;
+        font-size: 28px;
+        font-weight: 900;
         line-height: 1;
     }
 
     .lb-formula-label {
         font-size: 11px;
         color: #9CA3AF;
-        font-weight: 500;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-top: 2px;
+        letter-spacing: 0.07em;
+        margin-top: 3px;
     }
 
-    /* ── Top 3 Podium ── */
+    /* ── Podium ── */
+    .lb-podium-section {
+        background: #fff;
+        border-radius: 20px;
+        padding: 28px 24px 0;
+        border: 1px solid #E8E3DD;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
+        overflow: hidden;
+    }
+
+    .lb-podium-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        color: #9CA3AF;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-bottom: 24px;
+    }
+
     .lb-podium {
         display: flex;
         align-items: flex-end;
         justify-content: center;
         gap: 12px;
-        margin-bottom: 28px;
     }
 
     .podium-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+    }
+
+    .podium-crown {
+        font-size: 20px;
+        line-height: 1;
     }
 
     .podium-avatar {
-        width: 64px;
-        height: 64px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
         font-weight: 800;
         overflow: hidden;
         border: 3px solid;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        color: #F1E194;
+        font-size: 16px;
     }
 
     .podium-avatar img {
@@ -139,70 +196,128 @@
         object-fit: cover;
     }
 
-    .podium-item:nth-child(1) .podium-avatar {
-        border-color: #C0C0C0;
-        width: 56px;
-        height: 56px;
-    }
-
-    .podium-item:nth-child(2) .podium-avatar {
-        border-color: #F59E0B;
-        width: 72px;
-        height: 72px;
-    }
-
-    .podium-item:nth-child(3) .podium-avatar {
-        border-color: #CD7F32;
-        width: 56px;
-        height: 56px;
-    }
-
     .podium-name {
         font-size: 12px;
         font-weight: 700;
         color: #1C2B35;
         text-align: center;
         max-width: 90px;
-        word-break: break-word;
+    }
+
+    .podium-course {
+        font-size: 10px;
+        color: #9CA3AF;
+        text-align: center;
     }
 
     .podium-pts {
         font-family: 'Syne', sans-serif;
-        font-size: 15px;
-        font-weight: 800;
+        font-size: 16px;
+        font-weight: 900;
     }
 
     .podium-block {
-        border-radius: 10px 10px 0 0;
-        width: 90px;
+        border-radius: 12px 12px 0 0;
+        width: 100px;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        font-size: 28px;
+        justify-content: flex-start;
+        padding-top: 10px;
+        gap: 4px;
     }
 
-    .podium-item:nth-child(1) .podium-block {
-        height: 60px;
+    /* 1st */
+    .podium-item.rank-1 .podium-avatar {
+        width: 76px;
+        height: 76px;
+        border-color: #F59E0B;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+    }
+
+    .podium-item.rank-1 .podium-pts {
+        color: #D97706;
+    }
+
+    .podium-item.rank-1 .podium-block {
+        height: 100px;
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+        width: 110px;
+    }
+
+    /* 2nd */
+    .podium-item.rank-2 .podium-avatar {
+        width: 64px;
+        height: 64px;
+        border-color: #9CA3AF;
+    }
+
+    .podium-item.rank-2 .podium-pts {
+        color: #6B7280;
+    }
+
+    .podium-item.rank-2 .podium-block {
+        height: 70px;
         background: linear-gradient(135deg, #9CA3AF, #6B7280);
     }
 
-    .podium-item:nth-child(2) .podium-block {
-        height: 90px;
-        background: linear-gradient(135deg, #F59E0B, #D97706);
+    /* 3rd */
+    .podium-item.rank-3 .podium-avatar {
+        width: 56px;
+        height: 56px;
+        border-color: #CD7F32;
     }
 
-    .podium-item:nth-child(3) .podium-block {
-        height: 48px;
+    .podium-item.rank-3 .podium-pts {
+        color: #92400E;
+    }
+
+    .podium-item.rank-3 .podium-block {
+        height: 56px;
         background: linear-gradient(135deg, #CD7F32, #A0522D);
     }
 
-    /* ── Full Leaderboard Table ── */
+    /* ── Full table ── */
     .lb-card {
         background: #fff;
-        border-radius: 16px;
+        border-radius: 20px;
         overflow: hidden;
         border: 1px solid #E8E3DD;
         box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
+    }
+
+    .lb-card-head {
+        padding: 16px 24px;
+        background: #F7F5F2;
+        border-bottom: 2px solid #E8E3DD;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .lb-card-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 15px;
+        font-weight: 800;
+        color: #1C2B35;
+    }
+
+    .lb-search {
+        padding: 7px 12px 7px 32px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        background: #fff;
+        font-size: 12px;
+        color: #1C2B35;
+        outline: none;
+        width: 180px;
+        position: relative;
+    }
+
+    .lb-search:focus {
+        border-color: #273F4F;
     }
 
     .lb-table {
@@ -224,6 +339,7 @@
         text-transform: uppercase;
         letter-spacing: 0.1em;
         color: #6B7280;
+        white-space: nowrap;
     }
 
     .lb-table tbody tr {
@@ -244,14 +360,15 @@
         vertical-align: middle;
     }
 
+    /* Rank badges */
     .rank-badge {
-        width: 30px;
-        height: 30px;
-        border-radius: 9px;
-        display: flex;
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 800;
         flex-shrink: 0;
     }
@@ -276,16 +393,17 @@
         color: #6B7280;
     }
 
-    /* ── Progress bars per score ── */
+    /* Score bar */
     .score-bar-wrap {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
+        min-width: 120px;
     }
 
     .score-bar {
         flex: 1;
-        height: 6px;
+        height: 7px;
         background: #F3F0EC;
         border-radius: 999px;
         overflow: hidden;
@@ -294,27 +412,47 @@
     .score-bar-fill {
         height: 100%;
         border-radius: 999px;
+        transition: width 0.6s ease;
+    }
+
+    /* Footer note */
+    .lb-footer {
+        padding: 14px 24px;
+        border-top: 1px solid #F3F0EC;
+        font-size: 11px;
+        color: #9CA3AF;
+        background: #FAFAF9;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
     }
 </style>
 
-<div class="lb-page">
+<div class="lb-wrap">
+    <!-- Header -->
     <div class="lb-header">
         <div class="lb-header-inner">
-            <div>
-                <p class="lb-eyebrow">CCS Laboratory</p>
-                <h1>🏆 Student Leaderboard</h1>
-                <p style="font-size:13px;color:rgba(255,255,255,0.5);margin:0;">Rankings based on sessions, sit-ins, and
-                    tasks completed</p>
-            </div>
-            <span
-                style="background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);color:#F1E194;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;">
+            <p
+                style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(241,225,148,0.7);margin:0 0 8px;">
+                CCS Laboratory</p>
+            <h1>🏆 Student Leaderboard</h1>
+            <p>Rankings based on sessions, sit-ins, and tasks completed</p>
+            <span class="lb-max-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                    <path fill-rule="evenodd"
+                        d="M11.5 2.25a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75Zm-4 3a.75.75 0 0 1 .75.75v7.5a.75.75 0 0 1-1.5 0V6a.75.75 0 0 1 .75-.75Zm-4 3a.75.75 0 0 1 .75.75v4.5a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Z"
+                        clip-rule="evenodd" />
+                </svg>
                 Max 100 pts
             </span>
         </div>
     </div>
 
     <div class="lb-body">
-        <!-- Formula explanation -->
+
+        <!-- Formula Cards -->
         <div class="lb-formula">
             <div class="lb-formula-card">
                 <div class="lb-formula-icon" style="background:#FFF7ED;">🎯</div>
@@ -339,147 +477,218 @@
             </div>
         </div>
 
-        <!-- Top 3 Podium -->
-        <% if (students && students.length >= 3) { 
-            var s1 = students[0]; var initials1 = (s1.first_name ? s1.first_name[0] : '') + (s1.last_name ? s1.last_name[0] : '');
-            var s2 = students[1]; var initials2 = (s2.first_name ? s2.first_name[0] : '') + (s2.last_name ? s2.last_name[0] : '');
-            var s3 = students[2]; var initials3 = (s3.first_name ? s3.first_name[0] : '') + (s3.last_name ? s3.last_name[0] : '');
-        %>
-        <div class="lb-podium">
-            <!-- 2nd Place -->
-            <div class="podium-item">
-                <div class="podium-avatar" style="border-color: #C0C0C0; width: 56px; height: 56px;">
-                    <% if (s2.profile_picture && s2.profile_picture !== '') { %>
-                        <img src="<%= s2.profile_picture %>">
-                    <% } else { %>
-                        <%= initials2.toUpperCase() %>
-                    <% } %>
+        <!-- Podium (top 3) -->
+        <% if (students && students.length>= 3) {
+            const s1 = students[0], s2 = students[1], s3 = students[2];
+            const init = s => ((s.first_name||'')[0]||'') + ((s.last_name||'')[0]||'');
+            %>
+            <div class="lb-podium-section">
+                <p class="lb-podium-title">✨ Top Performers</p>
+                <div class="lb-podium">
+                    <!-- 2nd -->
+                    <div class="podium-item rank-2">
+                        <div class="podium-crown">🥈</div>
+                        <div class="podium-avatar" style="width:64px;height:64px;border-color:#9CA3AF;">
+                            <% if (s2.profile_picture && s2.profile_picture !=='' ) { %><img
+                                    src="<%= s2.profile_picture %>">
+                                <% } else { %>
+                                    <%= init(s2).toUpperCase() %>
+                                        <% } %>
+                        </div>
+                        <div class="podium-name">
+                            <%= s2.last_name %>, <%= s2.first_name %>
+                        </div>
+                        <div class="podium-course">
+                            <%= s2.course %>
+                        </div>
+                        <div class="podium-pts">
+                            <%= s2.points %> pts
+                        </div>
+                        <div class="podium-block"
+                            style="height:70px;background:linear-gradient(135deg,#9CA3AF,#6B7280);">
+                            <span
+                                style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:rgba(255,255,255,0.9);">2</span>
+                        </div>
+                    </div>
+                    <!-- 1st -->
+                    <div class="podium-item rank-1">
+                        <div class="podium-crown">👑</div>
+                        <div class="podium-avatar"
+                            style="width:80px;height:80px;border-color:#F59E0B;box-shadow:0 0 0 4px rgba(245,158,11,0.2);">
+                            <% if (s1.profile_picture && s1.profile_picture !=='' ) { %><img
+                                    src="<%= s1.profile_picture %>">
+                                <% } else { %>
+                                    <%= init(s1).toUpperCase() %>
+                                        <% } %>
+                        </div>
+                        <div class="podium-name">
+                            <%= s1.last_name %>, <%= s1.first_name %>
+                        </div>
+                        <div class="podium-course">
+                            <%= s1.course %>
+                        </div>
+                        <div class="podium-pts">
+                            <%= s1.points %> pts
+                        </div>
+                        <div class="podium-block"
+                            style="height:100px;background:linear-gradient(135deg,#F59E0B,#D97706);width:110px;">
+                            <span
+                                style="font-family:'Syne',sans-serif;font-size:24px;font-weight:900;color:rgba(255,255,255,0.95);">1</span>
+                        </div>
+                    </div>
+                    <!-- 3rd -->
+                    <div class="podium-item rank-3">
+                        <div class="podium-crown">🥉</div>
+                        <div class="podium-avatar" style="width:56px;height:56px;border-color:#CD7F32;">
+                            <% if (s3.profile_picture && s3.profile_picture !=='' ) { %><img
+                                    src="<%= s3.profile_picture %>">
+                                <% } else { %>
+                                    <%= init(s3).toUpperCase() %>
+                                        <% } %>
+                        </div>
+                        <div class="podium-name">
+                            <%= s3.last_name %>, <%= s3.first_name %>
+                        </div>
+                        <div class="podium-course">
+                            <%= s3.course %>
+                        </div>
+                        <div class="podium-pts">
+                            <%= s3.points %> pts
+                        </div>
+                        <div class="podium-block"
+                            style="height:56px;background:linear-gradient(135deg,#CD7F32,#A0522D);">
+                            <span
+                                style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:rgba(255,255,255,0.9);">3</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="podium-name"><%= s2.last_name %>, <%= s2.first_name %></div>
-                <div class="podium-pts"><%= s2.points %> pts</div>
-                <div class="podium-block" style="height: 60px; background: linear-gradient(135deg, #9CA3AF, #6B7280);">🥈</div>
             </div>
-            <!-- 1st Place -->
-            <div class="podium-item">
-                <div class="podium-avatar" style="border-color: #F59E0B; width: 72px; height: 72px;">
-                    <% if (s1.profile_picture && s1.profile_picture !== '') { %>
-                        <img src="<%= s1.profile_picture %>">
-                    <% } else { %>
-                        <%= initials1.toUpperCase() %>
-                    <% } %>
-                </div>
-                <div class="podium-name"><%= s1.last_name %>, <%= s1.first_name %></div>
-                <div class="podium-pts"><%= s1.points %> pts</div>
-                <div class="podium-block" style="height: 90px; background: linear-gradient(135deg, #F59E0B, #D97706);">🥇</div>
-            </div>
-            <!-- 3rd Place -->
-            <div class="podium-item">
-                <div class="podium-avatar" style="border-color: #CD7F32; width: 56px; height: 56px;">
-                    <% if (s3.profile_picture && s3.profile_picture !== '') { %>
-                        <img src="<%= s3.profile_picture %>">
-                    <% } else { %>
-                        <%= initials3.toUpperCase() %>
-                    <% } %>
-                </div>
-                <div class="podium-name"><%= s3.last_name %>, <%= s3.first_name %></div>
-                <div class="podium-pts"><%= s3.points %> pts</div>
-                <div class="podium-block" style="height: 48px; background: linear-gradient(135deg, #CD7F32, #A0522D);">🥉</div>
-            </div>
-        </div>
-        <% } %>
+            <% } %>
 
-        <!-- Full table -->
-        <div class="lb-card">
-            <div
-                style="padding:14px 20px;background:#F7F5F2;border-bottom:1px solid #E8E3DD;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;">
-                Full Rankings
-            </div>
-            <div style="overflow-x:auto;">
-                <table class="lb-table" id="lbTable">
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Student</th>
-                            <th>Course</th>
-                            <th>Year</th>
-                            <th>Sit-ins</th>
-                            <th>Feedback</th>
-                            <th>Total Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lbBody">
-                        <% if (students && students.length > 0) { %>
-                            <% students.forEach(function(s, i) { 
-                                var rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-other';
-                                var rankEmoji = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
-                                var initials = (s.first_name ? s.first_name[0] : '') + (s.last_name ? s.last_name[0] : '');
-                                var pct = Math.min(s.points, 100);
-                                var barColor = pct >= 70 ? '#F59E0B' : pct >= 40 ? '#3B82F6' : '#10B981';
-                            %>
+                <!-- Full Rankings Table -->
+                <div class="lb-card">
+                    <div class="lb-card-head">
+                        <span class="lb-card-title">Full Rankings</span>
+                        <div style="position:relative;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;pointer-events:none;">
+                                <path fill-rule="evenodd"
+                                    d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <input type="text" class="lb-search" id="lbSearch" placeholder="Search student..."
+                                oninput="filterLb()" style="padding-left:32px;">
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="lb-table">
+                            <thead>
                                 <tr>
-                                    <td><span class="rank-badge <%= rankClass %>">
-                                            <%= rankEmoji %>
-                                        </span></td>
-                                    <td>
-                                        <div style="display:flex;align-items:center;gap:10px;">
-                                            <div
-                                                style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#273F4F,#5B0E14);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#F1E194;flex-shrink:0;overflow:hidden;">
-                                                <% if (s.profile_picture && s.profile_picture !== '') { %>
-                                                    <img src="<%= s.profile_picture %>"
-                                                        style="width:100%;height:100%;object-fit:cover;">
-                                                <% } else { %>
-                                                    <%= initials.toUpperCase() %>
-                                                <% } %>
-                                            </div>
-                                            <div>
-                                                <div style="font-size:13px;font-weight:600;color:#1C2B35;">
-                                                    <%= s.last_name %>, <%= s.first_name %>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span
-                                            style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
-                                            <%= s.course %>
-                                        </span></td>
-                                    <td style="font-size:12px;color:#4B5563;">
-                                        <%= s.year_level %>
-                                    </td>
-                                    <td><span
-                                            style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#273F4F;">
-                                            <%= s.total_sitins %>
-                                        </span></td>
-                                    <td><span
-                                            style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#059669;">
-                                            <%= s.feedback_count %>
-                                        </span></td>
-                                    <td>
-                                        <div class="score-bar-wrap">
-                                            <div class="score-bar">
-                                                <div class="score-bar-fill"
-                                                    style="width:<%= pct %>%;background:<%= barColor %>;"></div>
-                                            </div>
-                                            <span
-                                                style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:<%= barColor %>;min-width:36px;text-align:right;">
-                                                <%= s.points %>
-                                            </span>
-                                        </div>
-                                    </td>
+                                    <th>Rank</th>
+                                    <th>Student</th>
+                                    <th>Course</th>
+                                    <th>Year</th>
+                                    <th>Sit-ins</th>
+                                    <th>Feedback</th>
+                                    <th>Total Points</th>
                                 </tr>
-                            <% }); %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="7" style="padding:56px;text-align:center;color:#9CA3AF;">No
-                                    rankings yet. Start your first sit-in!</td>
-                            </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-            <div
-                style="padding:12px 20px;border-top:1px solid #F3F0EC;font-size:11px;color:#9CA3AF;background:#FAFAF9;">
-                Points = (Sessions Used × 50%) + (Total Sit-ins, max 30 pts) + (Feedback × 4 pts, max 20 pts)
-            </div>
-        </div>
+                            </thead>
+                            <tbody id="lbBody">
+                                <% if (students && students.length> 0) { %>
+                                    <% students.forEach(function(s, i) { const
+                                        rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'; const
+                                        rankEmoji=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1); const
+                                        initials=((s.first_name||'')[0]||'') + ((s.last_name||'')[0]||''); const
+                                        pct=Math.min(s.points, 100); const barColor=pct>=70?'#F59E0B':pct>=40?'#3B82F6':'#10B981';
+                                        const isMe = typeof user !== 'undefined' && user && user.id === s.id;
+                                        %>
+                                        <tr class="lb-row"
+                                            style="<%= isMe ? 'background:rgba(241,225,148,0.12);' : '' %>">
+                                            <td>
+                                                <span class="rank-badge <%= rankClass %>">
+                                                    <%= rankEmoji %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div style="display:flex;align-items:center;gap:10px;">
+                                                    <div
+                                                        style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#273F4F,#5B0E14);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#F1E194;flex-shrink:0;overflow:hidden;<%= isMe ? 'box-shadow:0 0 0 3px #F59E0B;' : '' %>">
+                                                        <% if (s.profile_picture && s.profile_picture !=='' ) { %><img
+                                                                src="<%= s.profile_picture %>"
+                                                                style="width:100%;height:100%;object-fit:cover;">
+                                                            <% } else { %>
+                                                                <%= initials.toUpperCase() %>
+                                                                    <% } %>
+                                                    </div>
+                                                    <div>
+                                                        <div style="font-size:13px;font-weight:600;color:#1C2B35;">
+                                                            <%= s.last_name %>, <%= s.first_name %>
+                                                                    <% if (isMe) { %><span
+                                                                            style="font-size:10px;font-weight:700;background:#F59E0B;color:#fff;padding:1px 6px;border-radius:999px;margin-left:4px;">You</span>
+                                                                        <% } %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><span
+                                                    style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
+                                                    <%= s.course %>
+                                                </span></td>
+                                            <td style="font-size:12px;color:#4B5563;">
+                                                <%= s.year_level %>
+                                            </td>
+                                            <td><span
+                                                    style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#273F4F;">
+                                                    <%= s.total_sitins %>
+                                                </span></td>
+                                            <td><span
+                                                    style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#059669;">
+                                                    <%= s.feedback_count %>
+                                                </span></td>
+                                            <td>
+                                                <div class="score-bar-wrap">
+                                                    <div class="score-bar">
+                                                        <div class="score-bar-fill"
+                                                            style="width:<%= pct %>%;background:<%= barColor %>;"></div>
+                                                    </div>
+                                                    <span
+                                                        style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:<%= barColor %>;min-width:38px;text-align:right;">
+                                                        <%= s.points %>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="7"
+                                                        style="padding:56px;text-align:center;color:#9CA3AF;">No
+                                                        rankings yet. Start your first sit-in!</td>
+                                                </tr>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="lb-footer">
+                        <span>Showing <strong id="lbCount" style="color:#1C2B35;">
+                                <%= students ? students.length : 0 %>
+                            </strong> students</span>
+                        <span>Points = (Sessions Used × 50%) + (Total Sit-ins, max 30 pts) + (Feedback × 4 pts, max 20
+                            pts)</span>
+                    </div>
+                </div>
     </div>
 </div>
+
+<script>
+    function filterLb() {
+        const q = document.getElementById('lbSearch').value.toLowerCase();
+        let count = 0;
+        document.querySelectorAll('.lb-row').forEach(row => {
+            const show = !q || row.textContent.toLowerCase().includes(q);
+            row.style.display = show ? '' : 'none';
+            if (show) count++;
+        });
+        document.getElementById('lbCount').textContent = count;
+    }
+</script>

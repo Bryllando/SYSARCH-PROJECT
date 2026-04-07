@@ -60,50 +60,7 @@
         margin: 0 0 6px;
     }
 
-    /* ── Tabs ── */
-    .fb-tabs {
-        display: flex;
-        gap: 0;
-        background: #fff;
-        border-bottom: 2px solid #E8E3DD;
-        padding: 0 32px;
-        flex-shrink: 0;
-    }
-
-    .fb-tab-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 14px 20px;
-        font-size: 13px;
-        font-weight: 700;
-        color: #6B7280;
-        cursor: pointer;
-        border: none;
-        background: transparent;
-        border-bottom: 2.5px solid transparent;
-        margin-bottom: -2px;
-        transition: all 0.15s;
-        font-family: 'DM Sans', sans-serif;
-    }
-
-    .fb-tab-btn:hover {
-        color: #273F4F;
-    }
-
-    .fb-tab-btn.active {
-        color: #5B0E14;
-        border-bottom-color: #5B0E14;
-    }
-
-    .fb-tab-content {
-        display: none;
-    }
-
-    .fb-tab-content.active {
-        display: block;
-    }
-
+    /* Stats */
     .fb-stats {
         display: flex;
         gap: 12px;
@@ -150,6 +107,51 @@
         letter-spacing: 0.05em;
     }
 
+    /* Tabs */
+    .fb-tabs {
+        display: flex;
+        gap: 0;
+        background: #fff;
+        border-bottom: 2px solid #E8E3DD;
+        padding: 0 32px;
+        flex-shrink: 0;
+    }
+
+    .fb-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 20px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #6B7280;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        border-bottom: 2.5px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.15s;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .fb-tab-btn:hover {
+        color: #273F4F;
+    }
+
+    .fb-tab-btn.active {
+        color: #5B0E14;
+        border-bottom-color: #5B0E14;
+    }
+
+    .fb-tab-content {
+        display: none;
+    }
+
+    .fb-tab-content.active {
+        display: block;
+    }
+
+    /* Toolbar */
     .fb-toolbar {
         display: flex;
         flex-wrap: wrap;
@@ -190,6 +192,7 @@
         font-family: 'DM Sans', sans-serif;
     }
 
+    /* Table */
     .fb-table-wrap {
         padding: 0 32px 32px;
         background: #F0EDE8;
@@ -250,23 +253,14 @@
 
     .star-on {
         color: #F59E0B;
-        font-size: 16px;
+        font-size: 15px;
         line-height: 1;
     }
 
     .star-off {
         color: #D1D5DB;
-        font-size: 16px;
+        font-size: 15px;
         line-height: 1;
-    }
-
-    .star-none {
-        font-size: 11px;
-        color: #9CA3AF;
-        font-style: italic;
-        padding: 4px 8px;
-        background: #F3F4F6;
-        border-radius: 6px;
     }
 
     .name-cell {
@@ -360,7 +354,7 @@
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 6px 12px;
+        padding: 6px 10px;
         border-radius: 8px;
         font-size: 11px;
         font-weight: 700;
@@ -378,27 +372,29 @@
         border-color: #1D4ED8;
     }
 
-    .btn-print-fb {
+    .btn-reply-fb {
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        padding: 8px 14px;
-        border-radius: 9px;
-        font-size: 12px;
+        gap: 4px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 11px;
         font-weight: 700;
-        background: #374151;
-        color: #fff;
-        border: none;
+        background: #ECFDF5;
+        color: #065F46;
+        border: 1.5px solid #A7F3D0;
         cursor: pointer;
         font-family: 'DM Sans', sans-serif;
-        transition: opacity 0.15s;
+        transition: all 0.15s;
     }
 
-    .btn-print-fb:hover {
-        opacity: 0.88;
+    .btn-reply-fb:hover {
+        background: #059669;
+        color: #fff;
+        border-color: #059669;
     }
 
-    /* ── Category Analytics ── */
+    /* Categories */
     .cat-section {
         padding: 0 32px 32px;
     }
@@ -468,7 +464,7 @@
         flex-shrink: 0;
     }
 
-    /* ── Comments Tab ── */
+    /* Comments tab */
     .cmt-section {
         padding: 0 32px 32px;
     }
@@ -565,6 +561,17 @@
         word-break: break-word;
     }
 
+    .cmt-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 32px;
+        background: #F0EDE8;
+        border-bottom: 1px solid #E2DDD8;
+    }
+
     .cmt-search-wrap {
         position: relative;
     }
@@ -581,29 +588,7 @@
         font-family: 'DM Sans', sans-serif;
     }
 
-    .cmt-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 14px 32px;
-        background: #F0EDE8;
-        border-bottom: 1px solid #E2DDD8;
-    }
-
-    .cmt-footer {
-        padding: 12px 20px;
-        border-top: 1px solid #F3F0EC;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 11px;
-        color: #9CA3AF;
-        background: #FAFAF9;
-    }
-
-    /* ── View Details Modal ── */
+    /* Modals */
     .fb-modal-overlay {
         position: fixed;
         inset: 0;
@@ -680,7 +665,18 @@
     }
 
     .fb-modal-star {
-        font-size: 28px;
+        font-size: 26px;
+    }
+
+    /* Reply modal */
+    .reply-modal-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+        width: 100%;
+        max-width: 480px;
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
     }
 
     @media print {
@@ -722,12 +718,12 @@
         </div>
     </div>
 
-    <% var totalFb=feedbacks.length; var rated=feedbacks.filter(f=> parseInt(f.rating) > 0);
-        var avgRating = rated.length > 0 ? (rated.reduce((s,f) => s + parseInt(f.rating), 0) / rated.length).toFixed(1)
-        : '—';
-        var fiveStars = feedbacks.filter(f => parseInt(f.rating) === 5).length;
-        var lowRatings = feedbacks.filter(f => { var r = parseInt(f.rating); return r > 0 && r <= 2; }).length; var
-            noRating=feedbacks.filter(f=> parseInt(f.rating) === 0).length;
+    <% const totalFb=feedbacks.length; const rated=feedbacks.filter(f=> parseInt(f.rating) > 0);
+        const avgRating = rated.length > 0 ? (rated.reduce((s,f) => s + parseInt(f.rating), 0) /
+        rated.length).toFixed(1) : '—';
+        const fiveStars = feedbacks.filter(f => parseInt(f.rating) === 5).length;
+        const lowRatings = feedbacks.filter(f => { const r = parseInt(f.rating); return r > 0 && r <= 2; }).length;
+            const noRating=feedbacks.filter(f=> parseInt(f.rating) === 0).length;
             %>
 
             <!-- Stats -->
@@ -782,45 +778,28 @@
             <!-- Tabs -->
             <div class="fb-tabs">
                 <button class="fb-tab-btn active" onclick="switchFbTab('feedback')" id="fbtab-btn-feedback">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14"
-                        height="14">
-                        <path fill-rule="evenodd"
-                            d="M1 8.74c0 .983.713 1.825 1.69 1.943L3 10.72v2.03a.75.75 0 0 0 1.28.53l1.5-1.5.31-.03H9a2.26 2.26 0 0 0 2.25-2.25v-5.5A2.25 2.25 0 0 0 9 1.75H4A2.25 2.25 0 0 0 1.75 4v4.74H1Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    Feedback Ratings
+                    💬 Feedback Ratings
                 </button>
                 <button class="fb-tab-btn" onclick="switchFbTab('comments')" id="fbtab-btn-comments">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14"
-                        height="14">
-                        <path fill-rule="evenodd"
-                            d="M2.5 2A1.5 1.5 0 0 0 1 3.5v6A1.5 1.5 0 0 0 2.5 11H3v1.543a.25.25 0 0 0 .41.192l2.362-1.761H10.5A1.5 1.5 0 0 0 12 9.5v-6A1.5 1.5 0 0 0 10.5 2h-8Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    Announcement Comments
+                    🗨 Announcement Comments
                 </button>
                 <button class="fb-tab-btn" onclick="switchFbTab('analytics')" id="fbtab-btn-analytics">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14"
-                        height="14">
-                        <path
-                            d="M7.5 2.75a.75.75 0 0 0-1.5 0v8.5a.75.75 0 0 0 1.5 0v-8.5ZM11.25 5.25a.75.75 0 0 0-1.5 0v6a.75.75 0 0 0 1.5 0v-6ZM3.75 8.25a.75.75 0 0 0-1.5 0v3a.75.75 0 0 0 1.5 0v-3Z" />
-                    </svg>
-                    Category Analytics
+                    📊 Category Analytics
                 </button>
             </div>
 
-            <!-- ════ TAB 1: FEEDBACK RATINGS ════ -->
+            <!-- ══ TAB 1: FEEDBACK RATINGS ══ -->
             <div id="fbtab-feedback" class="fb-tab-content active">
                 <div class="fb-toolbar">
                     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                        <select id="ratingFilter" class="fb-filter-select">
+                        <select id="ratingFilter" class="fb-filter-select" onchange="applyFilters()">
                             <option value="">All Ratings</option>
                             <option value="5">⭐⭐⭐⭐⭐ Excellent (5)</option>
                             <option value="4">⭐⭐⭐⭐ Very Good (4)</option>
                             <option value="3">⭐⭐⭐ Good (3)</option>
                             <option value="2">⭐⭐ Fair (2)</option>
                             <option value="1">⭐ Poor (1)</option>
-                            <option value="0">No Rating (0)</option>
+                            <option value="0">No Rating</option>
                         </select>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -832,9 +811,11 @@
                                     clip-rule="evenodd" />
                             </svg>
                             <input type="text" id="searchInput" placeholder="Search feedback..."
-                                style="padding-left:30px;">
+                                oninput="applyFilters()">
                         </div>
-                        <button class="btn-print-fb" onclick="window.print()">🖨 Print</button>
+                        <button
+                            style="display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:9px;font-size:12px;font-weight:700;background:#374151;color:#fff;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;"
+                            onclick="window.print()">🖨 Print</button>
                     </div>
                 </div>
 
@@ -851,32 +832,31 @@
                                         <th>Stars</th>
                                         <th>Feedback Message</th>
                                         <th>Date</th>
-                                        <th style="text-align:center;">Action</th>
+                                        <th style="text-align:center;">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="fbBody">
-                                    <% if (feedbacks && feedbacks.length> 0) { %>
-                                        <% feedbacks.forEach(function(f) { var ratingVal=parseInt(f.rating) || 0; var
-                                            initials=(f.first_name ? f.first_name[0] : '' ) + (f.last_name ?
-                                            f.last_name[0] : '' ); var
-                                            ratingLabel=ratingVal===5?'Excellent':ratingVal===4?'Very
+                                    <% if (feedbacks && feedbacks.length > 0) { %>
+                                        <% feedbacks.forEach(function(f) { const ratingVal=parseInt(f.rating) || 0;
+                                            const initials=((f.first_name||'')[0]||'') + ((f.last_name||'')[0]||'');
+                                            const ratingLabel=ratingVal===5?'Excellent':ratingVal===4?'Very
                                             Good':ratingVal===3?'Good':ratingVal===2?'Fair':ratingVal===1?'Poor':'No
-                                            Rating'; var stars='' ; for(var s=1;s<=5;s++) stars +=s<=ratingVal
+                                            Rating'; let stars='' ; for(let s=1;s<=5;s++) stars +=s<=ratingVal
                                             ? '<span class="star-on">★</span>' : '<span class="star-off">★</span>' ; %>
                                             <tr class="fb-row" data-rating="<%= ratingVal %>"
                                                 data-name="<%= f.last_name %>, <%= f.first_name %>"
-                                                data-id="<%= f.id_number %>" data-course="<%= f.course %>"
+                                                data-id="<%= f.id %>" data-user-id="<%= f.user_id %>"
+                                                data-student-id="<%= f.id_number %>" data-course="<%= f.course %>"
                                                 data-rating-val="<%= ratingVal %>"
                                                 data-rating-label="<%= ratingLabel %>"
-                                                data-message="<%= (f.message||'').replace(/" /g,'&quot;') %>"
+                                                data-message="<%= (f.message||'').replace(/\"/g,'&quot;') %>"
                                                 data-date="<%= f.created_at %>"
                                                     data-pic="<%= f.profile_picture||'' %>">
                                                         <td>
                                                             <div class="name-cell">
                                                                 <div class="name-avatar">
                                                                     <% if (f.profile_picture && f.profile_picture !==''
-                                                                        ) { %>
-                                                                        <img src="<%= f.profile_picture %>">
+                                                                        ) { %><img src="<%= f.profile_picture %>">
                                                                         <% } else { %>
                                                                             <%= initials.toUpperCase() %>
                                                                                 <% } %>
@@ -898,13 +878,13 @@
                                                                 <%= ratingLabel %>
                                                             </span></td>
                                                         <td>
-                                                            <% if (ratingVal> 0) { %>
-                                                                <div class="star-display"><%- stars %></div>
-                                                                <% } else { %>
-                                                                    <span class="star-none">No rating</span>
+                                                            <% if (ratingVal > 0) { %><div class="star-display"><%- stars %></div>
+                                                                <% } else { %><span
+                                                                        style="font-size:11px;color:#9CA3AF;font-style:italic;">No
+                                                                        rating</span>
                                                                     <% } %>
                                                         </td>
-                                                        <td style="max-width:240px;">
+                                                        <td style="max-width:220px;">
                                                             <p
                                                                 style="font-size:12px;color:#4B5563;margin:0;line-height:1.5;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
                                                                 <%= f.message %>
@@ -916,19 +896,17 @@
                                                                 %>
                                                         </td>
                                                         <td style="text-align:center;">
-                                                            <button class="btn-view-fb"
-                                                                onclick="viewFeedback(this.closest('tr'))">
-                                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 16 16" fill="currentColor" width="11"
-                                                                    height="11">
-                                                                    <path
-                                                                        d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M1.38 8.28a.87.87 0 0 1 0-.566 7.003 7.003 0 0 1 13.239.005.87.87 0 0 1 0 .566A7.003 7.003 0 0 1 1.379 8.28ZM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                                                        clip-rule="evenodd" />
-                                                                </svg>
-                                                                View
-                                                            </button>
+                                                            <div
+                                                                style="display:flex;gap:5px;justify-content:center;flex-wrap:nowrap;">
+                                                                <button class="btn-view-fb"
+                                                                    onclick="viewFeedback(this.closest('tr'))">
+                                                                    👁 View
+                                                                </button>
+                                                                <button class="btn-reply-fb"
+                                                                    onclick="openReplyModal(this.closest('tr'))">
+                                                                    💬 Reply
+                                                                </button>
+                                                            </div>
                                                         </td>
                                             </tr>
                                             <% }); %>
@@ -956,13 +934,11 @@
                 </div>
             </div>
 
-            <!-- ════ TAB 2: ANNOUNCEMENT COMMENTS ════ -->
+            <!-- ══ TAB 2: ANNOUNCEMENT COMMENTS ══ -->
             <div id="fbtab-comments" class="fb-tab-content">
                 <div class="cmt-toolbar">
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                        <span style="font-size:12px;color:#6B7280;font-weight:600;">All student comments on
-                            announcements</span>
-                    </div>
+                    <span style="font-size:12px;color:#6B7280;font-weight:600;">All student comments on
+                        announcements</span>
                     <div class="cmt-search-wrap">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                             style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;">
@@ -981,224 +957,214 @@
                             <p style="margin:0 0 4px;font-weight:700;color:#4B5563;">Loading comments...</p>
                         </div>
                     </div>
-                    <div class="cmt-footer" id="cmtFooter" style="display:none;">
-                        <span>Showing <strong id="cmtCount" style="color:#1C2B35;">0</strong> comments</span>
-                        <span>CCS Laboratory Sit-in Monitoring System</span>
+                    <div id="cmtFooter" style="padding:12px 0;font-size:11px;color:#9CA3AF;display:none;">
+                        Showing <strong id="cmtCount" style="color:#1C2B35;">0</strong> comments
                     </div>
                 </div>
             </div>
 
-            <!-- ════ TAB 3: CATEGORY ANALYTICS ════ -->
+            <!-- ══ TAB 3: CATEGORY ANALYTICS ══ -->
             <div id="fbtab-analytics" class="fb-tab-content">
                 <div class="cat-section">
-                    <% // Build rating distribution var dist={5:0, 4:0, 3:0, 2:0, 1:0, 0:0};
-                        feedbacks.forEach(function(f){ var r=parseInt(f.rating)||0; if(dist[r]!==undefined) dist[r]++;
-                        }); var maxDist=Math.max.apply(null, Object.values(dist)) || 1; // Top commenters (by feedback
-                        count) var byStudent={}; feedbacks.forEach(function(f){ var key=f.id_number; if(!byStudent[key])
-                        byStudent[key]={name:
-                        f.last_name+', '+f.first_name, course: f.course, count:0, totalRating:0, ratedCount:0, pic: f.profile_picture||''};
-                byStudent[key].count++;
-                if(parseInt(f.rating)>0){ byStudent[key].totalRating+=parseInt(f.rating); byStudent[key].ratedCount++; }
-            });
-            var topStudents = Object.values(byStudent).sort(function(a,b){return b.count-a.count;}).slice(0,5);
-            var maxStudentCount = topStudents.length > 0 ? topStudents[0].count : 1;
-            %>
-
-            <div class="cat-grid">
-                <!-- Rating Distribution -->
-                <div class="cat-card">
-                    <p class="cat-card-title"><span style="font-size:20px;">⭐</span> Rating Distribution</p>
-                    <% [[5,' Excellent','#F59E0B'],[4,'Very
-                        Good','#059669'],[3,'Good','#3B82F6'],[2,'Fair','#F97316'],[1,'Poor','#DC2626'],[0,'No
-                        Rating','#9CA3AF']].forEach(function(r){ var pct=Math.round((dist[r[0]]/maxDist)*100); %>
-                        <div class="cat-bar-row">
-                            <span class="cat-bar-label" style="font-size:10px;">
-                                <%= r[1] %>
-                            </span>
-                            <div class="cat-bar-track">
-                                <div class="cat-bar-fill" style="width:<%= pct %>%;background:<%= r[2] %>;"></div>
-                            </div>
-                            <span class="cat-bar-count" style="color:<%= r[2] %>;">
-                                <%= dist[r[0]] %>
-                            </span>
-                        </div>
-                        <% }); %>
-                </div>
-
-                <!-- Top Feedback Students -->
-                <div class="cat-card">
-                    <p class="cat-card-title"><span style="font-size:20px;">🏆</span> Most Active Feedback</p>
-                    <% topStudents.forEach(function(s, i){ var pct=Math.round((s.count/maxStudentCount)*100); var
-                        avg=s.ratedCount> 0 ? (s.totalRating/s.ratedCount).toFixed(1) : '—'; var
-                        colors=['#F59E0B','#9CA3AF','#CD7F32','#273F4F','#5B0E14']; %>
-                        <div class="cat-bar-row">
-                            <span class="cat-bar-label"
-                                style="font-size:10px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
-                                title="<%= s.name %>">
-                                <%= s.name.split(',')[1]||s.name %>
-                            </span>
-                            <div class="cat-bar-track">
-                                <div class="cat-bar-fill" style="width:<%= pct %>%;background:<%= colors[i] %>;"></div>
-                            </div>
-                            <span class="cat-bar-count">
-                                <%= s.count %> <span style="color:#C4BDB6;font-weight:400;">(avg <%= avg %>★)</span>
-                            </span>
-                        </div>
-                        <% }); %>
-                            <% if(topStudents.length===0){ %>
-                                <p style="text-align:center;color:#9CA3AF;font-size:12px;padding:12px 0;margin:0;">No
-                                    data yet.</p>
-                                <% } %>
-                </div>
-
-                <!-- Satisfaction Score -->
-                <div class="cat-card">
-                    <p class="cat-card-title"><span style="font-size:20px;">📊</span> Satisfaction Overview</p>
-                    <% var satisfied=feedbacks.filter(function(f){ return parseInt(f.rating)>= 4; }).length;
-                        var neutral = feedbacks.filter(function(f){ return parseInt(f.rating) === 3; }).length;
-                        var dissatisfied = feedbacks.filter(function(f){ var r=parseInt(f.rating); return r > 0 && r <=
-                            2; }).length; var satPct=totalFb> 0 ? Math.round((satisfied/totalFb)*100) : 0;
-                            var neuPct = totalFb > 0 ? Math.round((neutral/totalFb)*100) : 0;
-                            var disPct = totalFb > 0 ? Math.round((dissatisfied/totalFb)*100) : 0;
+                    <% const dist={5:0,4:0,3:0,2:0,1:0,0:0}; feedbacks.forEach(f=> { const r=parseInt(f.rating)||0;
+                        if(dist[r]!==undefined) dist[r]++; });
+                        const maxDist = Math.max(...Object.values(dist)) || 1;
+                        const byStudent = {};
+                        feedbacks.forEach(f => {
+                        if(!byStudent[f.id_number]) byStudent[f.id_number]={name:f.last_name+',
+                        '+f.first_name,course:f.course,count:0,totalRating:0,ratedCount:0};
+                        byStudent[f.id_number].count++;
+                        if(parseInt(f.rating)>0){byStudent[f.id_number].totalRating+=parseInt(f.rating);byStudent[f.id_number].ratedCount++;}
+                        });
+                        const topStudents = Object.values(byStudent).sort((a,b)=>b.count-a.count).slice(0,5);
+                        const maxStudentCount = topStudents.length > 0 ? topStudents[0].count : 1;
+                        const satisfied = feedbacks.filter(f=>parseInt(f.rating)>=4).length;
+                        const neutral = feedbacks.filter(f=>parseInt(f.rating)===3).length;
+                        const dissatisfied = feedbacks.filter(f=>{const r=parseInt(f.rating);return r>0&&r<=2;}).length;
+                            const satPct=totalFb>0?Math.round((satisfied/totalFb)*100):0;
+                            const neuPct = totalFb>0?Math.round((neutral/totalFb)*100):0;
+                            const disPct = totalFb>0?Math.round((dissatisfied/totalFb)*100):0;
                             %>
-                            <div style="display:flex;flex-direction:column;gap:12px;">
-                                <div>
-                                    <div
-                                        style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;">
-                                        <span style="color:#059669;">😊 Satisfied (4-5★)</span>
-                                        <span style="color:#059669;">
-                                            <%= satisfied %> (<%= satPct %>%)
-                                        </span>
-                                    </div>
-                                    <div style="background:#F3F0EC;border-radius:999px;height:10px;overflow:hidden;">
-                                        <div
-                                            style="width:<%= satPct %>%;height:100%;background:linear-gradient(90deg,#059669,#34D399);border-radius:999px;transition:width 0.6s ease;">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div
-                                        style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;">
-                                        <span style="color:#D97706;">😐 Neutral (3★)</span>
-                                        <span style="color:#D97706;">
-                                            <%= neutral %> (<%= neuPct %>%)
-                                        </span>
-                                    </div>
-                                    <div style="background:#F3F0EC;border-radius:999px;height:10px;overflow:hidden;">
-                                        <div
-                                            style="width:<%= neuPct %>%;height:100%;background:linear-gradient(90deg,#D97706,#FBBF24);border-radius:999px;transition:width 0.6s ease;">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div
-                                        style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;">
-                                        <span style="color:#DC2626;">😞 Dissatisfied (1-2★)</span>
-                                        <span style="color:#DC2626;">
-                                            <%= dissatisfied %> (<%= disPct %>%)
-                                        </span>
-                                    </div>
-                                    <div style="background:#F3F0EC;border-radius:999px;height:10px;overflow:hidden;">
-                                        <div
-                                            style="width:<%= disPct %>%;height:100%;background:linear-gradient(90deg,#DC2626,#F87171);border-radius:999px;transition:width 0.6s ease;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                style="margin-top:14px;padding:10px 14px;background:#F7F5F2;border-radius:10px;font-size:11px;color:#6B7280;">
-                                Overall Satisfaction Rate: <strong
-                                    style="color:<%= satPct >= 70 ? '#059669' : satPct >= 50 ? '#D97706' : '#DC2626' %>;font-size:16px;font-family:'Syne',sans-serif;">
-                                    <%= satPct %>%
-                                </strong>
-                            </div>
-                </div>
-            </div>
 
-            <!-- Recent Feedback Table with Category View -->
-            <div class="fb-table-card">
-                <div
-                    style="padding:14px 20px;background:#F7F5F2;border-bottom:1px solid #E8E3DD;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;">
-                    All Feedback Summary
-                </div>
-                <div style="overflow-x:auto;">
-                    <table class="fb-table">
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Course</th>
-                                <th>Rating</th>
-                                <th>Category</th>
-                                <th>Message Preview</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% feedbacks.forEach(function(f){ var r=parseInt(f.rating)||0; var
-                                cat=r===5?'Excellent':r===4?'Very
-                                Good':r===3?'Good':r===2?'Fair':r===1?'Poor':'Unrated'; var catBg=r>
-                                =4?'#DCFCE7':r===3?'#EFF6FF':r>=1?'#FEF2F2':'#F3F4F6';
-                                var catColor = r>=4?'#065F46':r===3?'#1D4ED8':r>=1?'#991B1B':'#6B7280';
-                                var initials = (f.first_name?f.first_name[0]:'')+(f.last_name?f.last_name[0]:'');
-                                %>
-                                <tr>
-                                    <td>
-                                        <div class="name-cell">
-                                            <div class="name-avatar">
-                                                <% if(f.profile_picture && f.profile_picture!=='' ){%><img
-                                                        src="<%= f.profile_picture %>">
-                                                    <%} else {%>
-                                                        <%= initials.toUpperCase() %>
-                                                            <%}%>
+                            <div class="cat-grid">
+                                <!-- Rating Distribution -->
+                                <div class="cat-card">
+                                    <p class="cat-card-title"><span style="font-size:20px;">⭐</span> Rating Distribution
+                                    </p>
+                                    <% [[5,'Excellent','#F59E0B'],[4,'Very
+                                        Good','#059669'],[3,'Good','#3B82F6'],[2,'Fair','#F97316'],[1,'Poor','#DC2626'],[0,'No
+                                        Rating','#9CA3AF']].forEach(r=> {
+                                        const pct = Math.round((dist[r[0]]/maxDist)*100);
+                                        %>
+                                        <div class="cat-bar-row">
+                                            <span class="cat-bar-label" style="font-size:10px;">
+                                                <%= r[1] %>
+                                            </span>
+                                            <div class="cat-bar-track">
+                                                <div class="cat-bar-fill"
+                                                    style="width:<%= pct %>%;background:<%= r[2] %>;"></div>
                                             </div>
-                                            <span class="name-text">
-                                                <%= f.last_name %>, <%= f.first_name %>
+                                            <span class="cat-bar-count" style="color:<%= r[2] %>;">
+                                                <%= dist[r[0]] %>
                                             </span>
                                         </div>
-                                    </td>
-                                    <td><span
-                                            style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
-                                            <%= f.course %>
-                                        </span></td>
-                                    <td>
-                                        <% if(r>0){ var stars=''; for(var s=1;s<=5;s++) stars+=s<=r?'★':'☆'; %>
-                                                <span style="color:#F59E0B;font-size:14px;letter-spacing:1px;"><%- stars
-                                                        %></span>
-                                                <% } else { %><span style="font-size:11px;color:#C4BDB6;">No
-                                                        rating</span>
-                                                    <% } %>
-                                    </td>
-                                    <td><span
-                                            style="background:<%= catBg %>;color:<%= catColor %>;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;">
-                                            <%= cat %>
-                                        </span></td>
-                                    <td style="max-width:220px;font-size:12px;color:#4B5563;">
-                                        <%= (f.message||'').substring(0,80) %>
-                                            <%= f.message&&f.message.length>80?'…':'' %>
-                                    </td>
-                                    <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
-                                        <%= new
-                                            Date(f.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
-                                            %>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                                    <% if(!feedbacks||feedbacks.length===0){ %>
-                                        <tr>
-                                            <td colspan="6"
-                                                style="padding:48px;text-align:center;color:#9CA3AF;font-size:13px;">No
-                                                feedback data yet.</td>
-                                        </tr>
-                                        <% } %>
-                        </tbody>
-                    </table>
+                                        <% }); %>
+                                </div>
+
+                                <!-- Most Active Feedback -->
+                                <div class="cat-card">
+                                    <p class="cat-card-title"><span style="font-size:20px;">🏆</span> Most Active
+                                        Feedback</p>
+                                    <% topStudents.forEach((s,i)=> {
+                                        const pct = Math.round((s.count/maxStudentCount)*100);
+                                        const avg = s.ratedCount>0?(s.totalRating/s.ratedCount).toFixed(1):'—';
+                                        const colors = ['#F59E0B','#9CA3AF','#CD7F32','#273F4F','#5B0E14'];
+                                        %>
+                                        <div class="cat-bar-row">
+                                            <span class="cat-bar-label"
+                                                style="font-size:10px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                                                title="<%= s.name %>">
+                                                <%= s.name.split(',')[1]||s.name %>
+                                            </span>
+                                            <div class="cat-bar-track">
+                                                <div class="cat-bar-fill"
+                                                    style="width:<%= pct %>%;background:<%= colors[i] %>;"></div>
+                                            </div>
+                                            <span class="cat-bar-count">
+                                                <%= s.count %> <span style="color:#C4BDB6;font-weight:400;">(avg <%= avg
+                                                            %>★)</span>
+                                            </span>
+                                        </div>
+                                        <% }); %>
+                                            <% if(topStudents.length===0) { %>
+                                                <p
+                                                    style="text-align:center;color:#9CA3AF;font-size:12px;padding:12px 0;margin:0;">
+                                                    No data yet.</p>
+                                                <% } %>
+                                </div>
+
+                                <!-- Satisfaction Overview -->
+                                <div class="cat-card">
+                                    <p class="cat-card-title"><span style="font-size:20px;">📊</span> Satisfaction
+                                        Overview</p>
+                                    <div style="display:flex;flex-direction:column;gap:12px;">
+                                        <% [['😊 Satisfied (4-5★)','#059669',satPct,satisfied],['😐 Neutral
+                                            (3★)','#D97706',neuPct,neutral],['😞 Dissatisfied
+                                            (1-2★)','#DC2626',disPct,dissatisfied]].forEach(row=> { %>
+                                            <div>
+                                                <div
+                                                    style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;">
+                                                    <span style="color:<%= row[1] %>;">
+                                                        <%= row[0] %>
+                                                    </span>
+                                                    <span style="color:<%= row[1] %>;">
+                                                        <%= row[3] %> (<%= row[2] %>%)
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    style="background:#F3F0EC;border-radius:999px;height:10px;overflow:hidden;">
+                                                    <div
+                                                        style="width:<%= row[2] %>%;height:100%;background:<%= row[1] %>;border-radius:999px;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }); %>
+                                    </div>
+                                    <div
+                                        style="margin-top:14px;padding:10px 14px;background:#F7F5F2;border-radius:10px;font-size:11px;color:#6B7280;">
+                                        Overall Satisfaction Rate: <strong
+                                            style="color:<%= satPct>=70?'#059669':satPct>=50?'#D97706':'#DC2626' %>;font-size:16px;font-family:'Syne',sans-serif;">
+                                            <%= satPct %>%
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- All Feedback Summary Table -->
+                            <div class="fb-table-card">
+                                <div
+                                    style="padding:14px 20px;background:#F7F5F2;border-bottom:1px solid #E8E3DD;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;">
+                                    All Feedback Summary</div>
+                                <div style="overflow-x:auto;">
+                                    <table class="fb-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Student</th>
+                                                <th>Course</th>
+                                                <th>Rating</th>
+                                                <th>Category</th>
+                                                <th>Message Preview</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% feedbacks.forEach(f=> {
+                                                const r = parseInt(f.rating)||0;
+                                                const cat = r===5?'Excellent':r===4?'Very
+                                                Good':r===3?'Good':r===2?'Fair':r===1?'Poor':'Unrated';
+                                                const catBg = r>=4?'#DCFCE7':r===3?'#EFF6FF':r>=1?'#FEF2F2':'#F3F4F6';
+                                                const catColor =
+                                                r>=4?'#065F46':r===3?'#1D4ED8':r>=1?'#991B1B':'#6B7280';
+                                                const initials = ((f.first_name||'')[0]||'')+((f.last_name||'')[0]||'');
+                                                let stars=''; for(let s=1;s<=5;s++) stars+=s<=r?'★':'☆'; %>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="name-cell">
+                                                                <div class="name-avatar">
+                                                                    <% if(f.profile_picture&&f.profile_picture!=='' ){%>
+                                                                        <img src="<%= f.profile_picture %>">
+                                                                        <%}else{%>
+                                                                            <%= initials.toUpperCase() %>
+                                                                                <%}%>
+                                                                </div>
+                                                                <span class="name-text">
+                                                                    <%= f.last_name %>, <%= f.first_name %>
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td><span
+                                                                style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
+                                                                <%= f.course %>
+                                                            </span></td>
+                                                        <td>
+                                                            <% if(r>0){%><span
+                                                                    style="color:#F59E0B;font-size:14px;letter-spacing:1px;"><%-
+                                                                        stars%></span>
+                                                                <%}else{%><span style="font-size:11px;color:#C4BDB6;">No
+                                                                        rating</span>
+                                                                    <%}%>
+                                                        </td>
+                                                        <td><span
+                                                                style="background:<%= catBg %>;color:<%= catColor %>;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;">
+                                                                <%= cat %>
+                                                            </span></td>
+                                                        <td style="max-width:220px;font-size:12px;color:#4B5563;">
+                                                            <%= (f.message||'').substring(0,80) %>
+                                                                <%= f.message&&f.message.length>80?'…':'' %>
+                                                        </td>
+                                                        <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
+                                                            <%= new
+                                                                Date(f.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+                                                                %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }); %>
+                                                        <% if(!feedbacks||feedbacks.length===0){ %>
+                                                            <tr>
+                                                                <td colspan="6"
+                                                                    style="padding:48px;text-align:center;color:#9CA3AF;font-size:13px;">
+                                                                    No feedback data yet.</td>
+                                                            </tr>
+                                                            <% } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                 </div>
             </div>
 </div>
-</div>
-</div>
 
-<!-- ══ VIEW DETAILS MODAL ══ -->
+<!-- ══ VIEW FEEDBACK MODAL ══ -->
 <div id="fbModal" class="fb-modal-overlay" onclick="if(event.target===this) closeFbModal()">
     <div class="fb-modal-card">
         <div class="fb-modal-header">
@@ -1246,18 +1212,81 @@
                 style="font-size:14px;color:#374151;line-height:1.75;background:#F9F8F6;border-radius:12px;padding:16px;border:1.5px solid #E8E3DD;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow-y:auto;">
             </div>
         </div>
-        <div style="padding:12px 24px;background:#FAFAF9;">
-            <span style="font-size:11px;color:#9CA3AF;" id="fbModalDate"></span>
-        </div>
-        <div style="padding:0 24px 20px;">
+        <div style="padding:12px 24px;background:#FAFAF9;"><span style="font-size:11px;color:#9CA3AF;"
+                id="fbModalDate"></span></div>
+        <div style="padding:0 24px 20px;display:flex;gap:8px;">
+            <button onclick="closeFbModal();openReplyModalById(currentFeedbackRow)"
+                style="flex:1;padding:11px;background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">💬
+                Reply to Student</button>
             <button onclick="closeFbModal()"
-                style="width:100%;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Close</button>
+                style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ REPLY MODAL ══ -->
+<div id="replyModal" class="fb-modal-overlay" onclick="if(event.target===this) closeReplyModal()">
+    <div class="reply-modal-card">
+        <div
+            style="background:linear-gradient(135deg,#059669,#047857);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div
+                    style="width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;">
+                    💬</div>
+                <div>
+                    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;">Reply to
+                        Student</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.6);">Student will receive a notification</div>
+                </div>
+            </div>
+            <button onclick="closeReplyModal()"
+                style="width:30px;height:30px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;">✕</button>
+        </div>
+
+        <!-- Student preview -->
+        <div id="replyStudentPreview" style="padding:14px 24px;background:#F9F8F6;border-bottom:1px solid #E8E3DD;">
+        </div>
+
+        <!-- Original feedback preview -->
+        <div id="replyFeedbackPreview" style="padding:12px 24px;background:#FFF7ED;border-bottom:1px solid #FDE68A;">
+        </div>
+
+        <form id="replyForm" method="POST" style="padding:20px 24px 0;">
+            <input type="hidden" name="feedback_id" id="replyFeedbackId">
+            <div style="margin-bottom:14px;">
+                <label
+                    style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:8px;">Your
+                    Reply Message <span style="color:#DC2626;">*</span></label>
+                <textarea name="reply_message" id="replyMessage" rows="4" required
+                    placeholder="Type your reply here... The student will receive a notification with your message."
+                    style="width:100%;padding:12px 14px;border:1.5px solid #D6D0CA;border-radius:10px;background:#F9F8F6;font-size:13px;color:#1C2B35;outline:none;resize:vertical;font-family:'DM Sans',sans-serif;box-sizing:border-box;transition:border-color 0.15s;"
+                    onfocus="this.style.borderColor='#059669';this.style.background='#fff';"
+                    onblur="this.style.borderColor='#D6D0CA';this.style.background='#F9F8F6';"></textarea>
+                <div id="replyCharCount" style="font-size:11px;color:#9CA3AF;margin-top:4px;text-align:right;">0 / 500
+                </div>
+            </div>
+            <div
+                style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:9px;padding:10px 14px;font-size:11px;color:#065F46;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+                    <path fill-rule="evenodd"
+                        d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"
+                        clip-rule="evenodd" />
+                </svg>
+                The student will see your reply as a notification in their account.
+            </div>
+        </form>
+        <div style="display:flex;gap:10px;padding:0 24px 22px;">
+            <button onclick="closeReplyModal()"
+                style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
+            <button onclick="submitReply()"
+                style="flex:2;padding:11px;background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">📨
+                Send Reply & Notify</button>
         </div>
     </div>
 </div>
 
 <script>
-    // ── Tab switching ──────────────────────────────────────────────
+    // ── Tab switching
     function switchFbTab(tab) {
         ['feedback', 'comments', 'analytics'].forEach(t => {
             document.getElementById('fbtab-' + t).classList.toggle('active', t === tab);
@@ -1266,14 +1295,10 @@
         if (tab === 'comments' && !commentsLoaded) loadAllComments();
     }
 
-    // ── Feedback Filters ──────────────────────────────────────────
-    const searchInput = document.getElementById('searchInput');
-    const ratingFilter = document.getElementById('ratingFilter');
-    const countEl = document.getElementById('visibleCount');
-
+    // ── Filters
     function applyFilters() {
-        const q = searchInput.value.toLowerCase();
-        const rating = ratingFilter.value;
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const rating = document.getElementById('ratingFilter').value;
         let count = 0;
         document.querySelectorAll('.fb-row').forEach(row => {
             const matchQ = !q || row.textContent.toLowerCase().includes(q);
@@ -1282,59 +1307,24 @@
             row.style.display = show ? '' : 'none';
             if (show) count++;
         });
-        countEl.textContent = count;
+        document.getElementById('visibleCount').textContent = count;
     }
-    searchInput.addEventListener('input', applyFilters);
-    ratingFilter.addEventListener('change', applyFilters);
 
-    // ── Comments Tab ──────────────────────────────────────────────
+    // ── Comments tab
     let commentsLoaded = false;
     let allCommentsData = [];
 
     async function loadAllComments() {
         commentsLoaded = true;
         const listEl = document.getElementById('cmtList');
-        listEl.innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:13px;">Loading comments…</div>';
-
-        try {
-            // Fetch all announcements first to get their IDs and messages
-            const annRes = await fetch('/api/announcements-with-comments');
-            const data = await res.json();
-        } catch (e) {
-            // Fallback: fetch each announcement's comments via existing routes
-            // We'll build comments from what we can fetch
-        }
-
-        // Use the announcements we have embedded in the admin page context
-        // Load comments for each announcement by fetching the route
-        try {
-            const allComments = [];
-            // We'll batch-fetch by calling the comments endpoint for known ann IDs
-            // Since we don't have a batch endpoint, we load from the page's announcement data
-            listEl.innerHTML = renderCommentsHTML([]);
-            document.getElementById('cmtFooter').style.display = 'flex';
-        } catch (e) {
-            listEl.innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:13px;">Could not load comments.</div>';
-        }
-    }
-
-    // Better approach: fetch all comments via a dedicated fetch
-    async function loadAllComments() {
-        commentsLoaded = true;
-        const listEl = document.getElementById('cmtList');
         listEl.innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:13px;"><div style="font-size:28px;margin-bottom:8px;">💬</div>Loading comments…</div>';
-
         try {
             const res = await fetch('/admin/all-comments');
             if (!res.ok) throw new Error('no endpoint');
             allCommentsData = await res.json();
             renderComments(allCommentsData);
         } catch (e) {
-            listEl.innerHTML = `<div style="text-align:center;padding:48px 24px;color:#9CA3AF;">
-                <div style="font-size:28px;margin-bottom:10px;">💬</div>
-                <p style="font-weight:700;color:#4B5563;margin:0 0 4px;">No comments to display</p>
-                <p style="font-size:12px;margin:0;">Student comments on announcements will appear here.</p>
-            </div>`;
+            listEl.innerHTML = `<div style="text-align:center;padding:48px 24px;color:#9CA3AF;"><div style="font-size:28px;margin-bottom:10px;">💬</div><p style="font-weight:700;color:#4B5563;margin:0 0 4px;">No comments to display</p><p style="font-size:12px;margin:0;">Student comments on announcements will appear here.</p></div>`;
         }
     }
 
@@ -1342,46 +1332,34 @@
         const listEl = document.getElementById('cmtList');
         const footerEl = document.getElementById('cmtFooter');
         const countEl2 = document.getElementById('cmtCount');
-
         if (!comments || comments.length === 0) {
-            listEl.innerHTML = `<div style="text-align:center;padding:48px;color:#9CA3AF;font-size:13px;">
-                <div style="font-size:28px;margin-bottom:10px;">💬</div>
-                <p style="font-weight:700;color:#4B5563;margin:0 0 4px;">No comments yet</p>
-                <p style="font-size:12px;margin:0;">When students comment on announcements, they'll appear here.</p>
-            </div>`;
-            footerEl.style.display = 'flex';
-            countEl2.textContent = '0';
-            return;
+            listEl.innerHTML = '<div style="text-align:center;padding:48px;color:#9CA3AF;font-size:13px;"><div style="font-size:28px;margin-bottom:10px;">💬</div><p style="font-weight:700;color:#4B5563;margin:0 0 4px;">No comments yet</p></div>';
+            footerEl.style.display = 'flex'; if (countEl2) countEl2.textContent = '0'; return;
         }
-
         listEl.innerHTML = comments.map(c => {
             const initials = ((c.first_name || '')[0] || '') + ((c.last_name || '')[0] || '');
-            const avatarHtml = c.profile_picture
-                ? `<img src="${c.profile_picture}">`
-                : initials.toUpperCase();
+            const avatarHtml = c.profile_picture ? `<img src="${c.profile_picture}">` : initials.toUpperCase();
             const safeMsg = (c.message || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             return `<div class="cmt-item" data-search="${(c.first_name || '') + ' ' + (c.last_name || '') + ' ' + (c.message || '')}">
-                <div class="cmt-avatar">${avatarHtml}</div>
-                <div class="cmt-bubble">
-                    <div class="cmt-meta">
-                        <span class="cmt-name">${c.first_name || ''} ${c.last_name || ''}</span>
-                        <span class="cmt-ann-tag">📢 ${(c.announcement_message || 'Announcement').substring(0, 40)}${(c.announcement_message || '').length > 40 ? '…' : ''}</span>
-                        <span class="cmt-time">${new Date(c.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                    </div>
-                    <div class="cmt-msg">${safeMsg}</div>
+            <div class="cmt-avatar">${avatarHtml}</div>
+            <div class="cmt-bubble">
+                <div class="cmt-meta">
+                    <span class="cmt-name">${c.first_name || ''} ${c.last_name || ''}</span>
+                    <span class="cmt-ann-tag">📢 ${(c.announcement_message || 'Announcement').substring(0, 40)}${(c.announcement_message || '').length > 40 ? '…' : ''}</span>
+                    <span class="cmt-time">${new Date(c.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
-            </div>`;
+                <div class="cmt-msg">${safeMsg}</div>
+            </div>
+        </div>`;
         }).join('');
-
         footerEl.style.display = 'flex';
         if (countEl2) countEl2.textContent = comments.length;
     }
 
     function filterComments() {
         const q = (document.getElementById('cmtSearch').value || '').toLowerCase();
-        const items = document.querySelectorAll('.cmt-item');
         let count = 0;
-        items.forEach(item => {
+        document.querySelectorAll('.cmt-item').forEach(item => {
             const show = !q || (item.dataset.search || '').toLowerCase().includes(q);
             item.style.display = show ? '' : 'none';
             if (show) count++;
@@ -1390,27 +1368,20 @@
         if (countEl2) countEl2.textContent = count;
     }
 
-    // ── View Details Modal ────────────────────────────────────────
+    // ── View Feedback Modal
+    let currentFeedbackRow = null;
     const RATING_LABELS = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
     const RATING_COLORS = ['#6B7280', '#DC2626', '#F59E0B', '#3B82F6', '#059669', '#F59E0B'];
 
     function viewFeedback(row) {
-        const name = row.dataset.name;
-        const id = row.dataset.id;
-        const course = row.dataset.course;
-        const ratingVal = parseInt(row.dataset.ratingVal) || 0;
-        const ratingLabel = row.dataset.ratingLabel;
-        const message = row.dataset.message;
-        const date = row.dataset.date;
-        const pic = row.dataset.pic;
+        currentFeedbackRow = row;
+        const name = row.dataset.name, id = row.dataset.studentId, course = row.dataset.course;
+        const ratingVal = parseInt(row.dataset.ratingVal) || 0, ratingLabel = row.dataset.ratingLabel;
+        const message = row.dataset.message, date = row.dataset.date, pic = row.dataset.pic;
 
         const avatarEl = document.getElementById('fbModalAvatar');
-        if (pic) {
-            avatarEl.innerHTML = `<img src="${pic}" style="width:100%;height:100%;object-fit:cover;">`;
-        } else {
-            const initials = name.split(', ').map(p => p[0] || '').join('');
-            avatarEl.innerHTML = initials.toUpperCase();
-        }
+        if (pic) { avatarEl.innerHTML = `<img src="${pic}" style="width:100%;height:100%;object-fit:cover;">`; }
+        else { const initials = name.split(', ').map(p => p[0] || '').join(''); avatarEl.innerHTML = initials.toUpperCase(); }
 
         document.getElementById('fbModalName').textContent = name;
         document.getElementById('fbModalId').textContent = id;
@@ -1419,22 +1390,85 @@
         document.getElementById('fbModalDate').textContent = '📅 Submitted: ' + new Date(date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
         let starsHtml = '';
-        if (ratingVal > 0) {
-            for (let s = 1; s <= 5; s++) {
-                starsHtml += `<span class="fb-modal-star" style="color:${s <= ratingVal ? '#F59E0B' : '#D1D5DB'}">${s <= ratingVal ? '★' : '☆'}</span>`;
-            }
-        } else {
-            starsHtml = '<span style="font-size:12px;color:#9CA3AF;font-style:italic;">No rating given</span>';
-        }
+        if (ratingVal > 0) { for (let s = 1; s <= 5; s++) starsHtml += `<span class="fb-modal-star" style="color:${s <= ratingVal ? '#F59E0B' : '#D1D5DB'}">${s <= ratingVal ? '★' : '☆'}</span>`; }
+        else { starsHtml = '<span style="font-size:12px;color:#9CA3AF;font-style:italic;">No rating given</span>'; }
         document.getElementById('fbModalStars').innerHTML = starsHtml;
 
         const ratingLabelEl = document.getElementById('fbModalRatingLabel');
         ratingLabelEl.textContent = ratingLabel;
         ratingLabelEl.style.color = RATING_COLORS[ratingVal] || '#6B7280';
-
         document.getElementById('fbModal').classList.add('open');
     }
-
     function closeFbModal() { document.getElementById('fbModal').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFbModal(); });
+
+    // ── Reply Modal
+    let currentReplyRow = null;
+
+    function openReplyModal(row) {
+        currentReplyRow = row;
+        _setupReplyModal(row);
+    }
+    function openReplyModalById(row) {
+        if (!row) return;
+        currentReplyRow = row;
+        _setupReplyModal(row);
+    }
+    function _setupReplyModal(row) {
+        const feedbackId = row.dataset.id;
+        const name = row.dataset.name;
+        const studentId = row.dataset.studentId;
+        const course = row.dataset.course;
+        const message = row.dataset.message;
+        const ratingVal = parseInt(row.dataset.ratingVal) || 0;
+        const ratingLabel = row.dataset.ratingLabel;
+        const pic = row.dataset.pic;
+
+        document.getElementById('replyFeedbackId').value = feedbackId;
+        document.getElementById('replyForm').action = `/admin/feedback/${feedbackId}/reply`;
+        document.getElementById('replyMessage').value = '';
+        document.getElementById('replyCharCount').textContent = '0 / 500';
+
+        const avatarHtml = pic
+            ? `<img src="${pic}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`
+            : `<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#273F4F,#5B0E14);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F1E194;">${name.split(', ').map(p => p[0] || '').join('').toUpperCase()}</div>`;
+
+        document.getElementById('replyStudentPreview').innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;">
+            ${avatarHtml}
+            <div>
+                <div style="font-size:13px;font-weight:700;color:#1C2B35;">${name}</div>
+                <div style="display:flex;gap:6px;margin-top:3px;">
+                    <span style="font-family:monospace;font-size:11px;color:#6B7280;background:#F3F0EC;padding:2px 7px;border-radius:4px;">${studentId}</span>
+                    <span style="font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;padding:2px 7px;border-radius:4px;">${course}</span>
+                    <span style="font-size:11px;font-weight:700;background:${ratingVal >= 4 ? '#DCFCE7' : ratingVal === 3 ? '#EFF6FF' : ratingVal > 0 ? '#FEF2F2' : '#F3F4F6'};color:${ratingVal >= 4 ? '#065F46' : ratingVal === 3 ? '#1D4ED8' : ratingVal > 0 ? '#991B1B' : '#6B7280'};padding:2px 7px;border-radius:4px;">${ratingVal > 0 ? '⭐'.repeat(ratingVal) + ' ' + ratingLabel : 'No rating'}</span>
+                </div>
+            </div>
+        </div>`;
+
+        const safeMsg = (message || '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+        document.getElementById('replyFeedbackPreview').innerHTML = `
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#92400E;margin-bottom:6px;">Original Feedback:</div>
+        <div style="font-size:12px;color:#92400E;line-height:1.6;">"${safeMsg.substring(0, 120)}${safeMsg.length > 120 ? '…' : ''}"</div>`;
+
+        document.getElementById('replyModal').classList.add('open');
+    }
+    function closeReplyModal() { document.getElementById('replyModal').classList.remove('open'); }
+
+    document.getElementById('replyMessage').addEventListener('input', function () {
+        const len = this.value.length;
+        const counter = document.getElementById('replyCharCount');
+        counter.textContent = len + ' / 500';
+        counter.style.color = len > 450 ? '#DC2626' : '#9CA3AF';
+        if (len > 500) this.value = this.value.substring(0, 500);
+    });
+
+    function submitReply() {
+        const msg = document.getElementById('replyMessage').value.trim();
+        if (!msg) { alert('Please enter a reply message.'); return; }
+        document.getElementById('replyForm').submit();
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { closeFbModal(); closeReplyModal(); }
+    });
 </script>

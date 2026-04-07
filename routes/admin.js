@@ -457,5 +457,70 @@ router.get('/lab-computers', isAuthenticated, isAdmin, (req, res) => {
     res.render('pages/admin-lab-computers');
 });
 
+// Admin Leaderboard page
+router.get('/leaderboard', isAuthenticated, isAdmin, (req, res) => {
+    db.all(`
+        SELECT u.id, u.first_name, u.last_name, u.course, u.year_level,
+               u.remaining_sessions, u.profile_picture,
+               COUNT(DISTINCT s.id) as total_sitins,
+               COUNT(DISTINCT f.id) as feedback_count
+        FROM users u
+        LEFT JOIN sitin_sessions s ON s.user_id = u.id AND s.status = 'done'
+        LEFT JOIN feedback f ON f.user_id = u.id
+        WHERE u.role = 'user'
+        GROUP BY u.id
+        ORDER BY total_sitins DESC
+    `, (err, students) => {
+        const ranked = (students || []).map(s => {
+            const sessionsUsed = Math.max(0, 30 - (s.remaining_sessions || 30));
+            s.points = Math.round((sessionsUsed / 30) * 50 + Math.min(s.total_sitins, 30) + Math.min(s.feedback_count * 4, 20));
+            return s;
+        }).sort((a, b) => b.points - a.points);
+        res.render('pages/leaderboard-index', { students: ranked });
+    });
+});
+
+// Admin reply to a student's feedback — sends notification to the student
+router.post('/feedback/:id/reply', isAuthenticated, isAdmin, (req, res) => {
+    const { reply_message } = req.body;
+    const feedbackId = req.params.id;
+
+    if (!reply_message || !reply_message.trim()) {
+        req.session.toast = { type: 'error', message: 'Reply message cannot be empty.' };
+        return res.redirect('/admin/feedback');
+    }
+
+    db.get(
+        `SELECT f.*, u.first_name, u.last_name, u.id AS student_id
+         FROM feedback f JOIN users u ON f.user_id = u.id WHERE f.id = ?`,
+        [feedbackId],
+        (err, feedback) => {
+            if (err || !feedback) {
+                req.session.toast = { type: 'error', message: 'Feedback not found.' };
+                return res.redirect('/admin/feedback');
+            }
+
+            const adminName = req.session.user.first_name + ' ' + req.session.user.last_name;
+            const notifMsg = `📩 Admin ${adminName} replied to your feedback: "${reply_message.trim().substring(0, 200)}"`;
+
+            db.run(
+                `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
+                [feedback.user_id, notifMsg],
+                (err2) => {
+                    if (err2) {
+                        req.session.toast = { type: 'error', message: 'Failed to send reply notification.' };
+                    } else {
+                        req.session.toast = {
+                            type: 'success',
+                            message: `✅ Reply sent! ${feedback.first_name} ${feedback.last_name} has been notified.`
+                        };
+                    }
+                    res.redirect('/admin/feedback');
+                }
+            );
+        }
+    );
+});
+
 
 module.exports = router;
