@@ -351,7 +351,7 @@ router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
 // History
 router.get('/history', isAuthenticated, isAdmin, (req, res) => {
     db.all(
-        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, u.year_level FROM sitin_sessions s JOIN users u ON s.user_id = u.id ORDER BY s.time_in DESC`,
+        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, u.year_level, f.message as feedback_message FROM sitin_sessions s JOIN users u ON s.user_id = u.id LEFT JOIN feedback f ON f.session_id = s.id ORDER BY s.time_in DESC`,
         (err, sessions) => res.render('pages/admin-history', { sessions: sessions || [] })
     );
 });
@@ -378,7 +378,7 @@ router.get('/reservations', isAuthenticated, isAdmin, (req, res) => {
     db.all(
         `SELECT r.*, u.id_number, u.first_name, u.last_name, u.course
          FROM reservations r JOIN users u ON r.user_id = u.id
-         WHERE r.computer_number IS NOT NULL
+         WHERE r.computer_number IS NOT NULL AND r.computer_number > 0
          ORDER BY r.date DESC, r.created_at DESC`,
         (err, reservations) => res.render('pages/admin-reservations', { reservations: reservations || [] })
     );

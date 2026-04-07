@@ -326,7 +326,137 @@
         flex-wrap: wrap;
         gap: 8px;
     }
+
+    /* Export button styles */
+    .hist-export-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition: opacity 0.15s, transform 0.1s;
+        white-space: nowrap;
+    }
+
+    .hist-export-btn:hover {
+        opacity: 0.88;
+        transform: translateY(-1px);
+    }
+
+    .hist-export-btn.csv { background: #059669; color: #fff; }
+    .hist-export-btn.excel { background: #1D6F42; color: #fff; }
+    .hist-export-btn.pdf { background: #DC2626; color: #fff; }
+    .hist-export-btn.print { background: #374151; color: #fff; }
+
+    .hist-export-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Download overlay */
+    .hist-dl-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hist-dl-overlay.open { display: flex; }
+
+    .hist-dl-overlay.open .hist-dl-card {
+        animation: histDlIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes histDlIn {
+        from { opacity: 0; transform: scale(0.88) translateY(12px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .hist-dl-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+        padding: 36px 48px;
+        text-align: center;
+        min-width: 280px;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .hist-dl-spinner {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 4px solid #E8E3DD;
+        border-top-color: #273F4F;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 16px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hist-dl-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #059669, #34D399);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+    }
+
+    .hist-dl-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 18px;
+        font-weight: 800;
+        color: #1C2B35;
+        margin: 0 0 6px;
+    }
+
+    .hist-dl-sub {
+        font-size: 13px;
+        color: #9CA3AF;
+        margin: 0;
+    }
+
+    /* Print styles */
+    @media print {
+        .hist-toolbar,
+        .hist-header,
+        .hist-export-group,
+        #histDlOverlay,
+        header, aside, footer {
+            display: none !important;
+        }
+        .hist-table-wrap {
+            padding: 0 !important;
+        }
+        .hist-table-card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .hist-page {
+            background: white !important;
+        }
+        body {
+            background: white !important;
+        }
+    }
 </style>
+
+<!-- External libraries for export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <div class="hist-page">
 
@@ -368,13 +498,41 @@
                     <option value="544">Lab 544</option>
                 </select>
             </div>
-            <div class="hist-search-wrap">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                        clip-rule="evenodd" />
-                </svg>
-                <input type="text" id="searchInput" placeholder="Search sessions...">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div class="hist-search-wrap">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search sessions...">
+                </div>
+                <div class="hist-export-group">
+                    <button class="hist-export-btn csv" onclick="histExportCSV()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                            <path fill-rule="evenodd" d="M4 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4Zm1 5.75a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5H5Zm0 3a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5H5Z" clip-rule="evenodd" />
+                        </svg>
+                        CSV
+                    </button>
+                    <button class="hist-export-btn excel" onclick="histExportExcel()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                            <path fill-rule="evenodd" d="M4 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4Zm4.75 6.5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                        </svg>
+                        Excel
+                    </button>
+                    <button class="hist-export-btn pdf" onclick="histExportPDF()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                            <path fill-rule="evenodd" d="M4 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4Zm.75 8.5a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd" />
+                        </svg>
+                        PDF
+                    </button>
+                    <button class="hist-export-btn print" onclick="histPrintReport()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
+                            <path fill-rule="evenodd" d="M4.25 1.5A.75.75 0 0 1 5 .75h6a.75.75 0 0 1 .75.75V3h.5A2.25 2.25 0 0 1 14.5 5.25v4.5A2.25 2.25 0 0 1 12.25 12H12v1.25A1.75 1.75 0 0 1 10.25 15h-4.5A1.75 1.75 0 0 1 4 13.25V12h-.25A2.25 2.25 0 0 1 1.5 9.75v-4.5A2.25 2.25 0 0 1 3.75 3h.5V1.5ZM5.5 3h5V2.25h-5V3Zm-.75 7.5v2.75c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25V10.5h-6Zm7-5.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" clip-rule="evenodd" />
+                        </svg>
+                        Print
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -515,11 +673,153 @@
 
 </div>
 
+<!-- Download Overlay -->
+<div id="histDlOverlay" class="hist-dl-overlay">
+    <div class="hist-dl-card">
+        <div id="histDlSpinner" class="hist-dl-spinner"></div>
+        <div id="histDlIcon" class="hist-dl-icon" style="display:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white" width="22" height="22">
+                <path fill-rule="evenodd"
+                    d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                    clip-rule="evenodd" />
+            </svg>
+        </div>
+        <p class="hist-dl-title" id="histDlTitle">Preparing Export...</p>
+        <p class="hist-dl-sub" id="histDlSub">Please wait a moment</p>
+    </div>
+</div>
+
 <script>
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const labFilter = document.getElementById('labFilter');
     const countEl = document.getElementById('visibleCount');
+
+    // Build data array for export
+    var histAllRows = [];
+    (function() {
+        var rows = document.querySelectorAll('.hist-row');
+        rows.forEach(function(r) {
+            histAllRows.push({
+                el: r,
+                cells: Array.from(r.querySelectorAll('td')).map(function(td) { return td.textContent.trim(); })
+            });
+        });
+    })();
+
+    function histGetVisibleData() {
+        var headers = ['ID Number', 'Name', 'Course', 'Purpose', 'Lab', 'PC', 'Time In', 'Time Out', 'Date', 'Status'];
+        var rows = [];
+        histAllRows.forEach(function(r) {
+            if (r.el.style.display !== 'none') {
+                rows.push(r.cells);
+            }
+        });
+        return { headers: headers, rows: rows };
+    }
+
+    function histShowDownload(format, doExport) {
+        var overlay = document.getElementById('histDlOverlay');
+        var spinner = document.getElementById('histDlSpinner');
+        var icon = document.getElementById('histDlIcon');
+        var title = document.getElementById('histDlTitle');
+        var sub = document.getElementById('histDlSub');
+
+        spinner.style.display = 'block';
+        icon.style.display = 'none';
+        title.textContent = 'Preparing ' + format + ' Export...';
+        sub.textContent = 'Collecting visible records';
+        overlay.classList.add('open');
+
+        setTimeout(function() {
+            title.textContent = 'Downloading ' + format + '...';
+            sub.textContent = 'Starting download';
+            doExport();
+
+            setTimeout(function() {
+                spinner.style.display = 'none';
+                icon.style.display = 'flex';
+                title.textContent = 'Download Complete!';
+                sub.textContent = format + ' file saved successfully';
+
+                setTimeout(function() {
+                    overlay.classList.remove('open');
+                }, 1200);
+            }, 600);
+        }, 900);
+    }
+
+    function histExportCSV() {
+        histShowDownload('CSV', function() {
+            var d = histGetVisibleData();
+            var csv = [d.headers.join(',')];
+            d.rows.forEach(function(r) {
+                csv.push(r.map(function(c) { return '"' + c.replace(/"/g, '""') + '"'; }).join(','));
+            });
+            var blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url; a.download = 'student-reports-' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a); URL.revokeObjectURL(url);
+        });
+    }
+
+    function histExportExcel() {
+        histShowDownload('Excel', function() {
+            var d = histGetVisibleData();
+            var wsData = [d.headers].concat(d.rows);
+            var ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [14, 20, 14, 18, 10, 10, 12, 12, 14, 12].map(function(w) { return { wch: w }; });
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Student Reports');
+            XLSX.writeFile(wb, 'student-reports-' + new Date().toISOString().split('T')[0] + '.xlsx');
+        });
+    }
+
+    function histExportPDF() {
+        histShowDownload('PDF', function() {
+            var d = histGetVisibleData();
+            var jsPDF = window.jspdf.jsPDF;
+            var doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+            doc.setFontSize(16);
+            doc.setFont('helvetica', 'bold');
+            doc.text('CCS Student Sit-in Reports', 14, 16);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(120);
+            doc.text('Generated: ' + new Date().toLocaleString(), 14, 22);
+            doc.text('Total records: ' + d.rows.length, 14, 27);
+
+            doc.autoTable({
+                head: [d.headers],
+                body: d.rows,
+                startY: 32,
+                styles: { fontSize: 8, cellPadding: 2 },
+                headStyles: { fillColor: [39, 63, 79], textColor: 255, fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [248, 249, 250] },
+                columnStyles: {
+                    0: { cellWidth: 22 },
+                    1: { cellWidth: 30 },
+                    2: { cellWidth: 16 },
+                    3: { cellWidth: 20 },
+                    4: { cellWidth: 12 },
+                    5: { cellWidth: 10 },
+                    6: { cellWidth: 14 },
+                    7: { cellWidth: 14 },
+                    8: { cellWidth: 16 },
+                    9: { cellWidth: 12 }
+                }
+            });
+
+            doc.save('student-reports-' + new Date().toISOString().split('T')[0] + '.pdf');
+        });
+    }
+
+    function histPrintReport() {
+        window.print();
+    }
 
     function applyFilters() {
         const q = searchInput.value.toLowerCase();

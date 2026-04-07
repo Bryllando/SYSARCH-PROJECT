@@ -78,34 +78,7 @@ app.get('/leaderboard-index', (req, res) => {
     });
 });
 
-// ─── Public Leaderboard API (no auth required) ────────────────────────────────
-app.get('/api/leaderboard', (req, res) => {
-    db.all(`
-        SELECT u.id, u.first_name, u.last_name, u.course, u.year_level,
-               u.remaining_sessions, u.profile_picture,
-               COUNT(DISTINCT s.id) as total_sitins,
-               COUNT(DISTINCT f.id) as feedback_count
-        FROM users u
-        LEFT JOIN sitin_sessions s ON s.user_id = u.id AND s.status = 'done'
-        LEFT JOIN feedback f ON f.user_id = u.id
-        WHERE u.role = 'user'
-        GROUP BY u.id
-        HAVING total_sitins > 0 OR feedback_count > 0
-        ORDER BY total_sitins DESC
-        LIMIT 10
-    `, (err, students) => {
-        if (err) return res.json([]);
-        const ranked = (students || []).map(s => {
-            const sessionsUsed = Math.max(0, 30 - (s.remaining_sessions || 30));
-            const sessionsScore = (sessionsUsed / 30) * 50;
-            const sitinScore = Math.min(s.total_sitins * 1, 30);
-            const taskScore = Math.min(s.feedback_count * 4, 20);
-            s.points = Math.round(sessionsScore + sitinScore + taskScore);
-            return s;
-        }).sort((a, b) => b.points - a.points);
-        res.json(ranked);
-    });
-});
+// ─── Public Leaderboard API (no auth required) - handled by user.js
 
 // ─── Admin: All announcement comments (for feedback page comments tab) ────────
 app.get('/admin/all-comments', (req, res) => {

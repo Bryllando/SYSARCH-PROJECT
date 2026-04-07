@@ -719,7 +719,7 @@
     </div>
 
     <% const totalFb=feedbacks.length; const rated=feedbacks.filter(f=> parseInt(f.rating) > 0);
-        const avgRating = rated.length > 0 ? (rated.reduce((s,f) => s + parseInt(f.rating), 0) /
+        const avgRating = rated.length > 0 ? (rated.reduce((s, f) => s + parseInt(f.rating), 0) /
         rated.length).toFixed(1) : '—';
         const fiveStars = feedbacks.filter(f => parseInt(f.rating) === 5).length;
         const lowRatings = feedbacks.filter(f => { const r = parseInt(f.rating); return r > 0 && r <= 2; }).length;
@@ -836,20 +836,21 @@
                                     </tr>
                                 </thead>
                                 <tbody id="fbBody">
-                                    <% if (feedbacks && feedbacks.length > 0) { %>
+                                    <% if (feedbacks && feedbacks.length> 0) { %>
                                         <% feedbacks.forEach(function(f) { const ratingVal=parseInt(f.rating) || 0;
-                                            const initials=((f.first_name||'')[0]||'') + ((f.last_name||'')[0]||'');
-                                            const ratingLabel=ratingVal===5?'Excellent':ratingVal===4?'Very
-                                            Good':ratingVal===3?'Good':ratingVal===2?'Fair':ratingVal===1?'Poor':'No
-                                            Rating'; let stars='' ; for(let s=1;s<=5;s++) stars +=s<=ratingVal
-                                            ? '<span class="star-on">★</span>' : '<span class="star-off">★</span>' ; %>
+                                            const initials=((f.first_name || '' )[0] || '' ) + ((f.last_name || '' )[0]
+                                            || '' ); const ratingLabel=ratingVal===5 ? 'Excellent' : ratingVal===4
+                                            ? 'Very Good' : ratingVal===3 ? 'Good' : ratingVal===2 ? 'Fair' :
+                                            ratingVal===1 ? 'Poor' : 'No Rating' ; let stars='' ; for(let s=1; s <=5;
+                                            s++) stars +=s <=ratingVal ? '<span class="star-on">★</span>'
+                                            : '<span class="star-off">★</span>' ; %>
                                             <tr class="fb-row" data-rating="<%= ratingVal %>"
                                                 data-name="<%= f.last_name %>, <%= f.first_name %>"
                                                 data-id="<%= f.id %>" data-user-id="<%= f.user_id %>"
                                                 data-student-id="<%= f.id_number %>" data-course="<%= f.course %>"
                                                 data-rating-val="<%= ratingVal %>"
                                                 data-rating-label="<%= ratingLabel %>"
-                                                data-message="<%= (f.message||'').replace(/\"/g,'&quot;') %>"
+                                                data-message="<%= (f.message||'').replace(/\" /g,'&quot;') %>"
                                                 data-date="<%= f.created_at %>"
                                                     data-pic="<%= f.profile_picture||'' %>">
                                                         <td>
@@ -878,7 +879,8 @@
                                                                 <%= ratingLabel %>
                                                             </span></td>
                                                         <td>
-                                                            <% if (ratingVal > 0) { %><div class="star-display"><%- stars %></div>
+                                                            <% if (ratingVal> 0) { %><div class="star-display"><%- stars
+                                                                        %></div>
                                                                 <% } else { %><span
                                                                         style="font-size:11px;color:#9CA3AF;font-style:italic;">No
                                                                         rating</span>
@@ -966,24 +968,29 @@
             <!-- ══ TAB 3: CATEGORY ANALYTICS ══ -->
             <div id="fbtab-analytics" class="fb-tab-content">
                 <div class="cat-section">
-                    <% const dist={5:0,4:0,3:0,2:0,1:0,0:0}; feedbacks.forEach(f=> { const r=parseInt(f.rating)||0;
-                        if(dist[r]!==undefined) dist[r]++; });
+                    <% const dist={5:0, 4:0, 3:0, 2:0, 1:0, 0:0}; feedbacks.forEach(f=> {
+                        const r = parseInt(f.rating) || 0;
+                        if(dist[r] !== undefined) dist[r]++;
+                        });
                         const maxDist = Math.max(...Object.values(dist)) || 1;
                         const byStudent = {};
                         feedbacks.forEach(f => {
-                        if(!byStudent[f.id_number]) byStudent[f.id_number]={name:f.last_name+',
-                        '+f.first_name,course:f.course,count:0,totalRating:0,ratedCount:0};
+                        if(!byStudent[f.id_number]) byStudent[f.id_number] = {name: f.last_name + ', ' + f.first_name,
+                        course: f.course, count: 0, totalRating: 0, ratedCount: 0};
                         byStudent[f.id_number].count++;
-                        if(parseInt(f.rating)>0){byStudent[f.id_number].totalRating+=parseInt(f.rating);byStudent[f.id_number].ratedCount++;}
+                        if(parseInt(f.rating) > 0) {
+                        byStudent[f.id_number].totalRating += parseInt(f.rating);
+                        byStudent[f.id_number].ratedCount++;
+                        }
                         });
-                        const topStudents = Object.values(byStudent).sort((a,b)=>b.count-a.count).slice(0,5);
+                        const topStudents = Object.values(byStudent).sort((a, b) => b.count - a.count).slice(0, 5);
                         const maxStudentCount = topStudents.length > 0 ? topStudents[0].count : 1;
-                        const satisfied = feedbacks.filter(f=>parseInt(f.rating)>=4).length;
-                        const neutral = feedbacks.filter(f=>parseInt(f.rating)===3).length;
-                        const dissatisfied = feedbacks.filter(f=>{const r=parseInt(f.rating);return r>0&&r<=2;}).length;
-                            const satPct=totalFb>0?Math.round((satisfied/totalFb)*100):0;
-                            const neuPct = totalFb>0?Math.round((neutral/totalFb)*100):0;
-                            const disPct = totalFb>0?Math.round((dissatisfied/totalFb)*100):0;
+                        const satisfied = feedbacks.filter(f => parseInt(f.rating) >= 4).length;
+                        const neutral = feedbacks.filter(f => parseInt(f.rating) === 3).length;
+                        const dissatisfied = feedbacks.filter(f => { const r = parseInt(f.rating); return r > 0 && r <=
+                            2; }).length; const satPct=totalFb> 0 ? Math.round((satisfied / totalFb) * 100) : 0;
+                            const neuPct = totalFb > 0 ? Math.round((neutral / totalFb) * 100) : 0;
+                            const disPct = totalFb > 0 ? Math.round((dissatisfied / totalFb) * 100) : 0;
                             %>
 
                             <div class="cat-grid">
@@ -993,8 +1000,8 @@
                                     </p>
                                     <% [[5,'Excellent','#F59E0B'],[4,'Very
                                         Good','#059669'],[3,'Good','#3B82F6'],[2,'Fair','#F97316'],[1,'Poor','#DC2626'],[0,'No
-                                        Rating','#9CA3AF']].forEach(r=> {
-                                        const pct = Math.round((dist[r[0]]/maxDist)*100);
+                                        Rating','#9CA3AF']].forEach(function(r) { var pct=maxDist> 0 ? (dist[r[0]] /
+                                        maxDist) * 100 : 0;
                                         %>
                                         <div class="cat-bar-row">
                                             <span class="cat-bar-label" style="font-size:10px;">
@@ -1015,10 +1022,10 @@
                                 <div class="cat-card">
                                     <p class="cat-card-title"><span style="font-size:20px;">🏆</span> Most Active
                                         Feedback</p>
-                                    <% topStudents.forEach((s,i)=> {
-                                        const pct = Math.round((s.count/maxStudentCount)*100);
-                                        const avg = s.ratedCount>0?(s.totalRating/s.ratedCount).toFixed(1):'—';
-                                        const colors = ['#F59E0B','#9CA3AF','#CD7F32','#273F4F','#5B0E14'];
+                                    <% topStudents.forEach(function(s) { var pct=Math.round((s.count / maxStudentCount)
+                                        * 100); var avg=s.ratedCount> 0 ? (s.totalRating / s.ratedCount).toFixed(1) :
+                                        'N/A';
+                                        var colors = ['#F59E0B', '#9CA3AF', '#CD732', '#273F4F', '#5B0E14'];
                                         %>
                                         <div class="cat-bar-row">
                                             <span class="cat-bar-label"
@@ -1048,9 +1055,9 @@
                                     <p class="cat-card-title"><span style="font-size:20px;">📊</span> Satisfaction
                                         Overview</p>
                                     <div style="display:flex;flex-direction:column;gap:12px;">
-                                        <% [['😊 Satisfied (4-5★)','#059669',satPct,satisfied],['😐 Neutral
-                                            (3★)','#D97706',neuPct,neutral],['😞 Dissatisfied
-                                            (1-2★)','#DC2626',disPct,dissatisfied]].forEach(row=> { %>
+                                        <% [['Satisfied (4-5)','#059669',satPct,satisfied],['Neutral
+                                            (3)','#D97706',neuPct,neutral],['Dissatisfied
+                                            (1-2)','#DC2626',disPct,dissatisfied]].forEach(row=> { %>
                                             <div>
                                                 <div
                                                     style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;">
@@ -1099,14 +1106,17 @@
                                         </thead>
                                         <tbody>
                                             <% feedbacks.forEach(f=> {
-                                                const r = parseInt(f.rating)||0;
-                                                const cat = r===5?'Excellent':r===4?'Very
-                                                Good':r===3?'Good':r===2?'Fair':r===1?'Poor':'Unrated';
-                                                const catBg = r>=4?'#DCFCE7':r===3?'#EFF6FF':r>=1?'#FEF2F2':'#F3F4F6';
-                                                const catColor =
-                                                r>=4?'#065F46':r===3?'#1D4ED8':r>=1?'#991B1B':'#6B7280';
-                                                const initials = ((f.first_name||'')[0]||'')+((f.last_name||'')[0]||'');
-                                                let stars=''; for(let s=1;s<=5;s++) stars+=s<=r?'★':'☆'; %>
+                                                const r = parseInt(f.rating) || 0;
+                                                const cat = r === 5 ? 'Excellent' : r === 4 ? 'Very Good' : r === 3 ?
+                                                'Good' : r === 2 ? 'Fair' : r === 1 ? 'Poor' : 'Unrated';
+                                                const catBg = r >= 4 ? '#DCFCE7' : r === 3 ? '#EFF6FF' : r >= 1 ?
+                                                '#FEF2F2' : '#F3F4F6';
+                                                const catColor = r >= 4 ? '#065F46' : r === 3 ? '#1D4ED8' : r >= 1 ?
+                                                '#991B1B' : '#6B7280';
+                                                const initials = ((f.first_name || '')[0] || '') + ((f.last_name ||
+                                                '')[0] || '');
+                                                let stars = ''; for(let s = 1; s <= 5; s++) stars +=s <=r ? '★' : '☆' ;
+                                                    %>
                                                     <tr>
                                                         <td>
                                                             <div class="name-cell">
@@ -1127,7 +1137,7 @@
                                                                 <%= f.course %>
                                                             </span></td>
                                                         <td>
-                                                            <% if(r>0){%><span
+                                                            <% if (r> 0) { %><span
                                                                     style="color:#F59E0B;font-size:14px;letter-spacing:1px;"><%-
                                                                         stars%></span>
                                                                 <%}else{%><span style="font-size:11px;color:#C4BDB6;">No
@@ -1140,7 +1150,7 @@
                                                             </span></td>
                                                         <td style="max-width:220px;font-size:12px;color:#4B5563;">
                                                             <%= (f.message||'').substring(0,80) %>
-                                                                <%= f.message&&f.message.length>80?'…':'' %>
+                                                                <%= f.message && f.message.length> 80 ? '…' : '' %>
                                                         </td>
                                                         <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
                                                             <%= new
