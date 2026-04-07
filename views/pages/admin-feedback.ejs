@@ -472,11 +472,14 @@
         </div>
     </div>
 
-    <% var totalFb=feedbacks.length; var rated=feedbacks.filter(f=>parseInt(f.rating)>0);
-        var avgRating=rated.length>0?(rated.reduce((s,f)=>s+parseInt(f.rating),0)/rated.length).toFixed(1):'—';
-        var fiveStars=feedbacks.filter(f=>parseInt(f.rating)===5).length;
-        var lowRatings=feedbacks.filter(f=>{var r=parseInt(f.rating);return r>0&&r<=2;}).length; var
-            noRating=feedbacks.filter(f=>parseInt(f.rating)===0).length; %>
+    <% 
+    var totalFb = feedbacks.length; 
+    var rated = feedbacks.filter(f => parseInt(f.rating) > 0);
+    var avgRating = rated.length > 0 ? (rated.reduce((s, f) => s + parseInt(f.rating), 0) / rated.length).toFixed(1) : '—';
+    var fiveStars = feedbacks.filter(f => parseInt(f.rating) === 5).length;
+    var lowRatings = feedbacks.filter(f => { var r = parseInt(f.rating); return r > 0 && r <= 2; }).length;
+    var noRating = feedbacks.filter(f => parseInt(f.rating) === 0).length;
+    %>
 
             <!-- Stats -->
             <div class="fb-stats">
@@ -572,18 +575,17 @@
                                 </tr>
                             </thead>
                             <tbody id="fbBody">
-                                <% if (feedbacks && feedbacks.length> 0) { %>
-                                    <% feedbacks.forEach(function(f) { var ratingVal=parseInt(f.rating)||0; var
-                                        initials=(f.first_name?f.first_name[0]:'')+(f.last_name?f.last_name[0]:''); var
-                                        ratingLabel=ratingVal===5?'Excellent':ratingVal===4?'Very
-                                        Good':ratingVal===3?'Good':ratingVal===2?'Fair':ratingVal===1?'Poor':'No
-                                        Rating'; var stars='' ; for(var s=1;s<=5;s++) stars +=s<=ratingVal
-                                        ? '<span class="star-on">★</span>' : '<span class="star-off">★</span>' ; %>
+                                <% if (feedbacks && feedbacks.length > 0) { %>
+                                    <% feedbacks.forEach(function(f) { 
+                                        var ratingVal=parseInt(f.rating)||0; 
+                                        var initials=(f.first_name?f.first_name[0]:'')+(f.last_name?f.last_name[0]:''); 
+                                        var ratingLabel=ratingVal===5?'Excellent':ratingVal===4?'Very Good':ratingVal===3?'Good':ratingVal===2?'Fair':ratingVal===1?'Poor':'No Rating'; 
+                                        var stars='' ; for(var s=1;s<=5;s++) stars +=s<=ratingVal ? '<span class="star-on">★</span>' : '<span class="star-off">★</span>' ; %>
                                         <tr class="fb-row" data-rating="<%= ratingVal %>"
                                             data-name="<%= f.last_name %>, <%= f.first_name %>"
                                             data-id="<%= f.id_number %>" data-course="<%= f.course %>"
                                             data-rating-val="<%= ratingVal %>" data-rating-label="<%= ratingLabel %>"
-                                            data-message="<%= (f.message||'').replace(/" /g,'&quot;') %>"
+                                            data-message="<%= (f.message||'').replace(/"/g,'&quot;') %>"
                                             data-date="<%= f.created_at %>"
                                                 data-pic="<%= f.profile_picture||'' %>">
                                                     <td>

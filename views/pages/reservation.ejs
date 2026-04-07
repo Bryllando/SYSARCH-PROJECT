@@ -978,16 +978,10 @@
                 </svg>
                 Lab Reservation
             </button>
-            <button class="res-tab-btn" onclick="switchTab('labcomputers')" id="tab-btn-labcomputers">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-                    <path fill-rule="evenodd"
-                        d="M2 4.25A2.25 2.25 0 0 1 4.25 2h7.5A2.25 2.25 0 0 1 14 4.25v5.5A2.25 2.25 0 0 1 11.75 12H8.5v1.25c0 .138.112.25.25.25h1.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5h1.5a.25.25 0 0 0 .25-.25V12H4.25A2.25 2.25 0 0 1 2 9.75v-5.5Z"
-                        clip-rule="evenodd" />
-                </svg>
-                Lab Computers
-            </button>
         </div>
     </div>
+
+
 
     <!-- ════════════ TAB 1: RESERVATION ════════════ -->
     <div id="tab-reservation" class="res-tab-content active"
@@ -1120,62 +1114,6 @@
                         <%= safeRes.length %>
                     </strong> records</span>
                 <span>CCS Laboratory Sit-in Monitoring System</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- ════════════ TAB 2: LAB COMPUTERS ════════════ -->
-    <div id="tab-labcomputers" class="res-tab-content"
-        style="background:#F0EDE8;border:1px solid #E8E3DD;border-top:none;border-radius:0 0 16px 16px;padding:20px;">
-        <div class="lc-page-inner" style="padding:0;">
-            <div
-                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-                <div>
-                    <div
-                        style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:#1C2B35;margin:0 0 2px;">
-                        Lab Computer Status</div>
-                    <div style="font-size:12px;color:#9CA3AF;">Real-time PC availability across all laboratories</div>
-                </div>
-                <span
-                    style="font-size:11px;color:#9CA3AF;background:#fff;border:1px solid #E8E3DD;padding:6px 12px;border-radius:999px;">6
-                    Labs · 300 PCs</span>
-            </div>
-
-            <!-- Lab tabs -->
-            <div class="lc-lab-tabs" id="lcTabs"></div>
-
-            <!-- PC Grid Card -->
-            <div class="lc-grid-card">
-                <div class="lc-grid-head">
-                    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;"
-                        id="lcCurrentLabTitle">Select a lab</div>
-                    <div class="lc-legend">
-                        <div class="lc-legend-item">
-                            <div class="lc-legend-dot" style="background:#10B981;border-color:#A7F3D0;"></div>Available
-                        </div>
-                        <div class="lc-legend-item">
-                            <div class="lc-legend-dot" style="background:#F59E0B;border-color:#FDE68A;"></div>In Use
-                        </div>
-                        <div class="lc-legend-item">
-                            <div class="lc-legend-dot" style="background:#DC2626;border-color:#FECACA;"></div>Defective
-                        </div>
-                        <div class="lc-legend-item">
-                            <div class="lc-legend-dot" style="background:#3B82F6;border-color:#BFDBFE;"></div>Reserved
-                        </div>
-                        <% if (typeof user !=='undefined' && user && user.role==='admin' ) { %>
-                            <span style="font-size:11px;color:#9CA3AF;font-style:italic;margin-left:8px;">Click PC to
-                                change status</span>
-                            <% } %>
-                    </div>
-                </div>
-                <div class="lc-grid-body" id="lcGridBody">
-                    <div style="text-align:center;padding:60px 24px;color:#C4BDB6;">
-                        <div style="font-size:32px;margin-bottom:12px;">🖥</div>
-                        <p style="font-size:14px;font-weight:700;color:#4B5563;margin:0 0 4px;">Select a laboratory tab
-                            above</p>
-                        <p style="font-size:12px;color:#9CA3AF;margin:0;">Click a tab to view PC layout</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -1362,14 +1300,8 @@
         <script>
             const IS_ADMIN = '<%= typeof user !== "undefined" && user && user.role === "admin" ? "true" : "false" %>' === 'true';
 
-            // ── Tab switching ──────────────────────────────────────────────────────────
-            function switchTab(tab) {
-                document.querySelectorAll('.res-tab-content').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.res-tab-btn').forEach(el => el.classList.remove('active'));
-                document.getElementById('tab-' + tab).classList.add('active');
-                document.getElementById('tab-btn-' + tab).classList.add('active');
-                if (tab === 'labcomputers' && !lcInitialized) initLabComputers();
-            }
+            // ── Initialize ──────────────────────────────────────────────────────────
+            renderLabGrid();
 
             // ═══════════════════════════════════════════════════════════════
             //  RESERVATION TAB LOGIC

@@ -359,7 +359,7 @@ router.get('/history', isAuthenticated, isAdmin, (req, res) => {
 // Reports
 router.get('/reports', isAuthenticated, isAdmin, (req, res) => {
     db.all(
-        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course FROM sitin_sessions s JOIN users u ON s.user_id = u.id ORDER BY s.time_in DESC`,
+        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, f.message as feedback_message FROM sitin_sessions s JOIN users u ON s.user_id = u.id LEFT JOIN feedback f ON f.session_id = s.id ORDER BY s.time_in DESC`,
         (err, sessions) => res.render('pages/admin-reports', { sessions: sessions || [] })
     );
 });

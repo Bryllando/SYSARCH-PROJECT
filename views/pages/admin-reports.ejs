@@ -495,8 +495,9 @@
                             <th onclick="sortTable(3)" data-col="3">Laboratory <span class="sort-icon">↕</span></th>
                             <th onclick="sortTable(4)" data-col="4">Login <span class="sort-icon">↕</span></th>
                             <th onclick="sortTable(5)" data-col="5">Logout <span class="sort-icon">↕</span></th>
-                            <th onclick="sortTable(6)" data-col="6">Date <span class="sort-icon">↕</span></th>
-                        </tr>
+                             <th onclick="sortTable(6)" data-col="6">Date <span class="sort-icon">↕</span></th>
+                             <th onclick="sortTable(7)" data-col="7">Feedback <span class="sort-icon">↕</span></th>
+                         </tr>
                     </thead>
                     <tbody id="reportBody">
                         <% var safeSessions=(typeof sessions !=='undefined' && sessions) ? sessions : []; %>
@@ -534,14 +535,23 @@
                                                         In</span>
                                                     <% } %>
                                         </td>
-                                        <td style="color:#4B5563;white-space:nowrap;">
-                                            <%= s.time_in ? new Date(s.time_in).toLocaleDateString('en-CA') : '—' %>
-                                        </td>
-                                    </tr>
+                                         <td style="color:#4B5563;white-space:nowrap;">
+                                             <%= s.time_in ? new Date(s.time_in).toLocaleDateString('en-CA') : '—' %>
+                                         </td>
+                                         <td style="max-width:200px;">
+                                             <% if (s.feedback_message) { %>
+                                                 <p style="font-size:11px;color:#4B5563;margin:0;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                                                     <%= s.feedback_message %>
+                                                 </p>
+                                             <% } else { %>
+                                                 <span style="font-size:11px;color:#9CA3AF;">No feedback</span>
+                                             <% } %>
+                                         </td>
+                                     </tr>
                                     <% }) %>
                                         <% } else { %>
                                             <tr>
-                                                <td colspan="7"
+                                                <td colspan="8"
                                                     style="padding:64px 24px;text-align:center;color:#9CA3AF;font-size:13px;">
                                                     No records found.</td>
                                             </tr>
@@ -689,17 +699,17 @@
         }, 900);
     }
 
-    // ── Get visible rows data ─────────────────────────────────────────────────────
-    function getVisibleData() {
-        var headers = ['ID Number', 'Name', 'Purpose', 'Laboratory', 'Login', 'Logout', 'Date'];
-        var rows = [];
-        allRows.forEach(function (r) {
-            if (r.el.style.display !== 'none') {
-                rows.push(r.cells);
-            }
-        });
-        return { headers: headers, rows: rows };
-    }
+// ── Get visible rows data ─────────────────────────────────────────────────────
+function getVisibleData() {
+    var headers = ['ID Number', 'Name', 'Purpose', 'Laboratory', 'Login', 'Logout', 'Date', 'Feedback'];
+    var rows = [];
+    allRows.forEach(function (r) {
+        if (r.el.style.display !== 'none') {
+            rows.push(r.cells);
+        }
+    });
+    return { headers: headers, rows: rows };
+}
 
     // ── CSV Export ────────────────────────────────────────────────────────────────
     function exportCSV() {
@@ -761,7 +771,8 @@
                     3: { cellWidth: 22 },
                     4: { cellWidth: 24 },
                     5: { cellWidth: 24 },
-                    6: { cellWidth: 22 }
+                    6: { cellWidth: 22 },
+                    7: { cellWidth: 40 }
                 }
             });
 

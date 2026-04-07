@@ -319,4 +319,56 @@ router.get('/leaderboard', isAuthenticated, (req, res) => {
     });
 });
 
+// API: Leaderboard JSON
+router.get('/api/leaderboard', (req, res) => {
+    db.all(`
+        SELECT u.id, u.first_name, u.last_name, u.course, u.year_level,
+               u.remaining_sessions, u.profile_picture,
+               COUNT(DISTINCT s.id) as total_sitins,
+               COUNT(DISTINCT f.id) as feedback_count
+        FROM users u
+        LEFT JOIN sitin_sessions s ON s.user_id = u.id AND s.status = 'done'
+        LEFT JOIN feedback f ON f.user_id = u.id
+        WHERE u.role = 'user'
+        GROUP BY u.id
+        ORDER BY total_sitins DESC
+    `, (err, students) => {
+        const ranked = (students || []).map(s => {
+            const sessionsUsed = Math.max(0, 30 - (s.remaining_sessions || 30));
+            const sessionsScore = (sessionsUsed / 30) * 50;
+            const sitinScore = Math.min(s.total_sitins * 1, 30);
+            const taskScore = Math.min(s.feedback_count * 4, 20);
+            s.points = Math.round(sessionsScore + sitinScore + taskScore);
+            return s;
+        }).sort((a, b) => b.points - a.points);
+        res.json(ranked);
+    });
+});
+
+// Leaderboard Index
+router.get('/leaderboard-index', isAuthenticated, (req, res) => {
+    db.all(`
+        SELECT u.id, u.first_name, u.last_name, u.course, u.year_level,
+               u.remaining_sessions, u.profile_picture,
+               COUNT(DISTINCT s.id) as total_sitins,
+               COUNT(DISTINCT f.id) as feedback_count
+        FROM users u
+        LEFT JOIN sitin_sessions s ON s.user_id = u.id AND s.status = 'done'
+        LEFT JOIN feedback f ON f.user_id = u.id
+        WHERE u.role = 'user'
+        GROUP BY u.id
+        ORDER BY total_sitins DESC
+    `, (err, students) => {
+        const ranked = (students || []).map(s => {
+            const sessionsUsed = Math.max(0, 30 - (s.remaining_sessions || 30));
+            const sessionsScore = (sessionsUsed / 30) * 50;
+            const sitinScore = Math.min(s.total_sitins * 1, 30);
+            const taskScore = Math.min(s.feedback_count * 4, 20);
+            s.points = Math.round(sessionsScore + sitinScore + taskScore);
+            return s;
+        }).sort((a, b) => b.points - a.points);
+        res.render('pages/leaderboard-index', { students: ranked });
+    });
+});
+
 module.exports = router;
