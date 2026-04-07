@@ -1,34 +1,207 @@
-<section class="relative overflow-hidden min-h-[88vh] flex items-center justify-center px-4">
+<section class="relative overflow-hidden min-h-[88vh] flex items-center justify-center px-4 py-10">
 
-    <div class="relative z-10 bg-white/15 backdrop-blur-md border border-white/25 rounded-3xl px-10 md:px-20 py-14 md:py-20 max-w-3xl w-full text-center"
-        style="box-shadow:0 8px 60px rgba(0,0,0,0.35);">
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;max-width:1100px;width:100%;align-items:center;">
 
-        <span class="inline-block text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6"
-            style="background:rgba(241,225,148,0.2); color:#F1E194; border:1px solid rgba(241,225,148,0.3);">
-            UC — CCS Laboratory
-        </span>
+        <!-- ── Left: Hero Card ── -->
+        <div class="relative z-10 bg-white/15 backdrop-blur-md border border-white/25 rounded-3xl px-10 md:px-16 py-14 text-center"
+            style="box-shadow:0 8px 60px rgba(0,0,0,0.35);">
 
-        <h2 class="font-bold text-white leading-tight mb-5"
-            style="font-size:clamp(2rem,5vw,3.5rem); text-shadow:0 2px 20px rgba(0,0,0,0.4);">
-            A Seamless Sit-in<br>Monitoring Solution.
-        </h2>
+            <span class="inline-block text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6"
+                style="background:rgba(241,225,148,0.2); color:#F1E194; border:1px solid rgba(241,225,148,0.3);">
+                UC — CCS Laboratory
+            </span>
 
-        <p class="text-white/80 text-base md:text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-            Enhancing program efficiency, ensuring fairness, and fostering a
-            streamlined experience for students and faculty.
-        </p>
+            <h2 class="font-bold text-white leading-tight mb-5"
+                style="font-size:clamp(1.8rem,4vw,3rem); text-shadow:0 2px 20px rgba(0,0,0,0.4);">
+                A Seamless Sit-in<br>Monitoring Solution.
+            </h2>
 
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/login"
-                class="font-bold px-8 py-4 rounded-full text-base transition-all shadow-lg hover:-translate-y-0.5 inline-block"
-                style="background:#F1E194; color:#5B0E14;">
-                Get Started
-            </a>
-            <a href="/about"
-                class="border-2 border-white/60 text-white font-bold px-8 py-4 rounded-full text-base hover:bg-white/10 transition-all inline-block">
-                Learn More
-            </a>
+            <p class="text-white/80 text-base md:text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+                Enhancing program efficiency, ensuring fairness, and fostering a
+                streamlined experience for students and faculty.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/login"
+                    class="font-bold px-8 py-4 rounded-full text-base transition-all shadow-lg hover:-translate-y-0.5 inline-block"
+                    style="background:#F1E194; color:#5B0E14;">
+                    Get Started
+                </a>
+                <a href="/about"
+                    class="border-2 border-white/60 text-white font-bold px-8 py-4 rounded-full text-base hover:bg-white/10 transition-all inline-block">
+                    Learn More
+                </a>
+            </div>
         </div>
-    </div>
 
+        <!-- ── Right: Leaderboard Widget ── -->
+        <div
+            style="background:rgba(255,255,255,0.12);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.22);border-radius:24px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.28);">
+            <!-- Header -->
+            <div
+                style="padding:16px 20px;background:rgba(241,225,148,0.12);border-bottom:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:18px;">🏆</span>
+                    <div>
+                        <div style="font-size:13px;font-weight:800;color:#F1E194;letter-spacing:-0.3px;">Top Students
+                        </div>
+                        <div style="font-size:10px;color:rgba(255,255,255,0.45);font-weight:500;">Live Rankings</div>
+                    </div>
+                </div>
+                <a href="/leaderboard"
+                    style="font-size:10px;font-weight:700;color:#F1E194;background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);padding:4px 10px;border-radius:999px;text-decoration:none;transition:all 0.15s;">
+                    View All →
+                </a>
+            </div>
+
+            <!-- Formula pills -->
+            <div style="display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <span
+                    style="font-size:9px;font-weight:700;background:rgba(245,158,11,0.2);color:#F59E0B;padding:3px 8px;border-radius:999px;border:1px solid rgba(245,158,11,0.3);">🎯
+                    50% Sessions</span>
+                <span
+                    style="font-size:9px;font-weight:700;background:rgba(59,130,246,0.2);color:#93C5FD;padding:3px 8px;border-radius:999px;border:1px solid rgba(59,130,246,0.3);">💻
+                    30% Sit-ins</span>
+                <span
+                    style="font-size:9px;font-weight:700;background:rgba(16,185,129,0.2);color:#6EE7B7;padding:3px 8px;border-radius:999px;border:1px solid rgba(16,185,129,0.3);">✅
+                    20% Tasks</span>
+            </div>
+
+            <!-- Leaderboard list -->
+            <div id="lbWidget" style="padding:8px 0;min-height:220px;">
+                <div
+                    style="display:flex;align-items:center;justify-content:center;padding:40px;color:rgba(255,255,255,0.4);font-size:12px;">
+                    Loading rankings…</div>
+            </div>
+
+            <!-- Footer -->
+            <div
+                style="padding:10px 14px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;font-size:10px;color:rgba(255,255,255,0.35);">
+                CCS Sit-in Monitoring System · University of Cebu
+            </div>
+        </div>
+
+    </div>
 </section>
+
+<style>
+    .lb-rank-medal {
+        font-size: 16px;
+        width: 26px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .lb-entry {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        transition: background 0.12s;
+    }
+
+    .lb-entry:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .lb-entry:last-child {
+        border-bottom: none;
+    }
+
+    .lb-mini-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: #F1E194;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .lb-mini-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .lb-mini-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .lb-mini-sub {
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .lb-mini-pts {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        color: #F1E194;
+        margin-left: auto;
+    }
+
+    .lb-mini-bar {
+        height: 3px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 3px;
+    }
+
+    .lb-mini-bar-fill {
+        height: 100%;
+        border-radius: 999px;
+    }
+</style>
+
+<script>
+    (async function loadLeaderboard() {
+        try {
+            const res = await fetch('/api/leaderboard');
+            const data = await res.json();
+            const container = document.getElementById('lbWidget');
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.35);font-size:12px;">No rankings yet. Be the first!</div>';
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉'];
+            const barColors = ['#F59E0B', '#9CA3AF', '#CD7F32'];
+
+            container.innerHTML = data.slice(0, 5).map((s, i) => {
+                const initials = ((s.first_name || '')[0] || '') + ((s.last_name || '')[0] || '');
+                const pct = Math.min(s.points, 100);
+                const barColor = i < 3 ? barColors[i] : '#3B82F6';
+                const medal = i < 3 ? medals[i] : `<span style="font-size:11px;font-weight:800;color:rgba(255,255,255,0.5);">#${i + 1}</span>`;
+                const avatarHtml = s.profile_picture
+                    ? `<img src="${s.profile_picture}">`
+                    : initials.toUpperCase();
+
+                return `<div class="lb-entry">
+                    <div class="lb-rank-medal">${medal}</div>
+                    <div class="lb-mini-avatar">${avatarHtml}</div>
+                    <div style="flex:1;min-width:0;">
+                        <div class="lb-mini-name">${s.last_name || ''}, ${s.first_name || ''}</div>
+                        <div class="lb-mini-sub">${s.course || ''} · ${s.total_sitins} sit-ins</div>
+                        <div class="lb-mini-bar">
+                            <div class="lb-mini-bar-fill" style="width:${pct}%;background:${barColor};"></div>
+                        </div>
+                    </div>
+                    <div class="lb-mini-pts">${s.points}<span style="font-size:9px;color:rgba(255,255,255,0.35);font-weight:500;">pts</span></div>
+                </div>`;
+            }).join('');
+        } catch (e) {
+            document.getElementById('lbWidget').innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,255,255,0.35);font-size:12px;">Unable to load rankings.</div>';
+        }
+    })();
+</script>

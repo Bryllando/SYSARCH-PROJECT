@@ -5,6 +5,51 @@
         font-family: 'DM Sans', sans-serif;
     }
 
+    /* ── Tab Navigation ── */
+    .res-tab-bar {
+        display: flex;
+        gap: 0;
+        background: #fff;
+        border-bottom: 2px solid #E8E3DD;
+        padding: 0 24px;
+        flex-shrink: 0;
+    }
+
+    .res-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 20px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #6B7280;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        border-bottom: 2.5px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.15s;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .res-tab-btn:hover {
+        color: #273F4F;
+    }
+
+    .res-tab-btn.active {
+        color: #5B0E14;
+        border-bottom-color: #5B0E14;
+    }
+
+    .res-tab-content {
+        display: none;
+    }
+
+    .res-tab-content.active {
+        display: block;
+    }
+
+    /* ── Lab cards (for reservation tab) ── */
     .lab-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -183,7 +228,245 @@
         border-radius: 50%;
     }
 
-    /* PC Grid Modal */
+    /* ── Lab Computers (grid) ── */
+    .lc-page-inner {
+        padding: 20px 24px;
+    }
+
+    .lc-lab-tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+    }
+
+    .lc-tab {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1.5px solid #E2DDD8;
+        background: #fff;
+        color: #374151;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.15s;
+    }
+
+    .lc-tab:hover {
+        border-color: #273F4F;
+        color: #273F4F;
+    }
+
+    .lc-tab.active {
+        background: #273F4F;
+        border-color: #273F4F;
+        color: #F1E194;
+    }
+
+    .lc-grid-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
+        border: 1px solid #E8E3DD;
+    }
+
+    .lc-grid-head {
+        padding: 14px 20px;
+        background: #F7F5F2;
+        border-bottom: 1px solid #E8E3DD;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .lc-legend {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .lc-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #4B5563;
+    }
+
+    .lc-legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid;
+    }
+
+    .lc-grid-body {
+        padding: 20px 24px;
+    }
+
+    .lc-teacher {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .lc-row-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #C4BDB6;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 14px 0 8px;
+    }
+
+    .lc-pc-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 8px;
+        margin-bottom: 4px;
+    }
+
+    .lc-pc-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 4px;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        transition: all 0.18s;
+        position: relative;
+        user-select: none;
+    }
+
+    .lc-pc-icon-wrap {
+        width: 42px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: 2px solid;
+    }
+
+    .pc-avail .lc-pc-icon-wrap {
+        background: #ECFDF5;
+        border-color: #A7F3D0;
+    }
+
+    .pc-inuse .lc-pc-icon-wrap {
+        background: #FFF7ED;
+        border-color: #FDE68A;
+    }
+
+    .pc-defect .lc-pc-icon-wrap {
+        background: #FEF2F2;
+        border-color: #FECACA;
+    }
+
+    .pc-reserved .lc-pc-icon-wrap {
+        background: #EFF6FF;
+        border-color: #BFDBFE;
+    }
+
+    .lc-pc-dot {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+    }
+
+    .pc-avail .lc-pc-dot {
+        background: #10B981;
+    }
+
+    .pc-inuse .lc-pc-dot {
+        background: #F59E0B;
+        animation: lcPulse 1.5s infinite;
+    }
+
+    .pc-defect .lc-pc-dot {
+        background: #DC2626;
+    }
+
+    .pc-reserved .lc-pc-dot {
+        background: #3B82F6;
+    }
+
+    @keyframes lcPulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1)
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(0.8)
+        }
+    }
+
+    .lc-pc-number {
+        font-size: 9px;
+        font-weight: 700;
+    }
+
+    .pc-avail .lc-pc-number {
+        color: #065F46;
+    }
+
+    .pc-inuse .lc-pc-number {
+        color: #92400E;
+    }
+
+    .pc-defect .lc-pc-number {
+        color: #991B1B;
+    }
+
+    .pc-reserved .lc-pc-number {
+        color: #1D4ED8;
+    }
+
+    .lc-pc-label {
+        font-size: 7.5px;
+        font-weight: 600;
+        color: #9CA3AF;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    /* Admin status change for lab computers tab */
+    .lc-pc-unit {
+        cursor: pointer;
+    }
+
+    .lc-pc-unit:hover .lc-pc-icon-wrap {
+        transform: translateY(-1px);
+    }
+
+    /* PC Grid Modal (for reservation) */
     .pcmodal-overlay {
         position: fixed;
         inset: 0;
@@ -349,14 +632,7 @@
     .pc-unit.pc-inuse,
     .pc-unit.pc-defect {
         cursor: not-allowed;
-    }
-
-    .pc-unit.pc-inuse {
         opacity: 0.75;
-    }
-
-    .pc-unit.pc-defect {
-        opacity: 0.55;
     }
 
     .pc-icon-wrap {
@@ -525,7 +801,7 @@
         color: #1C2B35;
         outline: none;
         font-family: 'DM Sans', sans-serif;
-        transition: border-color 0.15s, box-shadow 0.15s;
+        transition: border-color 0.15s;
         box-sizing: border-box;
     }
 
@@ -553,7 +829,114 @@
         color: #9CA3AF;
     }
 
-    /* Print styles */
+    /* Status change modal for admin in lab computers tab */
+    .sc-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .sc-overlay.open {
+        display: flex;
+    }
+
+    .sc-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+        width: 100%;
+        max-width: 380px;
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .sc-status-btn {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 2px solid;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-size: 13px;
+        font-weight: 700;
+        background: #fff;
+        font-family: 'DM Sans', sans-serif;
+        text-align: left;
+        width: 100%;
+        margin-bottom: 6px;
+    }
+
+    .sc-status-btn:hover {
+        transform: translateX(4px);
+    }
+
+    .sc-status-btn.btn-avail {
+        border-color: #A7F3D0;
+        color: #065F46;
+    }
+
+    .sc-status-btn.btn-avail:hover {
+        background: #ECFDF5;
+    }
+
+    .sc-status-btn.btn-inuse {
+        border-color: #FDE68A;
+        color: #92400E;
+    }
+
+    .sc-status-btn.btn-inuse:hover {
+        background: #FFF7ED;
+    }
+
+    .sc-status-btn.btn-defect {
+        border-color: #FECACA;
+        color: #991B1B;
+    }
+
+    .sc-status-btn.btn-defect:hover {
+        background: #FEF2F2;
+    }
+
+    .sc-status-btn.btn-reserved {
+        border-color: #BFDBFE;
+        color: #1D4ED8;
+    }
+
+    .sc-status-btn.btn-reserved:hover {
+        background: #EFF6FF;
+    }
+
+    .sc-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .sc-status-btn.btn-avail .sc-dot {
+        background: #10B981;
+    }
+
+    .sc-status-btn.btn-inuse .sc-dot {
+        background: #F59E0B;
+    }
+
+    .sc-status-btn.btn-defect .sc-dot {
+        background: #DC2626;
+    }
+
+    .sc-status-btn.btn-reserved .sc-dot {
+        background: #3B82F6;
+    }
+
     @media print {
         body * {
             visibility: hidden;
@@ -577,175 +960,228 @@
     }
 </style>
 
-<div class="p-6 res-page">
-    <div class="mb-6">
-        <h1 class="text-2xl font-extrabold text-[#273F4F]">Lab Reservation</h1>
-        <p class="text-gray-500 text-sm mt-1">Choose a laboratory and select your preferred computer to reserve a seat.
-        </p>
+<div class="res-page p-6">
+    <div class="mb-5">
+        <h1 class="text-2xl font-extrabold text-[#273F4F]">Laboratory Management</h1>
+        <p class="text-gray-500 text-sm mt-1">Reserve a computer or view lab PC status.</p>
     </div>
 
-    <!-- Stats strip -->
-    <div class="stat-strip" id="statStrip">
-        <div class="stat-chip">
-            <div class="stat-dot" style="background:#10B981;"></div><span>Available: <strong id="stat-avail"
-                    class="text-green-600">—</strong></span>
-        </div>
-        <div class="stat-chip">
-            <div class="stat-dot" style="background:#F59E0B;"></div><span>In Use: <strong id="stat-inuse"
-                    class="text-amber-600">—</strong></span>
-        </div>
-        <div class="stat-chip">
-            <div class="stat-dot" style="background:#3B82F6;"></div><span>Reserved: <strong id="stat-reserved"
-                    class="text-blue-600">—</strong></span>
-        </div>
-        <div class="stat-chip">
-            <div class="stat-dot" style="background:#DC2626;"></div><span>Defective: <strong id="stat-defect"
-                    class="text-red-600">—</strong></span>
+    <!-- ── Tab Navigation ── -->
+    <div
+        style="background:#fff;border-radius:16px 16px 0 0;border:1px solid #E8E3DD;border-bottom:none;overflow:hidden;margin-bottom:0;">
+        <div class="res-tab-bar">
+            <button class="res-tab-btn active" onclick="switchTab('reservation')" id="tab-btn-reservation">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+                    <path fill-rule="evenodd"
+                        d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
+                        clip-rule="evenodd" />
+                </svg>
+                Lab Reservation
+            </button>
+            <button class="res-tab-btn" onclick="switchTab('labcomputers')" id="tab-btn-labcomputers">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
+                    <path fill-rule="evenodd"
+                        d="M2 4.25A2.25 2.25 0 0 1 4.25 2h7.5A2.25 2.25 0 0 1 14 4.25v5.5A2.25 2.25 0 0 1 11.75 12H8.5v1.25c0 .138.112.25.25.25h1.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5h1.5a.25.25 0 0 0 .25-.25V12H4.25A2.25 2.25 0 0 1 2 9.75v-5.5Z"
+                        clip-rule="evenodd" />
+                </svg>
+                Lab Computers
+            </button>
         </div>
     </div>
 
-    <!-- Lab Cards -->
-    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Click a lab to view and reserve a computer
-    </p>
-    <div class="lab-grid" id="labGrid"></div>
+    <!-- ════════════ TAB 1: RESERVATION ════════════ -->
+    <div id="tab-reservation" class="res-tab-content active"
+        style="background:#F0EDE8;border:1px solid #E8E3DD;border-top:none;border-radius:0 0 16px 16px;padding:20px;">
 
-    <!-- My Reservations Table -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap no-print">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-[#273F4F]"></div>
-                <h2 class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">My Reservations</h2>
+        <!-- Stats strip -->
+        <div class="stat-strip" id="statStrip">
+            <div class="stat-chip">
+                <div class="stat-dot" style="background:#10B981;"></div><span>Available: <strong id="stat-avail"
+                        class="text-green-600">—</strong></span>
             </div>
-            <div class="flex items-center gap-3 flex-wrap">
-                <!-- Filter -->
-                <select id="resFilterStatus" onchange="filterReservations()"
-                    class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#273F4F] bg-white">
-                    <option value="">All Status</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                    <option value="pending">Pending</option>
-                </select>
-                <!-- Search -->
-                <input type="text" id="searchRes" placeholder="Search..." oninput="filterReservations()"
-                    class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#273F4F] bg-white w-36">
-                <!-- Print Button -->
-                <button onclick="printReservations()"
-                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5"
-                    style="background:linear-gradient(135deg,#374151,#1f2937);">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
-                        height="13">
-                        <path fill-rule="evenodd"
-                            d="M4.25 1.5A.75.75 0 0 1 5 .75h6a.75.75 0 0 1 .75.75V3h.5A2.25 2.25 0 0 1 14.5 5.25v4.5A2.25 2.25 0 0 1 12.25 12H12v1.25A1.75 1.75 0 0 1 10.25 15h-4.5A1.75 1.75 0 0 1 4 13.25V12h-.25A2.25 2.25 0 0 1 1.5 9.75v-4.5A2.25 2.25 0 0 1 3.75 3h.5V1.5ZM5.5 3h5V2.25h-5V3Zm-.75 7.5v2.75c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25V10.5h-6Zm7-5.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    Print
-                </button>
+            <div class="stat-chip">
+                <div class="stat-dot" style="background:#F59E0B;"></div><span>In Use: <strong id="stat-inuse"
+                        class="text-amber-600">—</strong></span>
+            </div>
+            <div class="stat-chip">
+                <div class="stat-dot" style="background:#3B82F6;"></div><span>Reserved: <strong id="stat-reserved"
+                        class="text-blue-600">—</strong></span>
+            </div>
+            <div class="stat-chip">
+                <div class="stat-dot" style="background:#DC2626;"></div><span>Defective: <strong id="stat-defect"
+                        class="text-red-600">—</strong></span>
             </div>
         </div>
 
-        <!-- Print Header (hidden on screen, shown on print) -->
-        <div id="printArea">
-            <div id="printHeader" style="display:none;padding:16px 24px 0;">
-                <h2 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#1C2B35;margin:0 0 4px;">
-                    My Lab Reservations</h2>
-                <p style="font-size:12px;color:#9CA3AF;margin:0 0 12px;">Printed: <span id="printDate"></span> ·
-                    Showing: <span id="printFilter">All</span></p>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Click a lab to view and reserve a
+            computer</p>
+        <div class="lab-grid" id="labGrid"></div>
+
+        <!-- My Reservations Table -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap no-print">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-[#273F4F]"></div>
+                    <h2 class="font-bold text-[#273F4F] text-sm uppercase tracking-widest">My Reservations</h2>
+                </div>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <select id="resFilterStatus" onchange="filterReservations()"
+                        class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 focus:outline-none focus:ring-1 focus:ring-[#273F4F] bg-white">
+                        <option value="">All Status</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <input type="text" id="searchRes" placeholder="Search..." oninput="filterReservations()"
+                        class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#273F4F] bg-white w-36">
+                    <button onclick="printReservations()"
+                        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold text-white hover:-translate-y-0.5 transition-all"
+                        style="background:linear-gradient(135deg,#374151,#1f2937);">🖨 Print</button>
+                </div>
+            </div>
+            <div id="printArea">
+                <div id="printHeader" style="display:none;padding:16px 24px 0;">
+                    <h2 style="font-size:18px;font-weight:800;color:#1C2B35;margin:0 0 4px;">My Lab Reservations</h2>
+                    <p style="font-size:12px;color:#9CA3AF;margin:0 0 12px;">Printed: <span id="printDate"></span></p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm" id="resTable">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-100">
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                                    Lab</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                                    PC</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                                    Purpose</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                                    Date</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                                    Time</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                                    Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% var safeRes=(typeof reservations !=='undefined' && reservations) ? reservations : []; %>
+                                <% if (safeRes.length> 0) { %>
+                                    <% safeRes.forEach(function(r) { %>
+                                        <tr class="hover:bg-gray-50 res-row" data-status="<%= r.status %>">
+                                            <td class="px-4 py-3"><span
+                                                    class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-[#273F4F]/10 text-[#273F4F]">Lab
+                                                    <%= r.lab_room %></span></td>
+                                            <td class="px-4 py-3"><span
+                                                    class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">PC-
+                                                    <%= String(r.computer_number||0).padStart(2,'0') %></span></td>
+                                            <td class="px-4 py-3"><span
+                                                    class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
+                                                    <%= r.purpose||'—' %>
+                                                </span></td>
+                                            <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
+                                                <%= r.date %>
+                                            </td>
+                                            <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
+                                                <%= r.time_slot %>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <% if (r.status==='approved' ) { %><span
+                                                        class="inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full"><span
+                                                            class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Approved</span>
+                                                    <% } else if (r.status==='rejected' ) { %><span
+                                                            class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full"><span
+                                                                class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>Rejected</span>
+                                                        <% } else { %><span
+                                                                class="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full"><span
+                                                                    class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>Pending</span>
+                                                            <% } %>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                            <% } else { %>
+                                                <tr>
+                                                    <td colspan="6"
+                                                        class="px-6 py-12 text-center text-sm text-gray-400">No
+                                                        reservations yet. Select a lab above to reserve a PC.</td>
+                                                </tr>
+                                                <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div
+                class="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 no-print">
+                <span>Showing <strong id="visibleResCount" class="text-gray-600">
+                        <%= safeRes.length %>
+                    </strong> records</span>
+                <span>CCS Laboratory Sit-in Monitoring System</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════ TAB 2: LAB COMPUTERS ════════════ -->
+    <div id="tab-labcomputers" class="res-tab-content"
+        style="background:#F0EDE8;border:1px solid #E8E3DD;border-top:none;border-radius:0 0 16px 16px;padding:20px;">
+        <div class="lc-page-inner" style="padding:0;">
+            <div
+                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+                <div>
+                    <div
+                        style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:#1C2B35;margin:0 0 2px;">
+                        Lab Computer Status</div>
+                    <div style="font-size:12px;color:#9CA3AF;">Real-time PC availability across all laboratories</div>
+                </div>
+                <span
+                    style="font-size:11px;color:#9CA3AF;background:#fff;border:1px solid #E8E3DD;padding:6px 12px;border-radius:999px;">6
+                    Labs · 300 PCs</span>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm" id="resTable">
-                    <thead>
-                        <tr class="bg-gray-50 border-b border-gray-100">
-                            <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                                Lab</th>
-                            <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">PC
-                            </th>
-                            <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                                Purpose</th>
-                            <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                                Date</th>
-                            <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                                Time</th>
-                            <th class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
-                                Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% var safeRes=(typeof reservations !=='undefined' && reservations) ? reservations : []; %>
-                            <% if (safeRes.length> 0) { %>
-                                <% safeRes.forEach(function(r) { %>
-                                    <tr class="hover:bg-gray-50 res-row" data-status="<%= r.status %>">
-                                        <td class="px-4 py-3">
-                                            <span
-                                                class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-[#273F4F]/10 text-[#273F4F]">Lab
-                                                <%= r.lab_room %></span>
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            <span
-                                                class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">PC-
-                                                <%= String(r.computer_number || 0).padStart(2,'0') %></span>
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            <span
-                                                class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
-                                                <%= r.purpose || '—' %>
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
-                                            <%= r.date %>
-                                        </td>
-                                        <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
-                                            <%= r.time_slot %>
-                                        </td>
-                                        <td class="px-4 py-3">
-                                            <% if (r.status==='approved' ) { %>
-                                                <span
-                                                    class="inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full">
-                                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Approved
-                                                </span>
-                                                <% } else if (r.status==='rejected' ) { %>
-                                                    <span
-                                                        class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full">
-                                                        <span
-                                                            class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>Rejected
-                                                    </span>
-                                                    <% } else { %>
-                                                        <span
-                                                            class="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">
-                                                            <span
-                                                                class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>Pending
-                                                        </span>
-                                                        <% } %>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                                        <% } else { %>
-                                            <tr>
-                                                <td colspan="6"
-                                                    class="px-6 py-12 text-center text-sm text-gray-400 font-medium">No
-                                                    reservations yet. Select a lab above to reserve a PC.</td>
-                                            </tr>
-                                            <% } %>
-                    </tbody>
-                </table>
+            <!-- Lab tabs -->
+            <div class="lc-lab-tabs" id="lcTabs"></div>
+
+            <!-- PC Grid Card -->
+            <div class="lc-grid-card">
+                <div class="lc-grid-head">
+                    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;"
+                        id="lcCurrentLabTitle">Select a lab</div>
+                    <div class="lc-legend">
+                        <div class="lc-legend-item">
+                            <div class="lc-legend-dot" style="background:#10B981;border-color:#A7F3D0;"></div>Available
+                        </div>
+                        <div class="lc-legend-item">
+                            <div class="lc-legend-dot" style="background:#F59E0B;border-color:#FDE68A;"></div>In Use
+                        </div>
+                        <div class="lc-legend-item">
+                            <div class="lc-legend-dot" style="background:#DC2626;border-color:#FECACA;"></div>Defective
+                        </div>
+                        <div class="lc-legend-item">
+                            <div class="lc-legend-dot" style="background:#3B82F6;border-color:#BFDBFE;"></div>Reserved
+                        </div>
+                        <% if (typeof user !=='undefined' && user && user.role==='admin' ) { %>
+                            <span style="font-size:11px;color:#9CA3AF;font-style:italic;margin-left:8px;">Click PC to
+                                change status</span>
+                            <% } %>
+                    </div>
+                </div>
+                <div class="lc-grid-body" id="lcGridBody">
+                    <div style="text-align:center;padding:60px 24px;color:#C4BDB6;">
+                        <div style="font-size:32px;margin-bottom:12px;">🖥</div>
+                        <p style="font-size:14px;font-weight:700;color:#4B5563;margin:0 0 4px;">Select a laboratory tab
+                            above</p>
+                        <p style="font-size:12px;color:#9CA3AF;margin:0;">Click a tab to view PC layout</p>
+                    </div>
+                </div>
             </div>
-
-        </div><!-- end printArea -->
-
-        <!-- Footer -->
-        <div
-            class="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 no-print">
-            <span>Showing <strong id="visibleResCount" class="text-gray-600">
-                    <%= safeRes.length %>
-                </strong> of <strong class="text-gray-600">
-                    <%= safeRes.length %>
-                </strong> records</span>
-            <span>CCS Laboratory Sit-in Monitoring System</span>
         </div>
     </div>
 </div>
 
-<!-- ═══════ PC GRID MODAL ═══════ -->
+<!-- ═══════ PC GRID MODAL (for reservation) ═══════ -->
 <div id="pcModal" class="pcmodal-overlay" onclick="if(event.target===this) closePcModal()">
     <div class="pcmodal-card">
         <div class="pcmodal-header">
@@ -789,12 +1225,7 @@
             <div style="font-size:12px;color:#9CA3AF;">Selected: <strong id="selectedPcLabel"
                     style="color:#1C2B35;">None</strong></div>
             <button class="btn-reserve" id="btnReserve" disabled onclick="openReserveForm()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14">
-                    <path fill-rule="evenodd"
-                        d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Z"
-                        clip-rule="evenodd" />
-                </svg>
-                Reserve This PC
+                📅 Reserve This PC
             </button>
         </div>
     </div>
@@ -805,14 +1236,7 @@
     <div class="resform-card">
         <div
             style="background:linear-gradient(135deg,#5B0E14,#3A0910);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;">
-            <div
-                style="display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="17" height="17">
-                    <path clip-rule="evenodd"
-                        d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z"
-                        fill-rule="evenodd" />
-                </svg>
-                Confirm Reservation
+            <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;">🖥 Confirm Reservation
             </div>
             <button onclick="closeReserveForm()"
                 style="width:30px;height:30px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;color:rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;">✕</button>
@@ -821,12 +1245,7 @@
             style="padding:14px 24px;background:linear-gradient(135deg,#F9F8F6,#F0EDE8);border-bottom:1px solid #E8E3DD;display:flex;align-items:center;gap:12px;">
             <div
                 style="width:42px;height:36px;border-radius:9px;background:#ECFDF5;border:2px solid #A7F3D0;display:flex;align-items:center;justify-content:center;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" width="18" height="18">
-                    <path clip-rule="evenodd"
-                        d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z"
-                        fill-rule="evenodd" />
-                </svg>
-            </div>
+                🖥</div>
             <div>
                 <div style="font-size:14px;font-weight:800;color:#1C2B35;" id="formPcLabel">PC-01</div>
                 <div style="font-size:11px;color:#6B7280;" id="formLabLabel">Lab 524</div>
@@ -885,13 +1304,7 @@
             </div>
             <div
                 style="display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:#FFF7ED;border:1px solid #FDE68A;border-radius:9px;font-size:11px;color:#92400E;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14"
-                    style="flex-shrink:0;margin-top:1px;">
-                    <path fill-rule="evenodd"
-                        d="M6.701 2.25c.577-1 2.02-1 2.598 0l5.196 9a1.5 1.5 0 0 1-1.299 2.25H2.804a1.5 1.5 0 0 1-1.3-2.25l5.197-9ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 1 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                        clip-rule="evenodd" />
-                </svg>
-                Your reservation is pending admin approval. The PC will be confirmed once approved.
+                ⚠️ Your reservation is pending admin approval. The PC will be confirmed once approved.
             </div>
         </form>
         <div style="display:flex;gap:10px;padding:14px 24px 22px;">
@@ -904,202 +1317,327 @@
     </div>
 </div>
 
-<script>
-    // ── Lab config ──────────────────────────────────────────────────────────────
-    const LABS = [
-        { id: 'lab524', room: '524', name: 'Lab 524', desc: 'General Purpose · 50 PCs' },
-        { id: 'lab526', room: '526', name: 'Lab 526', desc: 'General Purpose · 50 PCs' },
-        { id: 'lab528', room: '528', name: 'Lab 528', desc: 'General Purpose · 50 PCs' },
-        { id: 'lab530', room: '530', name: 'Lab 530', desc: 'Multimedia Lab · 50 PCs' },
-        { id: 'lab542', room: '542', name: 'Lab 542', desc: 'IT Laboratory · 50 PCs' },
-        { id: 'lab544', room: '544', name: 'Lab 544', desc: 'Mac Laboratory · 50 PCs' },
-    ];
-    const PC_CACHE = {};
+<!-- ═══════ ADMIN STATUS MODAL (for lab computers tab) ═══════ -->
+<% if (typeof user !=='undefined' && user && user.role==='admin' ) { %>
+    <div id="scOverlay" class="sc-overlay" onclick="if(event.target===this) closeStatusModal()">
+        <div class="sc-card">
+            <div
+                style="background:linear-gradient(135deg,#273F4F,#1a2d38);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;">Change PC
+                    Status</span>
+                <button onclick="closeStatusModal()"
+                    style="width:30px;height:30px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);border-radius:8px;color:rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;">✕</button>
+            </div>
+            <div
+                style="padding:14px 24px;background:linear-gradient(135deg,#F9F8F6,#F0EDE8);border-bottom:1px solid #E8E3DD;display:flex;align-items:center;gap:12px;">
+                <div
+                    style="width:42px;height:36px;border-radius:9px;background:#E8EFF4;border:2px solid #C7D8E4;display:flex;align-items:center;justify-content:center;">
+                    🖥</div>
+                <div>
+                    <div style="font-weight:800;color:#1C2B35;font-size:14px;" id="scPcNum">PC-01</div>
+                    <div style="font-size:11px;color:#6B7280;" id="scPcLab">Lab 524</div>
+                </div>
+            </div>
+            <div style="padding:20px 24px;display:flex;flex-direction:column;gap:0;">
+                <p
+                    style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin:0 0 10px;">
+                    Set Status To:</p>
+                <button class="sc-status-btn btn-avail" onclick="applyStatus('available')"><span
+                        class="sc-dot"></span>Available</button>
+                <button class="sc-status-btn btn-inuse" onclick="applyStatus('in_use')"><span class="sc-dot"></span>In
+                    Use</button>
+                <button class="sc-status-btn btn-defect" onclick="applyStatus('defective')"><span
+                        class="sc-dot"></span>🔧 Defective / Maintenance</button>
+                <button class="sc-status-btn btn-reserved" onclick="applyStatus('reserved')"><span
+                        class="sc-dot"></span>Reserved</button>
+            </div>
+            <div style="padding:0 24px 20px;">
+                <button onclick="closeStatusModal()"
+                    style="width:100%;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <% } %>
 
-    async function fetchPcs(labRoom) {
-        try {
-            const res = await fetch(`/lab-computers/${labRoom}`);
-            const data = await res.json();
-            const map = {};
-            data.forEach(pc => { map[pc.computer_number] = pc; });
-            PC_CACHE[labRoom] = map;
-            return map;
-        } catch (e) { return {}; }
-    }
+        <script>
+            const IS_ADMIN = '<%= typeof user !== "undefined" && user && user.role === "admin" ? "true" : "false" %>' === 'true';
 
-    function getStats(labRoom) {
-        const pcs = PC_CACHE[labRoom] || {};
-        const c = { available: 0, in_use: 0, reserved: 0, defective: 0 };
-        Object.values(pcs).forEach(p => {
-            const s = p.status || 'available';
-            if (c[s] !== undefined) c[s]++; else c.available++;
-        });
-        return c;
-    }
+            // ── Tab switching ──────────────────────────────────────────────────────────
+            function switchTab(tab) {
+                document.querySelectorAll('.res-tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.res-tab-btn').forEach(el => el.classList.remove('active'));
+                document.getElementById('tab-' + tab).classList.add('active');
+                document.getElementById('tab-btn-' + tab).classList.add('active');
+                if (tab === 'labcomputers' && !lcInitialized) initLabComputers();
+            }
 
-    async function renderLabGrid() {
-        const grid = document.getElementById('labGrid');
-        grid.innerHTML = LABS.map(lab => `
+            // ═══════════════════════════════════════════════════════════════
+            //  RESERVATION TAB LOGIC
+            // ═══════════════════════════════════════════════════════════════
+            const LABS = [
+                { id: 'lab524', room: '524', name: 'Lab 524', desc: 'General Purpose · 50 PCs' },
+                { id: 'lab526', room: '526', name: 'Lab 526', desc: 'General Purpose · 50 PCs' },
+                { id: 'lab528', room: '528', name: 'Lab 528', desc: 'General Purpose · 50 PCs' },
+                { id: 'lab530', room: '530', name: 'Lab 530', desc: 'Multimedia Lab · 50 PCs' },
+                { id: 'lab542', room: '542', name: 'Lab 542', desc: 'IT Laboratory · 50 PCs' },
+                { id: 'lab544', room: '544', name: 'Lab 544', desc: 'Mac Laboratory · 50 PCs' },
+            ];
+            const PC_CACHE = {};
+
+            async function fetchPcs(labRoom) {
+                try {
+                    const res = await fetch('/lab-computers/' + labRoom);
+                    const data = await res.json();
+                    const map = {};
+                    data.forEach(pc => { map[pc.computer_number] = pc; });
+                    PC_CACHE[labRoom] = map;
+                    return map;
+                } catch (e) { return {}; }
+            }
+
+            function getStats(labRoom) {
+                const pcs = PC_CACHE[labRoom] || {};
+                const c = { available: 0, in_use: 0, reserved: 0, defective: 0 };
+                Object.values(pcs).forEach(p => { const s = p.status || 'available'; if (c[s] !== undefined) c[s]++; else c.available++; });
+                return c;
+            }
+
+            async function renderLabGrid() {
+                const grid = document.getElementById('labGrid');
+                grid.innerHTML = LABS.map(lab => `
             <div class="lab-card" onclick="openPcModal('${lab.id}')">
                 <div class="lab-card-arrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12" height="12" style="color:#6B7280;"><path fill-rule="evenodd" d="M3.036 7.018a.75.75 0 0 1 .75-.75h7.19L8.53 3.822a.75.75 0 0 1 1.06-1.06l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 0 1-1.06-1.06l2.447-2.447H3.786a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd"/></svg></div>
                 <div class="lab-card-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="22" height="22"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg></div>
-                <p class="lab-card-name">${lab.name}</p>
-                <p class="lab-card-desc">${lab.desc}</p>
+                <p class="lab-card-name">${lab.name}</p><p class="lab-card-desc">${lab.desc}</p>
                 <div class="lab-card-pills" id="pills-${lab.id}"><span style="font-size:10px;color:#C4BDB6;">Loading…</span></div>
             </div>`).join('');
 
-        let tA = 0, tI = 0, tR = 0, tD = 0;
-        await Promise.all(LABS.map(async lab => {
-            await fetchPcs(lab.room);
-            const s = getStats(lab.room);
-            tA += s.available; tI += s.in_use; tR += s.reserved; tD += s.defective;
-            const pillsHtml = [
-                s.available > 0 ? `<span class="lab-pill pill-avail"><span class="lab-pill-dot"></span>${s.available} Free</span>` : '',
-                s.in_use > 0 ? `<span class="lab-pill pill-inuse"><span class="lab-pill-dot"></span>${s.in_use} In Use</span>` : '',
-                s.defective > 0 ? `<span class="lab-pill pill-defect"><span class="lab-pill-dot"></span>${s.defective} Defect</span>` : '',
-            ].filter(Boolean).join('') || `<span style="font-size:10px;color:#C4BDB6;">All available</span>`;
-            const el = document.getElementById(`pills-${lab.id}`);
-            if (el) el.innerHTML = pillsHtml;
-        }));
-        document.getElementById('stat-avail').textContent = tA;
-        document.getElementById('stat-inuse').textContent = tI;
-        document.getElementById('stat-reserved').textContent = tR;
-        document.getElementById('stat-defect').textContent = tD;
-    }
+                let tA = 0, tI = 0, tR = 0, tD = 0;
+                await Promise.all(LABS.map(async lab => {
+                    await fetchPcs(lab.room);
+                    const s = getStats(lab.room);
+                    tA += s.available; tI += s.in_use; tR += s.reserved; tD += s.defective;
+                    const ph = [
+                        s.available > 0 ? `<span class="lab-pill pill-avail"><span class="lab-pill-dot"></span>${s.available} Free</span>` : '',
+                        s.in_use > 0 ? `<span class="lab-pill pill-inuse"><span class="lab-pill-dot"></span>${s.in_use} In Use</span>` : '',
+                        s.defective > 0 ? `<span class="lab-pill pill-defect"><span class="lab-pill-dot"></span>${s.defective} Defect</span>` : '',
+                    ].filter(Boolean).join('') || `<span style="font-size:10px;color:#C4BDB6;">All available</span>`;
+                    const el = document.getElementById(`pills-${lab.id}`);
+                    if (el) el.innerHTML = ph;
+                }));
+                document.getElementById('stat-avail').textContent = tA;
+                document.getElementById('stat-inuse').textContent = tI;
+                document.getElementById('stat-reserved').textContent = tR;
+                document.getElementById('stat-defect').textContent = tD;
+            }
 
-    let currentLabId = null, selectedPcNum = null;
+            let currentLabId = null, selectedPcNum = null;
 
-    function pcSvg(color) {
-        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="${color}" width="20" height="20"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg>`;
-    }
+            function pcSvgR(color) { return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="${color}" width="20" height="20"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg>`; }
 
-    function buildPcGridHtml(labRoom) {
-        const pcs = PC_CACHE[labRoom] || {};
-        let html = `<div class="pc-teacher-area">🖥 Teacher / Instructor Station</div>`;
-        let pcNum = 1;
-        for (let row = 0; row < 5; row++) {
-            const rowLetter = String.fromCharCode(65 + row);
-            html += `<div class="pc-row-label">Row ${rowLetter}</div><div class="pc-grid-10">`;
-            for (let col = 0; col < 10 && pcNum <= 50; col++) {
-                const pc = pcs[pcNum] || { status: 'available' };
-                const status = pc.status || 'available';
-                const sc = status === 'available' ? 'pc-avail' : status === 'in_use' ? 'pc-inuse' : status === 'reserved' ? 'pc-reserved' : 'pc-defect';
-                const ic = status === 'available' ? '#059669' : status === 'in_use' ? '#D97706' : status === 'reserved' ? '#2563EB' : '#DC2626';
-                const lbl = status === 'available' ? 'Free' : status === 'in_use' ? 'In Use' : status === 'reserved' ? 'Reserved' : 'Defective';
-                const click = status === 'available' ? `onclick="selectPc(${pcNum})"` : '';
-                html += `<div class="pc-unit ${sc}" id="pc-unit-${pcNum}" ${click} title="PC-${String(pcNum).padStart(2, '0')} — ${lbl}">
-                    <div class="pc-icon-wrap">${pcSvg(ic)}<span class="pc-status-dot"></span></div>
+            function buildPcGridHtml(labRoom) {
+                const pcs = PC_CACHE[labRoom] || {};
+                let html = `<div class="pc-teacher-area">🖥 Teacher / Instructor Station</div>`;
+                let pcNum = 1;
+                for (let row = 0; row < 5; row++) {
+                    html += `<div class="pc-row-label">Row ${String.fromCharCode(65 + row)}</div><div class="pc-grid-10">`;
+                    for (let col = 0; col < 10 && pcNum <= 50; col++) {
+                        const pc = pcs[pcNum] || { status: 'available' };
+                        const status = pc.status || 'available';
+                        const sc = status === 'available' ? 'pc-avail' : status === 'in_use' ? 'pc-inuse' : status === 'reserved' ? 'pc-reserved' : 'pc-defect';
+                        const ic = status === 'available' ? '#059669' : status === 'in_use' ? '#D97706' : status === 'reserved' ? '#2563EB' : '#DC2626';
+                        const lbl = status === 'available' ? 'Free' : status === 'in_use' ? 'In Use' : status === 'reserved' ? 'Reserved' : 'Defective';
+                        const click = status === 'available' ? `onclick="selectPc(${pcNum})"` : '';
+                        html += `<div class="pc-unit ${sc}" id="pc-unit-${pcNum}" ${click} title="PC-${String(pcNum).padStart(2, '0')} — ${lbl}">
+                    <div class="pc-icon-wrap">${pcSvgR(ic)}<span class="pc-status-dot"></span></div>
                     <span class="pc-number">PC-${String(pcNum).padStart(2, '0')}</span>
                     <span class="pc-label">${lbl}</span>
                 </div>`;
-                pcNum++;
+                        pcNum++;
+                    }
+                    html += `</div>`;
+                }
+                return html;
             }
-            html += `</div>`;
-        }
-        return html;
-    }
 
-    async function openPcModal(labId) {
-        const lab = LABS.find(l => l.id === labId);
-        currentLabId = labId; selectedPcNum = null;
-        document.getElementById('selectedPcLabel').textContent = 'None';
-        document.getElementById('btnReserve').disabled = true;
-        document.getElementById('pcModalLabName').textContent = lab.name;
-        document.getElementById('pcModalLabDesc').textContent = lab.desc;
-        document.getElementById('pcModalBody').innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;">Loading PC layout…</div>';
-        document.getElementById('pcModal').classList.add('open');
-        await fetchPcs(lab.room);
-        document.getElementById('pcModalBody').innerHTML = buildPcGridHtml(lab.room);
-    }
+            async function openPcModal(labId) {
+                const lab = LABS.find(l => l.id === labId);
+                currentLabId = labId; selectedPcNum = null;
+                document.getElementById('selectedPcLabel').textContent = 'None';
+                document.getElementById('btnReserve').disabled = true;
+                document.getElementById('pcModalLabName').textContent = lab.name;
+                document.getElementById('pcModalLabDesc').textContent = lab.desc;
+                document.getElementById('pcModalBody').innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;">Loading PC layout…</div>';
+                document.getElementById('pcModal').classList.add('open');
+                await fetchPcs(lab.room);
+                document.getElementById('pcModalBody').innerHTML = buildPcGridHtml(lab.room);
+            }
 
-    function closePcModal() { document.getElementById('pcModal').classList.remove('open'); currentLabId = null; selectedPcNum = null; }
+            function closePcModal() { document.getElementById('pcModal').classList.remove('open'); currentLabId = null; selectedPcNum = null; }
 
-    function selectPc(pcNum) {
-        if (!currentLabId) return;
-        document.querySelectorAll('.pc-unit').forEach(el => el.classList.remove('selected'));
-        const el = document.getElementById(`pc-unit-${pcNum}`);
-        if (el) el.classList.add('selected');
-        selectedPcNum = pcNum;
-        const lab = LABS.find(l => l.id === currentLabId);
-        document.getElementById('selectedPcLabel').textContent = `PC-${String(pcNum).padStart(2, '0')} — ${lab.name}`;
-        document.getElementById('btnReserve').disabled = false;
-    }
+            function selectPc(pcNum) {
+                if (!currentLabId) return;
+                document.querySelectorAll('.pc-unit').forEach(el => el.classList.remove('selected'));
+                const el = document.getElementById(`pc-unit-${pcNum}`);
+                if (el) el.classList.add('selected');
+                selectedPcNum = pcNum;
+                const lab = LABS.find(l => l.id === currentLabId);
+                document.getElementById('selectedPcLabel').textContent = `PC-${String(pcNum).padStart(2, '0')} — ${lab.name}`;
+                document.getElementById('btnReserve').disabled = false;
+            }
 
-    function openReserveForm() {
-        if (!selectedPcNum || !currentLabId) return;
-        const lab = LABS.find(l => l.id === currentLabId);
-        document.getElementById('formPcLabel').textContent = `PC-${String(selectedPcNum).padStart(2, '0')}`;
-        document.getElementById('formLabLabel').textContent = lab.name;
-        document.getElementById('formLabRoom').value = lab.room;
-        document.getElementById('formPcNumber').value = selectedPcNum;
-        document.getElementById('formDate').min = new Date().toISOString().split('T')[0];
-        document.getElementById('resFormModal').classList.add('open');
-    }
-    function closeReserveForm() { document.getElementById('resFormModal').classList.remove('open'); }
+            function openReserveForm() {
+                if (!selectedPcNum || !currentLabId) return;
+                const lab = LABS.find(l => l.id === currentLabId);
+                document.getElementById('formPcLabel').textContent = `PC-${String(selectedPcNum).padStart(2, '0')}`;
+                document.getElementById('formLabLabel').textContent = lab.name;
+                document.getElementById('formLabRoom').value = lab.room;
+                document.getElementById('formPcNumber').value = selectedPcNum;
+                document.getElementById('formDate').min = new Date().toISOString().split('T')[0];
+                document.getElementById('resFormModal').classList.add('open');
+            }
 
-    function to12h(t) {
-        const [h, m] = t.split(':').map(Number);
-        return `${String(h % 12 || 12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
-    }
+            function closeReserveForm() { document.getElementById('resFormModal').classList.remove('open'); }
 
-    function validateTimeRange() {
-        const start = document.getElementById('formTimeStart').value;
-        const end = document.getElementById('formTimeEnd').value;
-        const warn = document.getElementById('timeWarning');
-        const prev = document.getElementById('timePreview');
-        const slot = document.getElementById('formTimeSlot');
-        if (!start || !end) { warn.style.display = 'none'; prev.style.display = 'none'; return; }
-        const [sh, sm] = start.split(':').map(Number);
-        const [eh, em] = end.split(':').map(Number);
-        const diff = (eh * 60 + em) - (sh * 60 + sm);
-        if (diff <= 0) { warn.textContent = '⚠ End time must be after start time.'; warn.style.display = 'block'; prev.style.display = 'none'; slot.value = ''; return; }
-        if (diff > 180) { warn.textContent = '⚠ Maximum sit-in time is 3 hours.'; warn.style.display = 'block'; prev.style.display = 'none'; slot.value = ''; return; }
-        warn.style.display = 'none';
-        const slotStr = `${to12h(start)} – ${to12h(end)}`;
-        slot.value = slotStr;
-        prev.textContent = `✓ ${slotStr} (${Math.floor(diff / 60)}h ${diff % 60}m)`;
-        prev.style.display = 'block';
-    }
+            function to12h(t) { const [h, m] = t.split(':').map(Number); return `${String(h % 12 || 12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`; }
 
-    function submitReservation() {
-        if (!document.getElementById('formTimeSlot').value) { alert('Please set a valid time slot (max 3 hours).'); return; }
-        document.getElementById('labResForm').submit();
-    }
+            function validateTimeRange() {
+                const start = document.getElementById('formTimeStart').value, end = document.getElementById('formTimeEnd').value;
+                const warn = document.getElementById('timeWarning'), prev = document.getElementById('timePreview'), slot = document.getElementById('formTimeSlot');
+                if (!start || !end) { warn.style.display = 'none'; prev.style.display = 'none'; return; }
+                const [sh, sm] = start.split(':').map(Number), [eh, em] = end.split(':').map(Number);
+                const diff = (eh * 60 + em) - (sh * 60 + sm);
+                if (diff <= 0) { warn.textContent = '⚠ End time must be after start time.'; warn.style.display = 'block'; prev.style.display = 'none'; slot.value = ''; return; }
+                if (diff > 180) { warn.textContent = '⚠ Maximum sit-in time is 3 hours.'; warn.style.display = 'block'; prev.style.display = 'none'; slot.value = ''; return; }
+                warn.style.display = 'none';
+                const slotStr = `${to12h(start)} – ${to12h(end)}`;
+                slot.value = slotStr; prev.textContent = `✓ ${slotStr} (${Math.floor(diff / 60)}h ${diff % 60}m)`; prev.style.display = 'block';
+            }
 
-    // ── Filter reservations table ──────────────────────────────────────────────
-    function filterReservations() {
-        const q = (document.getElementById('searchRes').value || '').toLowerCase();
-        const status = document.getElementById('resFilterStatus').value;
-        let count = 0;
-        document.querySelectorAll('.res-row').forEach(r => {
-            const matchQ = !q || r.textContent.toLowerCase().includes(q);
-            const matchS = !status || r.dataset.status === status;
-            const show = matchQ && matchS;
-            r.style.display = show ? '' : 'none';
-            if (show) count++;
-        });
-        document.getElementById('visibleResCount').textContent = count;
-    }
+            function submitReservation() {
+                if (!document.getElementById('formTimeSlot').value) { alert('Please set a valid time slot (max 3 hours).'); return; }
+                document.getElementById('labResForm').submit();
+            }
 
-    // ── Search my reservations (legacy) ───────────────────────────────────────
-    document.getElementById('searchRes').addEventListener('input', filterReservations);
+            function filterReservations() {
+                const q = (document.getElementById('searchRes').value || '').toLowerCase(), status = document.getElementById('resFilterStatus').value;
+                let count = 0;
+                document.querySelectorAll('.res-row').forEach(r => {
+                    const show = (!q || r.textContent.toLowerCase().includes(q)) && (!status || r.dataset.status === status);
+                    r.style.display = show ? '' : 'none'; if (show) count++;
+                });
+                document.getElementById('visibleResCount').textContent = count;
+            }
 
-    // ── Print reservations ────────────────────────────────────────────────────
-    function printReservations() {
-        const filterEl = document.getElementById('resFilterStatus');
-        const statusLabel = filterEl.options[filterEl.selectedIndex].text;
-        document.getElementById('printDate').textContent = new Date().toLocaleString();
-        document.getElementById('printFilter').textContent = statusLabel || 'All';
-        document.getElementById('printHeader').style.display = 'block';
-        window.print();
-        document.getElementById('printHeader').style.display = 'none';
-    }
+            function printReservations() {
+                document.getElementById('printDate').textContent = new Date().toLocaleString();
+                document.getElementById('printHeader').style.display = 'block';
+                window.print();
+                document.getElementById('printHeader').style.display = 'none';
+            }
 
-    document.addEventListener('keydown', e => {
-        if (e.key !== 'Escape') return;
-        closePcModal(); closeReserveForm();
-    });
+            // ═══════════════════════════════════════════════════════════════
+            //  LAB COMPUTERS TAB LOGIC
+            // ═══════════════════════════════════════════════════════════════
+            const LC_LABS = [
+                { room: '524', name: 'Lab 524', desc: 'General Purpose' }, { room: '526', name: 'Lab 526', desc: 'General Purpose' },
+                { room: '528', name: 'Lab 528', desc: 'General Purpose' }, { room: '530', name: 'Lab 530', desc: 'Multimedia Lab' },
+                { room: '542', name: 'Lab 542', desc: 'IT Laboratory' }, { room: '544', name: 'Lab 544', desc: 'Mac Laboratory' },
+            ];
+            let lcCurrentRoom = null, lcPcData = {}, lcInitialized = false;
+            let scModalPcNum = null;
 
-    // Boot
-    renderLabGrid();
-</script>
+            async function initLabComputers() {
+                lcInitialized = true;
+                const tabs = document.getElementById('lcTabs');
+                tabs.innerHTML = LC_LABS.map((lab, i) => `<button class="lc-tab ${i === 0 ? 'active' : ''}" id="lctab-${lab.room}" onclick="switchLcTab('${lab.room}')">${lab.name}</button>`).join('');
+                await switchLcTab(LC_LABS[0].room);
+            }
+
+            async function switchLcTab(room) {
+                LC_LABS.forEach(l => {
+                    const t = document.getElementById('lctab-' + l.room);
+                    if (t) t.classList.toggle('active', l.room === room);
+                });
+                lcCurrentRoom = room;
+                document.getElementById('lcCurrentLabTitle').textContent = `${LC_LABS.find(l => l.room === room)?.name} · 50 PCs`;
+                document.getElementById('lcGridBody').innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:13px;">Loading…</div>';
+                try {
+                    const res = await fetch('/lab-computers/' + room);
+                    const data = await res.json();
+                    lcPcData = {};
+                    data.forEach(pc => { lcPcData[pc.computer_number] = pc; });
+                    renderLcGrid();
+                } catch (e) {
+                    document.getElementById('lcGridBody').innerHTML = '<div style="text-align:center;padding:40px;color:#DC2626;font-size:13px;">Failed to load PCs.</div>';
+                }
+            }
+
+            function pcSvgLC(color) { return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="${color}" width="20" height="20"><path clip-rule="evenodd" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.105a3.501 3.501 0 0 1 1.1 1.677A.75.75 0 0 1 13 17.5H7a.75.75 0 0 1-.745-.823A3.501 3.501 0 0 1 7.355 15H4.25A2.25 2.25 0 0 1 2 12.75v-8.5Z" fill-rule="evenodd"/></svg>`; }
+
+            function renderLcGrid() {
+                let html = `<div class="lc-teacher">🖥 Teacher / Instructor Station</div>`;
+                let pcNum = 1;
+                for (let r = 0; r < 5; r++) {
+                    html += `<div class="lc-row-label">Row ${String.fromCharCode(65 + r)}</div><div class="lc-pc-grid">`;
+                    for (let c = 0; c < 10 && pcNum <= 50; c++) {
+                        const pc = lcPcData[pcNum] || { status: 'available' };
+                        const st = pc.status || 'available';
+                        const cls = st === 'available' ? 'pc-avail' : st === 'in_use' ? 'pc-inuse' : st === 'reserved' ? 'pc-reserved' : 'pc-defect';
+                        const ic = st === 'available' ? '#059669' : st === 'in_use' ? '#D97706' : st === 'reserved' ? '#2563EB' : '#DC2626';
+                        const lbl = st === 'available' ? 'Free' : st === 'in_use' ? 'In Use' : st === 'reserved' ? 'Reserved' : 'Defective';
+                        const clickAttr = IS_ADMIN ? `onclick="openStatusModal(${pcNum})" style="cursor:pointer;"` : '';
+                        html += `<div class="lc-pc-unit ${cls}" id="lcpc-${pcNum}" ${clickAttr} title="PC-${String(pcNum).padStart(2, '0')} — ${lbl}">
+                    <div class="lc-pc-icon-wrap">${pcSvgLC(ic)}<span class="lc-pc-dot"></span></div>
+                    <span class="lc-pc-number">${String(pcNum).padStart(2, '0')}</span>
+                    <span class="lc-pc-label">${lbl}</span>
+                </div>`;
+                        pcNum++;
+                    }
+                    html += `</div>`;
+                }
+                document.getElementById('lcGridBody').innerHTML = html;
+            }
+
+            // ── Admin Status Modal ──────────────────────────────────────────────────────
+            function openStatusModal(pcNum) {
+                if (!IS_ADMIN) return;
+                scModalPcNum = pcNum;
+                const lab = LC_LABS.find(l => l.room === lcCurrentRoom);
+                document.getElementById('scPcNum').textContent = `PC-${String(pcNum).padStart(2, '0')}`;
+                document.getElementById('scPcLab').textContent = `${lab?.name} — ${lab?.desc}`;
+                document.getElementById('scOverlay').classList.add('open');
+            }
+
+            function closeStatusModal() {
+                document.getElementById('scOverlay')?.classList.remove('open');
+                scModalPcNum = null;
+            }
+
+            async function applyStatus(newStatus) {
+                if (!scModalPcNum || !lcCurrentRoom) return;
+                const pcNum = scModalPcNum;
+                closeStatusModal();
+                try {
+                    const res = await fetch('/admin/lab-computers/status', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ lab_room: lcCurrentRoom, computer_number: pcNum, status: newStatus })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        if (!lcPcData[pcNum]) lcPcData[pcNum] = {};
+                        lcPcData[pcNum].status = newStatus;
+                        renderLcGrid();
+                    }
+                } catch (e) { console.error('Failed to update PC status', e); }
+            }
+
+            // ── Init ──────────────────────────────────────────────────────────────────
+            renderLabGrid();
+            document.addEventListener('keydown', e => {
+                if (e.key !== 'Escape') return;
+                closePcModal(); closeReserveForm(); closeStatusModal?.();
+            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatusModal(); });
+        </script>

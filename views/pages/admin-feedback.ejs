@@ -60,7 +60,6 @@
         margin: 0 0 6px;
     }
 
-    /* ── Stats ── */
     .fb-stats {
         display: flex;
         gap: 12px;
@@ -107,7 +106,6 @@
         letter-spacing: 0.05em;
     }
 
-    /* ── Toolbar ── */
     .fb-toolbar {
         display: flex;
         flex-wrap: wrap;
@@ -130,26 +128,10 @@
         outline: none;
         cursor: pointer;
         font-family: 'DM Sans', sans-serif;
-        transition: border-color 0.15s;
-    }
-
-    .fb-filter-select:focus {
-        border-color: #273F4F;
     }
 
     .fb-search-wrap {
         position: relative;
-    }
-
-    .fb-search-wrap svg {
-        position: absolute;
-        left: 11px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9CA3AF;
-        pointer-events: none;
-        width: 14px;
-        height: 14px;
     }
 
     .fb-search-wrap input {
@@ -162,36 +144,8 @@
         outline: none;
         width: 200px;
         font-family: 'DM Sans', sans-serif;
-        transition: border-color 0.15s, box-shadow 0.15s;
     }
 
-    .fb-search-wrap input:focus {
-        border-color: #273F4F;
-        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
-    }
-
-    .btn-print-fb {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 8px 14px;
-        border-radius: 9px;
-        font-size: 12px;
-        font-weight: 700;
-        background: #374151;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        font-family: 'DM Sans', sans-serif;
-        transition: opacity 0.15s, transform 0.1s;
-    }
-
-    .btn-print-fb:hover {
-        opacity: 0.88;
-        transform: translateY(-1px);
-    }
-
-    /* ── Table ── */
     .fb-table-wrap {
         padding: 0 32px 32px;
         background: #F0EDE8;
@@ -245,7 +199,6 @@
         vertical-align: middle;
     }
 
-    /* ── Stars ── */
     .star-display {
         display: inline-flex;
         gap: 2px;
@@ -253,18 +206,16 @@
 
     .star-on {
         color: #F59E0B;
-        font-size: 18px;
+        font-size: 16px;
         line-height: 1;
-        text-shadow: 0 1px 2px rgba(245, 158, 11, 0.3);
     }
 
     .star-off {
         color: #D1D5DB;
-        font-size: 18px;
+        font-size: 16px;
         line-height: 1;
     }
 
-    /* No-rating placeholder */
     .star-none {
         font-size: 11px;
         color: #9CA3AF;
@@ -274,7 +225,6 @@
         border-radius: 6px;
     }
 
-    /* ── Avatar ── */
     .name-cell {
         display: flex;
         align-items: center;
@@ -309,7 +259,6 @@
         white-space: nowrap;
     }
 
-    /* ── Rating badge ── */
     .rating-badge {
         display: inline-flex;
         align-items: center;
@@ -350,11 +299,6 @@
         color: #6B7280;
     }
 
-    .fb-empty {
-        padding: 64px 24px;
-        text-align: center;
-    }
-
     .fb-table-footer {
         padding: 12px 20px;
         border-top: 1px solid #F3F0EC;
@@ -368,18 +312,126 @@
         gap: 8px;
     }
 
-    /* Vulgar word warning badge */
-    .vulgar-badge {
+    .btn-view-fb {
         display: inline-flex;
         align-items: center;
         gap: 4px;
-        padding: 2px 7px;
-        border-radius: 5px;
-        font-size: 10px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
         font-weight: 700;
-        background: #FEF2F2;
-        color: #991B1B;
-        border: 1px solid #FECACA;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border: 1.5px solid #BFDBFE;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.15s;
+    }
+
+    .btn-view-fb:hover {
+        background: #1D4ED8;
+        color: #fff;
+        border-color: #1D4ED8;
+    }
+
+    .btn-print-fb {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 14px;
+        border-radius: 9px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #374151;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s;
+    }
+
+    .btn-print-fb:hover {
+        opacity: 0.88;
+    }
+
+    /* ── View Details Modal ── */
+    .fb-modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(6px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .fb-modal-overlay.open {
+        display: flex;
+    }
+
+    .fb-modal-overlay.open .fb-modal-card {
+        animation: fbModalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes fbModalIn {
+        from {
+            opacity: 0;
+            transform: scale(0.88) translateY(16px);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    .fb-modal-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+        width: 100%;
+        max-width: 520px;
+        overflow: hidden;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .fb-modal-header {
+        background: linear-gradient(135deg, #273F4F, #1a2d38);
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .fb-modal-close {
+        width: 30px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        transition: all 0.15s;
+    }
+
+    .fb-modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .fb-modal-stars {
+        display: flex;
+        gap: 4px;
+    }
+
+    .fb-modal-star {
+        font-size: 28px;
     }
 
     @media print {
@@ -401,19 +453,10 @@
             border: none !important;
             box-shadow: none !important;
         }
-
-        .fb-page {
-            background: white !important;
-        }
-
-        body {
-            background: white !important;
-        }
     }
 </style>
 
 <div class="fb-page">
-
     <!-- Header -->
     <div class="fb-header">
         <div class="fb-header-inner">
@@ -429,25 +472,16 @@
         </div>
     </div>
 
-    <% var totalFb=feedbacks.length; var rated=feedbacks.filter(function(f){ return parseInt(f.rating)> 0; });
-        var avgRating = rated.length > 0
-        ? (rated.reduce(function(s,f){ return s + parseInt(f.rating); }, 0) / rated.length).toFixed(1)
-        : '—';
-        var fiveStars = feedbacks.filter(function(f){ return parseInt(f.rating) === 5; }).length;
-        var lowRatings = feedbacks.filter(function(f){ var r = parseInt(f.rating); return r > 0 && r <= 2; }).length;
-            var noRating=feedbacks.filter(function(f){ return parseInt(f.rating)===0; }).length; %>
+    <% var totalFb=feedbacks.length; var rated=feedbacks.filter(f=>parseInt(f.rating)>0);
+        var avgRating=rated.length>0?(rated.reduce((s,f)=>s+parseInt(f.rating),0)/rated.length).toFixed(1):'—';
+        var fiveStars=feedbacks.filter(f=>parseInt(f.rating)===5).length;
+        var lowRatings=feedbacks.filter(f=>{var r=parseInt(f.rating);return r>0&&r<=2;}).length; var
+            noRating=feedbacks.filter(f=>parseInt(f.rating)===0).length; %>
 
             <!-- Stats -->
             <div class="fb-stats">
                 <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#E8EFF4;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#273F4F" width="18"
-                            height="18">
-                            <path fill-rule="evenodd"
-                                d="M10 2c-2.236 0-4.43.18-6.57.524C1.993 2.755 1 4.014 1 5.426v5.148c0 1.413.993 2.671 2.43 2.902.848.137 1.705.248 2.57.331v3.443a.75.75 0 0 0 1.28.53l3.58-3.579a.78.78 0 0 1 .527-.224 41.202 41.202 0 0 0 5.183-.5c1.437-.232 2.43-1.49 2.43-2.903V5.426c0-1.413-.993-2.67-2.43-2.902A41.289 41.289 0 0 0 10 2Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="fb-stat-icon" style="background:#E8EFF4;">💬</div>
                     <div>
                         <div class="fb-stat-val" style="color:#273F4F;">
                             <%= totalFb %>
@@ -456,9 +490,7 @@
                     </div>
                 </div>
                 <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#FEF3C7;">
-                        <span style="font-size:18px;">⭐</span>
-                    </div>
+                    <div class="fb-stat-icon" style="background:#FEF3C7;"><span style="font-size:18px;">⭐</span></div>
                     <div>
                         <div class="fb-stat-val" style="color:#D97706;">
                             <%= avgRating %>
@@ -467,13 +499,7 @@
                     </div>
                 </div>
                 <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#ECFDF5;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" width="18"
-                            height="18">
-                            <path
-                                d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-2.184C4.504 12.21 3 9.981 3 7.5a4.5 4.5 0 018-2.828A4.5 4.5 0 0119 7.5c0 2.48-1.504 4.71-2.885 6.036a22.045 22.045 0 01-2.582 2.184 20.759 20.759 0 01-1.162.682l-.019.01-.005.003h-.003a.75.75 0 01-.69 0l-.003-.001z" />
-                        </svg>
-                    </div>
+                    <div class="fb-stat-icon" style="background:#ECFDF5;">❤️</div>
                     <div>
                         <div class="fb-stat-val" style="color:#059669;">
                             <%= fiveStars %>
@@ -482,14 +508,7 @@
                     </div>
                 </div>
                 <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#FEF2F2;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#DC2626" width="18"
-                            height="18">
-                            <path fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="fb-stat-icon" style="background:#FEF2F2;">⚠️</div>
                     <div>
                         <div class="fb-stat-val" style="color:#DC2626;">
                             <%= lowRatings %>
@@ -498,14 +517,7 @@
                     </div>
                 </div>
                 <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#F3F4F6;">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#6B7280" width="18"
-                            height="18">
-                            <path fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                    <div class="fb-stat-icon" style="background:#F3F4F6;">⭕</div>
                     <div>
                         <div class="fb-stat-val" style="color:#6B7280;">
                             <%= noRating %>
@@ -530,22 +542,15 @@
                 </div>
                 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                     <div class="fb-search-wrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                            style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;">
                             <path fill-rule="evenodd"
                                 d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
                                 clip-rule="evenodd" />
                         </svg>
-                        <input type="text" id="searchInput" placeholder="Search feedback...">
+                        <input type="text" id="searchInput" placeholder="Search feedback..." style="padding-left:30px;">
                     </div>
-                    <button class="btn-print-fb" onclick="window.print()">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
-                            height="13">
-                            <path fill-rule="evenodd"
-                                d="M4.25 1.5A.75.75 0 0 1 5 .75h6a.75.75 0 0 1 .75.75V3h.5A2.25 2.25 0 0 1 14.5 5.25v4.5A2.25 2.25 0 0 1 12.25 12H12v1.25A1.75 1.75 0 0 1 10.25 15h-4.5A1.75 1.75 0 0 1 4 13.25V12h-.25A2.25 2.25 0 0 1 1.5 9.75v-4.5A2.25 2.25 0 0 1 3.75 3h.5V1.5ZM5.5 3h5V2.25h-5V3Zm-.75 7.5v2.75c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25V10.5h-6Zm7-5.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Print
-                    </button>
+                    <button class="btn-print-fb" onclick="window.print()">🖨 Print</button>
                 </div>
             </div>
 
@@ -563,88 +568,88 @@
                                     <th>Stars</th>
                                     <th>Feedback Message</th>
                                     <th>Date</th>
+                                    <th style="text-align:center;">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="fbBody">
                                 <% if (feedbacks && feedbacks.length> 0) { %>
-                                    <% feedbacks.forEach(function(f) { var ratingVal=parseInt(f.rating) || 0; var
-                                        initials=(f.first_name ? f.first_name[0] : '' ) + (f.last_name ? f.last_name[0]
-                                        : '' ); var ratingLabel=ratingVal===5 ? 'Excellent' : ratingVal===4
-                                        ? 'Very Good' : ratingVal===3 ? 'Good' : ratingVal===2 ? 'Fair' : ratingVal===1
-                                        ? 'Poor' : 'No Rating' ; %>
-                                        <tr class="fb-row" data-rating="<%= ratingVal %>">
-                                            <td>
-                                                <div class="name-cell">
-                                                    <div class="name-avatar">
-                                                        <% if (f.profile_picture && f.profile_picture !=='' ) { %>
-                                                            <img src="<%= f.profile_picture %>">
+                                    <% feedbacks.forEach(function(f) { var ratingVal=parseInt(f.rating)||0; var
+                                        initials=(f.first_name?f.first_name[0]:'')+(f.last_name?f.last_name[0]:''); var
+                                        ratingLabel=ratingVal===5?'Excellent':ratingVal===4?'Very
+                                        Good':ratingVal===3?'Good':ratingVal===2?'Fair':ratingVal===1?'Poor':'No
+                                        Rating'; var stars='' ; for(var s=1;s<=5;s++) stars +=s<=ratingVal
+                                        ? '<span class="star-on">★</span>' : '<span class="star-off">★</span>' ; %>
+                                        <tr class="fb-row" data-rating="<%= ratingVal %>"
+                                            data-name="<%= f.last_name %>, <%= f.first_name %>"
+                                            data-id="<%= f.id_number %>" data-course="<%= f.course %>"
+                                            data-rating-val="<%= ratingVal %>" data-rating-label="<%= ratingLabel %>"
+                                            data-message="<%= (f.message||'').replace(/" /g,'&quot;') %>"
+                                            data-date="<%= f.created_at %>"
+                                                data-pic="<%= f.profile_picture||'' %>">
+                                                    <td>
+                                                        <div class="name-cell">
+                                                            <div class="name-avatar">
+                                                                <% if (f.profile_picture && f.profile_picture !=='' ) {
+                                                                    %><img src="<%= f.profile_picture %>">
+                                                                    <% } else { %>
+                                                                        <%= initials.toUpperCase() %>
+                                                                            <% } %>
+                                                            </div>
+                                                            <span class="name-text">
+                                                                <%= f.last_name %>, <%= f.first_name %>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td><span
+                                                            style="font-family:monospace;font-size:11px;color:#4B5563;background:#F3F0EC;padding:3px 8px;border-radius:5px;">
+                                                            <%= f.id_number %>
+                                                        </span></td>
+                                                    <td><span
+                                                            style="display:inline-flex;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;">
+                                                            <%= f.course %>
+                                                        </span></td>
+                                                    <td><span class="rating-badge rating-<%= ratingVal %>">
+                                                            <%= ratingLabel %>
+                                                        </span></td>
+                                                    <td>
+                                                        <% if (ratingVal> 0) { %>
+                                                            <div class="star-display"><%- stars %></div>
                                                             <% } else { %>
-                                                                <%= initials.toUpperCase() %>
-                                                                    <% } %>
-                                                    </div>
-                                                    <span class="name-text">
-                                                        <%= f.last_name %>, <%= f.first_name %>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    style="font-family:monospace;font-size:11px;color:#4B5563;background:#F3F0EC;padding:3px 8px;border-radius:5px;">
-                                                    <%= f.id_number %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    style="display:inline-flex;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;">
-                                                    <%= f.course %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="rating-badge rating-<%= ratingVal %>">
-                                                    <%= ratingLabel %>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <% if (ratingVal> 0) { %>
-                                                    <div class="star-display">
-                                                        <% for (var s=1; s <=5; s++) { %>
-                                                            <span
-                                                                class="<%= s <= ratingVal ? 'star-on' : 'star-off' %>">★</span>
-                                                            <% } %>
-                                                    </div>
-                                                    <% } else { %>
-                                                        <span class="star-none">No rating given</span>
-                                                        <% } %>
-                                            </td>
-                                            <td style="max-width:300px;">
-                                                <p style="font-size:12px;color:#4B5563;margin:0;line-height:1.5;word-break:break-word;"
-                                                    title="<%= f.message %>">
-                                                    <%= f.message %>
-                                                </p>
-                                            </td>
-                                            <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
-                                                <%= new Date(f.created_at).toLocaleDateString('en-US', { year: 'numeric'
-                                                    , month: 'short' , day: 'numeric' }) %>
-                                            </td>
+                                                                <span class="star-none">No rating</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td style="max-width:240px;">
+                                                        <p
+                                                            style="font-size:12px;color:#4B5563;margin:0;line-height:1.5;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                                                            <%= f.message %>
+                                                        </p>
+                                                    </td>
+                                                    <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
+                                                        <%= new
+                                                            Date(f.created_at).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'})
+                                                            %>
+                                                    </td>
+                                                    <td style="text-align:center;">
+                                                        <button class="btn-view-fb"
+                                                            onclick="viewFeedback(this.closest('tr'))">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
+                                                                fill="currentColor" width="11" height="11">
+                                                                <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+                                                                <path fill-rule="evenodd"
+                                                                    d="M1.38 8.28a.87.87 0 0 1 0-.566 7.003 7.003 0 0 1 13.239.005.87.87 0 0 1 0 .566A7.003 7.003 0 0 1 1.379 8.28ZM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                            View
+                                                        </button>
+                                                    </td>
                                         </tr>
                                         <% }); %>
                                             <% } else { %>
                                                 <tr>
-                                                    <td colspan="7">
-                                                        <div class="fb-empty">
-                                                            <div
-                                                                style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#F3F0EC,#E8E3DD);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;">
-                                                                💬
-                                                            </div>
-                                                            <p
-                                                                style="font-size:15px;font-weight:700;color:#4B5563;margin:0 0 6px;">
-                                                                No feedback yet
-                                                            </p>
-                                                            <p style="font-size:12px;color:#9CA3AF;margin:0;">
-                                                                Student feedback from sit-in sessions will appear here
-                                                                once submitted.
-                                                            </p>
-                                                        </div>
+                                                    <td colspan="8">
+                                                        <div
+                                                            style="padding:64px 24px;text-align:center;color:#9CA3AF;font-size:13px;">
+                                                            No feedback yet.</div>
                                                     </td>
                                                 </tr>
                                                 <% } %>
@@ -652,21 +657,87 @@
                         </table>
                     </div>
                     <div class="fb-table-footer">
-                        <span>
-                            Showing <strong id="visibleCount" style="color:#1C2B35;">
+                        <span>Showing <strong id="visibleCount" style="color:#1C2B35;">
                                 <%= feedbacks.length %>
-                            </strong>
-                            of <strong style="color:#1C2B35;">
+                            </strong> of <strong style="color:#1C2B35;">
                                 <%= feedbacks.length %>
-                            </strong> records
-                        </span>
+                            </strong> records</span>
                         <span>CCS Laboratory Sit-in Monitoring System</span>
                     </div>
                 </div>
             </div>
 </div>
 
+<!-- ══ VIEW DETAILS MODAL ══ -->
+<div id="fbModal" class="fb-modal-overlay" onclick="if(event.target===this) closeFbModal()">
+    <div class="fb-modal-card">
+        <div class="fb-modal-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div
+                    style="width:36px;height:36px;border-radius:9px;background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.25);display:flex;align-items:center;justify-content:center;font-size:16px;">
+                    💬</div>
+                <div>
+                    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;">Feedback
+                        Details</div>
+                    <div style="font-size:11px;color:rgba(255,255,255,0.45);">Full student feedback and rating</div>
+                </div>
+            </div>
+            <button class="fb-modal-close" onclick="closeFbModal()">✕</button>
+        </div>
+
+        <!-- Student info strip -->
+        <div
+            style="padding:14px 24px;background:linear-gradient(135deg,#F9F8F6,#F0EDE8);border-bottom:1px solid #E8E3DD;display:flex;align-items:center;gap:14px;">
+            <div id="fbModalAvatar"
+                style="width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#273F4F,#5B0E14);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#F1E194;flex-shrink:0;overflow:hidden;">
+            </div>
+            <div>
+                <div id="fbModalName" style="font-size:14px;font-weight:700;color:#1C2B35;"></div>
+                <div style="display:flex;gap:6px;margin-top:4px;">
+                    <span id="fbModalId"
+                        style="font-family:monospace;font-size:11px;color:#6B7280;background:#F3F0EC;padding:2px 7px;border-radius:4px;"></span>
+                    <span id="fbModalCourse"
+                        style="font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;padding:2px 7px;border-radius:4px;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating display -->
+        <div style="padding:18px 24px;border-bottom:1px solid #F3F0EC;">
+            <div
+                style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:8px;">
+                Rating</div>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div id="fbModalStars" class="fb-modal-stars"></div>
+                <span id="fbModalRatingLabel" style="font-size:13px;font-weight:700;"></span>
+            </div>
+        </div>
+
+        <!-- Message -->
+        <div style="padding:18px 24px;border-bottom:1px solid #F3F0EC;">
+            <div
+                style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#6B7280;margin-bottom:8px;">
+                Feedback Message</div>
+            <div id="fbModalMessage"
+                style="font-size:14px;color:#374151;line-height:1.75;background:#F9F8F6;border-radius:12px;padding:16px;border:1.5px solid #E8E3DD;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow-y:auto;">
+            </div>
+        </div>
+
+        <!-- Date -->
+        <div style="padding:12px 24px;background:#FAFAF9;">
+            <span style="font-size:11px;color:#9CA3AF;" id="fbModalDate"></span>
+        </div>
+
+        <!-- Close button -->
+        <div style="padding:0 24px 20px;">
+            <button onclick="closeFbModal()"
+                style="width:100%;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // ── Filters ────────────────────────────────────────────────────────────────
     const searchInput = document.getElementById('searchInput');
     const ratingFilter = document.getElementById('ratingFilter');
     const countEl = document.getElementById('visibleCount');
@@ -675,7 +746,7 @@
         const q = searchInput.value.toLowerCase();
         const rating = ratingFilter.value;
         let count = 0;
-        document.querySelectorAll('.fb-row').forEach(function (row) {
+        document.querySelectorAll('.fb-row').forEach(row => {
             const matchQ = !q || row.textContent.toLowerCase().includes(q);
             const matchRating = !rating || row.dataset.rating == rating;
             const show = matchQ && matchRating;
@@ -687,4 +758,57 @@
 
     searchInput.addEventListener('input', applyFilters);
     ratingFilter.addEventListener('change', applyFilters);
+
+    // ── View Details Modal ─────────────────────────────────────────────────────
+    const RATING_LABELS = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+    const RATING_COLORS = ['#6B7280', '#DC2626', '#F59E0B', '#3B82F6', '#059669', '#F59E0B'];
+
+    function viewFeedback(row) {
+        const name = row.dataset.name;
+        const id = row.dataset.id;
+        const course = row.dataset.course;
+        const ratingVal = parseInt(row.dataset.ratingVal) || 0;
+        const ratingLabel = row.dataset.ratingLabel;
+        const message = row.dataset.message;
+        const date = row.dataset.date;
+        const pic = row.dataset.pic;
+
+        // Avatar
+        const avatarEl = document.getElementById('fbModalAvatar');
+        if (pic) {
+            avatarEl.innerHTML = `<img src="${pic}" style="width:100%;height:100%;object-fit:cover;">`;
+        } else {
+            const initials = name.split(', ').map(p => p[0] || '').join('');
+            avatarEl.innerHTML = initials.toUpperCase();
+        }
+
+        document.getElementById('fbModalName').textContent = name;
+        document.getElementById('fbModalId').textContent = id;
+        document.getElementById('fbModalCourse').textContent = course;
+        document.getElementById('fbModalMessage').textContent = message || '(No message)';
+        document.getElementById('fbModalDate').textContent = '📅 Submitted: ' + new Date(date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+        // Stars
+        let starsHtml = '';
+        if (ratingVal > 0) {
+            for (let s = 1; s <= 5; s++) {
+                starsHtml += `<span class="fb-modal-star" style="color:${s <= ratingVal ? '#F59E0B' : '#D1D5DB'}">${s <= ratingVal ? '★' : '☆'}</span>`;
+            }
+        } else {
+            starsHtml = '<span style="font-size:12px;color:#9CA3AF;font-style:italic;">No rating given</span>';
+        }
+        document.getElementById('fbModalStars').innerHTML = starsHtml;
+
+        const ratingLabelEl = document.getElementById('fbModalRatingLabel');
+        ratingLabelEl.textContent = ratingLabel;
+        ratingLabelEl.style.color = RATING_COLORS[ratingVal] || '#6B7280';
+
+        document.getElementById('fbModal').classList.add('open');
+    }
+
+    function closeFbModal() {
+        document.getElementById('fbModal').classList.remove('open');
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFbModal(); });
 </script>
