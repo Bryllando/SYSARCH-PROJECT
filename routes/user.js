@@ -188,7 +188,7 @@ router.post('/announcements/:id/comment', isAuthenticated, (req, res) => {
         return res.json({ error: 'Your comment contains inappropriate language. Please keep it respectful.' });
     }
 
-    db.run(`INSERT INTO announcement_comments (announcement_id, user_id, comment) VALUES (?, ?, ?)`,
+    db.run(`INSERT INTO announcement_comments (announcement_id, user_id, message) VALUES (?, ?, ?)`,
         [annId, req.session.user.id, message.trim()], function (err) {
             if (err) {
                 console.error('Comment insert error:', err);

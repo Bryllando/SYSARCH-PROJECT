@@ -104,6 +104,8 @@ db.serialize(() => {
         announcement_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
         message TEXT NOT NULL,
+        reply TEXT DEFAULT NULL,
+        replied_at DATETIME DEFAULT NULL,
         created_at DATETIME DEFAULT (datetime('now','localtime')),
         FOREIGN KEY (announcement_id) REFERENCES announcements(id),
         FOREIGN KEY (user_id) REFERENCES users(id)

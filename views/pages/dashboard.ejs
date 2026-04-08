@@ -785,130 +785,150 @@
         </div>
 
 
-        <!-- ══ ANNOUNCEMENTS FEED ══ -->
-        <div
-            class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col col-span-1 md:col-span-1">
+<!-- ══ ANNOUNCEMENTS FEED (Facebook-style) ══ -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col col-span-1 md:col-span-1">
             <div class="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-[#273F4F] shrink-0"></div>
                 <h2 class="font-bold text-[#273F4F] text-sm uppercase tracking-wide">Announcements</h2>
                 <span style="margin-left:auto;font-size:10px;color:#9CA3AF;">React or comment below</span>
             </div>
 
-            <!-- Mobile-friendly height -->
-            <div class="ann-feed-container flex-1 overflow-y-auto"
-                style="height:auto;max-height:60vh;padding:12px;box-sizing:border-box;min-width:0;width:100%;scroll-behavior:smooth;">
-                <% if (typeof announcements !=='undefined' && announcements && announcements.length> 0) { %>
+            <div id="ann-feed-scroll" class="flex-1" style="height:auto;max-height:80vh;min-height:300px;overflow-y:auto;padding:10px 0;background:#F0F2F5;">
+                <% if (typeof announcements !== 'undefined' && announcements && announcements.length > 0) { %>
                     <% announcements.forEach(function(ann) { %>
-                        <div class="ann-feed-card">
-                            <!-- Head -->
-                            <div class="ann-feed-head">
-                                <div class="ann-feed-avatar">A</div>
+                        <!-- ── Announcement Card ── -->
+                        <div class="ann-fb-card" style="background:#fff;border-radius:10px;margin:0 8px 10px;box-shadow:0 1px 2px rgba(0,0,0,0.1);">
+                            <!-- Post Header -->
+                            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px;">
+                                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#3A0910);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F1E194;flex-shrink:0;">A</div>
                                 <div>
-                                    <div class="ann-feed-from">CCS Admin</div>
-                                    <div class="ann-feed-time">
-                                        <%= new
-                                            Date(ann.created_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})
-                                            %>
+                                    <div style="font-size:13px;font-weight:700;color:#050505;">CCS Admin</div>
+                                    <div style="font-size:11px;color:#65676B;">
+                                        <%= new Date(ann.created_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}) %>
+                                        · <span style="font-size:10px;">🌐</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <% if (ann.media_url && ann.media_url !=='' ) { %>
-                                <div class="ann-feed-media">
-                                    <% if (ann.media_type==='video' ) { %>
-                                        <video controls>
-                                            <source src="<%= ann.media_url %>">
-                                        </video>
+                            <!-- Post Content -->
+                            <div style="padding:0 14px 10px;font-size:14px;color:#050505;line-height:1.65;white-space:pre-wrap;word-wrap:break-word;">
+                                <%= ann.message %>
+                            </div>
+
+                            <!-- Media -->
+                            <% if (ann.media_url && ann.media_url !== '') { %>
+                                <div style="border-top:1px solid #E4E6EB;border-bottom:1px solid #E4E6EB;margin-bottom:0;">
+                                    <% if (ann.media_type === 'video') { %>
+                                        <video controls style="width:100%;max-height:300px;object-fit:cover;display:block;"><source src="<%= ann.media_url %>"></video>
+                                    <% } else { %>
+                                        <img src="<%= ann.media_url %>" alt="" loading="lazy" style="width:100%;max-height:400px;object-fit:cover;display:block;">
+                                    <% } %>
+                                </div>
+                            <% } %>
+
+                            <!-- Reaction Summary Row -->
+                            <% var totalReactions = 0; if (ann.reactions) { Object.values(ann.reactions).forEach(function(c){ totalReactions += c; }); } %>
+                            <% if (totalReactions > 0 || ann.commentCount > 0) { %>
+                                <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid #E4E6EB;">
+                                    <% if (totalReactions > 0) { %>
+                                        <div style="display:flex;align-items:center;gap:4px;font-size:13px;color:#65676B;">
+                                            <div style="display:flex;gap:-2px;">
+                                                <% var topEmojis = Object.keys(ann.reactions || {}).slice(0,3); %>
+                                                <% topEmojis.forEach(function(emoji){ %>
+                                                    <span style="font-size:14px;"><%= emoji %></span>
+                                                <% }); %>
+                                            </div>
+                                            <span style="font-size:12px;color:#65676B;"><%= totalReactions %></span>
+                                        </div>
+                                    <% } else { %>
+                                        <div></div>
+                                    <% } %>
+                                    <% if (ann.commentCount > 0) { %>
+                                        <button onclick="scrollToComments('<%= ann.id %>')" style="font-size:12px;color:#65676B;background:none;border:none;cursor:pointer;padding:0;">
+                                            <%= ann.commentCount %> comment<%= ann.commentCount !== 1 ? 's' : '' %>
+                                        </button>
+                                    <% } %>
+                                </div>
+                            <% } %>
+
+                            <!-- Action Buttons (Like / Comment) -->
+                            <div style="display:flex;align-items:center;padding:2px 8px;border-bottom:1px solid #E4E6EB;">
+                                <div style="position:relative;flex:1;">
+                                    <button id="like-btn-<%= ann.id %>"
+                                        onmousedown="startLikeHold('<%= ann.id %>')"
+                                        onmouseup="cancelLikeHold()"
+                                        onmouseleave="cancelLikeHold()"
+                                        ontouchstart="startLikeHold('<%= ann.id %>')"
+                                        ontouchend="cancelLikeHold()"
+                                        onclick="quickLike('<%= ann.id %>', this)"
+                                        style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border:none;background:none;cursor:pointer;border-radius:6px;font-size:13px;font-weight:600;color:<%= ann.userReaction ? '#1877F2' : '#65676B' %>;"
+                                        onmouseover="this.style.background='#F2F2F2'" onmouseout="this.style.background='none'">
+                                        <% if (ann.userReaction) { %>
+                                            <span style="font-size:16px;"><%= ann.userReaction %></span>
+                                            <span style="color:#1877F2;">Liked</span>
                                         <% } else { %>
-                                            <img src="<%= ann.media_url %>" alt="Announcement media" loading="lazy">
-                                            <% } %>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14Z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+                                            <span>Like</span>
+                                        <% } %>
+                                    </button>
+                                    <div id="emoji-picker-<%= ann.id %>" style="display:none;position:absolute;bottom:44px;left:0;background:#fff;border-radius:30px;box-shadow:0 4px 16px rgba(0,0,0,0.2);padding:6px 10px;z-index:100;gap:4px;align-items:center;">
+                                        <% ['👍','❤️','😂','😮','😢','😡','👏'].forEach(function(emoji){ %>
+                                            <button onclick="sendReaction(<%= ann.id %>, '<%= emoji %>', this)" 
+                                                style="font-size:22px;border:none;background:none;cursor:pointer;padding:2px 4px;border-radius:50%;transition:transform 0.1s;line-height:1;"
+                                                onmouseover="this.style.transform='scale(1.3)';this.style.background='#F0F2F5'" 
+                                                onmouseout="this.style.transform='scale(1)';this.style.background='none'"
+                                                title="<%= emoji %>"><%= emoji %></button>
+                                        <% }); %>
+                                    </div>
                                 </div>
-                                <% } %>
-
-                                    <div class="ann-feed-body">
-                                        <%= ann.message %>
-                                    </div>
-
-<!-- Reactions Bar -->
-                                    <div class="ann-reactions-bar" id="reactions-<%= ann.id %>">
-                                        <% var reactionEmojis=['👍','❤️','😂','😮','😢','👏']; %>
-                                            <% reactionEmojis.forEach(function(emoji) { var count=(ann.reactions &&
-                                                ann.reactions[emoji]) ? ann.reactions[emoji] : 0; var
-                                                isReacted=ann.userReaction===emoji; %>
-                                                <% if (count> 0 || isReacted) { %>
-                                                    <button class="react-btn <%= isReacted ? 'reacted' : '' %>"
-                                                        data-ann="<%= ann.id %>" data-emoji="<%= emoji %>"
-                                                        onclick="sendReaction(<%= ann.id %>, '<%= emoji %>', this)">
-                                                        <%= emoji %> <span class="react-count">
-                                                                <%= count %>
-                                                            </span>
-                                                    </button>
-                                                <% } %>
-                                            <% }); %>
-                                                <div class="react-add-wrap">
-                                                    <button class="react-add-btn"
-                                                        onclick="toggleReactPicker(<%= ann.id %>, event)"
-                                                        title="Add reaction">😊</button>
-                                                    <div class="react-picker" id="rp-<%= ann.id %>">
-                                                        <div class="react-picker-grid">
-                                                            <% reactionEmojis.forEach(function(emoji) { %>
-                                                                <button class="react-pick-btn"
-                                                                    onclick="sendReaction(<%= ann.id %>, '<%= emoji %>'); closeReactPicker(<%= ann.id %>)">
-                                                                    <%= emoji %>
-                                                                </button>
-                                                            <% }); %>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                    </div>
-                        </div>
-
-                        <!-- Facebook-style Comments Section -->
-                        <div class="comments-section" style="padding:10px 14px 14px;background:#fff;border-top:1px solid #E8E3DD;margin-top:2px;">
-                            <!-- Comment count -->
-                            <div style="font-size:12px;font-weight:600;color:#65676B;margin-bottom:10px;padding-left:2px;">
-                                <%= ann.commentCount %> comment<%= ann.commentCount !==1 ? 's' : '' %>
-                            </div>
-                            
-                            <!-- Comments list -->
-                            <div id="comments-list-<%= ann.id %>" style="max-height:200px;overflow-y:auto;margin-bottom:12px;">
-                            </div>
-                            
-                            <!-- Action buttons line -->
-                            <div style="display:flex;gap:16px;padding:8px 0;border-top:1px solid #E8E3DD;margin-bottom:10px;">
-                                <button style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px;background:transparent;border:none;border-radius:4px;font-size:12px;font-weight:600;color:#65676B;cursor:pointer;" onclick="likeComment(<%= ann.id %>)">
-                                    <span>👍</span> Like
-                                </button>
-                                <button style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px;background:transparent;border:none;border-radius:4px;font-size:12px;font-weight:600;color:#65676B;cursor:pointer;" onclick="focusReply(<%= ann.id %>)">
-                                    <span>💬</span> Reply
+                                <button onclick="focusCommentInput('<%= ann.id %>')"
+                                    style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border:none;background:none;cursor:pointer;border-radius:6px;font-size:13px;font-weight:600;color:#65676B;"
+                                    onmouseover="this.style.background='#F2F2F2'" onmouseout="this.style.background='none'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                    <span>Comment</span>
                                 </button>
                             </div>
-                            
-                            <!-- Input area -->
-                            <div style="display:flex;gap:8px;align-items:flex-start;">
-                                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#8B1A24);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">
-                                    <%= (user.first_name ? user.first_name[0] : '') + (user.last_name ? user.last_name[0] : '') %>
-                                </div>
-                                <div style="flex:1;position:relative;">
-                                    <input type="text" id="cinput-<%= ann.id %>"
-                                        placeholder="Write a comment..."
-                                        style="width:100%;padding:10px 14px;border:1px solid #CCD0D5;border-radius:20px;font-size:13px;background:#F0F2F5;outline:none;box-sizing:border-box;"
-                                        onkeydown="if(event.key==='Enter')postComment(<%= ann.id %>)">
-                                    <button onclick="postComment(<%= ann.id %>)"
-                                        style="position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:6px 12px;background:#5B0E14;color:#fff;border:none;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;">Post</button>
+
+                            <!-- Comments Section -->
+                            <div id="comments-section-<%= ann.id %>" style="padding:8px 12px 10px;">
+                                <div id="comments-list-<%= ann.id %>" style="max-height:280px;overflow-y:auto;padding-right:2px;"></div>
+                                <div style="display:flex;gap:8px;align-items:flex-start;margin-top:8px;" id="comment-input-row-<%= ann.id %>">
+                                    <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#8B1A24);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;">
+                                        <% if (user.profile_picture && user.profile_picture !== '') { %>
+                                            <img src="<%= user.profile_picture %>" style="width:100%;height:100%;object-fit:cover;">
+                                        <% } else { %>
+                                            <%= ((user.first_name||'')[0]||'') + ((user.last_name||'')[0]||'') %>
+                                        <% } %>
+                                    </div>
+                                    <div style="flex:1;position:relative;">
+                                        <div style="background:#F0F2F5;border-radius:20px;display:flex;align-items:center;padding:0 10px 0 14px;">
+                                            <input type="text" id="cinput-<%= ann.id %>"
+                                                placeholder="Write a comment…"
+                                                style="flex:1;border:none;background:none;font-size:13px;padding:9px 0;outline:none;color:#050505;font-family:inherit;"
+                                                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();postComment(<%= ann.id %>)}"
+                                                onfocus="document.getElementById('comment-send-<%= ann.id %>').style.opacity='1'"
+                                                onblur="setTimeout(function(){document.getElementById('comment-send-<%= ann.id %>').style.opacity='0'},200)">
+                                            <button id="comment-send-<%= ann.id %>" 
+                                                onclick="postComment(<%= ann.id %>)"
+                                                style="opacity:0;border:none;background:none;cursor:pointer;padding:4px;border-radius:50%;transition:opacity 0.15s,background 0.15s;"
+                                                onmouseover="this.style.background='#E4E6EB'" onmouseout="this.style.background='none'">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5B0E14" width="20" height="20"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg>
+                                            </button>
+                                        </div>
+                                        <div style="font-size:11px;color:#65676B;padding:2px 14px 0;">Press Enter to post</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <% }); %>
-                            <% } else { %>
-                                <div class="flex flex-col items-center justify-center py-16 gap-3">
-                                    <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center"
-                                        style="font-size:24px;">📢</div>
-                                    <p class="text-sm font-medium text-gray-400">No announcements yet</p>
-                                </div>
-                                <% } %>
+                    <% }); %>
+                <% } else { %>
+                    <div style="padding:48px 24px;text-align:center;color:#65676B;">
+                        <div style="font-size:32px;margin-bottom:8px;">📢</div>
+                        <p style="font-size:14px;font-weight:600;color:#4B5563;margin:0;">No announcements yet</p>
+                    </div>
+                <% } %>
             </div>
-        </div>
+</div>
 
 
         <!-- ══ RULES & REGULATIONS ══ -->
@@ -1187,4 +1207,165 @@
     function escHtml(str) {
         return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
+
+    // Facebook-style functions
+    (function(){
+        // Load all comments on page load
+        var annIds = [<% if (typeof announcements !== 'undefined' && announcements) { announcements.forEach(function(a,i){ %><%= a.id %><%= i < announcements.length-1 ? ',' : '' %><% }); } %>];
+        annIds.forEach(function(id){ loadComments(id); });
+
+        window.loadComments = async function(annId) {
+            try {
+                const res = await fetch('/announcements/' + annId + '/comments');
+                const comments = await res.json();
+                renderComments(annId, comments);
+            } catch(e) { console.error('Error loading comments', e); }
+        };
+
+        window.renderComments = function(annId, comments) {
+            const list = document.getElementById('comments-list-' + annId);
+            if (!list) return;
+            if (!comments || comments.length === 0) {
+                list.innerHTML = '';
+                return;
+            }
+            const userAvatar = '<% if (user.profile_picture && user.profile_picture !== "") { %><img src="<%= user.profile_picture %>"><% } else { %><%= ((user.first_name||"")[0]||"") + ((user.last_name||"")[0]||"") %><% } %>';
+            
+            list.innerHTML = comments.map(function(c) {
+                const initials = ((c.first_name||'')[0]||'') + ((c.last_name||'')[0]||'');
+                const avatarContent = c.profile_picture ? '<img src="' + c.profile_picture + '">' : initials.toUpperCase();
+                const commentText = c.message || c.comment || '';
+                const timeAgo = getTimeAgo(c.created_at);
+                const replyHtml = c.reply
+                    ? '<div style="margin-top:6px;margin-left:8px;padding:7px 12px;background:linear-gradient(135deg,#ECFDF5,#D1FAE5);border-radius:0 12px 12px 12px;border-left:3px solid #059669;"><div style="font-size:10px;font-weight:700;color:#059669;">↳ Admin replied</div><div style="font-size:12px;color:#065F46;margin-top:3px;">' + esc(c.reply) + '</div></div>'
+                    : '';
+                
+                return '<div style="display:flex;gap:8px;margin-bottom:6px;align-items:flex-start;">' +
+                    '<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#8B1A24);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;">' + avatarContent + '</div>' +
+                    '<div style="flex:1;min-width:0;">' +
+                        '<div style="background:#F0F2F5;border-radius:0 18px 18px 18px;padding:8px 12px;display:inline-block;max-width:100%;">' +
+                            '<div style="font-size:12px;font-weight:700;color:#050505;margin-bottom:2px;">' + esc(c.first_name) + ' ' + esc(c.last_name) + '</div>' +
+                            '<div style="font-size:13px;color:#050505;line-height:1.4;word-break:break-word;">' + esc(commentText) + '</div>' +
+                        '</div>' +
+                        '<div style="display:flex;gap:12px;padding:3px 6px 0;font-size:11px;font-weight:700;">' +
+                            '<button style="background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;color:#65676B;padding:0;font-family:inherit;" onclick="this.style.color=this.style.color===\'#1877F2\'?\'#65676B\':\'#1877F2\'">Like</button>' +
+                            '<button style="background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;color:#65676B;padding:0;font-family:inherit;" onclick="toggleReplyInput(' + c.id + ', \'' + annId + '\')">Reply</button>' +
+                            '<span style="color:#A8AAAD;font-weight:400;">' + timeAgo + '</span>' +
+                        '</div>' +
+                        replyHtml +
+                        '<div id="reply-wrap-' + c.id + '" style="display:none;margin-top:6px;margin-left:40px;align-items:flex-start;gap:7px;">' +
+                            '<div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#8B1A24);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;">' + userAvatar + '</div>' +
+                            '<input id="reply-input-' + c.id + '" placeholder="Write a reply…" style="flex:1;border:none;background:#F0F2F5;border-radius:15px;padding:7px 12px;font-size:12px;outline:none;font-family:inherit;color:#050505;" onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();postReply(' + c.id + ',\'' + annId + '\')}">' +
+                            '<button onclick="postReply(' + c.id + ',\'' + annId + '\')" style="border:none;background:none;cursor:pointer;padding:4px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5B0E14" width="18" height="18"><path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/></svg></button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        };
+
+        window.toggleReplyInput = function(commentId, annId) {
+            const wrap = document.getElementById('reply-wrap-' + commentId);
+            if (!wrap) return;
+            const isActive = wrap.style.display === 'flex';
+            document.querySelectorAll('[id^="reply-wrap-"]').forEach(function(w) { w.style.display = 'none'; });
+            if (!isActive) {
+                wrap.style.display = 'flex';
+                const inp = document.getElementById('reply-input-' + commentId);
+                if (inp) inp.focus();
+            }
+        };
+
+        window.postReply = async function(commentId, annId) {
+            const input = document.getElementById('reply-input-' + commentId);
+            const msg = input.value.trim();
+            if (!msg) return;
+            input.value = '';
+            document.getElementById('reply-wrap-' + commentId).style.display = 'none';
+            try {
+                const res = await fetch('/announcements/' + annId + '/comment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg })
+                });
+                const data = await res.json();
+                if (data.success) { loadComments(annId); }
+            } catch(e) {}
+        };
+
+        var _holdTimer = null;
+        window.startLikeHold = function(annId) {
+            _holdTimer = setTimeout(function() {
+                showEmojiPicker(annId);
+                _holdTimer = null;
+            }, 500);
+        };
+        window.cancelLikeHold = function() {
+            if (_holdTimer) { clearTimeout(_holdTimer); _holdTimer = null; }
+        };
+        window.quickLike = async function(annId, btn) {
+            if (_holdTimer === null && document.getElementById('emoji-picker-' + annId).style.display === 'flex') return;
+            await sendReaction(annId, '👍', btn);
+        };
+
+        window.showEmojiPicker = function(annId) {
+            document.querySelectorAll('[id^="emoji-picker-"]').forEach(function(p) { p.style.display = 'none'; });
+            const picker = document.getElementById('emoji-picker-' + annId);
+            if (picker) { picker.style.display = 'flex'; }
+        };
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('[id^="emoji-picker-"]') && !e.target.closest('[id^="like-btn-"]')) {
+                document.querySelectorAll('[id^="emoji-picker-"]').forEach(function(p) { p.style.display = 'none'; });
+            }
+        });
+
+        window.sendReaction = async function(annId, emoji, btn) {
+            document.querySelectorAll('[id^="emoji-picker-"]').forEach(function(p) { p.style.display = 'none'; });
+            try {
+                const res = await fetch('/announcements/' + annId + '/react', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ emoji: emoji })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const likeBtn = document.getElementById('like-btn-' + annId);
+                    if (likeBtn) {
+                        if (data.action === 'removed') {
+                            likeBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14Z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg><span>Like</span>';
+                            likeBtn.style.color = '#65676B';
+                        } else {
+                            likeBtn.innerHTML = '<span style="font-size:16px;">' + emoji + '</span><span style="color:#1877F2;">Liked</span>';
+                            likeBtn.style.color = '#1877F2';
+                        }
+                    }
+                }
+            } catch(e) {}
+        };
+
+        window.focusCommentInput = function(annId) {
+            const input = document.getElementById('cinput-' + annId);
+            if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            const btn = document.getElementById('comment-send-' + annId);
+            if (btn) btn.style.opacity = '1';
+        };
+
+        window.scrollToComments = function(annId) {
+            const section = document.getElementById('comments-section-' + annId);
+            if (section) section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+
+        window.esc = function(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        };
+        window.getTimeAgo = function(dateStr) {
+            if (!dateStr) return '';
+            var secs = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+            if (secs < 60) return 'Just now';
+            if (secs < 3600) return Math.floor(secs/60) + 'm';
+            if (secs < 86400) return Math.floor(secs/3600) + 'h';
+            if (secs < 604800) return Math.floor(secs/86400) + 'd';
+            return new Date(dateStr).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        };
+    })();
 </script>
