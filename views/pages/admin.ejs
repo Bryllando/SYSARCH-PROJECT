@@ -532,6 +532,14 @@
 
     .ann-card-body {
         padding: 12px 16px 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .ann-card-body::-webkit-scrollbar {
+        display: none;
     }
 
     .ann-card-msg {
@@ -648,8 +656,14 @@
     .ann-comments-list {
         padding: 4px 16px 12px;
         display: none;
-        max-height: 220px;
+        max-height: 300px;
         overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .ann-comments-list::-webkit-scrollbar {
+        display: none;
     }
 
     .ann-comments-list.open {
@@ -660,6 +674,28 @@
         display: flex;
         gap: 8px;
         margin-bottom: 8px;
+    }
+
+    .adm-comment-reply {
+        margin-top: 8px;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+        border-radius: 0 10px 10px 10px;
+        border-left: 3px solid #059669;
+    }
+    .adm-comment-reply-header {
+        font-size: 10px;
+        font-weight: 700;
+        color: #059669;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .adm-comment-reply-msg {
+        font-size: 12px;
+        color: #065F46;
+        line-height: 1.5;
     }
 
     .adm-comment-avatar {
@@ -709,11 +745,171 @@
         margin-top: 2px;
     }
 
+    .adm-reply-btn {
+        margin-top: 6px;
+        padding: 4px 8px;
+        font-size: 10px;
+        font-weight: 600;
+        background: transparent;
+        color: #059669;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+    }
+    .adm-reply-btn:hover {
+        color: #047857;
+        text-decoration: underline;
+    }
+
     .adm-empty {
         padding: 32px 24px;
         text-align: center;
         color: #C4BDB6;
         font-size: 13px;
+    }
+
+    .adm-reply-form {
+        display: none;
+        margin-top: 8px;
+        gap: 6px;
+    }
+    .adm-reply-form.active {
+        display: flex;
+    }
+    .adm-reply-input {
+        flex: 1;
+        padding: 6px 10px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 18px;
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+    }
+    .adm-reply-input:focus {
+        border-color: #059669;
+    }
+    .adm-reply-submit {
+        padding: 6px 14px;
+        background: #059669;
+        color: #fff;
+        border: none;
+        border-radius: 18px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .adm-reply-submit:hover {
+        background: #047857;
+    }
+    .adm-reply-cancel {
+        padding: 6px 10px;
+        background: #F3F0EC;
+        color: #6B7280;
+        border: 1px solid #E8E3DD;
+        border-radius: 18px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Reply Modal */
+    .reply-comment-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+    }
+    .reply-comment-modal.open {
+        display: flex;
+    }
+    .reply-comment-card {
+        background: #fff;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 400px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .reply-comment-header {
+        background: linear-gradient(135deg, #059669, #047857);
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .reply-comment-header h3 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: #fff;
+    }
+    .reply-comment-close {
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: #fff;
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .reply-comment-body {
+        padding: 16px;
+    }
+    .reply-comment-preview {
+        background: #F7F5F2;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 12px;
+        font-size: 12px;
+        color: #4B5563;
+    }
+    .reply-comment-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 80px;
+        box-sizing: border-box;
+    }
+    .reply-comment-textarea:focus {
+        outline: none;
+        border-color: #059669;
+    }
+    .reply-comment-actions {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px 16px;
+    }
+    .reply-comment-cancel {
+        flex: 1;
+        padding: 10px;
+        background: #F3F0EC;
+        color: #374151;
+        border: 1px solid #E8E3DD;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .reply-comment-submit {
+        flex: 2;
+        padding: 10px;
+        background: linear-gradient(135deg, #059669, #047857);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
     }
 </style>
 
@@ -1011,7 +1207,7 @@
             <span class="adm-feed-title">📣 Posted Announcements (<%= announcements.length %>)</span>
         </div>
 
-        <% if (announcements.length> 0) { %>
+        <% if (announcements.length > 0) { %>
             <% announcements.forEach(function(ann) { %>
                 <div class="ann-card">
                     <!-- Head -->
@@ -1063,17 +1259,24 @@
                                 </p>
                             </div>
 
-                            <!-- Reactions (read-only view for admin) -->
+                            <!-- Reactions (interactive for admin) -->
                             <div class="ann-card-reactions" id="adm-reactions-<%= ann.id %>">
                                 <% var reactionEmojis=['👍','❤️','😂','😮','😢','👏']; %>
-                                    <% reactionEmojis.forEach(function(emoji) { var count=(ann.reactions &&
-                                        ann.reactions[emoji]) ? ann.reactions[emoji] : 0; if (count> 0) { %>
-                                        <span class="react-pill">
-                                            <%= emoji %> <span class="rcount">
-                                                    <%= count %>
-                                                </span>
-                                        </span>
-                                        <% } }); %>
+                                    <% reactionEmojis.forEach(function(emoji) { var count=(ann.reactions && ann.reactions[emoji]) ? ann.reactions[emoji] : 0; if (count > 0) { %>
+                                        <button class="react-pill" data-ann="<%= ann.id %>" data-emoji="<%= emoji %>" onclick="admSendReaction(<%= ann.id %>, '<%= emoji %>', this)">
+                                            <%= emoji %> <span class="rcount"><%= count %></span>
+                                        </button>
+                                    <% } }); %>
+                                    <div class="react-add-wrap">
+                                        <button class="react-pill" onclick="admToggleReactPicker(<%= ann.id %>, event)" title="Add reaction">😊</button>
+                                        <div class="react-picker" id="adm-rp-<%= ann.id %>" style="display:none;position:absolute;background:#fff;border:1px solid #E8E3DD;border-radius:8px;padding:6px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;">
+                                            <div style="display:flex;gap:4px;">
+                                                <% reactionEmojis.forEach(function(emoji) { %>
+                                                    <button style="font-size:16px;padding:4px 6px;border:none;background:none;cursor:pointer;border-radius:4px;" onclick="admSendReaction(<%= ann.id %>, '<%= emoji %>'); document.getElementById('adm-rp-<%= ann.id %>').style.display='none'"><%= emoji %></button>
+                                                <% }); %>
+                                            </div>
+                                        </div>
+                                    </div>
                             </div>
 
                             <!-- Comments section -->
@@ -1085,7 +1288,7 @@
                                             d="M1 8.74c0 .983.713 1.825 1.69 1.943L3 10.72v2.03a.75.75 0 0 0 1.28.53l1.5-1.5.31-.03H9a2.26 2.26 0 0 0 2.25-2.25v-5.5A2.25 2.25 0 0 0 9 1.75H4A2.25 2.25 0 0 0 1.75 4v4.74H1Z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    <span id="adm-ctoggle-<%= ann.id %>">View comments</span>
+                                    <span id="adm-ctoggle-<%= ann.id %>"><%= ann.commentCount %> comment<%= ann.commentCount !== 1 ? 's' : '' %></span>
                                 </button>
                                 <div class="ann-comments-list" id="adm-comments-body-<%= ann.id %>">
                                     <div id="adm-comments-list-<%= ann.id %>">
@@ -1106,6 +1309,29 @@
                         <% } %>
     </div>
 </div>
+
+<!-- Admin Reply Comment Modal -->
+<div id="replyCommentModal" class="reply-comment-modal" onclick="if(event.target===this) closeReplyCommentModal()">
+    <div class="reply-comment-card">
+        <div class="reply-comment-header">
+            <h3>💬 Reply to Comment</h3>
+            <button class="reply-comment-close" onclick="closeReplyCommentModal()">✕</button>
+        </div>
+        <div class="reply-comment-body">
+            <div class="reply-comment-preview" id="replyCommentPreview">
+                Loading comment...
+            </div>
+            <textarea class="reply-comment-textarea" id="replyCommentText" placeholder="Type your reply... The student will be notified." maxlength="500"></textarea>
+            <div style="font-size:11px;color:#9CA3AF;margin-top:4px;text-align:right;"><span id="replyCharCount">0</span>/500</div>
+        </div>
+        <div class="reply-comment-actions">
+            <button class="reply-comment-cancel" onclick="closeReplyCommentModal()">Cancel</button>
+            <button class="reply-comment-submit" onclick="submitReplyComment()">Send Reply</button>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="replyCommentId">
 
 <!-- Search + Sit-in modals (kept from original) -->
 <div id="searchModal" class="modal-overlay" onclick="if(event.target===this) closeSearchModal()">
@@ -1464,12 +1690,27 @@
                         const avatarHtml = c.profile_picture
                             ? `<img src="${c.profile_picture}">`
                             : initials.toUpperCase();
+                        const commentText = c.comment || c.message || '';
+                        const replyHtml = c.reply ? `<div class="adm-comment-reply"><div class="adm-comment-reply-header">↳ Admin Reply</div><div class="adm-comment-reply-msg">${c.reply.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div></div>` : '';
+                        const replyFormHtml = `
+                            <div class="adm-reply-form" id="reply-form-${c.id}">
+                                <input type="text" class="adm-reply-input" id="reply-input-${c.id}" 
+                                    placeholder="Write a reply..." 
+                                    onkeydown="handleReplyKey(event, ${c.id})"
+                                    maxlength="500">
+                                <button type="button" class="adm-reply-submit" onclick="submitReplyInline(${c.id})">Reply</button>
+                                <button type="button" class="adm-reply-cancel" onclick="cancelReply(${c.id})">Cancel</button>
+                            </div>
+                        `;
                         return `<div class="adm-comment-item">
                             <div class="adm-comment-avatar">${avatarHtml}</div>
                             <div class="adm-comment-bubble">
                                 <div class="adm-comment-name">${c.first_name} ${c.last_name}</div>
-                                <div class="adm-comment-msg">${c.message.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+                                <div class="adm-comment-msg">${commentText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
                                 <div class="adm-comment-time">${new Date(c.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                                ${replyHtml}
+                                ${!c.reply ? `<button class="adm-reply-btn" id="reply-btn-${c.id}" onclick="admReplyComment(${c.id}, '${c.first_name} ${c.last_name}')">Reply</button>` : ''}
+                                ${replyFormHtml}
                             </div>
                         </div>`;
                     }).join('');
@@ -1519,8 +1760,154 @@
             setTimeout(() => openSitinModal(data.id, data.id_number, name, (data.remaining_sessions ?? 30) + ' sessions'), 150);
         } catch (e) { errEl.classList.add('visible'); }
     }
+
+    // ── Admin: React to announcements ──
+    async function admSendReaction(annId, emoji, btn) {
+        try {
+            const res = await fetch(`/announcements/${annId}/react`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ emoji })
+            });
+            const data = await res.json();
+            if (data.success) admRefreshReactions(annId, emoji, data.action);
+        } catch (e) { }
+    }
+
+    function admRefreshReactions(annId, emoji, action) {
+        const container = document.getElementById('adm-reactions-' + annId);
+        if (!container) return;
+        const existingBtn = container.querySelector(`[data-emoji="${emoji}"][data-ann="${annId}"]`);
+        const addWrap = container.querySelector('.react-add-wrap');
+
+        if (action === 'removed') {
+            if (existingBtn) {
+                const count = parseInt(existingBtn.querySelector('.rcount').textContent) - 1;
+                if (count <= 0) existingBtn.remove();
+                else { existingBtn.querySelector('.rcount').textContent = count; }
+            }
+        } else if (action === 'added') {
+            if (existingBtn) {
+                existingBtn.querySelector('.rcount').textContent = parseInt(existingBtn.querySelector('.rcount').textContent) + 1;
+            } else {
+                const newBtn = document.createElement('button');
+                newBtn.className = 'react-pill';
+                newBtn.dataset.ann = annId;
+                newBtn.dataset.emoji = emoji;
+                newBtn.onclick = function() { admSendReaction(annId, emoji, this); };
+                newBtn.innerHTML = `${emoji} <span class="rcount">1</span>`;
+                container.insertBefore(newBtn, addWrap);
+            }
+        } else if (action === 'changed') {
+            if (existingBtn) {
+                existingBtn.querySelector('.rcount').textContent = parseInt(existingBtn.querySelector('.rcount').textContent || '0') + 1;
+            }
+        }
+    }
+
+    function admToggleReactPicker(annId, e) {
+        e.stopPropagation();
+        const picker = document.getElementById('adm-rp-' + annId);
+        const wasOpen = picker.style.display === 'block';
+        document.querySelectorAll('.react-picker').forEach(p => p.style.display = 'none');
+        if (!wasOpen) picker.style.display = 'block';
+    }
+    document.addEventListener('click', () => document.querySelectorAll('.react-picker').forEach(p => p.style.display = 'none'));
+
+    // ── Admin Reply to Comment (Facebook style - inline) ──
+    let currentReplyingTo = null;
+
+    function admReplyComment(commentId, userName) {
+        // Close any other open reply forms
+        document.querySelectorAll('.adm-reply-form.active').forEach(f => f.classList.remove('active'));
+        document.querySelectorAll('.adm-reply-btn').forEach(b => b.style.display = '');
+        
+        currentReplyingTo = commentId;
+        
+        // Show reply form for this comment
+        const replyForm = document.getElementById('reply-form-' + commentId);
+        if (replyForm) {
+            replyForm.classList.add('active');
+            const input = document.getElementById('reply-input-' + commentId);
+            if (input) {
+                input.focus();
+            }
+        }
+        
+        // Hide the reply button
+        const replyBtn = document.getElementById('reply-btn-' + commentId);
+        if (replyBtn) {
+            replyBtn.style.display = 'none';
+        }
+    }
+
+    function cancelReply(commentId) {
+        const replyForm = document.getElementById('reply-form-' + commentId);
+        if (replyForm) {
+            replyForm.classList.remove('active');
+            const input = document.getElementById('reply-input-' + commentId);
+            if (input) input.value = '';
+        }
+        
+        const replyBtn = document.getElementById('reply-btn-' + commentId);
+        if (replyBtn) {
+            replyBtn.style.display = '';
+        }
+        
+        currentReplyingTo = null;
+    }
+
+    async function submitReplyInline(commentId) {
+        const input = document.getElementById('reply-input-' + commentId);
+        const message = input.value.trim();
+        
+        if (!message) {
+            alert('Please enter a reply message.');
+            return;
+        }
+        
+        try {
+            const res = await fetch('/admin/comments/' + commentId + '/reply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reply_message: message })
+            });
+            const data = await res.json();
+            
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // Reload comments to show the new reply
+                admCommentsLoaded[commentId] = false;
+                const body = document.getElementById('adm-comments-body-' + commentId);
+                if (body && body.classList.contains('open')) {
+                    // Find parent announcement and reload comments
+                    const annCard = body.closest('.ann-card');
+                    if (annCard) {
+                        const annId = annCard.dataset.annId || commentId;
+                        admToggleComments(annCard.querySelector('.ann-card') ? 
+                            Array.from(document.querySelectorAll('.ann-card')).indexOf(annCard) + 1 : 1);
+                    }
+                }
+                // Simply reload the page or trigger comment reload
+                location.reload();
+            }
+        } catch (e) {
+            console.error('Reply error:', e);
+            alert('Failed to send reply. Please try again.');
+        }
+    }
+
+    // Handle Enter key in reply input
+    function handleReplyKey(e, commentId) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submitReplyInline(commentId);
+        }
+    }
+
     document.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return;
-        closeSearchModal(); closeSitinModal();
+        closeSearchModal(); closeSitinModal(); closeReplyCommentModal();
     });
 </script>

@@ -178,6 +178,9 @@ router.post('/announcements/:id/react', isAuthenticated, (req, res) => {
 
 // ─── Announcement Comments — with profanity check ─────────────────────────────
 router.post('/announcements/:id/comment', isAuthenticated, (req, res) => {
+    const annId = req.params.id;
+    console.log('Comment route hit - announcement ID:', annId, 'user:', req.session.user?.id);
+    
     const { message } = req.body;
     if (!message || !message.trim()) return res.json({ error: 'Comment cannot be empty.' });
 
@@ -185,9 +188,12 @@ router.post('/announcements/:id/comment', isAuthenticated, (req, res) => {
         return res.json({ error: 'Your comment contains inappropriate language. Please keep it respectful.' });
     }
 
-    db.run(`INSERT INTO announcement_comments (announcement_id, user_id, message) VALUES (?, ?, ?)`,
-        [req.params.id, req.session.user.id, message.trim()], function (err) {
-            if (err) return res.json({ error: 'Failed to post comment.' });
+    db.run(`INSERT INTO announcement_comments (announcement_id, user_id, comment) VALUES (?, ?, ?)`,
+        [annId, req.session.user.id, message.trim()], function (err) {
+            if (err) {
+                console.error('Comment insert error:', err);
+                return res.json({ error: 'Failed to post comment.' });
+            }
             db.get(`SELECT c.*, u.first_name, u.last_name, u.profile_picture FROM announcement_comments c JOIN users u ON c.user_id = u.id WHERE c.id=?`,
                 [this.lastID], (e2, comment) => res.json({ success: true, comment }));
         });

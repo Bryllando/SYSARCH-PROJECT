@@ -370,6 +370,14 @@
     .ann-comments-body {
         padding: 4px 14px 14px;
         display: none;
+        max-height: 300px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .ann-comments-body::-webkit-scrollbar {
+        display: none;
     }
 
     .ann-comments-body.open {
@@ -420,6 +428,25 @@
     .ann-comment-msg {
         font-size: 12px;
         color: #4B5563;
+        line-height: 1.5;
+    }
+
+    .ann-comment-reply {
+        margin-top: 8px;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+        border-radius: 0 10px 10px 10px;
+        border-left: 3px solid #059669;
+    }
+    .ann-comment-reply-header {
+        font-size: 10px;
+        font-weight: 700;
+        color: #059669;
+        margin-bottom: 4px;
+    }
+    .ann-comment-reply-msg {
+        font-size: 12px;
+        color: #065F46;
         line-height: 1.5;
     }
 
@@ -858,12 +885,15 @@
         list.innerHTML = comments.map(c => {
             const initials = ((c.first_name || '')[0] || '') + ((c.last_name || '')[0] || '');
             const avatarHtml = c.profile_picture ? `<img src="${c.profile_picture}">` : initials.toUpperCase();
+            const commentText = c.comment || c.message || '';
+            const replyHtml = c.reply ? `<div class="ann-comment-reply"><div class="ann-comment-reply-header">↳ Admin Reply</div><div class="ann-comment-reply-msg">${escHtml(c.reply)}</div></div>` : '';
             return `<div class="ann-comment-item">
             <div class="ann-comment-avatar">${avatarHtml}</div>
             <div class="ann-comment-bubble">
                 <div class="ann-comment-name">${c.first_name} ${c.last_name}</div>
-                <div class="ann-comment-msg">${escHtml(c.message)}</div>
+                <div class="ann-comment-msg">${escHtml(commentText)}</div>
                 <div class="ann-comment-time">${new Date(c.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                ${replyHtml}
             </div>
         </div>`;
         }).join('');
@@ -872,23 +902,38 @@
     async function postComment(annId) {
         const input = document.getElementById('cinput-' + annId);
         const message = input.value.trim();
-        if (!message) return;
+        if (!message) {
+            alert('Please enter a comment message.');
+            return;
+        }
+        
+        console.log('Posting comment for announcement:', annId, 'message:', message);
+        
         try {
             const res = await fetch(`/announcements/${annId}/comment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message })
             });
+            
+            console.log('Response status:', res.status);
             const data = await res.json();
+            console.log('Response data:', data);
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
             if (data.success && data.comment) {
                 input.value = '';
                 const c = data.comment;
                 const list = document.getElementById('comments-list-' + annId);
                 const initials = ((c.first_name || '')[0] || '') + ((c.last_name || '')[0] || '');
                 const avatarHtml = c.profile_picture ? `<img src="${c.profile_picture}">` : initials.toUpperCase();
+                const commentText = c.comment || c.message || '';
                 const div = document.createElement('div');
                 div.className = 'ann-comment-item';
-                div.innerHTML = `<div class="ann-comment-avatar">${avatarHtml}</div><div class="ann-comment-bubble"><div class="ann-comment-name">${c.first_name} ${c.last_name}</div><div class="ann-comment-msg">${escHtml(c.message)}</div><div class="ann-comment-time">Just now</div></div>`;
+                div.innerHTML = `<div class="ann-comment-avatar">${avatarHtml}</div><div class="ann-comment-bubble"><div class="ann-comment-name">${c.first_name} ${c.last_name}</div><div class="ann-comment-msg">${escHtml(commentText)}</div><div class="ann-comment-time">Just now</div></div>`;
                 list.appendChild(div);
                 const toggle = document.getElementById('ctoggle-' + annId);
                 if (toggle) {
@@ -897,7 +942,10 @@
                     toggle.textContent = `${newCount} comment${newCount !== 1 ? 's' : ''}`;
                 }
             }
-        } catch (e) { }
+        } catch (e) {
+            console.error('Comment error:', e);
+            alert('Failed to post comment. Please try again.');
+        }
     }
 
     function escHtml(str) {

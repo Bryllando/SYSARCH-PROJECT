@@ -446,8 +446,7 @@
                 <p class="chart-title">🏫 Lab Usage</p>
                 <% var labTotal=labStats.reduce(function(a,b){ return a+b.count; },0); %>
                     <% labStats.forEach(function(lab) { var pct=labTotal> 0 ? Math.round((lab.count/labTotal)*100) : 0;
-                        var colors = {'524':'#5B0E14','526':'#273F4F','528':'#059669','530':'#D97706','Mac
-                        Lab':'#7C3AED'};
+                        var colors = {'524':'#5B0E14','526':'#273F4F','528':'#059669','530':'#D97706','Mac Lab':'#7C3AED'};
                         var color = colors[lab.lab_room] || '#9CA3AF';
                         %>
                         <div class="bar-row">

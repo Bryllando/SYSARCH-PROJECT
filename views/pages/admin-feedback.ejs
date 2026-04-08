@@ -60,53 +60,6 @@
         margin: 0 0 6px;
     }
 
-    /* Stats */
-    .fb-stats {
-        display: flex;
-        gap: 12px;
-        padding: 16px 32px;
-        flex-wrap: wrap;
-    }
-
-    .fb-stat {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 18px;
-        background: #fff;
-        border-radius: 14px;
-        border: 1px solid #E8E3DD;
-        flex: 1;
-        min-width: 120px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-    }
-
-    .fb-stat-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .fb-stat-val {
-        font-family: 'Syne', sans-serif;
-        font-size: 24px;
-        font-weight: 800;
-        line-height: 1;
-    }
-
-    .fb-stat-label {
-        font-size: 11px;
-        color: #9CA3AF;
-        font-weight: 500;
-        margin-top: 2px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
     /* Tabs */
     .fb-tabs {
         display: flex;
@@ -114,7 +67,7 @@
         background: #fff;
         border-bottom: 2px solid #E8E3DD;
         padding: 0 32px;
-        flex-shrink: 0;
+        justify-content: center;
     }
 
     .fb-tab-btn {
@@ -464,130 +417,6 @@
         flex-shrink: 0;
     }
 
-    /* Comments tab */
-    .cmt-section {
-        padding: 0 32px 32px;
-    }
-
-    .cmt-card {
-        background: #fff;
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 2px 16px rgba(39, 63, 79, 0.08);
-        border: 1px solid #E8E3DD;
-    }
-
-    .cmt-item {
-        display: flex;
-        gap: 12px;
-        padding: 16px 20px;
-        border-bottom: 1px solid #F3F0EC;
-        transition: background 0.12s;
-    }
-
-    .cmt-item:last-child {
-        border-bottom: none;
-    }
-
-    .cmt-item:hover {
-        background: #FAF9F7;
-    }
-
-    .cmt-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        background: linear-gradient(135deg, #273F4F, #5B0E14);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 700;
-        color: #F1E194;
-        overflow: hidden;
-    }
-
-    .cmt-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .cmt-bubble {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .cmt-meta {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 4px;
-        flex-wrap: wrap;
-    }
-
-    .cmt-name {
-        font-size: 13px;
-        font-weight: 700;
-        color: #1C2B35;
-    }
-
-    .cmt-ann-tag {
-        font-size: 10px;
-        font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 999px;
-        background: #EFF6FF;
-        color: #1D4ED8;
-        border: 1px solid #BFDBFE;
-        max-width: 200px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .cmt-time {
-        font-size: 10px;
-        color: #C4BDB6;
-        margin-left: auto;
-        flex-shrink: 0;
-    }
-
-    .cmt-msg {
-        font-size: 13px;
-        color: #4B5563;
-        line-height: 1.65;
-        word-break: break-word;
-    }
-
-    .cmt-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 14px 32px;
-        background: #F0EDE8;
-        border-bottom: 1px solid #E2DDD8;
-    }
-
-    .cmt-search-wrap {
-        position: relative;
-    }
-
-    .cmt-search-wrap input {
-        padding: 8px 14px 8px 32px;
-        border: 1.5px solid #D6D0CA;
-        border-radius: 9px;
-        background: #fff;
-        font-size: 12px;
-        color: #1C2B35;
-        outline: none;
-        width: 200px;
-        font-family: 'DM Sans', sans-serif;
-    }
-
     /* Modals */
     .fb-modal-overlay {
         position: fixed;
@@ -683,7 +512,6 @@
 
         .fb-toolbar,
         .fb-header,
-        .fb-stats,
         .fb-tabs,
         aside,
         header,
@@ -709,7 +537,7 @@
             <div>
                 <p class="fb-eyebrow">Admin Panel</p>
                 <h1>Feedback & Comments</h1>
-                <p>Student feedback ratings, comments, and category analytics</p>
+                <p>Student feedback ratings and category analytics</p>
             </div>
             <span
                 style="background:rgba(241,225,148,0.15);border:1px solid rgba(241,225,148,0.3);color:#F1E194;font-size:12px;font-weight:700;padding:6px 14px;border-radius:999px;letter-spacing:0.04em;">
@@ -718,70 +546,17 @@
         </div>
     </div>
 
-    <% const totalFb=feedbacks.length; const rated=feedbacks.filter(f=> parseInt(f.rating) > 0);
-        const avgRating = rated.length > 0 ? (rated.reduce((s, f) => s + parseInt(f.rating), 0) /
+    <% var totalFb=feedbacks.length; var rated=feedbacks.filter(function(f){ return parseInt(f.rating) > 0; });
+        var avgRating = rated.length > 0 ? (rated.reduce(function(s,f){ return s + parseInt(f.rating); }, 0) /
         rated.length).toFixed(1) : '—';
-        const fiveStars = feedbacks.filter(f => parseInt(f.rating) === 5).length;
-        const lowRatings = feedbacks.filter(f => { const r = parseInt(f.rating); return r > 0 && r <= 2; }).length;
-            const noRating=feedbacks.filter(f=> parseInt(f.rating) === 0).length;
-            %>
+        var fiveStars = feedbacks.filter(function(f){ return parseInt(f.rating) === 5; }).length;
+        var lowRatings = feedbacks.filter(function(f){ var r = parseInt(f.rating); return r > 0 && r <= 2; }).length;
+            var noRating=feedbacks.filter(function(f){ return parseInt(f.rating)===0; }).length; %>
 
-            <!-- Stats -->
-            <div class="fb-stats">
-                <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#E8EFF4;">💬</div>
-                    <div>
-                        <div class="fb-stat-val" style="color:#273F4F;">
-                            <%= totalFb %>
-                        </div>
-                        <div class="fb-stat-label">Total</div>
-                    </div>
-                </div>
-                <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#FEF3C7;"><span style="font-size:18px;">⭐</span></div>
-                    <div>
-                        <div class="fb-stat-val" style="color:#D97706;">
-                            <%= avgRating %>
-                        </div>
-                        <div class="fb-stat-label">Avg Rating</div>
-                    </div>
-                </div>
-                <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#ECFDF5;">❤️</div>
-                    <div>
-                        <div class="fb-stat-val" style="color:#059669;">
-                            <%= fiveStars %>
-                        </div>
-                        <div class="fb-stat-label">5-Star</div>
-                    </div>
-                </div>
-                <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#FEF2F2;">⚠️</div>
-                    <div>
-                        <div class="fb-stat-val" style="color:#DC2626;">
-                            <%= lowRatings %>
-                        </div>
-                        <div class="fb-stat-label">Low (1-2★)</div>
-                    </div>
-                </div>
-                <div class="fb-stat">
-                    <div class="fb-stat-icon" style="background:#F3F4F6;">⭕</div>
-                    <div>
-                        <div class="fb-stat-val" style="color:#6B7280;">
-                            <%= noRating %>
-                        </div>
-                        <div class="fb-stat-label">No Rating</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tabs -->
+            <!-- Tabs (centered) -->
             <div class="fb-tabs">
                 <button class="fb-tab-btn active" onclick="switchFbTab('feedback')" id="fbtab-btn-feedback">
                     💬 Feedback Ratings
-                </button>
-                <button class="fb-tab-btn" onclick="switchFbTab('comments')" id="fbtab-btn-comments">
-                    🗨 Announcement Comments
                 </button>
                 <button class="fb-tab-btn" onclick="switchFbTab('analytics')" id="fbtab-btn-analytics">
                     📊 Category Analytics
@@ -836,28 +611,26 @@
                                     </tr>
                                 </thead>
                                 <tbody id="fbBody">
-                                    <% if (feedbacks && feedbacks.length> 0) { %>
-                                        <% feedbacks.forEach(function(f) { const ratingVal=parseInt(f.rating) || 0;
-                                            const initials=((f.first_name || '' )[0] || '' ) + ((f.last_name || '' )[0]
-                                            || '' ); const ratingLabel=ratingVal===5 ? 'Excellent' : ratingVal===4
-                                            ? 'Very Good' : ratingVal===3 ? 'Good' : ratingVal===2 ? 'Fair' :
-                                            ratingVal===1 ? 'Poor' : 'No Rating' ; let stars='' ; for(let s=1; s <=5;
-                                            s++) stars +=s <=ratingVal ? '<span class="star-on">★</span>'
-                                            : '<span class="star-off">★</span>' ; %>
+                                    <% if (feedbacks && feedbacks.length > 0) { %>
+                                        <% feedbacks.forEach(function(f) { var ratingVal=parseInt(f.rating) || 0; var
+                                            initials=((f.first_name||'')[0]||'') + ((f.last_name||'')[0]||''); var
+                                            ratingLabel=ratingVal===5?'Excellent':ratingVal===4?'Very Good':ratingVal===3?'Good':ratingVal===2?'Fair':ratingVal===1?'Poor':'No Rating'; var stars='' ; for(var s=1;s<=5;s++) stars +=s <= ratingVal
+                                            ? '<span class="star-on">★</span>' : '<span class="star-off">★</span>' ; %>
                                             <tr class="fb-row" data-rating="<%= ratingVal %>"
                                                 data-name="<%= f.last_name %>, <%= f.first_name %>"
                                                 data-id="<%= f.id %>" data-user-id="<%= f.user_id %>"
                                                 data-student-id="<%= f.id_number %>" data-course="<%= f.course %>"
                                                 data-rating-val="<%= ratingVal %>"
                                                 data-rating-label="<%= ratingLabel %>"
-                                                data-message="<%= (f.message||'').replace(/\" /g,'&quot;') %>"
+                                                data-message="<%= (f.message||'').replace(/" /g,'&quot;') %>"
                                                 data-date="<%= f.created_at %>"
                                                     data-pic="<%= f.profile_picture||'' %>">
                                                         <td>
                                                             <div class="name-cell">
                                                                 <div class="name-avatar">
                                                                     <% if (f.profile_picture && f.profile_picture !==''
-                                                                        ) { %><img src="<%= f.profile_picture %>">
+                                                                        ) { %>
+                                                                        <img src="<%= f.profile_picture %>">
                                                                         <% } else { %>
                                                                             <%= initials.toUpperCase() %>
                                                                                 <% } %>
@@ -879,9 +652,10 @@
                                                                 <%= ratingLabel %>
                                                             </span></td>
                                                         <td>
-                                                            <% if (ratingVal> 0) { %><div class="star-display"><%- stars
-                                                                        %></div>
-                                                                <% } else { %><span
+                                                            <% if (ratingVal > 0) { %>
+                                                                <div class="star-display"><%- stars %></div>
+                                                                <% } else { %>
+                                                                    <span
                                                                         style="font-size:11px;color:#9CA3AF;font-style:italic;">No
                                                                         rating</span>
                                                                     <% } %>
@@ -936,242 +710,191 @@
                 </div>
             </div>
 
-            <!-- ══ TAB 2: ANNOUNCEMENT COMMENTS ══ -->
-            <div id="fbtab-comments" class="fb-tab-content">
-                <div class="cmt-toolbar">
-                    <span style="font-size:12px;color:#6B7280;font-weight:600;">All student comments on
-                        announcements</span>
-                    <div class="cmt-search-wrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                            style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;">
-                            <path fill-rule="evenodd"
-                                d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <input type="text" id="cmtSearch" placeholder="Search comments..." oninput="filterComments()"
-                            style="padding-left:30px;">
-                    </div>
-                </div>
-                <div class="cmt-section">
-                    <div class="cmt-card" id="cmtList">
-                        <div style="text-align:center;padding:48px;color:#9CA3AF;font-size:13px;">
-                            <div style="font-size:28px;margin-bottom:10px;">💬</div>
-                            <p style="margin:0 0 4px;font-weight:700;color:#4B5563;">Loading comments...</p>
-                        </div>
-                    </div>
-                    <div id="cmtFooter" style="padding:12px 0;font-size:11px;color:#9CA3AF;display:none;">
-                        Showing <strong id="cmtCount" style="color:#1C2B35;">0</strong> comments
-                    </div>
-                </div>
-            </div>
-
-            <!-- ══ TAB 3: CATEGORY ANALYTICS ══ -->
+            <!-- ══ TAB 2: CATEGORY ANALYTICS ══ -->
             <div id="fbtab-analytics" class="fb-tab-content">
                 <div class="cat-section">
-                    <% const dist={5:0, 4:0, 3:0, 2:0, 1:0, 0:0}; feedbacks.forEach(f=> {
-                        const r = parseInt(f.rating) || 0;
-                        if(dist[r] !== undefined) dist[r]++;
-                        });
-                        const maxDist = Math.max(...Object.values(dist)) || 1;
-                        const byStudent = {};
-                        feedbacks.forEach(f => {
-                        if(!byStudent[f.id_number]) byStudent[f.id_number] = {name: f.last_name + ', ' + f.first_name,
-                        course: f.course, count: 0, totalRating: 0, ratedCount: 0};
-                        byStudent[f.id_number].count++;
-                        if(parseInt(f.rating) > 0) {
-                        byStudent[f.id_number].totalRating += parseInt(f.rating);
-                        byStudent[f.id_number].ratedCount++;
-                        }
-                        });
-                        const topStudents = Object.values(byStudent).sort((a, b) => b.count - a.count).slice(0, 5);
-                        const maxStudentCount = topStudents.length > 0 ? topStudents[0].count : 1;
-                        const satisfied = feedbacks.filter(f => parseInt(f.rating) >= 4).length;
-                        const neutral = feedbacks.filter(f => parseInt(f.rating) === 3).length;
-                        const dissatisfied = feedbacks.filter(f => { const r = parseInt(f.rating); return r > 0 && r <=
-                            2; }).length; const satPct=totalFb> 0 ? Math.round((satisfied / totalFb) * 100) : 0;
-                            const neuPct = totalFb > 0 ? Math.round((neutral / totalFb) * 100) : 0;
-                            const disPct = totalFb > 0 ? Math.round((dissatisfied / totalFb) * 100) : 0;
+                    <% var dist={5:0, 4:0, 3:0, 2:0, 1:0, 0:0}; feedbacks.forEach(function(f){ var r=parseInt(f.rating)
+                        || 0; if(dist[r] !==undefined) dist[r]++; }); var
+                        maxDist=Math.max(dist[5],dist[4],dist[3],dist[2],dist[1],dist[0]) || 1; var byStudent={};
+                        feedbacks.forEach(function(f){ if(!byStudent[f.id_number]) byStudent[f.id_number]={name:
+                        f.last_name+', '+f.first_name, course: f.course, count:0, totalRating:0, ratedCount:0};
+                    byStudent[f.id_number].count++;
+                    if(parseInt(f.rating) > 0){ byStudent[f.id_number].totalRating += parseInt(f.rating); byStudent[f.id_number].ratedCount++; }
+                });
+                var topStudents = Object.values(byStudent).sort(function(a,b){return b.count-a.count;}).slice(0,5);
+                var maxStudentCount = topStudents.length > 0 ? topStudents[0].count : 1;
+
+                var satisfied = feedbacks.filter(function(f){ return parseInt(f.rating) >= 4; }).length;
+                var neutral = feedbacks.filter(function(f){ return parseInt(f.rating) === 3; }).length;
+                var dissatisfied = feedbacks.filter(function(f){ var r = parseInt(f.rating); return r > 0 && r <= 2; }).length;
+                var satPct = totalFb > 0 ? Math.round((satisfied/totalFb)*100) : 0;
+                var neuPct = totalFb > 0 ? Math.round((neutral/totalFb)*100) : 0;
+                var disPct = totalFb > 0 ? Math.round((dissatisfied/totalFb)*100) : 0;
+            %>
+
+            <div class="cat-grid">
+                <!-- Rating Distribution -->
+                <div class="cat-card">
+                    <p class="cat-card-title"><span style="font-size:20px;">⭐</span> Rating Distribution</p>
+                    <% [
+                        [5,' Excellent','#F59E0B'], [4,'Very Good','#059669'], [3,'Good','#3B82F6'],
+                        [2,'Fair','#F97316'], [1,'Poor','#DC2626'], [0,'No Rating','#9CA3AF'] ].forEach(function(r){ var
+                        pct=maxDist > 0 ? (dist[r[0]]/maxDist)*100 : 0;
+                        %>
+                        <div class="cat-bar-row">
+                            <span class="cat-bar-label" style="font-size:10px;">
+                                <%= r[1] %>
+                            </span>
+                            <div class="cat-bar-track">
+                                <div class="cat-bar-fill" style="width:<%= pct %>%;background:<%= r[2] %>;"></div>
+                            </div>
+                            <span class="cat-bar-count" style="color:<%= r[2] %>;">
+                                <%= dist[r[0]] %>
+                            </span>
+                        </div>
+                        <% }); %>
+                </div>
+
+                <!-- Most Active Feedback -->
+                <div class="cat-card">
+                    <p class="cat-card-title"><span style="font-size:20px;">🏆</span> Most Active Feedback</p>
+                    <% var purpColors2=['#F59E0B','#9CA3AF','#CD7F32','#273F4F','#5B0E14']; %>
+                        <% topStudents.forEach(function(s, si){ var pct=Math.round((s.count/maxStudentCount)*100); var
+                            avg=s.ratedCount > 0 ? (s.totalRating/s.ratedCount).toFixed(1) : 'N/A';
                             %>
-
-                            <div class="cat-grid">
-                                <!-- Rating Distribution -->
-                                <div class="cat-card">
-                                    <p class="cat-card-title"><span style="font-size:20px;">⭐</span> Rating Distribution
-                                    </p>
-                                    <% [[5,'Excellent','#F59E0B'],[4,'Very
-                                        Good','#059669'],[3,'Good','#3B82F6'],[2,'Fair','#F97316'],[1,'Poor','#DC2626'],[0,'No
-                                        Rating','#9CA3AF']].forEach(function(r) { var pct=maxDist> 0 ? (dist[r[0]] /
-                                        maxDist) * 100 : 0;
-                                        %>
-                                        <div class="cat-bar-row">
-                                            <span class="cat-bar-label" style="font-size:10px;">
-                                                <%= r[1] %>
-                                            </span>
-                                            <div class="cat-bar-track">
-                                                <div class="cat-bar-fill"
-                                                    style="width:<%= pct %>%;background:<%= r[2] %>;"></div>
-                                            </div>
-                                            <span class="cat-bar-count" style="color:<%= r[2] %>;">
-                                                <%= dist[r[0]] %>
-                                            </span>
-                                        </div>
-                                        <% }); %>
+                            <div class="cat-bar-row">
+                                <span class="cat-bar-label"
+                                    style="font-size:10px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+                                    title="<%= s.name %>">
+                                    <%= s.name.split(',')[1]||s.name %>
+                                </span>
+                                <div class="cat-bar-track">
+                                    <div class="cat-bar-fill"
+                                        style="width:<%= pct %>%;background:<%= purpColors2[si] %>;"></div>
                                 </div>
-
-                                <!-- Most Active Feedback -->
-                                <div class="cat-card">
-                                    <p class="cat-card-title"><span style="font-size:20px;">🏆</span> Most Active
-                                        Feedback</p>
-                                    <% topStudents.forEach(function(s) { var pct=Math.round((s.count / maxStudentCount)
-                                        * 100); var avg=s.ratedCount> 0 ? (s.totalRating / s.ratedCount).toFixed(1) :
-                                        'N/A';
-                                        var colors = ['#F59E0B', '#9CA3AF', '#CD732', '#273F4F', '#5B0E14'];
-                                        %>
-                                        <div class="cat-bar-row">
-                                            <span class="cat-bar-label"
-                                                style="font-size:10px;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
-                                                title="<%= s.name %>">
-                                                <%= s.name.split(',')[1]||s.name %>
-                                            </span>
-                                            <div class="cat-bar-track">
-                                                <div class="cat-bar-fill"
-                                                    style="width:<%= pct %>%;background:<%= colors[i] %>;"></div>
-                                            </div>
-                                            <span class="cat-bar-count">
-                                                <%= s.count %> <span style="color:#C4BDB6;font-weight:400;">(avg <%= avg
-                                                            %>★)</span>
-                                            </span>
-                                        </div>
-                                        <% }); %>
-                                            <% if(topStudents.length===0) { %>
-                                                <p
-                                                    style="text-align:center;color:#9CA3AF;font-size:12px;padding:12px 0;margin:0;">
-                                                    No data yet.</p>
-                                                <% } %>
-                                </div>
-
-                                <!-- Satisfaction Overview -->
-                                <div class="cat-card">
-                                    <p class="cat-card-title"><span style="font-size:20px;">📊</span> Satisfaction
-                                        Overview</p>
-                                    <div style="display:flex;flex-direction:column;gap:12px;">
-                                        <% [['Satisfied (4-5)','#059669',satPct,satisfied],['Neutral
-                                            (3)','#D97706',neuPct,neutral],['Dissatisfied
-                                            (1-2)','#DC2626',disPct,dissatisfied]].forEach(row=> { %>
-                                            <div>
-                                                <div
-                                                    style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;">
-                                                    <span style="color:<%= row[1] %>;">
-                                                        <%= row[0] %>
-                                                    </span>
-                                                    <span style="color:<%= row[1] %>;">
-                                                        <%= row[3] %> (<%= row[2] %>%)
-                                                    </span>
-                                                </div>
-                                                <div
-                                                    style="background:#F3F0EC;border-radius:999px;height:10px;overflow:hidden;">
-                                                    <div
-                                                        style="width:<%= row[2] %>%;height:100%;background:<%= row[1] %>;border-radius:999px;">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <% }); %>
-                                    </div>
-                                    <div
-                                        style="margin-top:14px;padding:10px 14px;background:#F7F5F2;border-radius:10px;font-size:11px;color:#6B7280;">
-                                        Overall Satisfaction Rate: <strong
-                                            style="color:<%= satPct>=70?'#059669':satPct>=50?'#D97706':'#DC2626' %>;font-size:16px;font-family:'Syne',sans-serif;">
-                                            <%= satPct %>%
-                                        </strong>
-                                    </div>
-                                </div>
+                                <span class="cat-bar-count">
+                                    <%= s.count %> <span style="color:#C4BDB6;font-weight:400;">(avg <%= avg %>★)</span>
+                                </span>
                             </div>
+                            <% }); %>
+                                <% if(topStudents.length===0){ %>
+                                    <p style="text-align:center;color:#9CA3AF;font-size:12px;padding:12px 0;margin:0;">
+                                        No data yet.</p>
+                                    <% } %>
+                </div>
 
-                            <!-- All Feedback Summary Table -->
-                            <div class="fb-table-card">
+                <!-- Satisfaction Overview -->
+                <div class="cat-card">
+                    <p class="cat-card-title"><span style="font-size:20px;">📊</span> Satisfaction Overview</p>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <% [ ['Satisfied (4-5)','#059669',satPct,satisfied], ['Neutral (3)','#D97706',neuPct,neutral],
+                            ['Dissatisfied (1-2)','#DC2626',disPct,dissatisfied] ].forEach(function(row){ %>
+                            <div>
                                 <div
-                                    style="padding:14px 20px;background:#F7F5F2;border-bottom:1px solid #E8E3DD;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;">
-                                    All Feedback Summary</div>
-                                <div style="overflow-x:auto;">
-                                    <table class="fb-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Student</th>
-                                                <th>Course</th>
-                                                <th>Rating</th>
-                                                <th>Category</th>
-                                                <th>Message Preview</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% feedbacks.forEach(f=> {
-                                                const r = parseInt(f.rating) || 0;
-                                                const cat = r === 5 ? 'Excellent' : r === 4 ? 'Very Good' : r === 3 ?
-                                                'Good' : r === 2 ? 'Fair' : r === 1 ? 'Poor' : 'Unrated';
-                                                const catBg = r >= 4 ? '#DCFCE7' : r === 3 ? '#EFF6FF' : r >= 1 ?
-                                                '#FEF2F2' : '#F3F4F6';
-                                                const catColor = r >= 4 ? '#065F46' : r === 3 ? '#1D4ED8' : r >= 1 ?
-                                                '#991B1B' : '#6B7280';
-                                                const initials = ((f.first_name || '')[0] || '') + ((f.last_name ||
-                                                '')[0] || '');
-                                                let stars = ''; for(let s = 1; s <= 5; s++) stars +=s <=r ? '★' : '☆' ;
-                                                    %>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="name-cell">
-                                                                <div class="name-avatar">
-                                                                    <% if(f.profile_picture&&f.profile_picture!=='' ){%>
-                                                                        <img src="<%= f.profile_picture %>">
-                                                                        <%}else{%>
-                                                                            <%= initials.toUpperCase() %>
-                                                                                <%}%>
-                                                                </div>
-                                                                <span class="name-text">
-                                                                    <%= f.last_name %>, <%= f.first_name %>
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td><span
-                                                                style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
-                                                                <%= f.course %>
-                                                            </span></td>
-                                                        <td>
-                                                            <% if (r> 0) { %><span
-                                                                    style="color:#F59E0B;font-size:14px;letter-spacing:1px;"><%-
-                                                                        stars%></span>
-                                                                <%}else{%><span style="font-size:11px;color:#C4BDB6;">No
-                                                                        rating</span>
-                                                                    <%}%>
-                                                        </td>
-                                                        <td><span
-                                                                style="background:<%= catBg %>;color:<%= catColor %>;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;">
-                                                                <%= cat %>
-                                                            </span></td>
-                                                        <td style="max-width:220px;font-size:12px;color:#4B5563;">
-                                                            <%= (f.message||'').substring(0,80) %>
-                                                                <%= f.message && f.message.length> 80 ? '…' : '' %>
-                                                        </td>
-                                                        <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
-                                                            <%= new
-                                                                Date(f.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
-                                                                %>
-                                                        </td>
-                                                    </tr>
-                                                    <% }); %>
-                                                        <% if(!feedbacks||feedbacks.length===0){ %>
-                                                            <tr>
-                                                                <td colspan="6"
-                                                                    style="padding:48px;text-align:center;color:#9CA3AF;font-size:13px;">
-                                                                    No feedback data yet.</td>
-                                                            </tr>
-                                                            <% } %>
-                                        </tbody>
-                                    </table>
+                                    style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;">
+                                    <span style="color:<%= row[1] %>;">
+                                        <%= row[0] %>
+                                    </span>
+                                    <span style="color:<%= row[1] %>;">
+                                        <%= row[3] %> (<%= row[2] %>%)
+                                    </span>
+                                </div>
+                                <div style="background:#F3F0EC;border-radius:999px;height:10px;overflow:hidden;">
+                                    <div
+                                        style="width:<%= row[2] %>%;height:100%;background:<%= row[1] %>;border-radius:999px;">
+                                    </div>
                                 </div>
                             </div>
+                            <% }); %>
+                    </div>
+                    <div
+                        style="margin-top:14px;padding:10px 14px;background:#F7F5F2;border-radius:10px;font-size:11px;color:#6B7280;">
+                        Overall Satisfaction Rate: <strong
+                            style="color:<%= satPct >= 70?'#059669':satPct >= 50?'#D97706':'#DC2626' %>;font-size:16px;font-family:'Syne',sans-serif;">
+                            <%= satPct %>%
+                        </strong>
+                    </div>
                 </div>
             </div>
+
+            <!-- All Feedback Summary Table -->
+            <div class="fb-table-card">
+                <div
+                    style="padding:14px 20px;background:#F7F5F2;border-bottom:1px solid #E8E3DD;font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:#1C2B35;">
+                    All Feedback Summary</div>
+                <div style="overflow-x:auto;">
+                    <table class="fb-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Course</th>
+                                <th>Rating</th>
+                                <th>Category</th>
+                                <th>Message Preview</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% feedbacks.forEach(function(f){ var r=parseInt(f.rating) || 0; var
+                                cat=r===5?'Excellent':r===4?'Very Good':r===3?'Good':r===2?'Fair':r===1?'Poor':'Unrated'; var catBg=r >=
+                                4?'#DCFCE7':r===3?'#EFF6FF':r >= 1?'#FEF2F2':'#F3F4F6';
+                                var catColor = r >= 4?'#065F46':r===3?'#1D4ED8':r >= 1?'#991B1B':'#6B7280';
+                                var initials2 = ((f.first_name||'')[0]||'') + ((f.last_name||'')[0]||'');
+                                var stars2 = ''; for(var s2=1;s2 <= 5;s2++) stars2 +=s2 <= r?'★':'☆'; %>
+                                    <tr>
+                                        <td>
+                                            <div class="name-cell">
+                                                <div class="name-avatar">
+                                                    <% if(f.profile_picture&&f.profile_picture!=='' ){%><img
+                                                            src="<%= f.profile_picture %>">
+                                                        <%}else{%>
+                                                            <%= initials2.toUpperCase() %>
+                                                                <%}%>
+                                                </div>
+                                                <span class="name-text">
+                                                    <%= f.last_name %>, <%= f.first_name %>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td><span
+                                                style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
+                                                <%= f.course %>
+                                            </span></td>
+                                        <td>
+                                            <% if(r > 0){%><span
+                                                    style="color:#F59E0B;font-size:14px;letter-spacing:1px;"><%-
+                                                        stars2%></span>
+                                                <%}else{%><span style="font-size:11px;color:#C4BDB6;">No rating</span>
+                                                    <%}%>
+                                        </td>
+                                        <td><span
+                                                style="background:<%= catBg %>;color:<%= catColor %>;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;">
+                                                <%= cat %>
+                                            </span></td>
+                                            <td style="max-width:220px;font-size:12px;color:#4B5563;">
+                                                <%= (f.message||'').substring(0,80) %>
+                                                    <%= f.message && f.message.length > 80?'…':'' %>
+                                        </td>
+                                        <td style="font-size:11px;color:#9CA3AF;white-space:nowrap;">
+                                            <%= new
+                                                Date(f.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+                                                %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% if(!feedbacks||feedbacks.length===0){ %>
+                                            <tr>
+                                                <td colspan="6"
+                                                    style="padding:48px;text-align:center;color:#9CA3AF;font-size:13px;">
+                                                    No feedback data yet.</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+</div>
+</div>
 </div>
 
 <!-- ══ VIEW FEEDBACK MODAL ══ -->
@@ -1253,11 +976,8 @@
                 style="width:30px;height:30px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;color:rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;">✕</button>
         </div>
 
-        <!-- Student preview -->
         <div id="replyStudentPreview" style="padding:14px 24px;background:#F9F8F6;border-bottom:1px solid #E8E3DD;">
         </div>
-
-        <!-- Original feedback preview -->
         <div id="replyFeedbackPreview" style="padding:12px 24px;background:#FFF7ED;border-bottom:1px solid #FDE68A;">
         </div>
 
@@ -1296,102 +1016,43 @@
 </div>
 
 <script>
-    // ── Tab switching
+    // ── Tab switching (2 tabs only)
     function switchFbTab(tab) {
-        ['feedback', 'comments', 'analytics'].forEach(t => {
+        ['feedback', 'analytics'].forEach(function (t) {
             document.getElementById('fbtab-' + t).classList.toggle('active', t === tab);
             document.getElementById('fbtab-btn-' + t).classList.toggle('active', t === tab);
         });
-        if (tab === 'comments' && !commentsLoaded) loadAllComments();
     }
 
     // ── Filters
     function applyFilters() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        const rating = document.getElementById('ratingFilter').value;
-        let count = 0;
-        document.querySelectorAll('.fb-row').forEach(row => {
-            const matchQ = !q || row.textContent.toLowerCase().includes(q);
-            const matchRating = !rating || row.dataset.rating == rating;
-            const show = matchQ && matchRating;
+        var q = document.getElementById('searchInput').value.toLowerCase();
+        var rating = document.getElementById('ratingFilter').value;
+        var count = 0;
+        document.querySelectorAll('.fb-row').forEach(function (row) {
+            var matchQ = !q || row.textContent.toLowerCase().includes(q);
+            var matchRating = !rating || row.dataset.rating == rating;
+            var show = matchQ && matchRating;
             row.style.display = show ? '' : 'none';
             if (show) count++;
         });
         document.getElementById('visibleCount').textContent = count;
     }
 
-    // ── Comments tab
-    let commentsLoaded = false;
-    let allCommentsData = [];
-
-    async function loadAllComments() {
-        commentsLoaded = true;
-        const listEl = document.getElementById('cmtList');
-        listEl.innerHTML = '<div style="text-align:center;padding:40px;color:#9CA3AF;font-size:13px;"><div style="font-size:28px;margin-bottom:8px;">💬</div>Loading comments…</div>';
-        try {
-            const res = await fetch('/admin/all-comments');
-            if (!res.ok) throw new Error('no endpoint');
-            allCommentsData = await res.json();
-            renderComments(allCommentsData);
-        } catch (e) {
-            listEl.innerHTML = `<div style="text-align:center;padding:48px 24px;color:#9CA3AF;"><div style="font-size:28px;margin-bottom:10px;">💬</div><p style="font-weight:700;color:#4B5563;margin:0 0 4px;">No comments to display</p><p style="font-size:12px;margin:0;">Student comments on announcements will appear here.</p></div>`;
-        }
-    }
-
-    function renderComments(comments) {
-        const listEl = document.getElementById('cmtList');
-        const footerEl = document.getElementById('cmtFooter');
-        const countEl2 = document.getElementById('cmtCount');
-        if (!comments || comments.length === 0) {
-            listEl.innerHTML = '<div style="text-align:center;padding:48px;color:#9CA3AF;font-size:13px;"><div style="font-size:28px;margin-bottom:10px;">💬</div><p style="font-weight:700;color:#4B5563;margin:0 0 4px;">No comments yet</p></div>';
-            footerEl.style.display = 'flex'; if (countEl2) countEl2.textContent = '0'; return;
-        }
-        listEl.innerHTML = comments.map(c => {
-            const initials = ((c.first_name || '')[0] || '') + ((c.last_name || '')[0] || '');
-            const avatarHtml = c.profile_picture ? `<img src="${c.profile_picture}">` : initials.toUpperCase();
-            const safeMsg = (c.message || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return `<div class="cmt-item" data-search="${(c.first_name || '') + ' ' + (c.last_name || '') + ' ' + (c.message || '')}">
-            <div class="cmt-avatar">${avatarHtml}</div>
-            <div class="cmt-bubble">
-                <div class="cmt-meta">
-                    <span class="cmt-name">${c.first_name || ''} ${c.last_name || ''}</span>
-                    <span class="cmt-ann-tag">📢 ${(c.announcement_message || 'Announcement').substring(0, 40)}${(c.announcement_message || '').length > 40 ? '…' : ''}</span>
-                    <span class="cmt-time">${new Date(c.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                </div>
-                <div class="cmt-msg">${safeMsg}</div>
-            </div>
-        </div>`;
-        }).join('');
-        footerEl.style.display = 'flex';
-        if (countEl2) countEl2.textContent = comments.length;
-    }
-
-    function filterComments() {
-        const q = (document.getElementById('cmtSearch').value || '').toLowerCase();
-        let count = 0;
-        document.querySelectorAll('.cmt-item').forEach(item => {
-            const show = !q || (item.dataset.search || '').toLowerCase().includes(q);
-            item.style.display = show ? '' : 'none';
-            if (show) count++;
-        });
-        const countEl2 = document.getElementById('cmtCount');
-        if (countEl2) countEl2.textContent = count;
-    }
-
     // ── View Feedback Modal
-    let currentFeedbackRow = null;
-    const RATING_LABELS = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
-    const RATING_COLORS = ['#6B7280', '#DC2626', '#F59E0B', '#3B82F6', '#059669', '#F59E0B'];
+    var currentFeedbackRow = null;
+    var RATING_LABELS = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+    var RATING_COLORS = ['#6B7280', '#DC2626', '#F59E0B', '#3B82F6', '#059669', '#F59E0B'];
 
     function viewFeedback(row) {
         currentFeedbackRow = row;
-        const name = row.dataset.name, id = row.dataset.studentId, course = row.dataset.course;
-        const ratingVal = parseInt(row.dataset.ratingVal) || 0, ratingLabel = row.dataset.ratingLabel;
-        const message = row.dataset.message, date = row.dataset.date, pic = row.dataset.pic;
+        var name = row.dataset.name, id = row.dataset.studentId, course = row.dataset.course;
+        var ratingVal = parseInt(row.dataset.ratingVal) || 0, ratingLabel = row.dataset.ratingLabel;
+        var message = row.dataset.message, date = row.dataset.date, pic = row.dataset.pic;
 
-        const avatarEl = document.getElementById('fbModalAvatar');
-        if (pic) { avatarEl.innerHTML = `<img src="${pic}" style="width:100%;height:100%;object-fit:cover;">`; }
-        else { const initials = name.split(', ').map(p => p[0] || '').join(''); avatarEl.innerHTML = initials.toUpperCase(); }
+        var avatarEl = document.getElementById('fbModalAvatar');
+        if (pic) { avatarEl.innerHTML = '<img src="' + pic + '" style="width:100%;height:100%;object-fit:cover;">'; }
+        else { var initials = name.split(', ').map(function (p) { return p[0] || ''; }).join(''); avatarEl.innerHTML = initials.toUpperCase(); }
 
         document.getElementById('fbModalName').textContent = name;
         document.getElementById('fbModalId').textContent = id;
@@ -1399,12 +1060,15 @@
         document.getElementById('fbModalMessage').textContent = message || '(No message)';
         document.getElementById('fbModalDate').textContent = '📅 Submitted: ' + new Date(date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-        let starsHtml = '';
-        if (ratingVal > 0) { for (let s = 1; s <= 5; s++) starsHtml += `<span class="fb-modal-star" style="color:${s <= ratingVal ? '#F59E0B' : '#D1D5DB'}">${s <= ratingVal ? '★' : '☆'}</span>`; }
-        else { starsHtml = '<span style="font-size:12px;color:#9CA3AF;font-style:italic;">No rating given</span>'; }
+        var starsHtml = '';
+        if (ratingVal > 0) {
+            for (var s = 1; s <= 5; s++) starsHtml += '<span class="fb-modal-star" style="color:' + (s <= ratingVal ? '#F59E0B' : '#D1D5DB') + '">' + (s <= ratingVal ? '★' : '☆') + '</span>';
+        } else {
+            starsHtml = '<span style="font-size:12px;color:#9CA3AF;font-style:italic;">No rating given</span>';
+        }
         document.getElementById('fbModalStars').innerHTML = starsHtml;
 
-        const ratingLabelEl = document.getElementById('fbModalRatingLabel');
+        var ratingLabelEl = document.getElementById('fbModalRatingLabel');
         ratingLabelEl.textContent = ratingLabel;
         ratingLabelEl.style.color = RATING_COLORS[ratingVal] || '#6B7280';
         document.getElementById('fbModal').classList.add('open');
@@ -1412,73 +1076,57 @@
     function closeFbModal() { document.getElementById('fbModal').classList.remove('open'); }
 
     // ── Reply Modal
-    let currentReplyRow = null;
+    var currentReplyRow = null;
+    function openReplyModal(row) { currentReplyRow = row; _setupReplyModal(row); }
+    function openReplyModalById(row) { if (!row) return; currentReplyRow = row; _setupReplyModal(row); }
 
-    function openReplyModal(row) {
-        currentReplyRow = row;
-        _setupReplyModal(row);
-    }
-    function openReplyModalById(row) {
-        if (!row) return;
-        currentReplyRow = row;
-        _setupReplyModal(row);
-    }
     function _setupReplyModal(row) {
-        const feedbackId = row.dataset.id;
-        const name = row.dataset.name;
-        const studentId = row.dataset.studentId;
-        const course = row.dataset.course;
-        const message = row.dataset.message;
-        const ratingVal = parseInt(row.dataset.ratingVal) || 0;
-        const ratingLabel = row.dataset.ratingLabel;
-        const pic = row.dataset.pic;
+        var feedbackId = row.dataset.id;
+        var name = row.dataset.name;
+        var studentId = row.dataset.studentId;
+        var course = row.dataset.course;
+        var message = row.dataset.message;
+        var ratingVal = parseInt(row.dataset.ratingVal) || 0;
+        var ratingLabel = row.dataset.ratingLabel;
+        var pic = row.dataset.pic;
 
         document.getElementById('replyFeedbackId').value = feedbackId;
-        document.getElementById('replyForm').action = `/admin/feedback/${feedbackId}/reply`;
+        document.getElementById('replyForm').action = '/admin/feedback/' + feedbackId + '/reply';
         document.getElementById('replyMessage').value = '';
         document.getElementById('replyCharCount').textContent = '0 / 500';
 
-        const avatarHtml = pic
-            ? `<img src="${pic}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">`
-            : `<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#273F4F,#5B0E14);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F1E194;">${name.split(', ').map(p => p[0] || '').join('').toUpperCase()}</div>`;
+        var avatarHtml = pic
+            ? '<img src="' + pic + '" style="width:38px;height:38px;border-radius:50%;object-fit:cover;">'
+            : '<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#273F4F,#5B0E14);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F1E194;">' + name.split(', ').map(function (p) { return p[0] || ''; }).join('').toUpperCase() + '</div>';
 
-        document.getElementById('replyStudentPreview').innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px;">
-            ${avatarHtml}
-            <div>
-                <div style="font-size:13px;font-weight:700;color:#1C2B35;">${name}</div>
-                <div style="display:flex;gap:6px;margin-top:3px;">
-                    <span style="font-family:monospace;font-size:11px;color:#6B7280;background:#F3F0EC;padding:2px 7px;border-radius:4px;">${studentId}</span>
-                    <span style="font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;padding:2px 7px;border-radius:4px;">${course}</span>
-                    <span style="font-size:11px;font-weight:700;background:${ratingVal >= 4 ? '#DCFCE7' : ratingVal === 3 ? '#EFF6FF' : ratingVal > 0 ? '#FEF2F2' : '#F3F4F6'};color:${ratingVal >= 4 ? '#065F46' : ratingVal === 3 ? '#1D4ED8' : ratingVal > 0 ? '#991B1B' : '#6B7280'};padding:2px 7px;border-radius:4px;">${ratingVal > 0 ? '⭐'.repeat(ratingVal) + ' ' + ratingLabel : 'No rating'}</span>
-                </div>
-            </div>
-        </div>`;
+        var ratingBg = ratingVal >= 4 ? '#DCFCE7' : ratingVal === 3 ? '#EFF6FF' : ratingVal > 0 ? '#FEF2F2' : '#F3F4F6';
+        var ratingColor = ratingVal >= 4 ? '#065F46' : ratingVal === 3 ? '#1D4ED8' : ratingVal > 0 ? '#991B1B' : '#6B7280';
+        var ratingText = ratingVal > 0 ? ('⭐'.repeat(ratingVal) + ' ' + ratingLabel) : 'No rating';
 
-        const safeMsg = (message || '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
-        document.getElementById('replyFeedbackPreview').innerHTML = `
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#92400E;margin-bottom:6px;">Original Feedback:</div>
-        <div style="font-size:12px;color:#92400E;line-height:1.6;">"${safeMsg.substring(0, 120)}${safeMsg.length > 120 ? '…' : ''}"</div>`;
+        document.getElementById('replyStudentPreview').innerHTML = '<div style="display:flex;align-items:center;gap:12px;">' + avatarHtml + '<div><div style="font-size:13px;font-weight:700;color:#1C2B35;">' + name + '</div><div style="display:flex;gap:6px;margin-top:3px;"><span style="font-family:monospace;font-size:11px;color:#6B7280;background:#F3F0EC;padding:2px 7px;border-radius:4px;">' + studentId + '</span><span style="font-size:11px;font-weight:700;background:#EFF6FF;color:#1D4ED8;padding:2px 7px;border-radius:4px;">' + course + '</span><span style="font-size:11px;font-weight:700;background:' + ratingBg + ';color:' + ratingColor + ';padding:2px 7px;border-radius:4px;">' + ratingText + '</span></div></div></div>';
+
+        var safeMsg = (message || '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+        document.getElementById('replyFeedbackPreview').innerHTML = '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#92400E;margin-bottom:6px;">Original Feedback:</div><div style="font-size:12px;color:#92400E;line-height:1.6;">"' + safeMsg.substring(0, 120) + (safeMsg.length > 120 ? '…' : '') + '"</div>';
 
         document.getElementById('replyModal').classList.add('open');
     }
     function closeReplyModal() { document.getElementById('replyModal').classList.remove('open'); }
 
     document.getElementById('replyMessage').addEventListener('input', function () {
-        const len = this.value.length;
-        const counter = document.getElementById('replyCharCount');
+        var len = this.value.length;
+        var counter = document.getElementById('replyCharCount');
         counter.textContent = len + ' / 500';
         counter.style.color = len > 450 ? '#DC2626' : '#9CA3AF';
         if (len > 500) this.value = this.value.substring(0, 500);
     });
 
     function submitReply() {
-        const msg = document.getElementById('replyMessage').value.trim();
+        var msg = document.getElementById('replyMessage').value.trim();
         if (!msg) { alert('Please enter a reply message.'); return; }
         document.getElementById('replyForm').submit();
     }
 
-    document.addEventListener('keydown', e => {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') { closeFbModal(); closeReplyModal(); }
     });
 </script>
