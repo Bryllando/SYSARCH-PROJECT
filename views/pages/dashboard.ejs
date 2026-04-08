@@ -1,8 +1,8 @@
 <style>
     /* ── Avatar ── */
     .sic-avatar-wrap {
-        width: 100px;
-        height: 100px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
         padding: 3px;
         background: linear-gradient(135deg, #5B0E14, #C9953A);
@@ -12,9 +12,16 @@
         flex-shrink: 0;
     }
 
+    @media (min-width: 768px) {
+        .sic-avatar-wrap {
+            width: 100px;
+            height: 100px;
+        }
+    }
+
     .sic-avatar-inner {
-        width: 94px;
-        height: 94px;
+        width: 74px;
+        height: 74px;
         border-radius: 50%;
         overflow: hidden;
         border: 3px solid #fff;
@@ -22,6 +29,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    @media (min-width: 768px) {
+        .sic-avatar-inner {
+            width: 94px;
+            height: 94px;
+        }
     }
 
     .sic-avatar-inner img {
@@ -86,11 +100,17 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 20px 24px;
+        padding: 16px 20px;
+    }
+
+    @media (min-width: 768px) {
+        .sic-sessions-inner {
+            padding: 20px 24px;
+        }
     }
 
     .sic-sessions-label p:first-child {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
         letter-spacing: 0.09em;
         text-transform: uppercase;
@@ -98,18 +118,36 @@
         margin: 0;
     }
 
+    @media (min-width: 768px) {
+        .sic-sessions-label p:first-child {
+            font-size: 11px;
+        }
+    }
+
     .sic-sessions-label p:last-child {
-        font-size: 11px;
+        font-size: 10px;
         color: rgba(255, 255, 255, 0.4);
         margin: 3px 0 0;
     }
 
+    @media (min-width: 768px) {
+        .sic-sessions-label p:last-child {
+            font-size: 11px;
+        }
+    }
+
     .sic-sessions-count {
-        font-size: 52px;
+        font-size: 36px;
         font-weight: 900;
         color: #fff;
         line-height: 1;
         letter-spacing: -0.02em;
+    }
+
+    @media (min-width: 768px) {
+        .sic-sessions-count {
+            font-size: 52px;
+        }
     }
 
     .sic-rule-item {
@@ -158,6 +196,7 @@
         margin-bottom: 12px;
         overflow: hidden;
         transition: box-shadow 0.15s;
+        max-width: 100%;
     }
 
     .ann-feed-card:hover {
@@ -198,23 +237,43 @@
 
     .ann-feed-body {
         padding: 0 14px 10px;
-        font-size: 13px;
+        font-size: 12px;
         color: #374151;
         line-height: 1.65;
         white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
+    }
+
+    @media (min-width: 768px) {
+        .ann-feed-body {
+            font-size: 13px;
+        }
     }
 
     .ann-feed-media {
         margin: 0 14px 10px;
         border-radius: 10px;
         overflow: hidden;
+        max-width: 100%;
     }
 
     .ann-feed-media img {
         width: 100%;
+        max-width: 100%;
+        height: auto;
         max-height: 280px;
-        object-fit: cover;
+        object-fit: contain;
         display: block;
+        border-radius: 10px;
+    }
+
+    .ann-feed-media video {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: 280px;
         border-radius: 10px;
     }
 
@@ -343,64 +402,102 @@
 
     /* ── Comments ── */
     .ann-comments-section {
-        border-top: 1px solid #F0F0F0;
+        border-top: 1px solid #E8E3DD;
+        padding: 8px 14px 12px;
+        background: #fff;
     }
 
     .ann-comments-toggle {
         display: flex;
         align-items: center;
-        gap: 6px;
-        padding: 8px 14px;
-        font-size: 12px;
+        gap: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
         font-weight: 600;
-        color: #9CA3AF;
+        color: #65676B;
         cursor: pointer;
-        background: none;
+        background: #F0F2F5;
         border: none;
         width: 100%;
         text-align: left;
         font-family: inherit;
-        transition: color 0.15s;
+        transition: all 0.15s;
+        border-radius: 8px;
+        margin-bottom: 8px;
     }
 
     .ann-comments-toggle:hover {
+        background: #E8EAED;
         color: #5B0E14;
     }
 
+    /* Expandable comments section */
     .ann-comments-body {
-        padding: 4px 14px 14px;
-        display: none;
-        max-height: 300px;
-        overflow-y: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    .ann-comments-body::-webkit-scrollbar {
-        display: none;
-    }
-
-    .ann-comments-body.open {
         display: block;
+        padding: 0 0 8px 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .ann-comments-body.expanded {
+        max-height: 400px;
+        opacity: 1;
+        overflow-y: auto;
+    }
+
+    .comments-list {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+        padding-right: 4px;
+    }
+
+    @media (min-width: 768px) {
+        .comments-list {
+            max-height: 250px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .ann-comments-body {
+            padding: 10px 14px 14px;
+        }
+    }
+
+    /* No comments placeholder */
+    .no-comments {
+        color: #65676B;
+        font-size: 12px;
+        padding: 8px 0;
+        text-align: center;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; max-height: 0; }
+        to   { opacity: 1; max-height: 260px; }
     }
 
     .ann-comment-item {
         display: flex;
-        gap: 8px;
-        margin-bottom: 10px;
+        gap: 10px;
+        margin-bottom: 12px;
+        align-items: flex-start;
     }
 
     .ann-comment-avatar {
-        width: 26px;
-        height: 26px;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #273F4F, #5B0E14);
+        background: linear-gradient(135deg, #5B0E14, #8B1A24);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 9px;
+        font-size: 11px;
         font-weight: 700;
-        color: #F1E194;
+        color: #fff;
         flex-shrink: 0;
         overflow: hidden;
     }
@@ -412,23 +509,30 @@
     }
 
     .ann-comment-bubble {
-        background: #F7F5F2;
-        border-radius: 0 10px 10px 10px;
+        background: #F0F2F5;
+        border-radius: 18px;
         padding: 8px 12px;
         flex: 1;
+        max-width: calc(100% - 44px);
+    }
+
+    @media (min-width: 768px) {
+        .ann-comment-bubble {
+            max-width: calc(100% - 50px);
+        }
     }
 
     .ann-comment-name {
-        font-size: 11px;
-        font-weight: 700;
-        color: #1C2B35;
+        font-size: 12px;
+        font-weight: 600;
+        color: #050505;
         margin-bottom: 2px;
     }
 
     .ann-comment-msg {
-        font-size: 12px;
-        color: #4B5563;
-        line-height: 1.5;
+        font-size: 13px;
+        color: #050505;
+        line-height: 1.4;
     }
 
     .ann-comment-reply {
@@ -459,47 +563,91 @@
     .ann-comment-form {
         display: flex;
         gap: 8px;
-        margin-top: 8px;
+        margin-top: 10px;
+        align-items: center;
     }
 
     .ann-comment-input {
         flex: 1;
-        padding: 8px 12px;
-        border: 1.5px solid #E2DDD8;
+        padding: 10px 14px;
+        border: 1px solid #CCD0D5;
         border-radius: 20px;
-        font-size: 12px;
-        color: #1C2B35;
-        background: #F9F8F6;
+        font-size: 13px;
+        color: #050505;
+        background: #F0F2F5;
         outline: none;
         font-family: inherit;
-        transition: border-color 0.15s;
+        transition: all 0.15s;
     }
 
     .ann-comment-input:focus {
-        border-color: #5B0E14;
         background: #fff;
+        border-color: #5B0E14;
+        box-shadow: 0 0 0 2px rgba(91, 14, 20, 0.1);
+    }
+
+    .ann-comment-input::placeholder {
+        color: #8A8D91;
     }
 
     .ann-comment-submit {
-        padding: 7px 14px;
-        border-radius: 20px;
-        background: linear-gradient(135deg, #5B0E14, #7a131b);
+        padding: 8px 16px;
+        border-radius: 18px;
+        background: #5B0E14;
         color: #fff;
         border: none;
-        font-size: 11px;
-        font-weight: 700;
+        font-size: 13px;
+        font-weight: 600;
         cursor: pointer;
         font-family: inherit;
-        transition: opacity 0.15s;
+        transition: all 0.15s;
     }
 
     .ann-comment-submit:hover {
-        opacity: 0.88;
+        background: #7a131b;
+    }
+
+    /* Responsive announcement container */
+    .ann-feed-container {
+        height: auto !important;
+        min-height: 200px !important;
+        max-height: 70vh !important;
+        overflow-y: auto !important;
+    }
+    @media (min-width: 768px) {
+        .ann-feed-container {
+            max-height: 600px !important;
+            min-height: 300px !important;
+        }
+    }
+
+    /* Facebook-style comment header */
+    .ann-comments-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #5B0E14;
+        cursor: pointer;
+        background: #F0F2F5;
+        border: none;
+        width: 100%;
+        text-align: left;
+        font-family: inherit;
+        transition: all 0.15s;
+        border-top: 1px solid #E8E3DD;
+        margin-top: 4px;
+    }
+
+    .ann-comments-header:hover {
+        background: #E8EAED;
     }
 </style>
 
-<div class="p-6 space-y-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5" style="min-width:0;">
+<div class="p-4 md:p-6 space-y-4 md:space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5" style="min-width:0;">
 
         <!-- ══ LEFT COLUMN ══ -->
         <div class="flex flex-col gap-4">
@@ -646,8 +794,9 @@
                 <span style="margin-left:auto;font-size:10px;color:#9CA3AF;">React or comment below</span>
             </div>
 
-            <div class="flex-1 overflow-y-auto"
-                style="max-height:600px;padding:12px;box-sizing:border-box;min-width:0;width:100%;">
+            <!-- Mobile-friendly height -->
+            <div class="ann-feed-container flex-1 overflow-y-auto"
+                style="height:auto;max-height:60vh;padding:12px;box-sizing:border-box;min-width:0;width:100%;scroll-behavior:smooth;">
                 <% if (typeof announcements !=='undefined' && announcements && announcements.length> 0) { %>
                     <% announcements.forEach(function(ann) { %>
                         <div class="ann-feed-card">
@@ -680,7 +829,7 @@
                                         <%= ann.message %>
                                     </div>
 
-                                    <!-- Reactions -->
+<!-- Reactions Bar -->
                                     <div class="ann-reactions-bar" id="reactions-<%= ann.id %>">
                                         <% var reactionEmojis=['👍','❤️','😂','😮','😢','👏']; %>
                                             <% reactionEmojis.forEach(function(emoji) { var count=(ann.reactions &&
@@ -694,49 +843,61 @@
                                                                 <%= count %>
                                                             </span>
                                                     </button>
-                                                    <% } %>
-                                                        <% }); %>
-                                                            <div class="react-add-wrap">
-                                                                <button class="react-add-btn"
-                                                                    onclick="toggleReactPicker(<%= ann.id %>, event)"
-                                                                    title="Add reaction">😊</button>
-                                                                <div class="react-picker" id="rp-<%= ann.id %>">
-                                                                    <div class="react-picker-grid">
-                                                                        <% reactionEmojis.forEach(function(emoji) { %>
-                                                                            <button class="react-pick-btn"
-                                                                                onclick="sendReaction(<%= ann.id %>, '<%= emoji %>'); closeReactPicker(<%= ann.id %>)">
-                                                                                <%= emoji %>
-                                                                            </button>
-                                                                            <% }); %>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                <% } %>
+                                            <% }); %>
+                                                <div class="react-add-wrap">
+                                                    <button class="react-add-btn"
+                                                        onclick="toggleReactPicker(<%= ann.id %>, event)"
+                                                        title="Add reaction">😊</button>
+                                                    <div class="react-picker" id="rp-<%= ann.id %>">
+                                                        <div class="react-picker-grid">
+                                                            <% reactionEmojis.forEach(function(emoji) { %>
+                                                                <button class="react-pick-btn"
+                                                                    onclick="sendReaction(<%= ann.id %>, '<%= emoji %>'); closeReactPicker(<%= ann.id %>)">
+                                                                    <%= emoji %>
+                                                                </button>
+                                                            <% }); %>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                     </div>
+                        </div>
 
-                                    <!-- Comments -->
-                                    <div class="ann-comments-section">
-                                        <button class="ann-comments-toggle" onclick="toggleComments(<%= ann.id %>)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"
-                                                fill="currentColor" width="12" height="12">
-                                                <path fill-rule="evenodd"
-                                                    d="M1 8.74c0 .983.713 1.825 1.69 1.943L3 10.72v2.03a.75.75 0 0 0 1.28.53l1.5-1.5.31-.03H9a2.26 2.26 0 0 0 2.25-2.25v-5.5A2.25 2.25 0 0 0 9 1.75H4A2.25 2.25 0 0 0 1.75 4v4.74H1Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            <span id="ctoggle-<%= ann.id %>">
-                                                <%= ann.commentCount %> comment<%= ann.commentCount !==1 ? 's' : '' %>
-                                            </span>
-                                        </button>
-                                        <div class="ann-comments-body" id="comments-body-<%= ann.id %>">
-                                            <div id="comments-list-<%= ann.id %>"></div>
-                                            <div class="ann-comment-form">
-                                                <input type="text" class="ann-comment-input" id="cinput-<%= ann.id %>"
-                                                    placeholder="Write a comment..."
-                                                    onkeydown="if(event.key==='Enter')postComment(<%= ann.id %>)">
-                                                <button class="ann-comment-submit"
-                                                    onclick="postComment(<%= ann.id %>)">Post</button>
-                                            </div>
-                                        </div>
-                                    </div>
+                        <!-- Facebook-style Comments Section -->
+                        <div class="comments-section" style="padding:10px 14px 14px;background:#fff;border-top:1px solid #E8E3DD;margin-top:2px;">
+                            <!-- Comment count -->
+                            <div style="font-size:12px;font-weight:600;color:#65676B;margin-bottom:10px;padding-left:2px;">
+                                <%= ann.commentCount %> comment<%= ann.commentCount !==1 ? 's' : '' %>
+                            </div>
+                            
+                            <!-- Comments list -->
+                            <div id="comments-list-<%= ann.id %>" style="max-height:200px;overflow-y:auto;margin-bottom:12px;">
+                            </div>
+                            
+                            <!-- Action buttons line -->
+                            <div style="display:flex;gap:16px;padding:8px 0;border-top:1px solid #E8E3DD;margin-bottom:10px;">
+                                <button style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px;background:transparent;border:none;border-radius:4px;font-size:12px;font-weight:600;color:#65676B;cursor:pointer;" onclick="likeComment(<%= ann.id %>)">
+                                    <span>👍</span> Like
+                                </button>
+                                <button style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px;background:transparent;border:none;border-radius:4px;font-size:12px;font-weight:600;color:#65676B;cursor:pointer;" onclick="focusReply(<%= ann.id %>)">
+                                    <span>💬</span> Reply
+                                </button>
+                            </div>
+                            
+                            <!-- Input area -->
+                            <div style="display:flex;gap:8px;align-items:flex-start;">
+                                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#8B1A24);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">
+                                    <%= (user.first_name ? user.first_name[0] : '') + (user.last_name ? user.last_name[0] : '') %>
+                                </div>
+                                <div style="flex:1;position:relative;">
+                                    <input type="text" id="cinput-<%= ann.id %>"
+                                        placeholder="Write a comment..."
+                                        style="width:100%;padding:10px 14px;border:1px solid #CCD0D5;border-radius:20px;font-size:13px;background:#F0F2F5;outline:none;box-sizing:border-box;"
+                                        onkeydown="if(event.key==='Enter')postComment(<%= ann.id %>)">
+                                    <button onclick="postComment(<%= ann.id %>)"
+                                        style="position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:6px 12px;background:#5B0E14;color:#fff;border:none;border-radius:14px;font-size:12px;font-weight:600;cursor:pointer;">Post</button>
+                                </div>
+                            </div>
                         </div>
                         <% }); %>
                             <% } else { %>
@@ -861,42 +1022,115 @@
     // ── Comments ──────────────────────────────────────────────────
     const commentsLoaded = {};
 
-    async function toggleComments(annId) {
-        const body = document.getElementById('comments-body-' + annId);
-        const isOpen = body.classList.contains('open');
-        body.classList.toggle('open');
-        if (!isOpen && !commentsLoaded[annId]) {
-            await loadComments(annId);
-            commentsLoaded[annId] = true;
-        }
-    }
+    // Load ALL comments when page loads - always visible
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Loading all comments on page load...');
+        document.querySelectorAll('[id^="comments-list-"]').forEach(function(listEl) {
+            const annId = listEl.id.replace('comments-list-', '');
+            loadComments(annId).then(function() {
+                commentsLoaded[annId] = true;
+            }).catch(function(err) {
+                console.error('Error loading comments:', err);
+            });
+        });
+    });
+
+    // No toggle needed - comments are always visible now
 
     async function loadComments(annId) {
         try {
+            console.log('Fetching comments for annId:', annId);
             const res = await fetch(`/announcements/${annId}/comments`);
             const comments = await res.json();
+            console.log('Got comments:', comments);
             renderComments(annId, comments);
-        } catch (e) { }
+        } catch (e) {
+            console.error('Error fetching comments:', e);
+        }
     }
 
     function renderComments(annId, comments) {
         const list = document.getElementById('comments-list-' + annId);
         if (!list) return;
-        list.innerHTML = comments.map(c => {
+        
+        if (!comments || comments.length === 0) {
+            list.innerHTML = '<div style="color:#65676B;font-size:12px;padding:16px;text-align:center;">No comments yet. Be the first to comment!</div>';
+            return;
+        }
+        
+        let html = '';
+        comments.forEach(c => {
             const initials = ((c.first_name || '')[0] || '') + ((c.last_name || '')[0] || '');
-            const avatarHtml = c.profile_picture ? `<img src="${c.profile_picture}">` : initials.toUpperCase();
             const commentText = c.comment || c.message || '';
-            const replyHtml = c.reply ? `<div class="ann-comment-reply"><div class="ann-comment-reply-header">↳ Admin Reply</div><div class="ann-comment-reply-msg">${escHtml(c.reply)}</div></div>` : '';
-            return `<div class="ann-comment-item">
-            <div class="ann-comment-avatar">${avatarHtml}</div>
-            <div class="ann-comment-bubble">
-                <div class="ann-comment-name">${c.first_name} ${c.last_name}</div>
-                <div class="ann-comment-msg">${escHtml(commentText)}</div>
-                <div class="ann-comment-time">${new Date(c.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
-                ${replyHtml}
-            </div>
-        </div>`;
-        }).join('');
+            const timeAgo = getTimeAgo(c.created_at);
+            const replyHtml = c.reply ? `<div style="margin-top:8px;padding:8px 12px;background:#ECFDF5;border-radius:0 10px 10px 10px;border-left:3px solid #059669;font-size:12px;color:#065F46;">↳ <strong>Admin:</strong> ${escHtml(c.reply)}</div>` : '';
+            
+            html += `<div style="display:flex;gap:8px;margin-bottom:12px;">
+                <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#8B1A24);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">
+                    ${initials.toUpperCase()}
+                </div>
+                <div style="flex:1;">
+                    <div style="background:#F0F2F5;border-radius:18px;padding:8px 12px;display:inline-block;max-width:100%;">
+                        <div style="font-size:12px;font-weight:600;color:#050505;margin-bottom:2px;">${c.first_name || 'User'} ${c.last_name || ''}</div>
+                        <div style="font-size:13px;color:#050505;line-height:1.4;">${escHtml(commentText)}</div>
+                    </div>
+                    <div style="display:flex;gap:12px;padding:4px 8px;font-size:11px;font-weight:600;">
+                        <span style="color:#65676B;cursor:pointer;" onclick="likeComment(${annId}, ${c.id})">Like</span>
+                        <span style="color:#65676B;cursor:pointer;" onclick="showReplyInput(${annId}, ${c.id})">Reply</span>
+                        <span style="color:#65676B;">${timeAgo}</span>
+                    </div>
+                    ${replyHtml}
+                    <!-- Reply input -->
+                    <div id="reply-input-${annId}-${c.id}" style="display:none;margin-top:8px;margin-left:40px;">
+                        <input type="text" placeholder="Write a reply..."
+                            style="width:calc(100% - 80px);padding:6px 10px;border:1px solid #CCD0D5;border-radius:14px;font-size:12px;background:#F0F2F5;outline:none;"
+                            onkeydown="if(event.key==='Enter')postReply(${annId}, ${c.id})">
+                        <button onclick="postReply(${annId}, ${c.id})" style="padding:6px 10px;background:#5B0E14;color:#fff;border:none;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;margin-left:4px;">Reply</button>
+                    </div>
+                </div>
+            </div>`;
+        });
+        list.innerHTML = html;
+    }
+
+    function getTimeAgo(dateStr) {
+        if (!dateStr) return '';
+        const now = new Date();
+        const date = new Date(dateStr);
+        const seconds = Math.floor((now - date) / 1000);
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+        if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+        if (seconds < 604800) return Math.floor(seconds / 86400) + 'd';
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function likeComment(annId, commentId) {
+        // Toggle like - for now just alert
+        console.log('Like comment:', commentId);
+    }
+
+    function showReplyInput(annId, commentId) {
+        const replyInput = document.getElementById('reply-input-' + annId + '-' + commentId);
+        if (replyInput) {
+            replyInput.style.display = replyInput.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+
+    function focusReply(annId) {
+        const input = document.getElementById('cinput-' + annId);
+        if (input) input.focus();
+    }
+
+    function postReply(annId, commentId) {
+        const replyInput = document.querySelector('#reply-input-' + annId + '-' + commentId + ' input');
+        const message = replyInput.value.trim();
+        if (!message) return;
+        
+        // For now, just close the input
+        replyInput.value = '';
+        document.getElementById('reply-input-' + annId + '-' + commentId).style.display = 'none';
+        alert('Reply submitted! (Admin reply feature coming soon)');
     }
 
     async function postComment(annId) {
@@ -935,6 +1169,8 @@
                 div.className = 'ann-comment-item';
                 div.innerHTML = `<div class="ann-comment-avatar">${avatarHtml}</div><div class="ann-comment-bubble"><div class="ann-comment-name">${c.first_name} ${c.last_name}</div><div class="ann-comment-msg">${escHtml(commentText)}</div><div class="ann-comment-time">Just now</div></div>`;
                 list.appendChild(div);
+                const body = document.getElementById('comments-body-' + annId);
+                body.scrollTop = body.scrollHeight;
                 const toggle = document.getElementById('ctoggle-' + annId);
                 if (toggle) {
                     const current = parseInt(toggle.textContent) || 0;

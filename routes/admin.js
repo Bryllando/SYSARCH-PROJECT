@@ -33,18 +33,44 @@ function fetchAdminHomeData(cb) {
         db.get(`SELECT COUNT(*) as active FROM sitin_sessions WHERE status='active'`, (e2, active) => {
             db.get(`SELECT COUNT(*) as totalSitins FROM sitin_sessions`, (e3, total) => {
                 db.all(`SELECT a.*, u.first_name, u.last_name FROM announcements a LEFT JOIN users u ON a.admin_id = u.id ORDER BY a.created_at DESC LIMIT 15`, (e4, announcements) => {
-                    // Load reactions and comment counts for each announcement
-                    if (!announcements || announcements.length === 0) {
-                        return cb({
-                            totalStudents: row?.total || 0,
-                            activeSitins: active?.active || 0,
-                            totalSitins: total?.totalSitins || 0,
-                            announcements: [],
-                            topStudents: [],
-                            topLabs: [],
-                            topPurposes: []
+                    // Always fetch analytics, regardless of announcements
+                    const fetchAnalytics = () => {
+                        db.all(`
+                            SELECT u.id, u.id_number, u.first_name, u.last_name, u.course, u.profile_picture,
+                                   COUNT(s.id) as sitin_count
+                            FROM sitin_sessions s JOIN users u ON s.user_id = u.id
+                            GROUP BY u.id ORDER BY sitin_count DESC LIMIT 5
+                        `, (e5, topStudents) => {
+                            db.all(`
+                                SELECT lab_room, COUNT(*) as count FROM sitin_sessions
+                                WHERE lab_room IS NOT NULL AND lab_room != ''
+                                GROUP BY lab_room ORDER BY count DESC LIMIT 5
+                            `, (e6, topLabs) => {
+                                db.all(`
+                                    SELECT purpose, COUNT(*) as count FROM sitin_sessions
+                                    WHERE purpose IS NOT NULL AND purpose != ''
+                                    GROUP BY purpose ORDER BY count DESC LIMIT 5
+                                `, (e7, topPurposes) => {
+                                    cb({
+                                        totalStudents: row?.total || 0,
+                                        activeSitins: active?.active || 0,
+                                        totalSitins: total?.totalSitins || 0,
+                                        announcements: announcements,
+                                        topStudents: topStudents || [],
+                                        topLabs: topLabs || [],
+                                        topPurposes: topPurposes || []
+                                    });
+                                });
+                            });
                         });
+                    };
+                    
+                    if (!announcements || announcements.length === 0) {
+                        // No announcements - still fetch analytics data
+                        return fetchAnalytics();
                     }
+                    
+                    // Process each announcement
                     let processed = 0;
                     announcements.forEach((ann, idx) => {
                         ann.reactions = {};
@@ -55,34 +81,7 @@ function fetchAdminHomeData(cb) {
                                 ann.commentCount = cc?.cnt || 0;
                                 processed++;
                                 if (processed === announcements.length) {
-                                    db.all(`
-                                        SELECT u.id, u.id_number, u.first_name, u.last_name, u.course, u.profile_picture,
-                                               COUNT(s.id) as sitin_count
-                                        FROM sitin_sessions s JOIN users u ON s.user_id = u.id
-                                        GROUP BY u.id ORDER BY sitin_count DESC LIMIT 5
-                                    `, (e5, topStudents) => {
-                                        db.all(`
-                                            SELECT lab_room, COUNT(*) as count FROM sitin_sessions
-                                            WHERE lab_room IS NOT NULL AND lab_room != ''
-                                            GROUP BY lab_room ORDER BY count DESC LIMIT 5
-                                        `, (e6, topLabs) => {
-                                            db.all(`
-                                                SELECT purpose, COUNT(*) as count FROM sitin_sessions
-                                                WHERE purpose IS NOT NULL AND purpose != ''
-                                                GROUP BY purpose ORDER BY count DESC LIMIT 5
-                                            `, (e7, topPurposes) => {
-                                                cb({
-                                                    totalStudents: row?.total || 0,
-                                                    activeSitins: active?.active || 0,
-                                                    totalSitins: total?.totalSitins || 0,
-                                                    announcements: announcements,
-                                                    topStudents: topStudents || [],
-                                                    topLabs: topLabs || [],
-                                                    topPurposes: topPurposes || []
-                                                });
-                                            });
-                                        });
-                                    });
+                                    fetchAnalytics();
                                 }
                             });
                         });
