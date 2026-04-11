@@ -33,56 +33,31 @@ function fetchAdminHomeData(cb) {
         db.get(`SELECT COUNT(*) as active FROM sitin_sessions WHERE status='active'`, (e2, active) => {
             db.get(`SELECT COUNT(*) as totalSitins FROM sitin_sessions`, (e3, total) => {
                 db.all(`SELECT a.*, u.first_name, u.last_name FROM announcements a LEFT JOIN users u ON a.admin_id = u.id ORDER BY a.created_at DESC LIMIT 15`, (e4, announcements) => {
-                    // Always fetch analytics, regardless of announcements
-                    const fetchAnalytics = () => {
+                    db.all(`
+                        SELECT u.id, u.id_number, u.first_name, u.last_name, u.course, u.profile_picture,
+                               COUNT(s.id) as sitin_count
+                        FROM sitin_sessions s JOIN users u ON s.user_id = u.id
+                        GROUP BY u.id ORDER BY sitin_count DESC LIMIT 5
+                    `, (e5, topStudents) => {
                         db.all(`
-                            SELECT u.id, u.id_number, u.first_name, u.last_name, u.course, u.profile_picture,
-                                   COUNT(s.id) as sitin_count
-                            FROM sitin_sessions s JOIN users u ON s.user_id = u.id
-                            GROUP BY u.id ORDER BY sitin_count DESC LIMIT 5
-                        `, (e5, topStudents) => {
+                            SELECT lab_room, COUNT(*) as count FROM sitin_sessions
+                            WHERE lab_room IS NOT NULL AND lab_room != ''
+                            GROUP BY lab_room ORDER BY count DESC LIMIT 5
+                        `, (e6, topLabs) => {
                             db.all(`
-                                SELECT lab_room, COUNT(*) as count FROM sitin_sessions
-                                WHERE lab_room IS NOT NULL AND lab_room != ''
-                                GROUP BY lab_room ORDER BY count DESC LIMIT 5
-                            `, (e6, topLabs) => {
-                                db.all(`
-                                    SELECT purpose, COUNT(*) as count FROM sitin_sessions
-                                    WHERE purpose IS NOT NULL AND purpose != ''
-                                    GROUP BY purpose ORDER BY count DESC LIMIT 5
-                                `, (e7, topPurposes) => {
-                                    cb({
-                                        totalStudents: row?.total || 0,
-                                        activeSitins: active?.active || 0,
-                                        totalSitins: total?.totalSitins || 0,
-                                        announcements: announcements,
-                                        topStudents: topStudents || [],
-                                        topLabs: topLabs || [],
-                                        topPurposes: topPurposes || []
-                                    });
+                                SELECT purpose, COUNT(*) as count FROM sitin_sessions
+                                WHERE purpose IS NOT NULL AND purpose != ''
+                                GROUP BY purpose ORDER BY count DESC LIMIT 5
+                            `, (e7, topPurposes) => {
+                                cb({
+                                    totalStudents: row?.total || 0,
+                                    activeSitins: active?.active || 0,
+                                    totalSitins: total?.totalSitins || 0,
+                                    announcements: announcements || [],
+                                    topStudents: topStudents || [],
+                                    topLabs: topLabs || [],
+                                    topPurposes: topPurposes || []
                                 });
-                            });
-                        });
-                    };
-                    
-                    if (!announcements || announcements.length === 0) {
-                        // No announcements - still fetch analytics data
-                        return fetchAnalytics();
-                    }
-                    
-                    // Process each announcement
-                    let processed = 0;
-                    announcements.forEach((ann, idx) => {
-                        ann.reactions = {};
-                        ann.commentCount = 0;
-                        db.all(`SELECT emoji, COUNT(*) as count FROM announcement_reactions WHERE announcement_id=? GROUP BY emoji`, [ann.id], (e5, rxns) => {
-                            if (rxns) rxns.forEach(r => ann.reactions[r.emoji] = r.count);
-                            db.get(`SELECT COUNT(*) as cnt FROM announcement_comments WHERE announcement_id=?`, [ann.id], (e6, cc) => {
-                                ann.commentCount = cc?.cnt || 0;
-                                processed++;
-                                if (processed === announcements.length) {
-                                    fetchAnalytics();
-                                }
                             });
                         });
                     });
@@ -118,56 +93,28 @@ router.post('/announcement', isAuthenticated, isAdmin, annUpload.single('media')
 
 // Delete Announcement
 router.post('/announcement/:id/delete', isAuthenticated, isAdmin, (req, res) => {
+    console.log("HIT /announcement/:id/delete FOR ID:", req.params.id);
     db.get(`SELECT media_url FROM announcements WHERE id=?`, [req.params.id], (err, ann) => {
-        if (ann && ann.media_url) {
+        if (ann && ann.media_url && ann.media_url.trim() !== '') {
             const filePath = path.join(__dirname, '../public', ann.media_url);
-            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+            if (fs.existsSync(filePath)) {
+                try {
+                    fs.unlinkSync(filePath);
+                } catch (err) {
+                    console.error('Failed to delete media file:', err);
+                }
+            }
         }
-        db.run(`DELETE FROM announcements WHERE id=?`, [req.params.id], () => {
-            db.run(`DELETE FROM announcement_reactions WHERE announcement_id=?`, [req.params.id]);
-            db.run(`DELETE FROM announcement_comments WHERE announcement_id=?`, [req.params.id]);
-            req.session.toast = { type: 'success', message: 'Announcement deleted.' };
+        db.run(`DELETE FROM announcements WHERE id=?`, [req.params.id], (err) => {
+            if (err) {
+                console.error('Failed to delete announcement:', err);
+                req.session.toast = { type: 'error', message: 'DB Error: ' + err.message };
+            } else {
+                req.session.toast = { type: 'success', message: 'Announcement deleted.' };
+            }
             res.redirect('/admin');
         });
     });
-});
-
-// Admin can react to announcements (same logic as user)
-router.post('/announcements/:id/react', isAuthenticated, isAdmin, (req, res) => {
-    const { emoji } = req.body;
-    const annId = req.params.id;
-    const userId = req.session.user.id;
-    db.get(`SELECT * FROM announcement_reactions WHERE announcement_id=? AND user_id=?`, [annId, userId], (err, existing) => {
-        if (existing) {
-            if (existing.emoji === emoji) {
-                db.run(`DELETE FROM announcement_reactions WHERE id=?`, [existing.id], () => res.json({ success: true, action: 'removed' }));
-            } else {
-                db.run(`UPDATE announcement_reactions SET emoji=? WHERE id=?`, [emoji, existing.id], () => res.json({ success: true, action: 'changed' }));
-            }
-        } else {
-            db.run(`INSERT INTO announcement_reactions (announcement_id, user_id, emoji) VALUES (?, ?, ?)`, [annId, userId, emoji], () => res.json({ success: true, action: 'added' }));
-        }
-    });
-});
-
-// Admin reply to a comment - saves reply inline under the comment
-router.post('/comments/:id/reply', isAuthenticated, isAdmin, (req, res) => {
-    const commentId = req.params.id;
-    const { reply_message } = req.body;
-    
-    if (!reply_message || !reply_message.trim()) {
-        return res.json({ error: 'Reply message cannot be empty.' });
-    }
-    
-    // Save the reply directly to the comment
-    db.run(`UPDATE announcement_comments SET reply = ?, replied_at = datetime('now','localtime') WHERE id = ?`, 
-        [reply_message.trim(), commentId], (err) => {
-            if (err) {
-                console.error('Reply update error:', err);
-                return res.json({ error: 'Failed to save reply.' });
-            }
-            res.json({ success: true, message: 'Reply saved!' });
-        });
 });
 
 // Search student by ID — JSON for modal
@@ -346,8 +293,14 @@ router.post('/students/add', isAuthenticated, isAdmin, async (req, res) => {
 
 // Reset all sessions
 router.post('/students/reset-sessions', isAuthenticated, isAdmin, (req, res) => {
-    db.run(`UPDATE users SET remaining_sessions = 30 WHERE role = 'user'`, () => {
-        req.session.toast = { type: 'success', message: 'All student sessions reset to 30.' };
+    console.log("HIT /students/reset-sessions");
+    db.run(`UPDATE users SET remaining_sessions = 30 WHERE role = 'user'`, (err) => {
+        if (err) {
+            console.error('Failed to reset sessions:', err);
+            req.session.toast = { type: 'error', message: 'DB Error: ' + err.message };
+        } else {
+            req.session.toast = { type: 'success', message: 'All student sessions reset to 30.' };
+        }
         res.redirect('/admin/students');
     });
 });

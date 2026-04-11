@@ -566,9 +566,8 @@
             </button>
 
             <!-- Reset Sessions -->
-            <form action="/admin/students/reset-sessions" method="POST" style="margin:0;"
-                onsubmit="return confirm('Reset ALL student sessions to 30?')">
-                <button type="submit" class="btn-reset-sessions">
+            <form action="/admin/students/reset-sessions" method="POST" style="margin:0;display:inline-flex;">
+                <button type="submit" class="btn-reset-sessions" onclick="if(!confirm('Reset ALL student sessions to 30?')) return false;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12"
                         height="12">
                         <path fill-rule="evenodd"

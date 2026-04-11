@@ -22,54 +22,30 @@
     border-radius: 999px;
     margin: 1rem auto 1.5rem;
   }
+  .comm-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
   .comm-card {
-    background: rgba(255,255,255,0.09);
+    background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid rgba(241,225,148,0.15);
     border-radius: 1.4rem;
     padding: 2rem 1.8rem;
     box-shadow: 0 6px 40px rgba(0,0,0,0.28);
-    transition: transform .25s, box-shadow .25s;
-  }
-  .comm-card:hover { transform: translateY(-4px); box-shadow: 0 12px 52px rgba(0,0,0,.36); }
-
-  /* Tab bar */
-  .comm-tab-bar {
-    display: flex; gap: .5rem; flex-wrap: wrap;
-    background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,.12);
-    border-radius: 1rem;
-    padding: .4rem;
     margin-bottom: 2rem;
   }
-  .comm-tab {
-    flex: 1; min-width: 100px;
-    padding: .65rem 1rem;
-    border-radius: .75rem;
-    border: none;
-    background: transparent;
-    color: rgba(255,255,255,0.65);
-    font-size: .85rem; font-weight: 600;
-    cursor: pointer;
-    transition: background .2s, color .2s;
-    text-align: center;
-  }
-  .comm-tab.active {
-    background: rgba(241,225,148,0.18);
-    color: #F1E194;
-    border: 1px solid rgba(241,225,148,0.30);
-  }
-  .comm-tab:not(.active):hover { background: rgba(255,255,255,0.07); color: #fff; }
-
-  /* Tab panels */
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
 
   /* Forum thread row */
   .forum-item {
     display: flex; align-items: flex-start; gap: 1rem;
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(255,255,255,.09);
+    border-bottom: 1px solid rgba(255,255,255,.12);
   }
   .forum-item:last-child { border-bottom: none; }
   .forum-avatar {
@@ -90,11 +66,14 @@
   .tag-event    { background:rgba(34,197,94,.18);   color:#86efac;  border:1px solid rgba(34,197,94,.3); }
   .tag-general  { background:rgba(168,85,247,.18);  color:#d8b4fe;  border:1px solid rgba(168,85,247,.3); }
 
-  /* Event card */
+  .forum-thread-title { font-size: .9rem; font-weight: 600; color: #fff; margin-bottom: .2rem; }
+  .forum-thread-sub   { font-size: .78rem; color: rgba(255,255,255,.85); margin-top:.2rem; }
+  .forum-thread-meta  { font-size: .7rem; color: rgba(255,255,255,.70); }
+
   .event-card {
     display: flex; gap: 1.2rem; align-items: flex-start;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.13);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(241,225,148,0.1);
     border-radius: 1rem;
     padding: 1.2rem;
     margin-bottom: 1rem;
@@ -110,17 +89,21 @@
     padding: .5rem .4rem;
     flex-shrink: 0;
   }
+  .event-title { font-size: .9rem; font-weight: 600; color: #fff; }
+  .event-sub   { font-size: .78rem; color: rgba(255,255,255,.85); margin-top:.3rem; line-height:1.5; }
 
-  /* Group card */
   .group-card {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(241,225,148,0.1);
     border-radius: 1.1rem;
     padding: 1.4rem;
     display: flex; flex-direction: column; gap: .6rem;
     transition: border-color .2s, transform .2s;
   }
   .group-card:hover { border-color: rgba(241,225,148,.35); transform: translateY(-2px); }
+  .group-card-title { font-size: .88rem; font-weight: 700; color: #fff; }
+  .group-card-sub   { font-size: .75rem; color: rgba(255,255,255,.85); line-height:1.5; }
+  .group-card-count { font-size: .72rem; color: rgba(255,255,255,.70); }
   .group-icon {
     width: 48px; height: 48px; border-radius: 12px;
     background: linear-gradient(135deg,#5B0E14,#9b1e28);
@@ -141,6 +124,7 @@
     transition: background .2s, border-color .2s;
     margin-top: auto;
     width: max-content;
+    text-decoration: none;
   }
   .join-btn:hover { background: rgba(241,225,148,0.22); border-color: rgba(241,225,148,0.55); }
 
@@ -151,9 +135,9 @@
     border-radius: .9rem;
     padding: .85rem 1.2rem;
     display: flex; align-items: center; gap: .75rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     font-size: .85rem;
-    color: rgba(255,255,255,0.80);
+    color: rgba(255,255,255,0.88);
   }
 </style>
 
@@ -168,7 +152,7 @@
         Connect, Share &amp; Grow Together
       </h1>
       <div class="comm-divider"></div>
-      <p class="text-white/70 text-base leading-relaxed" style="max-width:580px;margin:0 auto;">
+      <p style="color:rgba(255,255,255,0.80);font-size:.95rem;max-width:580px;margin:0 auto;line-height:1.7;">
         Your space to stay updated on CCS lab news, upcoming events, helpful discussions,
         and student group activities.
       </p>
@@ -180,252 +164,195 @@
       <span>You're browsing as a guest. <a href="/login" style="color:#F1E194;font-weight:700;text-decoration:underline;">Log in</a> or <a href="/register" style="color:#F1E194;font-weight:700;text-decoration:underline;">register</a> to participate in discussions and join groups.</span>
     </div>
 
-    <!-- Tab bar -->
-    <div class="comm-tab-bar">
-      <button class="comm-tab active" onclick="switchTab('forums',this)" id="tab-forums">
-        💬 Forums
-      </button>
-      <button class="comm-tab" onclick="switchTab('events',this)" id="tab-events">
-        📅 Events
-      </button>
-      <button class="comm-tab" onclick="switchTab('groups',this)" id="tab-groups">
-        👥 Student Groups
-      </button>
+    <!-- ══ FORUMS ══ -->
+    <div class="comm-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem;">
+        <div class="comm-section-title">💬 Discussion Threads</div>
+        <a href="/login" style="background:#F1E194;color:#5B0E14;font-size:.8rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;">+ New Thread</a>
+      </div>
+
+      <div class="forum-item">
+        <div class="forum-avatar">📣</div>
+        <div style="flex:1;">
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
+            <span class="forum-tag tag-announce">Announcement</span>
+            <span class="forum-thread-meta">by Admin · Apr 10, 2026</span>
+          </div>
+          <div class="forum-thread-title">Lab A Opens Every Weekday 7AM–9PM Starting April 14</div>
+          <div class="forum-thread-sub">Please observe proper sit-in protocols. Bring your student ID at all times.</div>
+        </div>
+        <div style="color:rgba(255,255,255,.45);font-size:.75rem;text-align:right;min-width:38px;">💬 12</div>
+      </div>
+
+      <div class="forum-item">
+        <div class="forum-avatar">🆘</div>
+        <div style="flex:1;">
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
+            <span class="forum-tag tag-help">Help &amp; Support</span>
+            <span class="forum-thread-meta">by Mark S. · Apr 9, 2026</span>
+          </div>
+          <div class="forum-thread-title">I can't log into my account — ID number not found?</div>
+          <div class="forum-thread-sub">Already tried resetting but still getting the same error message.</div>
+        </div>
+        <div style="color:rgba(255,255,255,.45);font-size:.75rem;text-align:right;min-width:38px;">💬 6</div>
+      </div>
+
+      <div class="forum-item">
+        <div class="forum-avatar">🗣️</div>
+        <div style="flex:1;">
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
+            <span class="forum-tag tag-general">General</span>
+            <span class="forum-thread-meta">by Jana R. · Apr 8, 2026</span>
+          </div>
+          <div class="forum-thread-title">Tips for maximizing your remaining session credits</div>
+          <div class="forum-thread-sub">Share your strategies for making the most out of laboratory time.</div>
+        </div>
+        <div style="color:rgba(255,255,255,.45);font-size:.75rem;text-align:right;min-width:38px;">💬 21</div>
+      </div>
+
+      <div class="forum-item">
+        <div class="forum-avatar">📣</div>
+        <div style="flex:1;">
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
+            <span class="forum-tag tag-announce">Announcement</span>
+            <span class="forum-thread-meta">by Admin · Apr 7, 2026</span>
+          </div>
+          <div class="forum-thread-title">Updated Lab Rules — No Food &amp; Drinks Policy Strictly Enforced</div>
+          <div class="forum-thread-sub">Violators will have sessions forfeited. Read the full memo below.</div>
+        </div>
+        <div style="color:rgba(255,255,255,.45);font-size:.75rem;text-align:right;min-width:38px;">💬 4</div>
+      </div>
+
+      <div class="forum-item">
+        <div class="forum-avatar">🎉</div>
+        <div style="flex:1;">
+          <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
+            <span class="forum-tag tag-event">Event</span>
+            <span class="forum-thread-meta">by Leo T. · Apr 5, 2026</span>
+          </div>
+          <div class="forum-thread-title">Hackathon 2026 — CCS Students Are Invited!</div>
+          <div class="forum-thread-sub">Form a team of 3–5 and register before April 20. Open to all year levels.</div>
+        </div>
+        <div style="color:rgba(255,255,255,.45);font-size:.75rem;text-align:right;min-width:38px;">💬 33</div>
+      </div>
     </div>
 
-    <!-- ══ FORUMS TAB ══ -->
-    <div class="tab-panel active" id="panel-forums">
-      <div class="comm-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
-          <h2 class="text-white font-bold text-xl">Discussion Threads</h2>
-          <a href="/login" style="background:#F1E194;color:#5B0E14;font-size:.8rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;">
-            + New Thread
-          </a>
-        </div>
+    <!-- ══ EVENTS ══ -->
+    <div class="comm-card">
+      <div class="comm-section-title" style="margin-bottom:1.4rem;">📅 Upcoming CCS Events</div>
 
-        <!-- Thread list -->
+      <div class="event-card">
+        <div class="event-date-box">
+          <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">Apr</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">14</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
+        </div>
         <div>
+          <div style="margin-bottom:.3rem;"><span class="forum-tag tag-announce">Academic</span></div>
+          <div class="event-title">Regular Lab Operations Resume</div>
+          <div class="event-sub">Lab A, B and C return to normal hours (7AM–9PM). Friday schedule ends at 6PM.</div>
+        </div>
+      </div>
 
-          <div class="forum-item">
-            <div class="forum-avatar">📣</div>
-            <div style="flex:1;">
-              <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-                <span class="forum-tag tag-announce">Announcement</span>
-                <span class="text-white/40 text-xs">by Admin · Apr 10, 2026</span>
-              </div>
-              <div class="text-white font-semibold text-sm">Lab A Opens Every Weekday 7AM–9PM Starting April 14</div>
-              <div class="text-white/60 text-xs mt-1">Please observe proper sit-in protocols. Bring your student ID at all times.</div>
-            </div>
-            <div class="text-white/40 text-xs text-right" style="min-width:38px;">💬 12</div>
-          </div>
+      <div class="event-card">
+        <div class="event-date-box">
+          <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">Apr</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">20</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
+        </div>
+        <div>
+          <div style="margin-bottom:.3rem;"><span class="forum-tag tag-event">Event</span></div>
+          <div class="event-title">CCS Hackathon 2026 — Team Registration Deadline</div>
+          <div class="event-sub">All teams must register by 11:59PM. Competition day is April 25–26 in Lab B.</div>
+        </div>
+      </div>
 
-          <div class="forum-item">
-            <div class="forum-avatar">🆘</div>
-            <div style="flex:1;">
-              <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-                <span class="forum-tag tag-help">Help &amp; Support</span>
-                <span class="text-white/40 text-xs">by Mark S. · Apr 9, 2026</span>
-              </div>
-              <div class="text-white font-semibold text-sm">I can't log into my account — ID number not found?</div>
-              <div class="text-white/60 text-xs mt-1">Already tried resetting but still getting the same error message.</div>
-            </div>
-            <div class="text-white/40 text-xs text-right" style="min-width:38px;">💬 6</div>
-          </div>
+      <div class="event-card">
+        <div class="event-date-box">
+          <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">Apr</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">25</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
+        </div>
+        <div>
+          <div style="margin-bottom:.3rem;"><span class="forum-tag tag-event">Event</span></div>
+          <div class="event-title">Hackathon Competition Day 1 — Problem Reveal &amp; Kickoff</div>
+          <div class="event-sub">8AM start at Lab B. Bring your laptop and team ID cards. Snacks provided.</div>
+        </div>
+      </div>
 
-          <div class="forum-item">
-            <div class="forum-avatar">🗣️</div>
-            <div style="flex:1;">
-              <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-                <span class="forum-tag tag-general">General</span>
-                <span class="text-white/40 text-xs">by Jana R. · Apr 8, 2026</span>
-              </div>
-              <div class="text-white font-semibold text-sm">Tips for maximizing your remaining session credits</div>
-              <div class="text-white/60 text-xs mt-1">Share your strategies for making the most out of laboratory time.</div>
-            </div>
-            <div class="text-white/40 text-xs text-right" style="min-width:38px;">💬 21</div>
-          </div>
-
-          <div class="forum-item">
-            <div class="forum-avatar">📣</div>
-            <div style="flex:1;">
-              <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-                <span class="forum-tag tag-announce">Announcement</span>
-                <span class="text-white/40 text-xs">by Admin · Apr 7, 2026</span>
-              </div>
-              <div class="text-white font-semibold text-sm">Updated Lab Rules — No Food &amp; Drinks Policy Strictly Enforced</div>
-              <div class="text-white/60 text-xs mt-1">Violators will have sessions forfeited. Read the full memo below.</div>
-            </div>
-            <div class="text-white/40 text-xs text-right" style="min-width:38px;">💬 4</div>
-          </div>
-
-          <div class="forum-item">
-            <div class="forum-avatar">🎉</div>
-            <div style="flex:1;">
-              <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-                <span class="forum-tag tag-event">Event</span>
-                <span class="text-white/40 text-xs">by Leo T. · Apr 5, 2026</span>
-              </div>
-              <div class="text-white font-semibold text-sm">Hackathon 2026 — CCS Students Are Invited!</div>
-              <div class="text-white/60 text-xs mt-1">Form a team of 3–5 and register before April 20. Open to all year levels.</div>
-            </div>
-            <div class="text-white/40 text-xs text-right" style="min-width:38px;">💬 33</div>
-          </div>
-
-        </div><!-- end thread list -->
+      <div class="event-card">
+        <div class="event-date-box">
+          <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">May</div>
+          <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">5</div>
+          <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
+        </div>
+        <div>
+          <div style="margin-bottom:.3rem;"><span class="forum-tag tag-announce">Academic</span></div>
+          <div class="event-title">End of Semester — Session Credits Reset</div>
+          <div class="event-sub">All remaining session credits will be archived. New credits issued for next semester.</div>
+        </div>
       </div>
     </div>
 
-    <!-- ══ EVENTS TAB ══ -->
-    <div class="tab-panel" id="panel-events">
-      <div class="comm-card">
-        <h2 class="text-white font-bold text-xl mb-5">Upcoming CCS Events</h2>
+    <!-- ══ STUDENT GROUPS ══ -->
+    <div class="comm-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.4rem;">
+        <div class="comm-section-title">👥 Student Groups</div>
+        <a href="/login" style="background:#F1E194;color:#5B0E14;font-size:.8rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;">+ Create Group</a>
+      </div>
 
-        <div class="event-card">
-          <div class="event-date-box">
-            <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">Apr</div>
-            <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">14</div>
-            <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
-          </div>
-          <div>
-            <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-              <span class="forum-tag tag-announce">Academic</span>
-            </div>
-            <div class="text-white font-semibold text-sm">Regular Lab Operations Resume</div>
-            <div class="text-white/60 text-xs mt-1 leading-relaxed">Lab A, B and C return to normal hours (7AM–9PM). Friday schedule ends at 6PM.</div>
-          </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.1rem;">
+
+        <div class="group-card">
+          <div class="group-icon">💻</div>
+          <div class="group-card-title">Web Dev Society</div>
+          <div class="group-card-sub">A group for frontend &amp; backend enthusiasts building real-world projects.</div>
+          <div class="group-card-count">👥 48 members</div>
+          <a href="/login" class="join-btn">➕ Join Group</a>
         </div>
 
-        <div class="event-card">
-          <div class="event-date-box">
-            <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">Apr</div>
-            <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">20</div>
-            <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
-          </div>
-          <div>
-            <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-              <span class="forum-tag tag-event">Event</span>
-            </div>
-            <div class="text-white font-semibold text-sm">CCS Hackathon 2026 — Team Registration Deadline</div>
-            <div class="text-white/60 text-xs mt-1 leading-relaxed">All teams must register by 11:59PM. Competition day is April 25–26 in Lab B.</div>
-          </div>
+        <div class="group-card">
+          <div class="group-icon">🤖</div>
+          <div class="group-card-title">AI &amp; ML Club</div>
+          <div class="group-card-sub">Exploring machine learning, data science, and AI research at CCS.</div>
+          <div class="group-card-count">👥 35 members</div>
+          <a href="/login" class="join-btn">➕ Join Group</a>
         </div>
 
-        <div class="event-card">
-          <div class="event-date-box">
-            <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">Apr</div>
-            <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">25</div>
-            <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
-          </div>
-          <div>
-            <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-              <span class="forum-tag tag-event">Event</span>
-            </div>
-            <div class="text-white font-semibold text-sm">Hackathon Competition Day 1 — Problem Reveal &amp; Kickoff</div>
-            <div class="text-white/60 text-xs mt-1 leading-relaxed">8AM start at Lab B. Bring your laptop and team ID cards. Snacks provided.</div>
-          </div>
+        <div class="group-card">
+          <div class="group-icon">🛡️</div>
+          <div class="group-card-title">CyberSec Circle</div>
+          <div class="group-card-sub">Ethical hacking, CTF competitions, and cybersecurity awareness campaigns.</div>
+          <div class="group-card-count">👥 29 members</div>
+          <a href="/login" class="join-btn">➕ Join Group</a>
         </div>
 
-        <div class="event-card">
-          <div class="event-date-box">
-            <div style="font-size:.65rem;font-weight:700;color:#F1E194;text-transform:uppercase;">May</div>
-            <div style="font-size:1.6rem;font-weight:800;color:#fff;line-height:1;">5</div>
-            <div style="font-size:.6rem;color:rgba(255,255,255,.55);">2026</div>
-          </div>
-          <div>
-            <div style="display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:.3rem;">
-              <span class="forum-tag tag-announce">Academic</span>
-            </div>
-            <div class="text-white font-semibold text-sm">End of Semester — Session Credits Reset</div>
-            <div class="text-white/60 text-xs mt-1 leading-relaxed">All remaining session credits will be archived. New credits issued for next semester.</div>
-          </div>
+        <div class="group-card">
+          <div class="group-icon">🎮</div>
+          <div class="group-card-title">Game Dev Guild</div>
+          <div class="group-card-sub">From 2D pixel art to 3D environments — build and ship games together.</div>
+          <div class="group-card-count">👥 22 members</div>
+          <a href="/login" class="join-btn">➕ Join Group</a>
+        </div>
+
+        <div class="group-card">
+          <div class="group-icon">📱</div>
+          <div class="group-card-title">Mobile App Devs</div>
+          <div class="group-card-sub">Android &amp; iOS development using React Native, Flutter, and Kotlin.</div>
+          <div class="group-card-count">👥 31 members</div>
+          <a href="/login" class="join-btn">➕ Join Group</a>
+        </div>
+
+        <div class="group-card">
+          <div class="group-icon">🌐</div>
+          <div class="group-card-title">Open Source UC</div>
+          <div class="group-card-sub">Contributing to open-source projects and building a collaborative culture at UC.</div>
+          <div class="group-card-count">👥 18 members</div>
+          <a href="/login" class="join-btn">➕ Join Group</a>
         </div>
 
       </div>
     </div>
-
-    <!-- ══ STUDENT GROUPS TAB ══ -->
-    <div class="tab-panel" id="panel-groups">
-      <div class="comm-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
-          <h2 class="text-white font-bold text-xl">Student Groups</h2>
-          <a href="/login" style="background:#F1E194;color:#5B0E14;font-size:.8rem;font-weight:700;padding:.5rem 1.1rem;border-radius:999px;text-decoration:none;">
-            + Create Group
-          </a>
-        </div>
-
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.1rem;">
-
-          <div class="group-card">
-            <div class="group-icon">💻</div>
-            <div class="text-white font-bold text-sm">Web Dev Society</div>
-            <div class="text-white/55 text-xs">A group for frontend &amp; backend enthusiasts building real-world projects.</div>
-            <div class="text-white/40 text-xs">👥 48 members</div>
-            <a href="/login" class="join-btn">➕ Join Group</a>
-          </div>
-
-          <div class="group-card">
-            <div class="group-icon">🤖</div>
-            <div class="text-white font-bold text-sm">AI &amp; ML Club</div>
-            <div class="text-white/55 text-xs">Exploring machine learning, data science, and AI research at CCS.</div>
-            <div class="text-white/40 text-xs">👥 35 members</div>
-            <a href="/login" class="join-btn">➕ Join Group</a>
-          </div>
-
-          <div class="group-card">
-            <div class="group-icon">🛡️</div>
-            <div class="text-white font-bold text-sm">CyberSec Circle</div>
-            <div class="text-white/55 text-xs">Ethical hacking, CTF competitions, and cybersecurity awareness campaigns.</div>
-            <div class="text-white/40 text-xs">👥 29 members</div>
-            <a href="/login" class="join-btn">➕ Join Group</a>
-          </div>
-
-          <div class="group-card">
-            <div class="group-icon">🎮</div>
-            <div class="text-white font-bold text-sm">Game Dev Guild</div>
-            <div class="text-white/55 text-xs">From 2D pixel art to 3D environments — build and ship games together.</div>
-            <div class="text-white/40 text-xs">👥 22 members</div>
-            <a href="/login" class="join-btn">➕ Join Group</a>
-          </div>
-
-          <div class="group-card">
-            <div class="group-icon">📱</div>
-            <div class="text-white font-bold text-sm">Mobile App Devs</div>
-            <div class="text-white/55 text-xs">Android &amp; iOS development using React Native, Flutter, and Kotlin.</div>
-            <div class="text-white/40 text-xs">👥 31 members</div>
-            <a href="/login" class="join-btn">➕ Join Group</a>
-          </div>
-
-          <div class="group-card">
-            <div class="group-icon">🌐</div>
-            <div class="text-white font-bold text-sm">Open Source UC</div>
-            <div class="text-white/55 text-xs">Contributing to open-source projects and building a collaborative culture at UC.</div>
-            <div class="text-white/40 text-xs">👥 18 members</div>
-            <a href="/login" class="join-btn">➕ Join Group</a>
-          </div>
-
-        </div>
-      </div>
-    </div><!-- end groups panel -->
 
   </div><!-- end max-width -->
 </section>
-
-<script>
-  function switchTab(name, btn) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.comm-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
-    btn.classList.add('active');
-    history.replaceState(null, '', '#' + name);
-  }
-
-  // Auto-switch to tab based on URL hash
-  (function () {
-    const hash = window.location.hash.replace('#', '');
-    const validTabs = ['forums', 'events', 'groups'];
-    if (validTabs.includes(hash)) {
-      const btn = document.getElementById('tab-' + hash);
-      if (btn) switchTab(hash, btn);
-    }
-  })();
-</script>

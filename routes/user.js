@@ -41,35 +41,12 @@ const fileFilter = (req, file, cb) => {
 };
 const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
 
-// ─── Helper: load announcements with reactions and comments ───────────────────
-function loadAnnouncementsWithMeta(userId, cb) {
-    db.all(`SELECT a.*, u.first_name, u.last_name FROM announcements a LEFT JOIN users u ON a.admin_id = u.id ORDER BY a.created_at DESC LIMIT 15`, (err, announcements) => {
-        if (!announcements || announcements.length === 0) return cb([]);
-        let done = 0;
-        const result = [];
-        announcements.forEach((ann, i) => {
-            result[i] = { ...ann, reactions: {}, userReaction: null, commentCount: 0 };
-            db.all(`SELECT emoji, COUNT(*) as count FROM announcement_reactions WHERE announcement_id=? GROUP BY emoji`, [ann.id], (e1, reactions) => {
-                (reactions || []).forEach(r => { result[i].reactions[r.emoji] = r.count; });
-                db.get(`SELECT emoji FROM announcement_reactions WHERE announcement_id=? AND user_id=?`, [ann.id, userId], (e2, myReaction) => {
-                    result[i].userReaction = myReaction ? myReaction.emoji : null;
-                    db.get(`SELECT COUNT(*) as cnt FROM announcement_comments WHERE announcement_id=?`, [ann.id], (e3, cc) => {
-                        result[i].commentCount = cc ? cc.cnt : 0;
-                        done++;
-                        if (done === announcements.length) cb(result);
-                    });
-                });
-            });
-        });
-    });
-}
-
 // User Dashboard
 router.get('/dashboard', isAuthenticated, isUser, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err, userData) => {
         if (userData) req.session.user = { ...req.session.user, ...userData };
-        loadAnnouncementsWithMeta(req.session.user.id, (announcements) => {
-            res.render('pages/dashboard', { announcements });
+        db.all(`SELECT a.*, u.first_name, u.last_name FROM announcements a LEFT JOIN users u ON a.admin_id = u.id ORDER BY a.created_at DESC LIMIT 15`, (err2, announcements) => {
+            res.render('pages/dashboard', { announcements: announcements || [] });
         });
     });
 });
@@ -157,51 +134,6 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
             req.session.save(() => res.redirect('/history'));
         }
     );
-});
-// ─── Announcement Reactions ───────────────────────────────────────────────────
-router.post('/announcements/:id/react', isAuthenticated, (req, res) => {
-    const { emoji } = req.body;
-    const annId = req.params.id;
-    const userId = req.session.user.id;
-    db.get(`SELECT * FROM announcement_reactions WHERE announcement_id=? AND user_id=?`, [annId, userId], (err, existing) => {
-        if (existing) {
-            if (existing.emoji === emoji) {
-                db.run(`DELETE FROM announcement_reactions WHERE id=?`, [existing.id], () => res.json({ success: true, action: 'removed' }));
-            } else {
-                db.run(`UPDATE announcement_reactions SET emoji=? WHERE id=?`, [emoji, existing.id], () => res.json({ success: true, action: 'changed' }));
-            }
-        } else {
-            db.run(`INSERT INTO announcement_reactions (announcement_id, user_id, emoji) VALUES (?, ?, ?)`, [annId, userId, emoji], () => res.json({ success: true, action: 'added' }));
-        }
-    });
-});
-
-// ─── Announcement Comments — with profanity check ─────────────────────────────
-router.post('/announcements/:id/comment', isAuthenticated, (req, res) => {
-    const annId = req.params.id;
-    console.log('Comment route hit - announcement ID:', annId, 'user:', req.session.user?.id);
-    
-    const { message } = req.body;
-    if (!message || !message.trim()) return res.json({ error: 'Comment cannot be empty.' });
-
-    if (containsVulgar(message)) {
-        return res.json({ error: 'Your comment contains inappropriate language. Please keep it respectful.' });
-    }
-
-    db.run(`INSERT INTO announcement_comments (announcement_id, user_id, message) VALUES (?, ?, ?)`,
-        [annId, req.session.user.id, message.trim()], function (err) {
-            if (err) {
-                console.error('Comment insert error:', err);
-                return res.json({ error: 'Failed to post comment.' });
-            }
-            db.get(`SELECT c.*, u.first_name, u.last_name, u.profile_picture FROM announcement_comments c JOIN users u ON c.user_id = u.id WHERE c.id=?`,
-                [this.lastID], (e2, comment) => res.json({ success: true, comment }));
-        });
-});
-
-router.get('/announcements/:id/comments', isAuthenticated, (req, res) => {
-    db.all(`SELECT c.*, u.first_name, u.last_name, u.profile_picture FROM announcement_comments c JOIN users u ON c.user_id = u.id WHERE c.announcement_id=? ORDER BY c.created_at ASC`,
-        [req.params.id], (err, comments) => res.json(comments || []));
 });
 
 // ─── RESERVATION (Lab PC only) ────────────────────────────────────────────────
