@@ -1,0 +1,278 @@
+<!-- ══════════════════════════════════════════════
+     ABOUT PAGE  –  CCS Sit-in Monitoring System
+════════════════════════════════════════════════ -->
+
+<style>
+  /* ── page-level overrides ── */
+  .about-section { padding: 3.5rem 1.25rem; }
+  .about-card {
+    background: rgba(255,255,255,0.10);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    box-shadow: 0 8px 48px rgba(0,0,0,0.30);
+    transition: transform .25s, box-shadow .25s;
+  }
+  .about-card:hover { transform: translateY(-4px); box-shadow: 0 14px 56px rgba(0,0,0,0.38); }
+  .about-badge {
+    display: inline-block;
+    background: rgba(241,225,148,.18);
+    color: #F1E194;
+    border: 1px solid rgba(241,225,148,.30);
+    border-radius: 999px;
+    padding: .3rem 1.1rem;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+  .about-divider {
+    width: 60px; height: 3px;
+    background: linear-gradient(90deg,#F1E194,#5B0E14);
+    border-radius: 999px;
+    margin: 1rem auto 1.5rem;
+  }
+  .feature-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(241,225,148,0.15);
+    border: 1px solid rgba(241,225,148,0.25);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+  .team-card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 1.2rem;
+    padding: 1.8rem 1.4rem;
+    text-align: center;
+    transition: transform .25s, box-shadow .25s;
+  }
+  .team-card:hover { transform: translateY(-4px); box-shadow: 0 10px 40px rgba(0,0,0,.30); }
+  .team-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg,#5B0E14,#F1E194);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 1rem;
+    border: 3px solid rgba(241,225,148,0.40);
+  }
+  .stat-box {
+    background: rgba(241,225,148,0.10);
+    border: 1px solid rgba(241,225,148,0.25);
+    border-radius: 1.2rem;
+    padding: 1.6rem 1rem;
+    text-align: center;
+  }
+  .quick-link {
+    display: flex; align-items: center; gap: .75rem;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: .9rem;
+    padding: .9rem 1.2rem;
+    color: rgba(255,255,255,0.88);
+    font-size: .9rem; font-weight: 500;
+    transition: background .2s, border-color .2s, transform .2s;
+    text-decoration: none;
+  }
+  .quick-link:hover {
+    background: rgba(241,225,148,0.12);
+    border-color: rgba(241,225,148,0.40);
+    transform: translateX(4px);
+    color: #F1E194;
+  }
+</style>
+
+<!-- ── HERO BANNER ── -->
+<section class="about-section" style="padding-top:4rem;">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <span class="about-badge">About Us</span>
+    <h1 class="text-white font-bold" style="font-size:clamp(2rem,5vw,3.2rem);line-height:1.2;text-shadow:0 2px 20px rgba(0,0,0,0.4);">
+      CCS Sit-in Monitoring System
+    </h1>
+    <div class="about-divider"></div>
+    <p class="text-white/75 text-base md:text-lg leading-relaxed" style="max-width:640px;margin:0 auto;">
+      A smart, paperless solution designed to streamline laboratory sit-in management
+      at the <strong class="text-white/95">University of Cebu – College of Computer Studies</strong>,
+      ensuring fairness, transparency, and efficiency for students and faculty alike.
+    </p>
+  </div>
+</section>
+
+<!-- ── WHAT IS THE SYSTEM ── -->
+<section class="about-section" style="padding-top:0;">
+  <div style="max-width:900px;margin:0 auto;">
+    <div class="about-card" style="text-align:center;">
+      <span class="about-badge">Our Purpose</span>
+      <h2 class="text-white font-bold text-2xl md:text-3xl mb-4">What is this System?</h2>
+      <p class="text-white/78 leading-relaxed text-base md:text-lg" style="max-width:680px;margin:0 auto;">
+        The <strong class="text-[#F1E194]">CCS Sit-in Monitoring System</strong> is an integrated web platform
+        that allows CCS laboratory administrators to manage student sit-in sessions digitally —
+        tracking attendance, allocating session credits, generating reports, and maintaining a
+        leaderboard that rewards active and responsible lab users.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── KEY FEATURES ── -->
+<section class="about-section" style="padding-top:0;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span class="about-badge">Features</span>
+      <h2 class="text-white font-bold text-2xl md:text-3xl">What We Offer</h2>
+      <div class="about-divider"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;">
+
+      <div class="about-card" style="padding:2rem 1.5rem;">
+        <div class="feature-icon">📋</div>
+        <h3 class="text-white font-semibold text-base mb-2">Session Tracking</h3>
+        <p class="text-white/65 text-sm leading-relaxed">Real-time sit-in logging with entry/exit timestamps and automatic session credit deduction.</p>
+      </div>
+
+      <div class="about-card" style="padding:2rem 1.5rem;">
+        <div class="feature-icon">🏆</div>
+        <h3 class="text-white font-semibold text-base mb-2">Leaderboard</h3>
+        <p class="text-white/65 text-sm leading-relaxed">Gamified ranking system that highlights the most diligent and responsible laboratory users.</p>
+      </div>
+
+      <div class="about-card" style="padding:2rem 1.5rem;">
+        <div class="feature-icon">📅</div>
+        <h3 class="text-white font-semibold text-base mb-2">Lab Reservations</h3>
+        <p class="text-white/65 text-sm leading-relaxed">Students can pre-book laboratory slots, reducing crowding and ensuring equitable access.</p>
+      </div>
+
+      <div class="about-card" style="padding:2rem 1.5rem;">
+        <div class="feature-icon">📊</div>
+        <h3 class="text-white font-semibold text-base mb-2">Admin Reports</h3>
+        <p class="text-white/65 text-sm leading-relaxed">Comprehensive usage analytics and downloadable reports for laboratory administrators.</p>
+      </div>
+
+      <div class="about-card" style="padding:2rem 1.5rem;">
+        <div class="feature-icon">💬</div>
+        <h3 class="text-white font-semibold text-base mb-2">Feedback System</h3>
+        <p class="text-white/65 text-sm leading-relaxed">Students can leave feedback and interact with announcements, keeping the community in the loop.</p>
+      </div>
+
+      <div class="about-card" style="padding:2rem 1.5rem;">
+        <div class="feature-icon">🔒</div>
+        <h3 class="text-white font-semibold text-base mb-2">Secure Access</h3>
+        <p class="text-white/65 text-sm leading-relaxed">Role-based authentication ensures data privacy and appropriate access levels for all users.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section class="about-section" style="padding-top:0;">
+  <div style="max-width:800px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.25rem;">
+      <div class="stat-box">
+        <div style="font-size:2.2rem;font-weight:800;color:#F1E194;">30</div>
+        <div class="text-white/70 text-sm mt-1">Session Credits<br>per Student</div>
+      </div>
+      <div class="stat-box">
+        <div style="font-size:2.2rem;font-weight:800;color:#F1E194;">24/7</div>
+        <div class="text-white/70 text-sm mt-1">Online<br>Availability</div>
+      </div>
+      <div class="stat-box">
+        <div style="font-size:2.2rem;font-weight:800;color:#F1E194;">100%</div>
+        <div class="text-white/70 text-sm mt-1">Paperless<br>Monitoring</div>
+      </div>
+      <div class="stat-box">
+        <div style="font-size:2.2rem;font-weight:800;color:#F1E194;">CCS</div>
+        <div class="text-white/70 text-sm mt-1">University of Cebu<br>Labs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MISSION & VISION ── -->
+<section class="about-section" style="padding-top:0;">
+  <div style="max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+    <div class="about-card">
+      <div class="feature-icon" style="margin-bottom:.9rem;">🎯</div>
+      <h3 class="text-white font-bold text-xl mb-3">Our Mission</h3>
+      <p class="text-white/70 text-sm leading-relaxed">
+        To provide the College of Computer Studies with a reliable, transparent, and user-friendly
+        digital platform that modernizes laboratory management and enriches the academic experience
+        of every student and faculty member.
+      </p>
+    </div>
+    <div class="about-card">
+      <div class="feature-icon" style="margin-bottom:.9rem;">🌟</div>
+      <h3 class="text-white font-bold text-xl mb-3">Our Vision</h3>
+      <p class="text-white/70 text-sm leading-relaxed">
+        A paperless, data-driven CCS laboratory environment where students are empowered through
+        accountability, transparency, and fair access — fostering a culture of excellence within
+        the University of Cebu community.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── MEET THE TEAM ── -->
+<section class="about-section" style="padding-top:0;">
+  <div style="max-width:960px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2.5rem;">
+      <span class="about-badge">The Team</span>
+      <h2 class="text-white font-bold text-2xl md:text-3xl">Meet the Developers</h2>
+      <div class="about-divider"></div>
+      <p class="text-white/65 text-sm">Built with passion by CCS students for the CCS community.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1.25rem;">
+      <div class="team-card">
+        <div class="team-avatar">👨‍💻</div>
+        <div class="text-white font-semibold text-sm">Lead Developer</div>
+        <div class="text-white/55 text-xs mt-1">Full-Stack / Backend</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👩‍🎨</div>
+        <div class="text-white font-semibold text-sm">UI / UX Designer</div>
+        <div class="text-white/55 text-xs mt-1">Frontend / Design</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👨‍🔬</div>
+        <div class="text-white font-semibold text-sm">Database Engineer</div>
+        <div class="text-white/55 text-xs mt-1">SQLite / Data</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">👩‍💼</div>
+        <div class="text-white font-semibold text-sm">Project Manager</div>
+        <div class="text-white/55 text-xs mt-1">Planning / QA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUICK LINKS ── -->
+<section class="about-section" style="padding-top:0;padding-bottom:5rem;">
+  <div style="max-width:700px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <span class="about-badge">Explore</span>
+      <h2 class="text-white font-bold text-xl">Quick Links</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.8rem;">
+      <a href="/login" class="quick-link">
+        <span>🚀</span> <span>Get Started — Log In</span>
+        <svg style="margin-left:auto;opacity:.5;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/register" class="quick-link">
+        <span>✏️</span> <span>Register a New Account</span>
+        <svg style="margin-left:auto;opacity:.5;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/leaderboard-index" class="quick-link">
+        <span>🏆</span> <span>View the Leaderboard</span>
+        <svg style="margin-left:auto;opacity:.5;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/community" class="quick-link">
+        <span>🤝</span> <span>Visit the Community Hub</span>
+        <svg style="margin-left:auto;opacity:.5;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>

@@ -78,6 +78,16 @@ app.get('/leaderboard-index', (req, res) => {
     });
 });
 
+// ─── Public About page ────────────────────────────────────────────────────────
+app.get('/about', (req, res) => {
+    res.render('pages/about');
+});
+
+// ─── Public Community page ────────────────────────────────────────────────────
+app.get('/community', (req, res) => {
+    res.render('pages/community');
+});
+
 // ─── Public Leaderboard API (no auth required) - handled by user.js
 
 // ─── Admin: All announcement comments (for feedback page comments tab) ────────
