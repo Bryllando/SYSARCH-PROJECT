@@ -585,5 +585,43 @@ router.post('/feedback/:id/reply', isAuthenticated, isAdmin, (req, res) => {
     );
 });
 
+// ── Delete single sit-in history record ───────────────────────────────────────
+router.post('/history/:id/delete', isAuthenticated, isAdmin, (req, res) => {
+    const sessionId = req.params.id;
+    db.get(`SELECT * FROM sitin_sessions WHERE id = ?`, [sessionId], (err, session) => {
+        if (err || !session) {
+            req.session.toast = { type: 'error', message: 'Session record not found.' };
+            return res.redirect('/admin/history');
+        }
+        // Only allow deleting completed sessions (not active ones)
+        if (session.status === 'active') {
+            req.session.toast = { type: 'error', message: 'Cannot delete an active sit-in session. End it first.' };
+            return res.redirect('/admin/history');
+        }
+        db.run(`DELETE FROM sitin_sessions WHERE id = ?`, [sessionId], (err2) => {
+            if (err2) {
+                req.session.toast = { type: 'error', message: 'Failed to delete record.' };
+            } else {
+                req.session.toast = { type: 'success', message: 'Session record removed successfully.' };
+            }
+            res.redirect('/admin/history');
+        });
+    });
+});
+
+// ── Delete ALL sit-in history (completed sessions only) ───────────────────────
+router.post('/history/delete-all', isAuthenticated, isAdmin, (req, res) => {
+    db.run(`DELETE FROM sitin_sessions WHERE status = 'done'`, function (err) {
+        if (err) {
+            req.session.toast = { type: 'error', message: 'Failed to clear history.' };
+        } else {
+            req.session.toast = {
+                type: 'success',
+                message: `All sit-in history cleared. ${this.changes} record(s) removed.`
+            };
+        }
+        res.redirect('/admin/history');
+    });
+});
 
 module.exports = router;
