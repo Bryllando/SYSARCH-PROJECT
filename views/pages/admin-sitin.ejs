@@ -653,6 +653,126 @@
     .btn-clear-pc:hover {
         background: #E5E7EB;
     }
+
+    /* ── Behavior Rating ── */
+    .btn-rate {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #FFF8F0;
+        color: #92400E;
+        border: 1.5px solid #FDE68A;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.15s;
+        white-space: nowrap;
+    }
+
+    .btn-rate:hover {
+        background: #F59E0B;
+        border-color: #F59E0B;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .rating-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 9px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+        cursor: pointer;
+        border: none;
+        font-family: 'DM Sans', sans-serif;
+        transition: opacity 0.15s;
+    }
+
+    .rating-badge:hover { opacity: 0.8; }
+
+    .r5 { background:#ECFDF5; color:#065F46; }
+    .r4 { background:#F0FDF4; color:#166534; }
+    .r3 { background:#F3F4F6; color:#374151; }
+    .r2 { background:#FFF7ED; color:#92400E; }
+    .r1 { background:#FEF2F2; color:#991B1B; }
+
+    /* Rating popover */
+    .rate-popover {
+        position: fixed;
+        z-index: 99999;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.08);
+        border: 1px solid #E8E3DD;
+        padding: 16px;
+        width: 260px;
+        display: none;
+        animation: ratePopIn 0.18s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    .rate-popover.open { display: block; }
+
+    @keyframes ratePopIn {
+        from { opacity: 0; transform: scale(.92) translateY(6px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .rate-popover-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #9CA3AF;
+        margin: 0 0 12px;
+    }
+
+    .rate-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1.5px solid transparent;
+        cursor: pointer;
+        transition: all 0.12s;
+        margin-bottom: 5px;
+        background: #FAFAF9;
+    }
+
+    .rate-option:last-child { margin-bottom: 0; }
+
+    .rate-option:hover { background: #F3F0EC; border-color: #E2DDD8; }
+    .rate-option.active { border-color: currentColor; }
+
+    .rate-option-emoji { font-size: 16px; }
+
+    .rate-option-text {
+        flex: 1;
+    }
+
+    .rate-option-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #1C2B35;
+    }
+
+    .rate-option-sub {
+        font-size: 10px;
+        color: #9CA3AF;
+        margin-top: 1px;
+    }
+
+    .rate-option-score {
+        font-size: 18px;
+        font-weight: 800;
+        line-height: 1;
+    }
 </style>
 
 <div class="sitin-page">
@@ -783,7 +903,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
+                                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:140px;">
                                             <!-- Edit PC button -->
                                             <button class="btn-edit-pc"
                                                 onclick="openEditPcModal(<%= s.id %>, '<%= s.lab_room %>', <%= s.computer_number || 'null' %>)">
@@ -794,6 +914,16 @@
                                                         fill-rule="evenodd" />
                                                 </svg>
                                                 Edit PC
+                                            </button>
+                                            <!-- Rate Behavior -->
+                                            <% var br = s.behavior_rating; %>
+                                            <% var rMeta = {5:{lbl:'Excellent',emoji:'⭐',cls:'r5'},4:{lbl:'Good',emoji:'👍',cls:'r4'},3:{lbl:'Neutral',emoji:'😐',cls:'r3'},2:{lbl:'Poor',emoji:'⚠️',cls:'r2'},1:{lbl:'Disruptive',emoji:'🚫',cls:'r1'}}; %>
+                                            <button
+                                                id="rate-btn-<%= s.id %>"
+                                                class="<%= br ? 'rating-badge ' + rMeta[br].cls : 'btn-rate' %>"
+                                                onclick="openRatePopover(event, <%= s.id %>, <%= br || 'null' %>)"
+                                                title="Rate student behavior">
+                                                <%= br ? (rMeta[br].emoji + ' ' + rMeta[br].lbl) : '⭐ Rate' %>
                                             </button>
                                             <!-- Logout -->
                                             <form action="/admin/sitin/<%= s.id %>/end" method="POST"
@@ -1082,6 +1212,107 @@
     }
 
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeEditPcModal();
+        if (e.key === 'Escape') { closeEditPcModal(); closeRatePopover(); }
     });
+
+    // ── Behavior Rating Popover ──
+    const RATINGS = [
+        { score: 5, emoji: '⭐', label: 'Excellent',   sub: 'Fully focused, working on task',    cls: 'r5', color: '#065F46' },
+        { score: 4, emoji: '👍', label: 'Good',        sub: 'Mostly productive, minor distraction', cls: 'r4', color: '#166534' },
+        { score: 3, emoji: '😐', label: 'Neutral',     sub: 'Mixed activity, unclear intent',   cls: 'r3', color: '#374151' },
+        { score: 2, emoji: '⚠️', label: 'Poor',        sub: 'Mostly gaming or off-task browsing', cls: 'r2', color: '#92400E' },
+        { score: 1, emoji: '🚫', label: 'Disruptive',  sub: 'Violating lab rules or misleading', cls: 'r1', color: '#991B1B' },
+    ];
+
+    let ratePopSessionId = null;
+    const ratePopover = document.createElement('div');
+    ratePopover.className = 'rate-popover';
+    ratePopover.innerHTML = `
+        <p class="rate-popover-title">Rate Behavior</p>
+        ${RATINGS.map(r => `
+            <div class="rate-option" data-score="${r.score}" onclick="submitRating(${r.score})" style="color:${r.color};">
+                <span class="rate-option-emoji">${r.emoji}</span>
+                <div class="rate-option-text">
+                    <div class="rate-option-label">${r.label}</div>
+                    <div class="rate-option-sub">${r.sub}</div>
+                </div>
+                <span class="rate-option-score">${r.score}</span>
+            </div>
+        `).join('')}
+    `;
+    document.body.appendChild(ratePopover);
+
+    function openRatePopover(event, sessionId, currentRating) {
+        event.stopPropagation();
+        closeEditPcModal();
+
+        ratePopSessionId = sessionId;
+
+        ratePopover.querySelectorAll('.rate-option').forEach(opt => {
+            const s = parseInt(opt.dataset.score);
+            opt.classList.toggle('active', s === currentRating);
+        });
+
+        const btn = event.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        
+        // Show temporarily (invisible) to get true dimensions
+        ratePopover.style.visibility = 'hidden';
+        ratePopover.classList.add('open');
+        const pw = ratePopover.offsetWidth || 260;
+        const ph = ratePopover.offsetHeight || 330;
+        ratePopover.style.visibility = 'visible';
+
+        let top = rect.bottom + 6;
+        let left = rect.left;
+        
+        if (left + pw > window.innerWidth - 12) left = window.innerWidth - pw - 12;
+        if (left < 12) left = 12;
+
+        // Flip up if it exceeds bottom of viewport
+        if (top + ph > window.innerHeight - 12) {
+            top = rect.top - ph - 6;
+            if (top < 12) top = 12;
+        }
+
+        ratePopover.style.top  = top + 'px';
+        ratePopover.style.left = left + 'px';
+    }
+
+    function closeRatePopover() {
+        ratePopover.classList.remove('open');
+        ratePopSessionId = null;
+    }
+
+    document.addEventListener('click', e => {
+        if (!ratePopover.contains(e.target)) closeRatePopover();
+    });
+
+    async function submitRating(score) {
+        if (!ratePopSessionId) return;
+        const sid = ratePopSessionId;
+        closeRatePopover();
+
+        try {
+            const res = await fetch(`/admin/sitin/${sid}/rate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: score })
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+
+            // Update the button badge in place
+            const r = RATINGS.find(x => x.score === score);
+            const btn = document.getElementById(`rate-btn-${sid}`);
+            if (btn && r) {
+                btn.className = `rating-badge ${r.cls}`;
+                btn.textContent = `${r.emoji} ${r.label}`;
+                // Update onclick to pass current rating
+                btn.setAttribute('onclick', `openRatePopover(event, ${sid}, ${score})`);
+            }
+        } catch (err) {
+            alert('Failed to save rating. Please try again.');
+        }
+    }
 </script>

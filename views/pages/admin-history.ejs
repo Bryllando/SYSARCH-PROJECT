@@ -514,6 +514,20 @@
     .hist-export-btn.pdf { background: #DC2626; color: #fff; }
     .hist-export-btn.print { background: #374151; color: #fff; }
 
+    /* Behavior rating badges (shared with sitin) */
+    .rating-badge { display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity 0.15s; }
+    .rating-badge:hover { opacity: 0.8; }
+    .btn-rate-hist { display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;background:#FFF8F0;color:#92400E;border:1.5px solid #FDE68A;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap; }
+    .btn-rate-hist:hover { background:#F59E0B;border-color:#F59E0B;color:#fff; }
+    .r5{background:#ECFDF5;color:#065F46;} .r4{background:#F0FDF4;color:#166534;} .r3{background:#F3F4F6;color:#374151;} .r2{background:#FFF7ED;color:#92400E;} .r1{background:#FEF2F2;color:#991B1B;}
+    .rate-popover{position:fixed;z-index:99999;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.22),0 4px 16px rgba(0,0,0,.08);border:1px solid #E8E3DD;padding:16px;width:260px;display:none;animation:ratePopIn .18s cubic-bezier(.34,1.56,.64,1) both;}
+    .rate-popover.open{display:block;}
+    @keyframes ratePopIn{from{opacity:0;transform:scale(.92) translateY(6px);}to{opacity:1;transform:scale(1) translateY(0);}}
+    .rate-popover-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9CA3AF;margin:0 0 12px;}
+    .rate-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1.5px solid transparent;cursor:pointer;transition:all .12s;margin-bottom:5px;background:#FAFAF9;}
+    .rate-option:last-child{margin-bottom:0;} .rate-option:hover{background:#F3F0EC;border-color:#E2DDD8;} .rate-option.active{border-color:currentColor;}
+    .rate-option-emoji{font-size:16px;} .rate-option-text{flex:1;} .rate-option-label{font-size:12px;font-weight:700;color:#1C2B35;} .rate-option-sub{font-size:10px;color:#9CA3AF;margin-top:1px;} .rate-option-score{font-size:18px;font-weight:800;line-height:1;}
+
     .hist-export-group {
         display: flex;
         align-items: center;
@@ -659,6 +673,15 @@
                     <option value="542">Lab 542</option>
                     <option value="544">Lab 544</option>
                 </select>
+                <select id="behaviorFilter" class="hist-filter-select">
+                    <option value="">All Behavior</option>
+                    <option value="5">⭐ Excellent (5)</option>
+                    <option value="4">👍 Good (4)</option>
+                    <option value="3">😐 Neutral (3)</option>
+                    <option value="2">⚠️ Poor (2)</option>
+                    <option value="1">🚫 Disruptive (1)</option>
+                    <option value="0">Unrated</option>
+                </select>
                 <!-- Date Range Filter -->
                 <div style="display:flex;align-items:center;gap:6px;">
                     <input type="date" id="dateFrom" class="hist-date-input" title="From date">
@@ -730,6 +753,7 @@
                                 <th>Time In</th>
                                 <th>Time Out</th>
                                 <th>Date</th>
+                                <th>Behavior</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -743,6 +767,7 @@
                                         data-status="<%= s.status %>"
                                         data-lab="<%= s.lab_room || '' %>"
                                         data-date="<%= dateStr %>"
+                                        data-behavior="<%= s.behavior_rating || '0' %>"
                                         data-id="<%= s.id %>">
 
                                         <td style="font-family:monospace;font-size:12px;color:#4B5563;white-space:nowrap;">
@@ -782,6 +807,18 @@
                                         </td>
                                         <td style="font-size:12px;color:#4B5563;white-space:nowrap;">
                                             <%= dateStr ? new Date(s.time_in).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) : '—' %>
+                                        </td>
+                                        <td>
+                                            <% var br = s.behavior_rating; var rMeta = {5:{lbl:'Excellent',emoji:'⭐',cls:'r5'},4:{lbl:'Good',emoji:'👍',cls:'r4'},3:{lbl:'Neutral',emoji:'😐',cls:'r3'},2:{lbl:'Poor',emoji:'⚠️',cls:'r2'},1:{lbl:'Disruptive',emoji:'🚫',cls:'r1'}}; %>
+                                            <% if (br) { %>
+                                                <button id="hrate-btn-<%= s.id %>" class="rating-badge <%= rMeta[br].cls %>" onclick="openHistRatePopover(event, <%= s.id %>, <%= br %>)" title="Click to change rating">
+                                                    <%= rMeta[br].emoji %> <%= rMeta[br].lbl %>
+                                                </button>
+                                            <% } else { %>
+                                                <button id="hrate-btn-<%= s.id %>" class="btn-rate-hist" onclick="openHistRatePopover(event, <%= s.id %>, null)" title="Rate behavior">
+                                                    ⭐ Rate
+                                                </button>
+                                            <% } %>
                                         </td>
                                         <td>
                                             <% if (s.status === 'active') { %>
@@ -1105,7 +1142,133 @@
         countEl.textContent = count;
     }
 
+    // \u2500\u2500 Override applyFilters with behavior filter support \u2500\u2500
+    const behaviorFilter = document.getElementById('behaviorFilter');
+    behaviorFilter.addEventListener('change', applyFilters);
+
+    applyFilters = function() {
+        const q = searchInput.value.toLowerCase();
+        const status = statusFilter.value;
+        const lab = labFilter.value;
+        const beh = behaviorFilter.value;
+        const from = dateFrom.value ? new Date(dateFrom.value) : null;
+        const to = dateTo.value ? new Date(dateTo.value + 'T23:59:59') : null;
+        let count = 0;
+
+        document.querySelectorAll('.hist-row').forEach(row => {
+            const matchQ = !q || row.textContent.toLowerCase().includes(q);
+            const matchStatus = !status || row.dataset.status === status;
+            const matchLab = !lab || row.dataset.lab === lab;
+            const matchBeh = !beh || (beh === '0' ? !row.dataset.behavior || row.dataset.behavior === '0' : row.dataset.behavior === beh);
+
+            let matchDate = true;
+            if (from || to) {
+                const rowDate = row.dataset.date ? new Date(row.dataset.date) : null;
+                if (!rowDate) matchDate = false;
+                else {
+                    if (from && rowDate < from) matchDate = false;
+                    if (to && rowDate > to) matchDate = false;
+                }
+            }
+
+            const show = matchQ && matchStatus && matchLab && matchBeh && matchDate;
+            row.style.display = show ? '' : 'none';
+            if (show) count++;
+        });
+        countEl.textContent = count;
+    };
+
+    // Re-wire all filter inputs to the updated applyFilters
     searchInput.addEventListener('input', applyFilters);
     statusFilter.addEventListener('change', applyFilters);
     labFilter.addEventListener('change', applyFilters);
+
+    // ── History Behavior Rating Popover ──
+    const HIST_RATINGS = [
+        { score: 5, emoji: '⭐', label: 'Excellent',  sub: 'Fully focused, working on task',       cls: 'r5', color: '#065F46' },
+        { score: 4, emoji: '👍', label: 'Good',       sub: 'Mostly productive, minor distraction',  cls: 'r4', color: '#166534' },
+        { score: 3, emoji: '😐', label: 'Neutral',    sub: 'Mixed activity, unclear intent',      cls: 'r3', color: '#374151' },
+        { score: 2, emoji: '⚠️', label: 'Poor',       sub: 'Mostly gaming or off-task browsing',  cls: 'r2', color: '#92400E' },
+        { score: 1, emoji: '🚫', label: 'Disruptive', sub: 'Violating lab rules or misleading',   cls: 'r1', color: '#991B1B' },
+    ];
+
+    let histRatePopSid = null;
+    const histRatePop = document.createElement('div');
+    histRatePop.className = 'rate-popover';
+    histRatePop.innerHTML = `
+        <p class="rate-popover-title">Rate Behavior</p>
+        ${HIST_RATINGS.map(r => `
+            <div class="rate-option" data-score="${r.score}" onclick="submitHistRating(${r.score})" style="color:${r.color};">
+                <span class="rate-option-emoji">${r.emoji}</span>
+                <div class="rate-option-text">
+                    <div class="rate-option-label">${r.label}</div>
+                    <div class="rate-option-sub">${r.sub}</div>
+                </div>
+                <span class="rate-option-score">${r.score}</span>
+            </div>
+        `).join('')}
+    `;
+    document.body.appendChild(histRatePop);
+
+    function openHistRatePopover(event, sessionId, currentRating) {
+        event.stopPropagation();
+        histRatePopSid = sessionId;
+        histRatePop.querySelectorAll('.rate-option').forEach(opt => {
+            opt.classList.toggle('active', parseInt(opt.dataset.score) === currentRating);
+        });
+        const btn = event.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        
+        histRatePop.style.visibility = 'hidden';
+        histRatePop.classList.add('open');
+        const pw = histRatePop.offsetWidth || 260;
+        const ph = histRatePop.offsetHeight || 330;
+        histRatePop.style.visibility = 'visible';
+        
+        let top = rect.bottom + 6;
+        let left = rect.left;
+        
+        if (left + pw > window.innerWidth - 12) left = window.innerWidth - pw - 12;
+        if (left < 12) left = 12;
+
+        if (top + ph > window.innerHeight - 12) {
+            top = rect.top - ph - 6;
+            if (top < 12) top = 12;
+        }
+
+        histRatePop.style.top  = top + 'px';
+        histRatePop.style.left = left + 'px';
+    }
+
+    document.addEventListener('click', e => { if (!histRatePop.contains(e.target)) histRatePop.classList.remove('open'); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { closeDeleteRowModal(); closeDeleteAllModal(); histRatePop.classList.remove('open'); }
+    });
+
+    async function submitHistRating(score) {
+        const sid = histRatePopSid;
+        histRatePop.classList.remove('open');
+        histRatePopSid = null;
+        if (!sid) return;
+        try {
+            const res = await fetch(`/admin/sitin/${sid}/rate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: score })
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error);
+            const r = HIST_RATINGS.find(x => x.score === score);
+            const btn = document.getElementById(`hrate-btn-${sid}`);
+            if (btn && r) {
+                btn.className = `rating-badge ${r.cls}`;
+                btn.textContent = `${r.emoji} ${r.label}`;
+                btn.setAttribute('onclick', `openHistRatePopover(event, ${sid}, ${score})`);
+                // update data attribute for filter
+                btn.closest('tr').dataset.behavior = score;
+            }
+        } catch (err) {
+            alert('Failed to save rating. Please try again.');
+        }
+    }
 </script>

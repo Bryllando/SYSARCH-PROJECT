@@ -41,6 +41,9 @@ db.serialize(() => {
 
     // Add computer_number to existing sitin_sessions if it doesn't exist
     db.run(`ALTER TABLE sitin_sessions ADD COLUMN computer_number INTEGER DEFAULT NULL`, () => { });
+    // Add behavior_rating column (1=Disruptive … 5=Excellent, NULL=unrated)
+    db.run(`ALTER TABLE sitin_sessions ADD COLUMN behavior_rating INTEGER DEFAULT NULL`, () => { });
+
 
     db.run(`CREATE TABLE IF NOT EXISTS reservations (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -309,7 +309,19 @@ router.post('/students/reset-sessions', isAuthenticated, isAdmin, (req, res) => 
 router.get('/students/:id', isAuthenticated, isAdmin, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.params.id], (err, student) => {
         db.all(`SELECT * FROM sitin_sessions WHERE user_id = ? ORDER BY time_in DESC`, [req.params.id], (err2, sessions) => {
-            res.render('pages/admin-student-record', { student, sessions: sessions || [] });
+            db.get(
+                `SELECT ROUND(AVG(behavior_rating),1) as avg_rating, COUNT(behavior_rating) as rated_count
+                 FROM sitin_sessions WHERE user_id = ? AND behavior_rating IS NOT NULL`,
+                [req.params.id],
+                (err3, ratingRow) => {
+                    res.render('pages/admin-student-record', {
+                        student,
+                        sessions: sessions || [],
+                        avg_rating: ratingRow?.avg_rating || null,
+                        rated_count: ratingRow?.rated_count || 0
+                    });
+                }
+            );
         });
     });
 });
@@ -364,10 +376,30 @@ router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
         });
 });
 
+// ── Rate student behavior for a sit-in session (AJAX) ─────────────────────────
+router.post('/sitin/:id/rate', isAuthenticated, isAdmin, (req, res) => {
+    const sessionId = req.params.id;
+    const rating = parseInt(req.body.rating);
+    if (!rating || rating < 1 || rating > 5) {
+        return res.json({ error: 'Invalid rating. Must be 1–5.' });
+    }
+    db.run(
+        `UPDATE sitin_sessions SET behavior_rating = ? WHERE id = ?`,
+        [rating, sessionId],
+        function (err) {
+            if (err) return res.json({ error: err.message });
+            res.json({ success: true, rating, sessionId });
+        }
+    );
+});
+
+
 // History
 router.get('/history', isAuthenticated, isAdmin, (req, res) => {
     db.all(
-        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, u.year_level, f.message as feedback_message FROM sitin_sessions s JOIN users u ON s.user_id = u.id LEFT JOIN feedback f ON f.session_id = s.id ORDER BY s.time_in DESC`,
+        `SELECT s.*, s.behavior_rating, u.id_number, u.first_name, u.last_name, u.course, u.year_level, f.message as feedback_message
+         FROM sitin_sessions s JOIN users u ON s.user_id = u.id LEFT JOIN feedback f ON f.session_id = s.id
+         ORDER BY s.time_in DESC`,
         (err, sessions) => res.render('pages/admin-history', { sessions: sessions || [] })
     );
 });
@@ -375,10 +407,13 @@ router.get('/history', isAuthenticated, isAdmin, (req, res) => {
 // Reports
 router.get('/reports', isAuthenticated, isAdmin, (req, res) => {
     db.all(
-        `SELECT s.*, u.id_number, u.first_name, u.last_name, u.course, f.message as feedback_message FROM sitin_sessions s JOIN users u ON s.user_id = u.id LEFT JOIN feedback f ON f.session_id = s.id ORDER BY s.time_in DESC`,
+        `SELECT s.*, s.behavior_rating, u.id_number, u.first_name, u.last_name, u.course, f.message as feedback_message
+         FROM sitin_sessions s JOIN users u ON s.user_id = u.id LEFT JOIN feedback f ON f.session_id = s.id
+         ORDER BY s.time_in DESC`,
         (err, sessions) => res.render('pages/admin-reports', { sessions: sessions || [] })
     );
 });
+
 
 // Feedback
 router.get('/feedback', isAuthenticated, isAdmin, (req, res) => {
