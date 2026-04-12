@@ -997,8 +997,18 @@
                         placeholder="Re-enter password">
                 </div>
             </div>
-            <p id="addPasswordMsg" style="font-size:11px;color:#DC2626;margin:0;display:none;">Passwords do not match.
-            </p>
+
+            <!-- Live password requirements -->
+            <div id="addPasswordReqs" style="background:#F7F5F2;border:1.5px solid #E8E3DD;border-radius:10px;padding:10px 14px;display:none;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#9CA3AF;margin-bottom:7px;">Password Requirements</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;">
+                    <div id="req-add-len"  class="req-item">&#x25CF; 8+ characters</div>
+                    <div id="req-add-up"   class="req-item">&#x25CF; Uppercase letter</div>
+                    <div id="req-add-low"  class="req-item">&#x25CF; Lowercase letter</div>
+                    <div id="req-add-num"  class="req-item">&#x25CF; One number</div>
+                    <div id="req-add-match" class="req-item" style="grid-column:span 2;">&#x25CF; Passwords must match</div>
+                </div>
+            </div>
 
             <!-- Buttons -->
             <div style="display:flex;gap:10px;padding-top:4px;">
@@ -1163,21 +1173,55 @@
         document.getElementById('addStudentModal').classList.remove('open');
     }
 
-    // Password match validation for Add Student
-    document.getElementById('addConfirmPassword').addEventListener('input', function () {
-        var pass = document.getElementById('addPassword').value;
-        var msg = document.getElementById('addPasswordMsg');
-        var btn = document.getElementById('addStudentSubmitBtn');
-        if (this.value && this.value !== pass) {
-            msg.style.display = 'block';
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-        } else {
-            msg.style.display = 'none';
-            btn.disabled = false;
-            btn.style.opacity = '1';
+    // ── Real-time password validation for Add Student modal ──
+    (function () {
+        const passInput    = document.getElementById('addPassword');
+        const confirmInput = document.getElementById('addConfirmPassword');
+        const submitBtn    = document.getElementById('addStudentSubmitBtn');
+        const reqsBox      = document.getElementById('addPasswordReqs');
+
+        const reqLen   = document.getElementById('req-add-len');
+        const reqUp    = document.getElementById('req-add-up');
+        const reqLow   = document.getElementById('req-add-low');
+        const reqNum   = document.getElementById('req-add-num');
+        const reqMatch = document.getElementById('req-add-match');
+
+        function mark(el, met) {
+            el.classList.toggle('met', met);
         }
-    });
+
+        function runValidation() {
+            const val     = passInput.value;
+            const confirm = confirmInput.value;
+
+            const hasLen   = val.length >= 8;
+            const hasUp    = /[A-Z]/.test(val);
+            const hasLow   = /[a-z]/.test(val);
+            const hasNum   = /[0-9]/.test(val);
+            const matches  = val.length > 0 && val === confirm;
+
+            mark(reqLen,   hasLen);
+            mark(reqUp,    hasUp);
+            mark(reqLow,   hasLow);
+            mark(reqNum,   hasNum);
+            mark(reqMatch, matches);
+
+            const allGood = hasLen && hasUp && hasLow && hasNum && matches;
+            submitBtn.disabled    = !allGood;
+            submitBtn.style.opacity = allGood ? '1' : '0.5';
+        }
+
+        passInput.addEventListener('focus', function () {
+            reqsBox.style.display = 'block';
+        });
+
+        passInput.addEventListener('input', runValidation);
+        confirmInput.addEventListener('input', runValidation);
+
+        // Initialize disabled state
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+    })();
 
     /* ── Sit-in Modal ── */
     function openSitinModal(id, idNumber, name, sessions) {
@@ -1208,3 +1252,16 @@
         document.getElementById('showingCount').innerHTML = 'Showing <strong>' + visible + '</strong> entries';
     });
 </script>
+
+<style>
+    /* ── Password requirement indicators ── */
+    .req-item {
+        font-size: 11px;
+        font-weight: 600;
+        color: #9CA3AF;
+        transition: color 0.15s;
+    }
+    .req-item.met {
+        color: #059669;
+    }
+</style>

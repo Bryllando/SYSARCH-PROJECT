@@ -389,6 +389,53 @@
         font-weight: 700;
     }
 
+    .ann-media-badge {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        background: rgba(0, 0, 0, 0.55);
+        color: #fff;
+        backdrop-filter: blur(4px);
+    }
+
+    .ann-media-error {
+        display: none;
+        align-items: center;
+        gap: 5px;
+        margin-top: 6px;
+        padding: 6px 10px;
+        background: #FEF2F2;
+        border: 1px solid #FECACA;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #DC2626;
+        animation: emojiIn 0.15s ease;
+    }
+
+    .ann-media-error.visible {
+        display: flex;
+    }
+
+    .ann-textarea.near-limit {
+        border-color: #F59E0B;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.08);
+    }
+
+    .ann-textarea.at-limit {
+        border-color: #DC2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+    }
+
+    .ann-char-count.near-limit { color: #F59E0B; }
+    .ann-char-count.at-limit   { color: #DC2626; font-weight: 700; }
+
     .ann-toolbar {
         display: flex;
         align-items: center;
@@ -833,6 +880,13 @@
                         <img id="annMediaImg" src="" alt="" style="display:none;">
                         <video id="annMediaVid" controls style="display:none;"></video>
                         <button type="button" class="ann-media-remove" onclick="removeMedia()">✕</button>
+                        <span id="annMediaBadge" class="ann-media-badge"></span>
+                    </div>
+                    <div id="annMediaError" class="ann-media-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor" width="12" height="12">
+                            <path fill-rule="evenodd" d="M7 14A7 7 0 1 0 7 0a7 7 0 0 0 0 14Zm-.75-9.25a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0v-3.5ZM7 11.25a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/>
+                        </svg>
+                        <span id="annMediaErrorText"></span>
                     </div>
                     <input type="file" name="media" id="annMediaFile" accept="image/*,video/mp4,video/webm,.gif"
                         style="display:none;" onchange="previewMedia(this)">
@@ -1254,21 +1308,72 @@
     document.addEventListener('click', () => document.getElementById('emojiPanel').classList.remove('open'));
 
     function updateCharCount(ta) {
-        document.getElementById('charCount').textContent = ta.value.length;
+        const len     = ta.value.length;
+        const countEl = document.getElementById('charCount');
+        countEl.textContent = len;
+        // Visual threshold feedback
+        ta.classList.remove('near-limit', 'at-limit');
+        countEl.classList.remove('near-limit', 'at-limit');
+        if (len >= 1000) {
+            ta.classList.add('at-limit');
+            countEl.classList.add('at-limit');
+        } else if (len >= 800) {
+            ta.classList.add('near-limit');
+            countEl.classList.add('near-limit');
+        }
     }
 
     function previewMedia(input) {
+        const errorEl  = document.getElementById('annMediaError');
+        const errorTxt = document.getElementById('annMediaErrorText');
+        const postBtn  = document.querySelector('.ann-post-btn');
+        const badge    = document.getElementById('annMediaBadge');
+
+        errorEl.classList.remove('visible');
+
         if (!input.files || !input.files[0]) return;
         const file = input.files[0];
+
+        // Allowed types
+        const ALLOWED = ['image/jpeg','image/png','image/gif','image/webp','video/mp4','video/webm'];
+        if (!ALLOWED.includes(file.type)) {
+            errorTxt.textContent = 'Unsupported file type. Use JPG, PNG, GIF, WEBP, MP4, or WEBM.';
+            errorEl.classList.add('visible');
+            input.value = '';
+            return;
+        }
+
+        // Size limit: 10 MB
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) {
+            errorTxt.textContent = 'File too large. Maximum allowed size is 10 MB.';
+            errorEl.classList.add('visible');
+            input.value = '';
+            return;
+        }
+
         const preview = document.getElementById('annMediaPreview');
-        const img = document.getElementById('annMediaImg');
-        const vid = document.getElementById('annMediaVid');
-        const url = URL.createObjectURL(file);
+        const img     = document.getElementById('annMediaImg');
+        const vid     = document.getElementById('annMediaVid');
+        const url     = URL.createObjectURL(file);
+
         preview.classList.add('has-file');
+
         if (file.type.startsWith('video')) {
-            img.style.display = 'none'; vid.style.display = 'block'; vid.src = url;
+            img.style.display = 'none';
+            vid.style.display = 'block';
+            vid.src = url;
+            badge.textContent = 'VIDEO';
+        } else if (file.type === 'image/gif') {
+            vid.style.display = 'none';
+            img.style.display = 'block';
+            img.src = url;
+            badge.textContent = 'GIF';
         } else {
-            vid.style.display = 'none'; img.style.display = 'block'; img.src = url;
+            vid.style.display = 'none';
+            img.style.display = 'block';
+            img.src = url;
+            badge.textContent = 'IMAGE';
         }
     }
     function removeMedia() {
@@ -1276,6 +1381,8 @@
         document.getElementById('annMediaPreview').classList.remove('has-file');
         document.getElementById('annMediaImg').src = '';
         document.getElementById('annMediaVid').src = '';
+        document.getElementById('annMediaBadge').textContent = '';
+        document.getElementById('annMediaError').classList.remove('visible');
     }
 
     function shareToAnnouncement(text) {

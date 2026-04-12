@@ -147,6 +147,106 @@
         position: relative;
         display: inline-flex;
     }
+
+    /* ── Photo upload live preview ── */
+    .photo-upload-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .photo-preview-ring {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .photo-preview-ring .preview-overlay {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: rgba(91, 14, 20, 0.55);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        opacity: 0;
+        transition: opacity 0.2s;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .photo-preview-ring:hover .preview-overlay {
+        opacity: 1;
+    }
+
+    .photo-validation-msg {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 8px;
+        display: none;
+        align-items: center;
+        gap: 5px;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .photo-validation-msg.error {
+        display: flex;
+        background: #FEF2F2;
+        color: #DC2626;
+        border: 1px solid #FECACA;
+    }
+
+    .photo-validation-msg.success {
+        display: flex;
+        background: #F0FDF4;
+        color: #16A34A;
+        border: 1px solid #BBF7D0;
+    }
+
+    .photo-upload-btn-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .photo-submit-btn {
+        display: none;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, #5B0E14, #3A0910);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.15s;
+    }
+
+    .photo-submit-btn.visible {
+        display: inline-flex;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .photo-submit-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
 </style>
 
 <div class="p-6 max-w-2xl mx-auto">
@@ -175,49 +275,62 @@
                         <div class="px-8 py-6 border-b border-gray-100 flex flex-col items-center gap-3"
                             style="background: linear-gradient(135deg, #f8f9fa, #fff);">
 
-                            <!-- Avatar — matches dashboard style exactly -->
-                            <div class="prof-avatar-container">
-                                <div class="prof-avatar-wrap">
-                                    <div class="prof-avatar-inner">
-                                        <% if (user.profile_picture && user.profile_picture !=='' ) { %>
-                                            <img src="<%= user.profile_picture %>" alt="Profile Picture">
-                                            <% } else { %>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"
-                                                    style="width:48px;height:48px;">
-                                                    <path fill-rule="evenodd"
-                                                        d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.348A7.698 7.698 0 0 1 12 15a7.693 7.693 0 0 1 5.855 2.749A8.217 8.217 0 0 1 12 20.25a8.216 8.216 0 0 1-5.855-2.401ZM9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                                <% } %>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <p class="text-gray-400 text-xs">Profile Picture</p>
-
-                            <!-- Photo upload form -->
+                            <!-- Avatar with live preview -->
                             <form action="/profile/picture" method="POST" enctype="multipart/form-data"
-                                class="flex flex-col items-center gap-2">
-                                <label for="photoInput"
-                                    class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-[#5B0E14] text-[#5B0E14] text-sm font-semibold hover:bg-[#5B0E14]/5 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="size-4">
-                                        <path fill-rule="evenodd"
-                                            d="M1 8a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 8.07 3h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 16.07 6H17a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8Zm13.5 3a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM10 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Upload Photo
+                                id="photoForm" class="photo-upload-area">
+
+                                <label for="photoInput" class="photo-preview-ring" title="Click to change photo">
+                                    <div class="prof-avatar-wrap">
+                                        <div class="prof-avatar-inner" id="avatarInner">
+                                            <%
+                                                const hasPic = user.profile_picture && user.profile_picture !== '';
+                                                const picSrc = hasPic ? (user.profile_picture + '?t=' + Date.now()) : '';
+                                            %>
+                                            <!-- Always render img; JS onerror shows SVG fallback if broken -->
+                                            <img id="avatarPreviewImg"
+                                                src="<%= picSrc %>"
+                                                alt=""
+                                                style="<%= hasPic ? '' : 'display:none;' %>"
+                                                onerror="this.style.display='none'; document.getElementById('avatarDefaultIcon').style.display='block';">
+                                            <svg id="avatarDefaultIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"
+                                                style="width:48px;height:48px;<%= hasPic ? 'display:none;' : '' %>">
+                                                <path fill-rule="evenodd"
+                                                    d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.348A7.698 7.698 0 0 1 12 15a7.693 7.693 0 0 1 5.855 2.749A8.217 8.217 0 0 1 12 20.25a8.216 8.216 0 0 1-5.855-2.401ZM9 9a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="preview-overlay">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width:18px;height:18px;">
+                                            <path fill-rule="evenodd" d="M1 8a2 2 0 0 1 2-2h.93a2 2 0 0 0 1.664-.89l.812-1.22A2 2 0 0 1 8.07 3h3.86a2 2 0 0 1 1.664.89l.812 1.22A2 2 0 0 0 16.07 6H17a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8Zm13.5 3a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM10 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd" />
+                                        </svg>
+                                        Change
+                                    </div>
                                 </label>
-                                <input id="photoInput" type="file" name="profile_picture" accept="image/*"
-                                    class="hidden" onchange="this.form.submit()">
+
+                                <input id="photoInput" type="file" name="profile_picture" accept="image/*" class="hidden">
+
+                                <!-- Validation message (hidden by default) -->
+                                <div id="photoValidationMsg" class="photo-validation-msg"></div>
+
                                 <p class="text-gray-400 text-xs">JPG, PNG, GIF, WEBP — max 5MB</p>
+
+                                <!-- Upload button shown only after valid file selected -->
+                                <div class="photo-upload-btn-wrap">
+                                    <button type="submit" id="photoSubmitBtn" class="photo-submit-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style="width:14px;height:14px;">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                        </svg>
+                                        Upload Photo
+                                    </button>
+                                </div>
                             </form>
 
                             <!-- Name + ID -->
                             <div class="text-center mt-1">
                                 <p class="font-bold text-[#273F4F] text-base leading-snug">
                                     <%= user.first_name %>
-                                        <%= user.last_name %>
+                                    <%= user.last_name %>
                                 </p>
                                 <p class="text-gray-400 text-sm mt-0.5">
                                     <%= user.id_number %> · <%= user.course %>
@@ -474,13 +587,13 @@
 
 <script>
     (function () {
+        // ── Profile info edit toggle ──
         const editBtn = document.getElementById('editBtn');
         const editBtnWrapper = document.getElementById('editBtnWrapper');
         const saveCancelWrapper = document.getElementById('saveCancelWrapper');
         const editModeBanner = document.getElementById('editModeBanner');
         const fields = document.querySelectorAll('[data-field]');
 
-        // Store original values so Cancel can restore them
         const originalValues = {};
         fields.forEach(function (fieldWrapper, i) {
             const input = fieldWrapper.querySelector('input, select');
@@ -488,13 +601,10 @@
         });
 
         function enableEditing() {
-            // Show banner, hide Edit button, show Save/Cancel
             editModeBanner.style.display = 'flex';
             editBtnWrapper.style.display = 'none';
-            saveCancelWrapper.style.removeProperty('display'); // removes the !important none
+            saveCancelWrapper.style.removeProperty('display');
             saveCancelWrapper.style.display = 'flex';
-
-            // Unlock all editable fields
             fields.forEach(function (fieldWrapper) {
                 fieldWrapper.classList.remove('locked');
                 fieldWrapper.classList.add('editable');
@@ -506,12 +616,9 @@
         }
 
         function disableEditing() {
-            // Hide banner, show Edit button, hide Save/Cancel
             editModeBanner.style.display = 'none';
             editBtnWrapper.style.display = 'block';
             saveCancelWrapper.style.display = 'none';
-
-            // Restore original values and re-lock
             fields.forEach(function (fieldWrapper, i) {
                 fieldWrapper.classList.remove('editable');
                 fieldWrapper.classList.add('locked');
@@ -524,5 +631,107 @@
 
         editBtn.addEventListener('click', enableEditing);
         document.getElementById('cancelBtn').addEventListener('click', disableEditing);
+
+        // ── AJAX profile picture upload ──
+        // Keeps the page alive so text edits + photo change work together
+        const photoForm    = document.getElementById('photoForm');
+        const photoInput   = document.getElementById('photoInput');
+        const previewImg   = document.getElementById('avatarPreviewImg');
+        const defaultIcon  = document.getElementById('avatarDefaultIcon');
+        const validMsg     = document.getElementById('photoValidationMsg');
+        const submitBtn    = document.getElementById('photoSubmitBtn');
+        const ALLOWED_TYPES = ['image/jpeg','image/png','image/gif','image/webp'];
+        const MAX_BYTES     = 5 * 1024 * 1024; // 5 MB
+
+        // Cache the button's original HTML so we can restore it after loading
+        const SUBMIT_BTN_HTML = submitBtn.innerHTML;
+
+        // ── Restore avatar from sessionStorage (survives text-form page reloads) ──
+        try {
+            const saved = sessionStorage.getItem('pendingAvatarPreview');
+            if (saved) {
+                previewImg.src = saved;
+                previewImg.style.display = 'block';
+                if (defaultIcon) defaultIcon.style.display = 'none';
+                sessionStorage.removeItem('pendingAvatarPreview');
+            }
+        } catch(_) {}
+
+        function showMsg(text, type) {
+            const errIcon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm-.75-9.25a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0v-3.5ZM8 12.25a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>';
+            const okIcon  = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm3.857-5.558a.75.75 0 0 0-1.214-.834l-2.483 3.613-1.104-1.104a.75.75 0 0 0-1.06 1.06l1.75 1.75a.75.75 0 0 0 1.137-.09l3-4.5-.026.105Z" clip-rule="evenodd"/></svg>';
+            validMsg.className = 'photo-validation-msg ' + type;
+            validMsg.innerHTML  = (type === 'error' ? errIcon : okIcon) + ' ' + text;
+        }
+
+        // ── File selection: live preview + validation ──
+        photoInput.addEventListener('change', function () {
+            const file = this.files[0];
+            validMsg.className = 'photo-validation-msg';
+            submitBtn.classList.remove('visible');
+
+            if (!file) return;
+
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                showMsg('Invalid file type. Use JPG, PNG, GIF, or WEBP.', 'error');
+                this.value = '';
+                return;
+            }
+            if (file.size > MAX_BYTES) {
+                showMsg('File too large. Maximum is 5 MB.', 'error');
+                this.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                previewImg.src = evt.target.result;
+                previewImg.style.display = 'block';
+                if (defaultIcon) defaultIcon.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+
+            const sizeLabel = file.size >= 1048576
+                ? (file.size / 1048576).toFixed(1) + ' MB'
+                : Math.round(file.size / 1024) + ' KB';
+            showMsg('Ready to upload · ' + sizeLabel, 'success');
+            submitBtn.classList.add('visible');
+        });
+
+        // ── Submit via AJAX — no page navigation, avatar updates in-place ──
+        photoForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const file = photoInput.files[0];
+            if (!file) return;
+
+            const capturedDataURL = previewImg.src; // DataURL from FileReader
+
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg style="width:14px;height:14px;animation:spin 0.8s linear infinite" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle style="opacity:.25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"/><path style="opacity:.75" fill="white" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Uploading…';
+            showMsg('Uploading…', 'success');
+
+            try {
+                const fd  = new FormData(this);
+                const res = await fetch('/profile/picture', { method: 'POST', body: fd });
+
+                if (res.ok) {
+                    // Avatar already shows the new photo (DataURL from FileReader)
+                    showMsg('✓ Profile picture updated!', 'success');
+                    submitBtn.classList.remove('visible');
+                    photoInput.value = '';
+
+                    // Persist DataURL across page reloads (e.g. when text form is saved)
+                    try { sessionStorage.setItem('pendingAvatarPreview', capturedDataURL); } catch(_) {}
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (err) {
+                showMsg('Upload failed. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = SUBMIT_BTN_HTML;
+            }
+        });
     })();
 </script>
