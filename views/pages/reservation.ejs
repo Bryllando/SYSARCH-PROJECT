@@ -986,6 +986,11 @@
     <!-- ════════════ TAB 1: RESERVATION ════════════ -->
     <div id="tab-reservation" class="res-tab-content active"
         style="background:#F0EDE8;border:1px solid #E8E3DD;border-top:none;border-radius:0 0 16px 16px;padding:20px;">
+        <% if (reservationSettings && Number(reservationSettings.enabled) === 0) { %>
+            <div style="margin-bottom:14px;padding:10px 12px;background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;font-size:12px;font-weight:600;color:#991B1B;">
+                Reservations are currently disabled: <%= reservationSettings.message || 'Please try again later.' %>
+            </div>
+        <% } %>
 
         <!-- Stats strip -->
         <div class="stat-strip" id="statStrip">
@@ -1025,6 +1030,8 @@
                         <option value="approved">Approved</option>
                         <option value="rejected">Rejected</option>
                         <option value="pending">Pending</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="expired">Expired</option>
                     </select>
                     <input type="text" id="searchRes" placeholder="Search..." oninput="filterReservations()"
                         class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#273F4F] bg-white w-36">
@@ -1060,6 +1067,9 @@
                                 <th
                                     class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
                                     Status</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-bold text-[#273F4F] uppercase tracking-wider">
+                                    Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1090,16 +1100,35 @@
                                                     <% } else if (r.status==='rejected' ) { %><span
                                                             class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full"><span
                                                                 class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>Rejected</span>
+                                                        <% } else if (r.status==='cancelled' ) { %><span
+                                                                class="inline-flex items-center gap-1 text-xs font-bold text-gray-700 bg-gray-100 px-2.5 py-1 rounded-full"><span
+                                                                    class="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>Cancelled</span>
+                                                            <% } else if (r.status==='expired' ) { %><span
+                                                                    class="inline-flex items-center gap-1 text-xs font-bold text-orange-700 bg-orange-50 px-2.5 py-1 rounded-full"><span
+                                                                        class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Expired</span>
                                                         <% } else { %><span
                                                                 class="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full"><span
                                                                     class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>Pending</span>
                                                             <% } %>
                                             </td>
+                                            <td class="px-4 py-3">
+                                                <% if (r.status === 'pending') { %>
+                                                    <form action="/reservation/<%= r.id %>/cancel" method="POST"
+                                                        onsubmit="return confirm('Cancel this reservation request?')" style="margin:0;">
+                                                        <button type="submit"
+                                                            class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full hover:bg-red-700 hover:text-white transition-all">
+                                                            Cancel
+                                                        </button>
+                                                    </form>
+                                                <% } else { %>
+                                                    <span class="text-xs text-gray-400">—</span>
+                                                <% } %>
+                                            </td>
                                         </tr>
                                         <% }); %>
                                             <% } else { %>
                                                 <tr>
-                                                    <td colspan="6"
+                                                    <td colspan="7"
                                                         class="px-6 py-12 text-center text-sm text-gray-400">No
                                                         reservations yet. Select a lab above to reserve a PC.</td>
                                                 </tr>
@@ -1248,7 +1277,7 @@
         <div style="display:flex;gap:10px;padding:14px 24px 22px;">
             <button onclick="closeReserveForm()"
                 style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
-            <button onclick="submitReservation()"
+            <button onclick="submitReservation()" id="reserveSubmitBtn"
                 style="flex:2;padding:11px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Submit
                 Reservation</button>
         </div>
@@ -1299,6 +1328,8 @@
 
         <script>
             const IS_ADMIN = '<%= typeof user !== "undefined" && user && user.role === "admin" ? "true" : "false" %>' === 'true';
+            const RESERVATION_ENABLED = <%= reservationSettings && Number(reservationSettings.enabled) === 0 ? 'false' : 'true' %>;
+            const RESERVATION_DISABLED_MESSAGE = <%- JSON.stringify((reservationSettings && reservationSettings.message) ? reservationSettings.message : 'Reservations are currently unavailable.') %>;
 
             // ── Initialize ──────────────────────────────────────────────────────────
             renderLabGrid();
@@ -1419,6 +1450,7 @@
             }
 
             function openReserveForm() {
+                if (!RESERVATION_ENABLED) { alert(RESERVATION_DISABLED_MESSAGE); return; }
                 if (!selectedPcNum || !currentLabId) return;
                 const lab = LABS.find(l => l.id === currentLabId);
                 document.getElementById('formPcLabel').textContent = `PC-${String(selectedPcNum).padStart(2, '0')}`;
@@ -1447,7 +1479,14 @@
             }
 
             function submitReservation() {
+                if (!RESERVATION_ENABLED) { alert(RESERVATION_DISABLED_MESSAGE); return; }
                 if (!document.getElementById('formTimeSlot').value) { alert('Please set a valid time slot (max 3 hours).'); return; }
+                const btn = document.getElementById('reserveSubmitBtn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.7';
+                    btn.textContent = 'Submitting...';
+                }
                 document.getElementById('labResForm').submit();
             }
 

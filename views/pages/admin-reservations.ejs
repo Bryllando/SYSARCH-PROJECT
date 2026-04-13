@@ -109,14 +109,47 @@
 
     /* Toolbar */
     .res-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
         padding: 14px 32px;
         border-bottom: 1px solid #E2DDD8;
         background: #F0EDE8;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .res-toolbar-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .res-toolbar-left,
+    .res-toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        min-width: 0;
+    }
+
+    .res-toolbar-left { flex: 1 1 auto; }
+    .res-toolbar-right { justify-content: flex-end; }
+
+    .res-setting-form {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+
+    .res-setting-message {
+        min-width: 240px;
+        max-width: 320px;
+        flex: 1 1 260px;
     }
 
     .res-filter-select {
@@ -176,6 +209,33 @@
     .btn-print-res:hover {
         opacity: 0.88;
         transform: translateY(-1px);
+    }
+
+    .res-filter-select,
+    .btn-print-res,
+    .res-search-wrap input {
+        height: 34px;
+        box-sizing: border-box;
+    }
+
+    .res-search-wrap input {
+        width: 210px;
+    }
+
+    @media (max-width: 1024px) {
+        .res-toolbar-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .res-toolbar-left,
+        .res-toolbar-right {
+            width: 100%;
+            justify-content: flex-start;
+        }
+        .res-search-wrap input {
+            width: 100%;
+            min-width: 180px;
+        }
     }
 
     /* Table */
@@ -346,6 +406,36 @@
 
     .status-rejected .dot {
         background: #DC2626;
+    }
+
+    .status-completed {
+        background: #EEF2FF;
+        color: #3730A3;
+        border: 1px solid #C7D2FE;
+    }
+
+    .status-completed .dot {
+        background: #4F46E5;
+    }
+
+    .status-cancelled {
+        background: #F3F4F6;
+        color: #4B5563;
+        border: 1px solid #E5E7EB;
+    }
+
+    .status-cancelled .dot {
+        background: #6B7280;
+    }
+
+    .status-expired {
+        background: #FFF7ED;
+        color: #9A3412;
+        border: 1px solid #FED7AA;
+    }
+
+    .status-expired .dot {
+        background: #EA580C;
     }
 
     @keyframes pulse {
@@ -528,6 +618,28 @@
         transform: translateY(-1px);
     }
 
+    .btn-sitin {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(135deg, #0F3E7D, #2A5AA0);
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s, transform 0.1s;
+        font-family: 'DM Sans', sans-serif;
+        white-space: nowrap;
+    }
+
+    .btn-sitin:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
     .res-table-footer {
         padding: 12px 20px;
         border-top: 1px solid #F3F0EC;
@@ -677,6 +789,7 @@
             </span>
         </div>
     </div>
+    <% const isHistoryView = (typeof reservationViewMode !== 'undefined' && reservationViewMode === 'history'); %>
 
     <% var allRes=(typeof reservations !=='undefined' && reservations) ? reservations : []; var
         pending=allRes.filter(r=> r.status === 'pending').length;
@@ -707,43 +820,89 @@
         <!-- Reservations Tab Content -->
         <div id="tab-reservations" class="res-tab-content active">
             <div class="res-toolbar">
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                    <select id="statusFilter" class="res-filter-select" onchange="filterTable()">
-                        <option value="">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                    </select>
-                    <select id="labFilter" class="res-filter-select" onchange="filterTable()">
-                        <option value="">All Labs</option>
-                        <option value="524">Lab 524</option>
-                        <option value="526">Lab 526</option>
-                        <option value="528">Lab 528</option>
-                        <option value="530">Lab 530</option>
-                        <option value="542">Lab 542</option>
-                        <option value="544">Lab 544</option>
-                    </select>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                    <div class="res-search-wrap">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                            style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;">
-                            <path fill-rule="evenodd"
-                                d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <input type="text" id="searchInput" placeholder="Search..." oninput="filterTable()">
+                <div class="res-toolbar-row">
+                    <div class="res-toolbar-left">
+                        <a href="/admin/reservations"
+                            class="btn-print-res"
+                            style="text-decoration:none;background:<%= isHistoryView ? '#6B7280' : '#1C2B35' %>;">
+                            Active List
+                        </a>
+                        <a href="/admin/reservations?view=history"
+                            class="btn-print-res"
+                            style="text-decoration:none;background:<%= isHistoryView ? '#5B0E14' : '#6B7280' %>;">
+                            View History
+                        </a>
+                        <form action="/admin/reservation-settings" method="POST" class="res-setting-form">
+                            <input type="hidden" name="enabled" value="<%= reservationSettings && Number(reservationSettings.enabled) === 1 ? 0 : 1 %>">
+                            <input type="text" name="message" value="<%= reservationSettings ? reservationSettings.message : '' %>"
+                                class="res-filter-select res-setting-message" placeholder="Disabled message">
+                            <button type="submit" class="btn-print-res" style="background:<%= reservationSettings && Number(reservationSettings.enabled) === 1 ? '#991B1B' : '#065F46' %>;">
+                                <%= reservationSettings && Number(reservationSettings.enabled) === 1 ? 'Disable Reservations' : 'Enable Reservations' %>
+                            </button>
+                        </form>
                     </div>
-                    <!-- ── PRINT BUTTON ── -->
-                    <button class="btn-print-res" onclick="printReservations()">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
-                            height="13">
-                            <path fill-rule="evenodd"
-                                d="M4.25 1.5A.75.75 0 0 1 5 .75h6a.75.75 0 0 1 .75.75V3h.5A2.25 2.25 0 0 1 14.5 5.25v4.5A2.25 2.25 0 0 1 12.25 12H12v1.25A1.75 1.75 0 0 1 10.25 15h-4.5A1.75 1.75 0 0 1 4 13.25V12h-.25A2.25 2.25 0 0 1 1.5 9.75v-4.5A2.25 2.25 0 0 1 3.75 3h.5V1.5ZM5.5 3h5V2.25h-5V3Zm-.75 7.5v2.75c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25V10.5h-6Zm7-5.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Print
-                    </button>
+                </div>
+                <div class="res-toolbar-row">
+                    <div class="res-toolbar-left">
+                        <select id="statusFilter" class="res-filter-select" onchange="filterTable()">
+                            <option value="">All Status</option>
+                            <% if (!isHistoryView) { %>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                            <% } else { %>
+                                <option value="rejected">Rejected</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="expired">Expired</option>
+                                <option value="completed">Completed</option>
+                                <option value="done">Completed (Legacy)</option>
+                                <option value="deleted">Deleted</option>
+                            <% } %>
+                        </select>
+                        <select id="labFilter" class="res-filter-select" onchange="filterTable()">
+                            <option value="">All Labs</option>
+                            <option value="524">Lab 524</option>
+                            <option value="526">Lab 526</option>
+                            <option value="528">Lab 528</option>
+                            <option value="530">Lab 530</option>
+                            <option value="542">Lab 542</option>
+                            <option value="544">Lab 544</option>
+                        </select>
+                    </div>
+                    <div class="res-toolbar-right">
+                        <form action="/admin/reservations/auto-expire" method="POST" style="margin:0;"
+                            onsubmit="if(!confirm('Auto-expire overdue pending/approved reservations?')) return false; const b=document.getElementById('autoExpireBtn'); b.disabled=true; b.textContent='Processing...';">
+                            <button id="autoExpireBtn" type="submit" class="btn-print-res" style="background:#92400E;">
+                                Auto-Expire
+                            </button>
+                        </form>
+                        <% if (isHistoryView) { %>
+                        <form action="/admin/reservations/delete-history" method="POST" style="margin:0;"
+                            onsubmit="return confirm('Delete all rejected/completed/expired reservation history? This cannot be undone.')">
+                            <button type="submit" class="btn-print-res" style="background:#7F1D1D;">
+                                Delete All History
+                            </button>
+                        </form>
+                        <% } %>
+                        <div class="res-search-wrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#9CA3AF;width:14px;height:14px;">
+                                <path fill-rule="evenodd"
+                                    d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <input type="text" id="searchInput" placeholder="Search..." oninput="filterTable()">
+                        </div>
+                        <!-- ── PRINT BUTTON ── -->
+                        <button class="btn-print-res" onclick="printReservations()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
+                                height="13">
+                                <path fill-rule="evenodd"
+                                    d="M4.25 1.5A.75.75 0 0 1 5 .75h6a.75.75 0 0 1 .75.75V3h.5A2.25 2.25 0 0 1 14.5 5.25v4.5A2.25 2.25 0 0 1 12.25 12H12v1.25A1.75 1.75 0 0 1 10.25 15h-4.5A1.75 1.75 0 0 1 4 13.25V12h-.25A2.25 2.25 0 0 1 1.5 9.75v-4.5A2.25 2.25 0 0 1 3.75 3h.5V1.5ZM5.5 3h5V2.25h-5V3Zm-.75 7.5v2.75c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25V10.5h-6Zm7-5.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Print
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -810,6 +969,18 @@
                                                     <% } else if (r.status==='rejected' ) { %>
                                                         <span class="status-pill status-rejected"><span
                                                                 class="dot"></span>Rejected</span>
+                                                        <% } else if (r.status==='cancelled' ) { %>
+                                                            <span class="status-pill status-cancelled"><span
+                                                                    class="dot"></span>Cancelled</span>
+                                                            <% } else if (r.status==='expired' ) { %>
+                                                                <span class="status-pill status-expired"><span
+                                                                        class="dot"></span>Expired</span>
+                                                            <% } else if (r.status==='completed' || r.status==='done' ) { %>
+                                                                <span class="status-pill status-completed"><span
+                                                                        class="dot"></span>Completed</span>
+                                                            <% } else if (r.status==='deleted' ) { %>
+                                                                <span class="status-pill status-cancelled"><span
+                                                                        class="dot"></span>Deleted</span>
                                                         <% } else { %>
                                                             <span class="status-pill status-pending"><span
                                                                     class="dot"></span>Pending</span>
@@ -830,10 +1001,27 @@
                                                             <button type="submit" class="btn-reject">✕ Reject</button>
                                                         </form>
                                                     </div>
+                                                <% } else if (r.status==='approved') { %>
+                                                    <div
+                                                        style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                                                        <a href="/admin/reservations/<%= r.id %>/sit-in"
+                                                            class="btn-sitin"
+                                                            style="text-decoration:none;">
+                                                            Sit-In
+                                                        </a>
+                                                    </div>
                                                     <% } else { %>
-                                                        <div
-                                                            style="text-align:center;font-size:11px;color:#C4BDB6;font-style:italic;">
-                                                            Processed</div>
+                                                        <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                                                            <span
+                                                                style="text-align:center;font-size:11px;color:#C4BDB6;font-style:italic;">
+                                                                Archived
+                                                            </span>
+                                                            <form action="/admin/reservations/<%= r.id %>/delete<%= isHistoryView ? '?view=history' : '' %>"
+                                                                method="POST" style="margin:0;"
+                                                                onsubmit="return confirm('Delete this reservation from active views?')">
+                                                                <button type="submit" class="btn-reject">Delete</button>
+                                                            </form>
+                                                        </div>
                                                         <% } %>
                                             </td>
                                         </tr>

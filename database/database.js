@@ -34,6 +34,7 @@ db.serialize(() => {
         computer_number INTEGER DEFAULT NULL,
         purpose TEXT,
         time_in DATETIME DEFAULT (datetime('now','localtime')),
+        time_end DATETIME DEFAULT NULL,
         time_out DATETIME,
         status TEXT DEFAULT 'active',
         FOREIGN KEY (user_id) REFERENCES users(id)
@@ -41,6 +42,7 @@ db.serialize(() => {
 
     // Add computer_number to existing sitin_sessions if it doesn't exist
     db.run(`ALTER TABLE sitin_sessions ADD COLUMN computer_number INTEGER DEFAULT NULL`, () => { });
+    db.run(`ALTER TABLE sitin_sessions ADD COLUMN time_end DATETIME DEFAULT NULL`, () => { });
     // Add behavior_rating column (1=Disruptive … 5=Excellent, NULL=unrated)
     db.run(`ALTER TABLE sitin_sessions ADD COLUMN behavior_rating INTEGER DEFAULT NULL`, () => { });
 
@@ -52,6 +54,7 @@ db.serialize(() => {
         date TEXT NOT NULL,
         time_slot TEXT NOT NULL,
         purpose TEXT,
+        message TEXT DEFAULT '',
         status TEXT DEFAULT 'pending',
         created_at DATETIME DEFAULT (datetime('now','localtime')),
         FOREIGN KEY (user_id) REFERENCES users(id)
@@ -59,6 +62,19 @@ db.serialize(() => {
 
     db.run(`ALTER TABLE reservations ADD COLUMN computer_number INTEGER DEFAULT NULL`, () => { });
     db.run(`ALTER TABLE reservations ADD COLUMN computer_id INTEGER DEFAULT NULL`, () => { });
+    db.run(`ALTER TABLE reservations ADD COLUMN time_start TEXT DEFAULT NULL`, () => { });
+    db.run(`ALTER TABLE reservations ADD COLUMN time_end TEXT DEFAULT NULL`, () => { });
+    db.run(`ALTER TABLE reservations ADD COLUMN message TEXT DEFAULT ''`, () => { });
+
+    db.run(`CREATE TABLE IF NOT EXISTS reservation_settings (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        enabled INTEGER DEFAULT 1,
+        message TEXT DEFAULT 'Reservations are temporarily unavailable.'
+    )`);
+    db.run(
+        `INSERT OR IGNORE INTO reservation_settings (id, enabled, message)
+         VALUES (1, 1, 'Reservations are temporarily unavailable.')`
+    );
 
     db.run(`CREATE TABLE IF NOT EXISTS feedback (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,11 +99,13 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         admin_id INTEGER,
         message TEXT NOT NULL,
+        is_pinned INTEGER DEFAULT 0,
         media_url TEXT DEFAULT '',
         media_type TEXT DEFAULT '',
         created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 
+    db.run(`ALTER TABLE announcements ADD COLUMN is_pinned INTEGER DEFAULT 0`, () => { });
     db.run(`ALTER TABLE announcements ADD COLUMN media_url TEXT DEFAULT ''`, () => { });
     db.run(`ALTER TABLE announcements ADD COLUMN media_type TEXT DEFAULT ''`, () => { });
 

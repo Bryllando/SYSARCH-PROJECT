@@ -309,6 +309,30 @@
         transform: translateY(-1px);
     }
 
+    .btn-extend {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #EEF2FF;
+        color: #3730A3;
+        border: 1.5px solid #C7D2FE;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.15s;
+        white-space: nowrap;
+    }
+
+    .btn-extend:hover {
+        background: #4F46E5;
+        border-color: #4F46E5;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
     .sitin-empty {
         padding: 72px 24px;
         text-align: center;
@@ -773,6 +797,71 @@
         font-weight: 800;
         line-height: 1;
     }
+
+    .extend-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        background: rgba(15, 23, 42, 0.62);
+        backdrop-filter: blur(4px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 14px;
+    }
+
+    .extend-overlay.open {
+        display: flex;
+    }
+
+    .extend-card {
+        width: 100%;
+        max-width: 620px;
+        background: #fff;
+        border: 1px solid #E8E3DD;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        animation: ratePopIn 0.18s ease-out both;
+    }
+
+    .extend-time-grid {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .extend-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.5px solid #D6D0CA;
+        border-radius: 9px;
+        font-size: 13px;
+    }
+
+    .extend-input:focus {
+        outline: none;
+        border-color: #273F4F;
+        box-shadow: 0 0 0 3px rgba(39, 63, 79, 0.08);
+    }
+
+    .extend-error {
+        display: none;
+        margin-top: 8px;
+        font-size: 12px;
+        color: #B91C1C;
+        background: #FEF2F2;
+        border: 1px solid #FECACA;
+        border-radius: 8px;
+        padding: 8px 10px;
+    }
+
+    .extend-meta {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #4B5563;
+    }
 </style>
 
 <div class="sitin-page">
@@ -800,6 +889,12 @@
                         style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">Active
                         Sessions</span>
                 </div>
+                <form method="GET" action="/admin/sitin" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                    <input type="date" name="filter_date" value="<%= sitinFilters ? sitinFilters.filter_date : '' %>"
+                        style="padding:7px 9px;border:1px solid #E2DDD8;border-radius:8px;font-size:11px;">
+                    <button type="submit" class="btn-edit-pc">Filter</button>
+                    <a href="/admin/sitin" class="btn-logout" style="text-decoration:none;">Clear</a>
+                </form>
             </div>
             <div class="sitin-search-wrap">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -824,6 +919,7 @@
                         <th>PC</th>
                         <th>Session</th>
                         <th>Time In</th>
+                        <th>End Time</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -896,6 +992,12 @@
                                         </span>
                                     </td>
                                     <td>
+                                        <span class="time-cell">
+                                            <%= s.time_end ? new Date(s.time_end).toLocaleTimeString('en-US',
+                                                {hour:'2-digit', minute:'2-digit'}) : '—' %>
+                                        </span>
+                                    </td>
+                                    <td>
                                         <span class="status-active">
                                             <span
                                                 style="width:5px;height:5px;background:#10B981;border-radius:50%;animation:livePulse 1.5s ease-in-out infinite;"></span>
@@ -914,6 +1016,17 @@
                                                         fill-rule="evenodd" />
                                                 </svg>
                                                 Edit PC
+                                            </button>
+                                            <button type="button" class="btn-extend"
+                                                onclick='openExtendModal(
+                                                    <%= s.id %>,
+                                                    <%- JSON.stringify(`${s.last_name}, ${s.first_name}`) %>,
+                                                    <%- JSON.stringify(s.lab_room || '') %>,
+                                                    <%- JSON.stringify(String(s.computer_number || '')) %>,
+                                                    <%- JSON.stringify(s.time_in || '') %>,
+                                                    <%- JSON.stringify(s.time_end || '') %>
+                                                )'>
+                                                Extend
                                             </button>
                                             <!-- Rate Behavior -->
                                             <% var br = s.behavior_rating; %>
@@ -944,7 +1057,7 @@
                                 <% }) %>
                                     <% } else { %>
                                         <tr>
-                                            <td colspan="11">
+                                            <td colspan="12">
                                                 <div class="sitin-empty">
                                                     <div
                                                         style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#F3F0EC,#E8E3DD);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
@@ -1057,6 +1170,35 @@
     </div>
 </div>
 
+<!-- Extend Session Modal -->
+<div id="extendOverlay" class="extend-overlay" onclick="if(event.target===this) closeExtendModal()">
+    <div class="extend-card">
+        <div style="padding:16px 18px;border-bottom:1px solid #F3F0EC;background:#FAFAF9;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+                <div style="font-size:16px;font-weight:800;color:#1C2B35;">Extend Session</div>
+                <div style="font-size:12px;color:#9CA3AF;">Select your extend time slot</div>
+            </div>
+            <button type="button" onclick="closeExtendModal()" class="edit-pc-close" style="background:#fff;border-color:#E2E8F0;color:#94A3B8;">✕</button>
+        </div>
+        <div style="padding:14px 18px;border-bottom:1px solid #F3F0EC;background:#FFF9F0;">
+            <div id="extendInfo" style="font-size:12px;color:#374151;line-height:1.6;">—</div>
+        </div>
+        <form id="extendForm" method="POST" style="padding:18px;">
+            <div class="extend-time-grid">
+                <input type="datetime-local" id="extendStartInput" name="start_time" class="extend-input" oninput="updateExtendDuration()">
+                <div style="color:#9CA3AF;font-size:14px;font-weight:700;">→</div>
+                <input type="datetime-local" id="extendEndInput" name="end_time" class="extend-input" oninput="updateExtendDuration()">
+            </div>
+            <div id="extendError" class="extend-error">Maximum extension is 3 hours only</div>
+            <div id="extendDuration" class="extend-meta">Duration: —</div>
+            <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
+                <button type="button" class="btn-clear-pc" onclick="closeExtendModal()">Cancel</button>
+                <button type="submit" id="extendSubmitBtn" class="btn-save-pc" disabled>Extend</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     // ── Search ──────────────────────────────────────────────────────────────────
     document.getElementById('searchInput').addEventListener('input', function () {
@@ -1068,6 +1210,98 @@
             if (show) count++;
         });
         document.getElementById('countDisplay').textContent = count;
+    });
+
+    let extendState = {
+        sessionId: null,
+        currentEnd: null
+    };
+
+    function toInputDateTime(sqlDateTime) {
+        if (!sqlDateTime) return '';
+        const d = new Date(sqlDateTime);
+        if (Number.isNaN(d.getTime())) return '';
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function openExtendModal(sessionId, studentName, labRoom, pcNum, timeIn, timeEnd) {
+        extendState.sessionId = sessionId;
+        const baseStart = timeEnd ? new Date(timeEnd) : new Date(new Date(timeIn).getTime() + (2 * 60 * 60 * 1000));
+        const defaultEnd = new Date(baseStart.getTime() + (30 * 60 * 1000));
+        extendState.currentEnd = baseStart;
+
+        document.getElementById('extendInfo').textContent =
+            `${studentName} • Lab ${labRoom} • PC-${String(pcNum || '').padStart(2, '0')} • Current End: ${baseStart.toLocaleString()}`;
+        document.getElementById('extendStartInput').value = toInputDateTime(baseStart);
+        document.getElementById('extendEndInput').value = toInputDateTime(defaultEnd);
+
+        const form = document.getElementById('extendForm');
+        form.action = `/admin/sitin/${sessionId}/extend`;
+        document.getElementById('extendOverlay').classList.add('open');
+        updateExtendDuration();
+    }
+
+    function closeExtendModal() {
+        document.getElementById('extendOverlay').classList.remove('open');
+        extendState = { sessionId: null, currentEnd: null };
+        const btn = document.getElementById('extendSubmitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Extend';
+        btn.style.opacity = '';
+    }
+
+    function updateExtendDuration() {
+        const startVal = document.getElementById('extendStartInput').value;
+        const endVal = document.getElementById('extendEndInput').value;
+        const errorEl = document.getElementById('extendError');
+        const durationEl = document.getElementById('extendDuration');
+        const submitBtn = document.getElementById('extendSubmitBtn');
+
+        errorEl.style.display = 'none';
+        submitBtn.disabled = true;
+        if (!startVal || !endVal) {
+            durationEl.textContent = 'Duration: —';
+            return;
+        }
+        const start = new Date(startVal);
+        const end = new Date(endVal);
+        const diffMinutes = Math.floor((end - start) / 60000);
+
+        if (extendState.currentEnd && start < extendState.currentEnd) {
+            errorEl.textContent = 'Start time must be at or after the current end time';
+            errorEl.style.display = 'block';
+            durationEl.textContent = 'Duration: —';
+            return;
+        }
+        if (diffMinutes <= 0) {
+            errorEl.textContent = 'End time must be after start time';
+            errorEl.style.display = 'block';
+            durationEl.textContent = 'Duration: —';
+            return;
+        }
+        if (diffMinutes > 180) {
+            errorEl.textContent = 'Maximum extension is 3 hours only';
+            errorEl.style.display = 'block';
+            durationEl.textContent = 'Duration: —';
+            return;
+        }
+
+        const hours = Math.floor(diffMinutes / 60);
+        const mins = diffMinutes % 60;
+        durationEl.textContent = `Duration: ${hours ? `${hours} hour${hours > 1 ? 's' : ''}` : ''}${hours && mins ? ' ' : ''}${mins ? `${mins} minute${mins > 1 ? 's' : ''}` : ''}`;
+        submitBtn.disabled = false;
+    }
+
+    document.getElementById('extendForm').addEventListener('submit', function (e) {
+        const submitBtn = document.getElementById('extendSubmitBtn');
+        if (submitBtn.disabled) {
+            e.preventDefault();
+            return;
+        }
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Extending...';
+        submitBtn.style.opacity = '0.7';
     });
 
     // ── Edit PC Modal state ─────────────────────────────────────────────────────
@@ -1212,7 +1446,7 @@
     }
 
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { closeEditPcModal(); closeRatePopover(); }
+        if (e.key === 'Escape') { closeEditPcModal(); closeRatePopover(); closeExtendModal(); }
     });
 
     // ── Behavior Rating Popover ──

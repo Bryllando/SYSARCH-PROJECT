@@ -49,3 +49,40 @@ confirmInput.addEventListener('input', checkPasswords);
 
 setupPasswordToggle('togglePassword', 'passwordInput', 'eyeOpen1', 'eyeClosed1');
 setupPasswordToggle('toggleConfirmPassword', 'confirmPasswordInput', 'eyeOpen2', 'eyeClosed2');
+
+const registerForm = document.querySelector('form[action="/register"]');
+if (registerForm) {
+    registerForm.addEventListener('submit', (e) => {
+        const idField = document.querySelector('input[name="id_number"]');
+        if (idField && !/^\d{8}$/.test(idField.value.trim())) {
+            e.preventDefault();
+            idField.setCustomValidity('ID Number must be exactly 8 digits.');
+            idField.reportValidity();
+            return;
+        }
+        if (idField) idField.setCustomValidity('');
+
+        if (passInput.value.length < 6) {
+            e.preventDefault();
+            passInput.setCustomValidity('Password must be at least 6 characters.');
+            passInput.reportValidity();
+            return;
+        }
+        passInput.setCustomValidity('');
+
+        if (passInput.value !== confirmInput.value) {
+            e.preventDefault();
+            confirmInput.setCustomValidity('Passwords do not match.');
+            confirmInput.reportValidity();
+            return;
+        }
+        confirmInput.setCustomValidity('');
+
+        const submitBtn = registerForm.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            submitBtn.textContent = 'Registering...';
+        }
+    });
+}

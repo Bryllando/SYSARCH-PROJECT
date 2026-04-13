@@ -112,6 +112,13 @@
                                     </td>
                                     <td class="px-4 py-3">
                                         <% if (s.status==='done' ) { %>
+                                            <% if (s.has_feedback) { %>
+                                            <button disabled
+                                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white whitespace-nowrap opacity-60 cursor-not-allowed"
+                                                style="background: linear-gradient(135deg, #059669, #047857);">
+                                                ✓ Submitted
+                                            </button>
+                                            <% } else { %>
                                             <button onclick="openFeedbackModal('<%= s.id %>')"
                                                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition-all hover:-translate-y-0.5 whitespace-nowrap"
                                                 style="background: linear-gradient(135deg, #059669, #047857);">
@@ -121,8 +128,9 @@
                                                         d="M1 8.74c0 .983.713 1.825 1.69 1.943L3 10.72v2.03a.75.75 0 0 0 1.28.53l1.5-1.5.31-.03H9a2.26 2.26 0 0 0 2.25-2.25v-5.5A2.25 2.25 0 0 0 9 1.75H4A2.25 2.25 0 0 0 1.75 4v4.74H1Z"
                                                         clip-rule="evenodd" />
                                                 </svg>
-                                                Feedback
+                                                Submit
                                             </button>
+                                            <% } %>
                                             <% } else { %>
                                                 <span class="text-xs text-gray-400">—</span>
                                                 <% } %>
@@ -188,7 +196,7 @@
             </button>
         </div>
 
-        <form action="/feedback" method="POST" class="p-6 space-y-5">
+        <form action="/feedback" method="POST" class="p-6 space-y-5" id="feedbackForm">
             <input type="hidden" name="session_id" id="feedbackSessionId">
 
             <!-- ── Star Rating ── -->
@@ -239,7 +247,7 @@
 
             <!-- Action Buttons -->
             <div class="flex gap-3">
-                <button type="submit"
+                <button type="submit" id="feedbackSubmitBtn"
                     style="flex:2;padding:12px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity 0.15s;">
                     Submit Feedback
                 </button>
@@ -350,5 +358,13 @@
     /* ── ESC closes modal ── */
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeFeedbackModal();
+    });
+
+    /* ── Submit loading/disabled state ── */
+    document.getElementById('feedbackForm').addEventListener('submit', function () {
+        var submitBtn = document.getElementById('feedbackSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        submitBtn.textContent = 'Submitting...';
     });
 </script>

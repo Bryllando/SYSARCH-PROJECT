@@ -62,10 +62,31 @@ router.get('/register', (req, res) => {
 
 // POST Register
 router.post('/register', async (req, res) => {
-    const { id_number, last_name, first_name, middle_initial, course, section, email, password, address } = req.body;
+    const { id_number, last_name, first_name, middle_initial, course, section, email, password, confirm_password, confirmPassword, address } = req.body;
     if (!/^\d{8}$/.test(id_number)) {
         return res.render('pages/register', {
             messages: [{ type: 'error', text: 'ID Number must be exactly 8 digits.' }]
+        });
+    }
+    if (!password || password.length < 6) {
+        return res.render('pages/register', {
+            messages: [{ type: 'error', text: 'Password must be at least 6 characters.' }]
+        });
+    }
+    const confirmValue = (confirm_password || confirmPassword || '').trim();
+    if (confirmValue && password !== confirmValue) {
+        return res.render('pages/register', {
+            messages: [{ type: 'error', text: 'Passwords do not match.' }]
+        });
+    }
+    if (!email || !email.includes('@')) {
+        return res.render('pages/register', {
+            messages: [{ type: 'error', text: 'Invalid email format.' }]
+        });
+    }
+    if (!['1', '2', '3', '4', 1, 2, 3, 4].includes(section)) {
+        return res.render('pages/register', {
+            messages: [{ type: 'error', text: 'Please select a valid year level.' }]
         });
     }
     try {
@@ -96,6 +117,26 @@ router.post('/register', async (req, res) => {
             messages: [{ type: 'error', text: 'An error occurred. Please try again.' }]
         });
     }
+});
+
+// Forgot Password (interaction endpoint parity)
+router.post('/forgot-password', (req, res) => {
+    const { forgotId, forgotEmail } = req.body;
+    if (!forgotId || !forgotEmail) {
+        return res.json({ success: false, message: 'Please fill in all fields.' });
+    }
+    db.get(
+        'SELECT id FROM users WHERE id_number = ? AND email = ?',
+        [forgotId, forgotEmail],
+        (err, user) => {
+            if (err) return res.json({ success: false, message: 'Unable to process request right now.' });
+            if (!user) return res.json({ success: false, message: 'No matching account found for the provided ID and email.' });
+            return res.json({
+                success: true,
+                message: 'If your account is valid, reset instructions have been sent.'
+            });
+        }
+    );
 });
 
 // Logout

@@ -23,7 +23,7 @@
                 <% }) %>
                     <% } %>
 
-                        <form action="/login" method="POST" class="space-y-5">
+                        <form action="/login" method="POST" class="space-y-5" id="loginForm">
                             <div class="space-y-1">
                                 <label class="block text-sm font-semibold text-gray-700 ml-1">ID Number</label>
                                 <div class="relative">
@@ -75,8 +75,16 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn-maroon">
-                                Sign In
+                            <div class="flex items-center justify-between text-sm">
+                                <label class="inline-flex items-center gap-2 text-gray-600">
+                                    <input type="checkbox" id="rememberMe" class="rounded border-gray-300">
+                                    Remember me
+                                </label>
+                                <a href="/forgot-password" id="forgotPasswordLink" class="text-[#273F4F] font-semibold hover:underline">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" class="btn-maroon" id="loginSubmitBtn">
+                                Login
                             </button>
                         </form>
 
@@ -84,6 +92,23 @@
                             Don't have an account? <a href="/register"
                                 class="text-[#273F4F] font-bold hover:underline">Register here</a>
                         </p>
+    </div>
+</div>
+
+<div id="forgotModal" class="hidden fixed inset-0 z-50 items-center justify-center">
+    <div class="absolute inset-0 bg-black/50" onclick="closeForgotModal()"></div>
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-bold text-[#273F4F]">Reset Password</h3>
+            <button type="button" onclick="closeForgotModal()" class="text-gray-500 hover:text-gray-800">✕</button>
+        </div>
+        <p class="text-sm text-gray-500 mb-4">Enter your ID number and registered email.</p>
+        <form id="forgotForm" class="space-y-3">
+            <input type="text" name="forgotId" placeholder="ID Number" class="w-full p-3 border border-gray-300 rounded-xl" required>
+            <input type="email" name="forgotEmail" placeholder="Email Address" class="w-full p-3 border border-gray-300 rounded-xl" required>
+            <div id="forgotMessage" class="hidden text-sm rounded-lg p-2"></div>
+            <button type="button" id="forgotSubmitBtn" class="btn-maroon w-full">Send Reset Link</button>
+        </form>
     </div>
 </div>
 

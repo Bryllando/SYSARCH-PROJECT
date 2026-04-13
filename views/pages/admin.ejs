@@ -954,6 +954,9 @@
                             <div>
                                 <div class="ann-card-author">CCS Admin<% if(ann.first_name) { %> · <%= ann.first_name %>
                                             <% } %>
+                                    <% if (ann.is_pinned) { %>
+                                        <span style="font-size:10px;font-weight:700;background:#FEF3C7;color:#92400E;padding:2px 6px;border-radius:999px;margin-left:6px;">📌 Pinned</span>
+                                    <% } %>
                                 </div>
                                 <div class="ann-card-time">
                                     <%= new
@@ -962,17 +965,30 @@
                                 </div>
                             </div>
                         </div>
-                        <form action="/admin/announcement/<%= ann.id %>/delete" method="POST" class="ann-delete-form">
-                            <button type="submit" class="ann-del-btn" onclick="return confirm('Delete this announcement?');">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor"
-                                    width="10" height="10">
-                                    <path fill-rule="evenodd"
-                                        d="M6 2a.75.75 0 0 0-.712.513L4.843 4H2.75a.75.75 0 0 0 0 1.5h.428l.612 5.5A1.5 1.5 0 0 0 5.282 12.5h3.436a1.5 1.5 0 0 0 1.492-1.5l.612-5.5h.428a.75.75 0 0 0 0-1.5h-2.093L8.712 2.513A.75.75 0 0 0 8 2H6ZM5.5 5.5l.312 3H8.188l.312-3H5.5Z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                Delete
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                            <form action="/admin/announcement/<%= ann.id %>/pin" method="POST" style="margin:0;">
+                                <button type="submit"
+                                    style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;border:1.5px solid #FDE68A;background:#FFF7ED;color:#92400E;cursor:pointer;">
+                                    <%= ann.is_pinned ? 'Unpin' : 'Pin' %>
+                                </button>
+                            </form>
+                            <button type="button"
+                                onclick="editAnnouncement(<%= ann.id %>, <%- JSON.stringify(ann.message || '') %>)"
+                                style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;border:1.5px solid #BFDBFE;background:#EFF6FF;color:#1D4ED8;cursor:pointer;">
+                                Edit
                             </button>
-                        </form>
+                            <form action="/admin/announcement/<%= ann.id %>/delete" method="POST" class="ann-delete-form" style="margin:0;">
+                                <button type="submit" class="ann-del-btn" onclick="return confirm('Delete this announcement?');">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor"
+                                        width="10" height="10">
+                                        <path fill-rule="evenodd"
+                                            d="M6 2a.75.75 0 0 0-.712.513L4.843 4H2.75a.75.75 0 0 0 0 1.5h.428l.612 5.5A1.5 1.5 0 0 0 5.282 12.5h3.436a1.5 1.5 0 0 0 1.492-1.5l.612-5.5h.428a.75.75 0 0 0 0-1.5h-2.093L8.712 2.513A.75.75 0 0 0 8 2H6ZM5.5 5.5l.312 3H8.188l.312-3H5.5Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Media -->
@@ -1395,6 +1411,25 @@
         setTimeout(() => ta.style.boxShadow = '', 1500);
     }
 
+
+    function editAnnouncement(id, currentMessage) {
+        const nextMessage = prompt('Edit announcement message:', currentMessage || '');
+        if (nextMessage === null) return;
+        if (!nextMessage.trim()) {
+            alert('Announcement message cannot be empty.');
+            return;
+        }
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/announcement/' + id + '/edit';
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'message';
+        input.value = nextMessage;
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
 
     // -- Search + Sit-in modals --
     function openSearchModal() {
