@@ -1308,10 +1308,10 @@
             if (data.success) {
                 await loadLabComputersGrid(currentLabRoom);
             } else {
-                alert('Failed to update: ' + (data.error || 'Unknown error'));
+                if (window.showAppToast) window.showAppToast('error', 'Failed to update: ' + (data.error || 'Unknown error'));
             }
         } catch (e) {
-            alert('Error updating PC status');
+            if (window.showAppToast) window.showAppToast('error', 'Error updating PC status');
         }
     }
 

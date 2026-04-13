@@ -1,152 +1,110 @@
-<% if (locals.toast) { %>
-    <div id="toast-notification" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px 18px;
-    border-radius: 14px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10);
-    min-width: 280px;
-    max-width: 360px;
-    font-family: ui-sans-serif, system-ui, sans-serif;
-    animation: toastSlideIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
-    <%= locals.toast.type === 'success'
-        ? 'background: #fff; border: 1.5px solid #A7F3D0;'
-        : 'background: #fff; border: 1.5px solid #FECACA;' %>
-">
-        <!-- Icon -->
-        <div style="
-        width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-        display: flex; align-items: center; justify-content: center;
-        <%= locals.toast.type === 'success'
-            ? 'background: linear-gradient(135deg,#059669,#34D399);'
-            : 'background: linear-gradient(135deg,#DC2626,#F87171);' %>
-    ">
-            <% if (locals.toast.type==='success' ) { %>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white" width="18" height="18">
-                    <path fill-rule="evenodd"
-                        d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
-                        clip-rule="evenodd" />
-                </svg>
-                <% } else { %>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white" width="18" height="18">
-                        <path fill-rule="evenodd"
-                            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <% } %>
-        </div>
+<div id="app-toast-host"></div>
+<style>
+    #app-toast-host {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+    }
 
-        <!-- Text -->
-        <div style="flex: 1; min-width: 0;">
-            <p style="
-            font-size: 13px; font-weight: 700; margin: 0 0 2px;
-            <%= locals.toast.type === 'success' ? 'color: #065F46;' : 'color: #991B1B;' %>
-        ">
-                <%= locals.toast.type==='success' ? 'Success' : 'Error' %>
-            </p>
-            <p style="font-size: 12px; color: #4B5563; margin: 0; line-height: 1.5;">
-                <%= locals.toast.message %>
-            </p>
-        </div>
+    .app-toast {
+        pointer-events: auto;
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+        min-width: 280px;
+        max-width: 380px;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        animation: toastSlideIn 0.25s ease both;
+        border: 1.5px solid #cbd5e1;
+    }
 
-        <!-- Close button -->
-        <button onclick="dismissToast()" style="
-        width: 22px; height: 22px; border-radius: 6px;
-        background: transparent; border: none; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-        color: #9CA3AF; flex-shrink: 0; padding: 0;
-        transition: background 0.15s;
-    " onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='transparent'">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13">
-                <path
-                    d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-            </svg>
-        </button>
+    .app-toast--success { border-color: #86efac; }
+    .app-toast--error { border-color: #fca5a5; }
+    .app-toast--warning { border-color: #fcd34d; }
+    .app-toast--info { border-color: #60a5fa; }
 
-        <!-- Progress bar -->
-        <div style="
-        position: absolute; bottom: 0; left: 0; height: 3px;
-        border-radius: 0 0 14px 14px; overflow: hidden; width: 100%;
-    ">
-            <div id="toast-progress" style="
-            height: 100%; width: 100%;
-            <%= locals.toast.type === 'success'
-                ? 'background: linear-gradient(90deg,#059669,#34D399);'
-                : 'background: linear-gradient(90deg,#DC2626,#F87171);' %>
-            animation: toastProgress 3.5s linear forwards;
-        "></div>
-        </div>
-    </div>
+    .app-toast-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
 
-    <style>
-        @keyframes toastSlideIn {
-            from {
-                opacity: 0;
-                transform: translateX(100%) scale(0.92);
-            }
+    .app-toast--success .app-toast-icon { background: linear-gradient(135deg, #16a34a, #22c55e); }
+    .app-toast--error .app-toast-icon { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .app-toast--warning .app-toast-icon { background: linear-gradient(135deg, #d97706, #f59e0b); }
+    .app-toast--info .app-toast-icon { background: linear-gradient(135deg, #1a2035, #1d4ed8); }
 
-            to {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-        }
+    .app-toast-title {
+        margin: 0 0 2px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #1f2937;
+    }
 
-        @keyframes toastSlideOut {
-            from {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
+    .app-toast-message {
+        margin: 0;
+        font-size: 12px;
+        color: #4b5563;
+        line-height: 1.45;
+    }
 
-            to {
-                opacity: 0;
-                transform: translateX(60px) scale(0.92);
-            }
-        }
+    @keyframes toastSlideIn {
+        from { opacity: 0; transform: translateX(32px) scale(0.96); }
+        to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+</style>
+<script>
+    (function () {
+        const host = document.getElementById('app-toast-host');
+        if (!host || window.showAppToast) return;
 
-        @keyframes toastProgress {
-            from {
-                width: 100%;
-            }
+        const TYPE_META = {
+            success: { icon: '✓', title: 'Success' },
+            error: { icon: '!', title: 'Error' },
+            warning: { icon: '!', title: 'Warning' },
+            info: { icon: 'i', title: 'Info' }
+        };
 
-            to {
-                width: 0%;
-            }
-        }
-    </style>
+        window.showAppToast = function (type, message, title) {
+            const safeType = TYPE_META[type] ? type : 'info';
+            const meta = TYPE_META[safeType];
+            const node = document.createElement('div');
+            node.className = `app-toast app-toast--${safeType}`;
+            node.innerHTML = `
+                <div class="app-toast-icon">${meta.icon}</div>
+                <div style="flex:1;min-width:0;">
+                    <p class="app-toast-title">${title || meta.title}</p>
+                    <p class="app-toast-message">${String(message || '')}</p>
+                </div>
+            `;
+            host.appendChild(node);
+            setTimeout(() => {
+                node.style.opacity = '0';
+                node.style.transform = 'translateX(20px)';
+                node.style.transition = 'all .2s ease';
+                setTimeout(() => node.remove(), 220);
+            }, 3500);
+        };
 
-    <script>
-        (function () {
-            var timer = setTimeout(dismissToast, 3500);
-
-            function dismissToast() {
-                clearTimeout(timer);
-                var el = document.getElementById('toast-notification');
-                if (!el) return;
-                el.style.animation = 'toastSlideOut 0.3s ease forwards';
-                setTimeout(function () { if (el) el.remove(); }, 300);
-            }
-
-            window.dismissToast = dismissToast;
-
-            // Pause progress on hover
-            var el = document.getElementById('toast-notification');
-            if (el) {
-                el.addEventListener('mouseenter', function () {
-                    clearTimeout(timer);
-                    var bar = document.getElementById('toast-progress');
-                    if (bar) bar.style.animationPlayState = 'paused';
-                });
-                el.addEventListener('mouseleave', function () {
-                    var bar = document.getElementById('toast-progress');
-                    if (bar) bar.style.animationPlayState = 'running';
-                    timer = setTimeout(dismissToast, 1500);
-                });
-            }
-        })();
-    </script>
-    <% } %>
+        <% if (locals.toast) { %>
+            window.showAppToast('<%= locals.toast.type || "info" %>', <%- JSON.stringify(String(locals.toast.message || "")) %>);
+        <% } %>
+    })();
+</script>

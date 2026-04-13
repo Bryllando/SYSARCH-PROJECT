@@ -1,0 +1,53 @@
+<div class="p-6">
+    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-5 mb-5">
+        <h1 class="text-xl font-bold text-[#1a2035] mb-2">Student Record</h1>
+        <% if (!student) { %>
+            <p class="text-sm text-red-600">Student not found.</p>
+        <% } else { %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <p><strong>Name:</strong> <%= student.last_name %>, <%= student.first_name %> <%= student.middle_initial ? student.middle_initial + '.' : '' %></p>
+                <p><strong>ID Number:</strong> <%= student.id_number %></p>
+                <p><strong>Course:</strong> <%= student.course %></p>
+                <p><strong>Year:</strong> <%= student.year_level %></p>
+                <p><strong>Email:</strong> <%= student.email %></p>
+                <p><strong>Remaining Sessions:</strong> <%= student.remaining_sessions %></p>
+                <p><strong>Avg Behavior Rating:</strong> <%= avg_rating !== null ? avg_rating : 'No ratings yet' %></p>
+                <p><strong>Rated Sessions:</strong> <%= rated_count || 0 %></p>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b bg-[#1d4b8f] text-white text-sm font-semibold">Sit-in Sessions</div>
+        <% if (!sessions || sessions.length === 0) { %>
+            <div class="p-4 text-sm text-gray-500">No sit-in session records available.</div>
+        <% } else { %>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50">
+                        <tr class="text-left">
+                            <th class="px-4 py-2">Date In</th>
+                            <th class="px-4 py-2">Lab</th>
+                            <th class="px-4 py-2">PC</th>
+                            <th class="px-4 py-2">Purpose</th>
+                            <th class="px-4 py-2">Date Out</th>
+                            <th class="px-4 py-2">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% sessions.forEach(function(s) { %>
+                            <tr class="border-t">
+                                <td class="px-4 py-2"><%= s.time_in || '-' %></td>
+                                <td class="px-4 py-2"><%= s.lab_room || '-' %></td>
+                                <td class="px-4 py-2"><%= s.computer_number || '-' %></td>
+                                <td class="px-4 py-2"><%= s.purpose || '-' %></td>
+                                <td class="px-4 py-2"><%= s.time_out || '-' %></td>
+                                <td class="px-4 py-2 capitalize"><%= s.status || '-' %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>

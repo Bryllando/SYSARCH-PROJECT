@@ -6,6 +6,9 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { bumpStudentAiVersion } = require('../services/ai');
+const { getLeaderboardData } = require('../services/leaderboard');
+const { generateAdminInsights, generateStudentRecommendation, generateAdminStudyTip } = require('../services/ai-engine');
 
 // ── Multer for announcement media ──────────────────────────────────────────────
 const annDir = path.join(__dirname, '../public/uploads/announcements');
@@ -46,9 +49,36 @@ function fetchAdminHomeData(cb) {
                         GROUP BY u.id ORDER BY sitin_count DESC LIMIT 5
                     `, (e5, topStudents) => {
                         db.all(`
-                            SELECT lab_room, COUNT(*) as count FROM sitin_sessions
+                            SELECT
+                                lab_room,
+                                COUNT(*) as count,
+                                ROUND(SUM(
+                                    CASE
+                                        WHEN time_in IS NOT NULL AND COALESCE(time_out, time_end) IS NOT NULL
+                                        THEN (julianday(COALESCE(time_out, time_end)) - julianday(time_in)) * 24
+                                        ELSE 0
+                                    END
+                                ), 2) as hours,
+                                ROUND(COALESCE(AVG(behavior_rating), 0), 2) as rating,
+                                COUNT(DISTINCT user_id) as unique_users,
+                                ROUND(
+                                    (COUNT(*) * 0.25) +
+                                    (SUM(
+                                        CASE
+                                            WHEN time_in IS NOT NULL AND COALESCE(time_out, time_end) IS NOT NULL
+                                            THEN (julianday(COALESCE(time_out, time_end)) - julianday(time_in)) * 24
+                                            ELSE 0
+                                        END
+                                    ) * 0.25) +
+                                    (COALESCE(AVG(behavior_rating), 0) * 0.25) +
+                                    (COUNT(DISTINCT user_id) * 0.25),
+                                    2
+                                ) as score
+                            FROM sitin_sessions
                             WHERE lab_room IS NOT NULL AND lab_room != ''
-                            GROUP BY lab_room ORDER BY count DESC LIMIT 5
+                            GROUP BY lab_room
+                            ORDER BY score DESC
+                            LIMIT 5
                         `, (e6, topLabs) => {
                             db.all(`
                                 SELECT purpose, COUNT(*) as count FROM sitin_sessions
@@ -232,6 +262,9 @@ router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
                                     type: 'success',
                                     message: `Sit-in started for ${student.first_name} ${student.last_name} in Lab ${lab_room}${pcLabel}.`
                                 };
+                                bumpStudentAiVersion(db, user_id)
+                                    .then(() => generateStudentRecommendation(db, user_id, true))
+                                    .catch(() => { });
                                 res.redirect(redirectTo);
                             }
                         );
@@ -486,6 +519,9 @@ router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
                             );
                         }
                         req.session.toast = { type: 'success', message: `${row.first_name} ${row.last_name} logged out. PC is now vacant.` };
+                        bumpStudentAiVersion(db, row.user_id)
+                            .then(() => generateStudentRecommendation(db, row.user_id, true))
+                            .catch(() => { });
                         res.redirect('/admin/sitin');
                     });
                 } else {
@@ -755,6 +791,9 @@ router.post('/reservations/:id/sit-in', isAuthenticated, isAdmin, (req, res) => 
                             );
 
                             req.session.toast = { type: 'success', message: 'Reservation moved to sit-in successfully.' };
+                            bumpStudentAiVersion(db, r.user_id)
+                                .then(() => generateStudentRecommendation(db, r.user_id, true))
+                                .catch(() => { });
                             res.redirect('/admin/reservations');
                         }
                     );
@@ -858,6 +897,41 @@ router.post('/notifications/read', isAuthenticated, isAdmin, (req, res) => {
     db.run(`UPDATE admin_notifications SET is_read = 1`, () => res.json({ success: true }));
 });
 
+router.get('/ai-insights', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const response = await generateAdminInsights(db, String(req.query.refresh || '') === '1');
+        res.json({
+            success: true,
+            insights: response.data,
+            meta: {
+                cached: response.cached,
+                generated_at: response.generatedAt,
+                minutes_ago: response.minutesAgo
+            }
+        });
+    } catch (_) {
+        res.status(500).json({ success: false, message: 'AI insights are temporarily unavailable.' });
+    }
+});
+
+router.get('/ai-study-tip', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const tip = await generateAdminStudyTip(db, String(req.query.refresh || '') === '1');
+        res.json({
+            success: true,
+            tip: tip.data,
+            meta: {
+                cached: tip.cached,
+                fallback: Boolean(tip.fallback),
+                generated_at: tip.generatedAt,
+                minutes_ago: tip.minutesAgo
+            }
+        });
+    } catch (_) {
+        res.status(500).json({ success: false, message: 'AI is temporarily unavailable. Please try again later.' });
+    }
+});
+
 // Admin: update PC status
 router.post('/lab-computers/status', isAuthenticated, isAdmin, (req, res) => {
     const { lab_room, computer_number, status } = req.body;
@@ -885,25 +959,9 @@ router.get('/lab-computers', isAuthenticated, isAdmin, (req, res) => {
 
 // Admin Leaderboard page
 router.get('/leaderboard', isAuthenticated, isAdmin, (req, res) => {
-    db.all(`
-        SELECT u.id, u.first_name, u.last_name, u.course, u.year_level,
-               u.remaining_sessions, u.profile_picture,
-               COUNT(DISTINCT s.id) as total_sitins,
-               COUNT(DISTINCT f.id) as feedback_count
-        FROM users u
-        LEFT JOIN sitin_sessions s ON s.user_id = u.id AND s.status = 'done'
-        LEFT JOIN feedback f ON f.user_id = u.id
-        WHERE u.role = 'user'
-        GROUP BY u.id
-        ORDER BY total_sitins DESC
-    `, (err, students) => {
-        const ranked = (students || []).map(s => {
-            const sessionsUsed = Math.max(0, 30 - (s.remaining_sessions || 30));
-            s.points = Math.round((sessionsUsed / 30) * 50 + Math.min(s.total_sitins, 30) + Math.min(s.feedback_count * 4, 20));
-            return s;
-        }).sort((a, b) => b.points - a.points);
-        res.render('pages/leaderboard-index', { students: ranked });
-    });
+    getLeaderboardData(db)
+        .then(({ students, labs }) => res.render('pages/leaderboard-index', { students, labs }))
+        .catch(() => res.render('pages/leaderboard-index', { students: [], labs: [] }));
 });
 
 // Admin reply to a student's feedback — sends notification to the student

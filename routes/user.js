@@ -5,6 +5,8 @@ const db = require('../database/database');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { getLeaderboardData } = require('../services/leaderboard');
+const { generateStudentRecommendation, generateStudentTips, generateStudentStudyTip } = require('../services/ai-engine');
 
 // ─── Profanity Filter ─────────────────────────────────────────────────────────
 const VULGAR_WORDS = [
@@ -67,16 +69,100 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024
 router.get('/dashboard', isAuthenticated, isUser, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err, userData) => {
         if (userData) req.session.user = { ...req.session.user, ...userData };
-        db.all(`SELECT a.*, u.first_name, u.last_name FROM announcements a LEFT JOIN users u ON a.admin_id = u.id ORDER BY a.is_pinned DESC, a.created_at DESC LIMIT 15`, (err2, announcements) => {
-            res.render('pages/dashboard', { announcements: announcements || [] });
+        db.get(`SELECT response_json FROM ai_recommendation_cache WHERE cache_key = ?`, [`student:${req.session.user.id}:student_recommendation`], (aiErr, aiCache) => {
+            let initialAiRecommendation = null;
+            if (aiCache && aiCache.response_json) {
+                try {
+                    initialAiRecommendation = JSON.parse(aiCache.response_json);
+                } catch (_) {
+                    initialAiRecommendation = null;
+                }
+            }
+            db.all(`SELECT a.*, u.first_name, u.last_name FROM announcements a LEFT JOIN users u ON a.admin_id = u.id ORDER BY a.is_pinned DESC, a.created_at DESC LIMIT 15`, (err2, announcements) => {
+                res.render('pages/dashboard', {
+                    announcements: announcements || [],
+                    initialAiRecommendation
+                });
+            });
         });
     });
+});
+
+router.get('/ai-recommendation', isAuthenticated, isUser, async (req, res) => {
+    try {
+        const recommendationResponse = await generateStudentRecommendation(
+            db,
+            req.session.user.id,
+            String(req.query.refresh || '') === '1'
+        );
+        const recommendation = recommendationResponse.data;
+        if (!recommendation) {
+            return res.json({ success: false, message: 'No session data yet for AI recommendation.' });
+        }
+        return res.json({
+            success: true,
+            recommendation,
+            message: recommendationResponse.fallback ? 'Using saved recommendation' : null,
+            meta: {
+                cached: recommendationResponse.cached,
+                fallback: Boolean(recommendationResponse.fallback),
+                generated_at: recommendationResponse.generatedAt,
+                minutes_ago: recommendationResponse.minutesAgo
+            }
+        });
+    } catch (_) {
+        return res.status(500).json({ success: false, message: 'AI recommendation is temporarily unavailable.' });
+    }
+});
+
+router.get('/ai/student-tips', isAuthenticated, isUser, async (req, res) => {
+    try {
+        const tipsResponse = await generateStudentTips(
+            db,
+            req.session.user.id,
+            String(req.query.refresh || '') === '1'
+        );
+        return res.json({
+            success: true,
+            tips: tipsResponse.data,
+            meta: {
+                cached: tipsResponse.cached,
+                generated_at: tipsResponse.generatedAt,
+                minutes_ago: tipsResponse.minutesAgo
+            }
+        });
+    } catch (_) {
+        return res.status(500).json({ success: false, message: 'AI is temporarily unavailable. Please try again later.' });
+    }
+});
+
+router.get('/ai-study-tip', isAuthenticated, isUser, async (req, res) => {
+    try {
+        const tip = await generateStudentStudyTip(
+            db,
+            req.session.user.id,
+            String(req.query.refresh || '') === '1'
+        );
+        return res.json({
+            success: true,
+            tip: tip.data,
+            meta: {
+                cached: tip.cached,
+                fallback: Boolean(tip.fallback),
+                generated_at: tip.generatedAt,
+                minutes_ago: tip.minutesAgo
+            }
+        });
+    } catch (_) {
+        return res.status(500).json({ success: false, message: 'AI is temporarily unavailable. Please try again later.' });
+    }
 });
 
 // Edit Profile GET
 router.get('/profile', isAuthenticated, isUser, (req, res) => {
     db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err, userData) => {
         if (userData) req.session.user = { ...req.session.user, ...userData };
+        generateStudentRecommendation(db, req.session.user.id, false).catch(() => { });
         res.render('pages/profile', { messages: [] });
     });
 });
@@ -131,6 +217,7 @@ router.get('/history', isAuthenticated, isUser, (req, res) => {
          ORDER BY s.time_in DESC`,
         [req.session.user.id],
         (err, sessions) => {
+        generateStudentRecommendation(db, req.session.user.id, false).catch(() => { });
         res.render('pages/history', { sessions: sessions || [] });
         }
     );
@@ -431,54 +518,16 @@ router.get('/leaderboard', isAuthenticated, (req, res) => {
 
 // API: Leaderboard JSON (public, no auth required)
 router.get('/api/leaderboard', (req, res) => {
-    db.all(`
-        SELECT u.id, u.first_name, u.last_name, u.course, u.year_level,
-               u.remaining_sessions, u.profile_picture,
-               COUNT(DISTINCT s.id) as total_sitins,
-               COUNT(DISTINCT f.id) as feedback_count
-        FROM users u
-        LEFT JOIN sitin_sessions s ON s.user_id = u.id AND s.status = 'done'
-        LEFT JOIN feedback f ON f.user_id = u.id
-        WHERE u.role = 'user'
-        GROUP BY u.id
-        ORDER BY total_sitins DESC
-    `, (err, students) => {
-        const ranked = (students || []).map(s => {
-            const sessionsUsed = Math.max(0, 30 - (s.remaining_sessions || 30));
-            const sessionsScore = (sessionsUsed / 30) * 50;
-            const sitinScore = Math.min(s.total_sitins * 1, 30);
-            const taskScore = Math.min(s.feedback_count * 4, 20);
-            s.points = Math.round(sessionsScore + sitinScore + taskScore);
-            return s;
-        }).sort((a, b) => b.points - a.points);
-        res.json(ranked);
-    });
+    getLeaderboardData(db)
+        .then(({ students, labs }) => res.json({ students, labs }))
+        .catch(() => res.status(500).json({ students: [], labs: [] }));
 });
 
 // Leaderboard Index
 router.get('/leaderboard-index', isAuthenticated, (req, res) => {
-    db.all(`
-        SELECT u.id, u.first_name, u.last_name, u.course, u.year_level,
-               u.remaining_sessions, u.profile_picture,
-               COUNT(DISTINCT s.id) as total_sitins,
-               COUNT(DISTINCT f.id) as feedback_count
-        FROM users u
-        LEFT JOIN sitin_sessions s ON s.user_id = u.id AND s.status = 'done'
-        LEFT JOIN feedback f ON f.user_id = u.id
-        WHERE u.role = 'user'
-        GROUP BY u.id
-        ORDER BY total_sitins DESC
-    `, (err, students) => {
-        const ranked = (students || []).map(s => {
-            const sessionsUsed = Math.max(0, 30 - (s.remaining_sessions || 30));
-            const sessionsScore = (sessionsUsed / 30) * 50;
-            const sitinScore = Math.min(s.total_sitins * 1, 30);
-            const taskScore = Math.min(s.feedback_count * 4, 20);
-            s.points = Math.round(sessionsScore + sitinScore + taskScore);
-            return s;
-        }).sort((a, b) => b.points - a.points);
-        res.render('pages/leaderboard-index', { students: ranked });
-    });
+    getLeaderboardData(db)
+        .then(({ students, labs }) => res.render('pages/leaderboard-index', { students, labs }))
+        .catch(() => res.render('pages/leaderboard-index', { students: [], labs: [] }));
 });
 
 module.exports = router;

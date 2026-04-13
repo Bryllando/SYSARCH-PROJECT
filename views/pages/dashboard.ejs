@@ -283,6 +283,43 @@
         border-radius: 10px;
     }
 
+    .ann-feed-scroll {
+        height: auto;
+        max-height: 78vh;
+        min-height: 300px;
+        overflow-y: auto;
+        padding: 10px 0;
+        background: #F0F2F5;
+    }
+
+    .ann-feed-media-frame {
+        border-top: 1px solid #E4E6EB;
+        border-bottom: 1px solid #E4E6EB;
+        background: #F8FAFC;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        min-height: 140px;
+    }
+
+    .ann-feed-media-frame img,
+    .ann-feed-media-frame video {
+        width: auto;
+        max-width: 100%;
+        max-height: min(48vh, 360px);
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
+        background: #F8FAFC;
+    }
+
+    .ann-feed-meta {
+        font-size: 11px;
+        color: #65676B;
+        line-height: 1.35;
+    }
+
     /* Responsive announcement container */
     .ann-feed-container {
         height: auto !important;
@@ -295,6 +332,200 @@
             max-height: 600px !important;
             min-height: 300px !important;
         }
+    }
+
+    .ai-rec-wrap {
+        background: #F0EDE8;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(28,43,53,0.08);
+        border: 1px solid #E8E3DD;
+    }
+
+    .ai-rec-head {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        color: #fff;
+        padding: 11px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .ai-rec-title {
+        font-size: 12px;
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #fff;
+    }
+
+    .ai-rec-refresh {
+        font-size: 11px;
+        font-weight: 700;
+        background: #F1E194;
+        color: #1C2B35;
+        border: none;
+        border-radius: 999px;
+        padding: 6px 11px;
+        cursor: pointer;
+    }
+
+    .ai-tip-btn {
+        font-size: 11px;
+        font-weight: 700;
+        background: #5B0E14;
+        color: #F1E194;
+        border: none;
+        border-radius: 999px;
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+
+    .user-tip-panel {
+        position: fixed;
+        top: 76px;
+        right: 18px;
+        width: 320px;
+        max-width: calc(100vw - 24px);
+        background: #fff;
+        border: 1px solid #E8E3DD;
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(28,43,53,0.15);
+        z-index: 130;
+        display: none;
+        overflow: hidden;
+    }
+
+    .user-tip-panel.open { display: block; animation: tipIn .2s ease-out both; }
+    @keyframes tipIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .user-tip-head {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 10px;
+    }
+    .user-tip-head strong { font-size: 12px; color: #F1E194; }
+    .user-tip-close {
+        width: 24px; height: 24px; border-radius: 6px;
+        border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.12); color: #fff; cursor: pointer;
+    }
+    .user-tip-body { padding: 10px; font-size: 12px; color: #374151; }
+    .user-tip-row { padding: 7px 0; border-bottom: 1px solid #F1EEEA; }
+    .user-tip-row:last-child { border-bottom: none; }
+    .user-tip-row b { color: #1C2B35; }
+
+    .ai-rec-body {
+        padding: 12px;
+        background: #F0EDE8;
+    }
+
+    .ai-rec-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .ai-rec-item {
+        background: #FFFFFF;
+        border: 1px solid #E8E3DD;
+        border-radius: 12px;
+        padding: 14px 16px;
+        transition: background .15s ease, border-color .15s ease;
+    }
+
+    .ai-rec-item:hover {
+        background: #FAF9F7;
+        border-color: #D8D1C9;
+    }
+
+    .ai-rec-item.full {
+        grid-column: 1 / -1;
+    }
+
+    .ai-rec-kicker {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin: 0 0 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .ai-rec-kicker .dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+    }
+
+    .ai-rec-value {
+        margin: 0;
+        font-size: 13px;
+        color: #374151;
+        font-weight: 400;
+        line-height: 1.45;
+    }
+
+    .ai-c-maroon { color: #5B0E14; }
+    .ai-c-maroon .dot { background: rgba(91,14,20,.10); }
+    .ai-c-green { color: #059669; }
+    .ai-c-green .dot { background: rgba(5,150,105,.10); }
+    .ai-c-amber { color: #D97706; }
+    .ai-c-amber .dot { background: rgba(217,119,6,.10); }
+    .ai-c-blue { color: #2563EB; }
+    .ai-c-blue .dot { background: rgba(37,99,235,.10); }
+    .ai-c-gray { color: #6B7280; }
+    .ai-c-gray .dot { background: rgba(107,114,128,.10); }
+
+    .ai-alert {
+        grid-column: 1 / -1;
+        background: #FEF2F2;
+        border: 1px solid #FECACA;
+        color: #991B1B;
+        border-radius: 12px;
+        padding: 11px 12px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .ai-rec-empty {
+        text-align: center;
+        color: #9CA3AF;
+        font-size: 12px;
+        padding: 20px 8px;
+        background: #fff;
+        border: 1px dashed #E8E3DD;
+        border-radius: 12px;
+        grid-column: 1 / -1;
+    }
+
+    .ai-skel {
+        height: 88px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #f7f5f2 25%, #eee8df 37%, #f7f5f2 63%);
+        background-size: 400% 100%;
+        animation: aiShimmer 1.2s infinite;
+        border: 1px solid #E8E3DD;
+    }
+
+    .ai-skel.full { grid-column: 1 / -1; }
+
+    @keyframes aiShimmer {
+        0% { background-position: 100% 0; }
+        100% { background-position: -100% 0; }
+    }
+
+    @media (max-width: 768px) {
+        .ai-rec-grid { grid-template-columns: 1fr; }
     }
 </style>
 
@@ -434,6 +665,26 @@
                     </div>
                 </div>
             </div>
+
+            <div class="ai-rec-wrap">
+                <div class="ai-rec-head">
+                    <div class="ai-rec-title">✨ AI Recommendation</div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span id="ai-rec-updated" style="font-size:10px;color:rgba(255,255,255,.75);font-weight:700;">Live Summary</span>
+                        <button type="button" id="ai-tip-btn" class="ai-tip-btn">AI Study Tip</button>
+                        <button type="button" id="ai-refresh-btn" class="ai-rec-refresh">Refresh</button>
+                    </div>
+                </div>
+                <div class="ai-rec-body">
+                    <div id="ai-rec-content" class="ai-rec-grid">
+                        <div class="ai-skel"></div>
+                        <div class="ai-skel"></div>
+                        <div class="ai-skel"></div>
+                        <div class="ai-skel"></div>
+                        <div class="ai-skel full"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -445,22 +696,22 @@
                 <span style="margin-left:auto;font-size:10px;color:#9CA3AF;">Admin announcements only</span>
             </div>
 
-            <div id="ann-feed-scroll" class="flex-1" style="height:auto;max-height:80vh;min-height:300px;overflow-y:auto;padding:10px 0;background:#F0F2F5;">
+            <div id="ann-feed-scroll" class="flex-1 ann-feed-scroll">
                 <% if (typeof announcements !== 'undefined' && announcements && announcements.length > 0) { %>
                     <% announcements.forEach(function(ann) { %>
                         <!-- ── Announcement Card ── -->
-                        <div class="ann-fb-card" style="background:#fff;border-radius:10px;margin:0 8px 10px;box-shadow:0 1px 2px rgba(0,0,0,0.1);">
+                        <div class="ann-feed-card" style="margin:0 8px 10px;">
                             <!-- Post Header -->
-                            <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 8px;">
-                                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#5B0E14,#3A0910);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#F1E194;flex-shrink:0;">A</div>
+                            <div class="ann-feed-head">
+                                <div class="ann-feed-avatar" style="width:40px;height:40px;font-size:13px;">A</div>
                                 <div>
-                                    <div style="font-size:13px;font-weight:700;color:#050505;">
+                                    <div class="ann-feed-from" style="font-size:13px;color:#050505;">
                                         CCS Admin
                                         <% if (ann.is_pinned) { %>
                                             <span style="font-size:10px;font-weight:700;background:#FEF3C7;color:#92400E;padding:2px 6px;border-radius:999px;margin-left:6px;">📌 Pinned</span>
                                         <% } %>
                                     </div>
-                                    <div style="font-size:11px;color:#65676B;">
+                                    <div class="ann-feed-meta">
                                         <%= new Date(ann.created_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}) %>
                                         · <span style="font-size:10px;">🌐</span>
                                     </div>
@@ -468,17 +719,17 @@
                             </div>
 
                             <!-- Post Content -->
-                            <div style="padding:4px 14px 12px;font-size:14px;color:#050505;line-height:1.7;word-break:break-word;overflow-wrap:break-word;">
+                            <div class="ann-feed-body" style="padding:4px 14px 12px;font-size:14px;color:#050505;line-height:1.7;">
                                 <%= ann.message %>
                             </div>
 
                             <!-- Media -->
                             <% if (ann.media_url && ann.media_url !== '') { %>
-                                <div style="border-top:1px solid #E4E6EB;border-bottom:1px solid #E4E6EB;margin-bottom:0;">
+                                <div class="ann-feed-media-frame">
                                     <% if (ann.media_type === 'video') { %>
-                                        <video controls style="width:100%;max-height:300px;object-fit:cover;display:block;"><source src="<%= ann.media_url %>"></video>
+                                        <video controls><source src="<%= ann.media_url %>"></video>
                                     <% } else { %>
-                                        <img src="<%= ann.media_url %>" alt="" loading="lazy" style="width:100%;max-height:400px;object-fit:cover;display:block;">
+                                        <img src="<%= ann.media_url %>" alt="" loading="lazy">
                                     <% } %>
                                 </div>
                             <% } %>
@@ -493,6 +744,16 @@
                 <% } %>
             </div>
 </div>
+
+<aside id="user-tip-panel" class="user-tip-panel">
+    <div class="user-tip-head">
+        <strong>✨ AI Study Tip</strong>
+        <button id="user-tip-close" class="user-tip-close">×</button>
+    </div>
+    <div class="user-tip-body" id="user-tip-body">
+        Loading your personal study tip...
+    </div>
+</aside>
 
 
         <!-- ══ RULES & REGULATIONS ══ -->
@@ -545,6 +806,127 @@
 </div>
 
 <script>
+    const AI_INITIAL = <%- JSON.stringify(initialAiRecommendation || null) %>;
+
+    function renderAiRecommendation(rec) {
+        const target = document.getElementById('ai-rec-content');
+        if (!target) return;
+        if (!rec) {
+            target.innerHTML = '<div class="ai-rec-empty">No recommendations available yet.</div>';
+            return;
+        }
+        const alertHtml = rec.alert ? `<div class="ai-alert">Alert: ${escHtml(rec.alert)}</div>` : '';
+        target.innerHTML = `
+            <article class="ai-rec-item">
+                <p class="ai-rec-kicker ai-c-maroon"><span class="dot">📅</span> SCHEDULE TIP</p>
+                <p class="ai-rec-value">${escHtml(rec.schedule_tip || 'No AI schedule tip returned yet.')}</p>
+            </article>
+            <article class="ai-rec-item">
+                <p class="ai-rec-kicker ai-c-green"><span class="dot">🖥</span> RESOURCE TIP</p>
+                <p class="ai-rec-value">${escHtml(rec.resource_tip || 'No AI resource tip returned yet.')}</p>
+            </article>
+            <article class="ai-rec-item">
+                <p class="ai-rec-kicker ai-c-amber"><span class="dot">📊</span> BEHAVIOR INSIGHT</p>
+                <p class="ai-rec-value">${escHtml(rec.behavior_insight || 'No AI behavior insight returned yet.')}</p>
+            </article>
+            <article class="ai-rec-item">
+                <p class="ai-rec-kicker ai-c-blue"><span class="dot">🏆</span> LEADERBOARD TIP</p>
+                <p class="ai-rec-value">${escHtml(rec.leaderboard_tip || 'No AI leaderboard tip returned yet.')}</p>
+            </article>
+            <article class="ai-rec-item full">
+                <p class="ai-rec-kicker ai-c-gray"><span class="dot">💬</span> FEEDBACK INSIGHT</p>
+                <p class="ai-rec-value">${escHtml(rec.feedback_insight || 'No AI feedback insight returned yet.')}</p>
+            </article>
+            ${alertHtml}
+        `;
+    }
+
+    function renderAiLoading() {
+        const target = document.getElementById('ai-rec-content');
+        if (!target) return;
+        target.innerHTML = `
+            <div class="ai-skel"></div>
+            <div class="ai-skel"></div>
+            <div class="ai-skel"></div>
+            <div class="ai-skel"></div>
+            <div class="ai-skel full"></div>
+        `;
+    }
+
+    async function loadAiRecommendation(force = false) {
+        renderAiLoading();
+        if (!force && AI_INITIAL) {
+            renderAiRecommendation(AI_INITIAL);
+        }
+        try {
+            const res = await fetch('/api/ai/student-recommendation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refresh: force })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                if (!AI_INITIAL) renderAiRecommendation(null);
+                return;
+            }
+            if (data.message && window.showAppToast) {
+                window.showAppToast('info', data.message);
+            }
+            const updatedEl = document.getElementById('ai-rec-updated');
+            if (updatedEl) {
+                updatedEl.textContent = data.meta && Number.isFinite(data.meta.minutes_ago)
+                    ? `Last updated: ${data.meta.minutes_ago} min ago`
+                    : 'Live Summary';
+            }
+            renderAiRecommendation(data.recommendation);
+        } catch (_) {
+            if (!AI_INITIAL) document.getElementById('ai-rec-content').innerHTML = '<div class="ai-rec-empty" style="color:#991B1B;">AI recommendation is temporarily unavailable.</div>';
+        }
+    }
+
+    loadAiRecommendation();
+    const refreshBtn = document.getElementById('ai-refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => loadAiRecommendation(true));
+    }
+
+    const tipBtn = document.getElementById('ai-tip-btn');
+    const tipPanel = document.getElementById('user-tip-panel');
+    const tipClose = document.getElementById('user-tip-close');
+    const tipBody = document.getElementById('user-tip-body');
+
+    async function loadUserTip() {
+        if (!tipBody) return;
+        tipBody.innerHTML = 'Loading your personal study tip...';
+        try {
+            const res = await fetch('/ai-study-tip');
+            const data = await res.json();
+            if (!data.success || !data.tip) throw new Error('No data');
+            const t = data.tip;
+            tipBody.innerHTML = `
+                <div class="user-tip-row"><b>${escHtml(t.badge || 'Best Week')}</b></div>
+                <div class="user-tip-row"><b>Best Week:</b> ${escHtml(t.best_week || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Best Day:</b> ${escHtml(t.best_day || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Busiest Day:</b> ${escHtml(t.busiest_day || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Most Available Lab:</b> ${escHtml(t.best_lab || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Best Time:</b> ${escHtml(t.best_time || 'No data yet')}</div>
+                <div class="user-tip-row" style="color:#9CA3AF;font-style:italic;">${escHtml(t.note || '')}</div>
+            `;
+        } catch (_) {
+            tipBody.innerHTML = '<div class="user-tip-row">No study tip available yet. Complete sit-ins first.</div>';
+        }
+    }
+
+    if (tipBtn && tipPanel) {
+        tipBtn.addEventListener('click', async () => {
+            tipPanel.classList.add('open');
+            await loadUserTip();
+        });
+    }
+    if (tipClose && tipPanel) {
+        tipClose.addEventListener('click', () => tipPanel.classList.remove('open'));
+    }
+
     function escHtml(str) {
         if (!str) return '';
         return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');

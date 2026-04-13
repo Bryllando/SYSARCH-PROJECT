@@ -1450,7 +1450,7 @@
             }
 
             function openReserveForm() {
-                if (!RESERVATION_ENABLED) { alert(RESERVATION_DISABLED_MESSAGE); return; }
+                if (!RESERVATION_ENABLED) { if (window.showAppToast) window.showAppToast('warning', RESERVATION_DISABLED_MESSAGE); return; }
                 if (!selectedPcNum || !currentLabId) return;
                 const lab = LABS.find(l => l.id === currentLabId);
                 document.getElementById('formPcLabel').textContent = `PC-${String(selectedPcNum).padStart(2, '0')}`;
@@ -1479,8 +1479,8 @@
             }
 
             function submitReservation() {
-                if (!RESERVATION_ENABLED) { alert(RESERVATION_DISABLED_MESSAGE); return; }
-                if (!document.getElementById('formTimeSlot').value) { alert('Please set a valid time slot (max 3 hours).'); return; }
+                if (!RESERVATION_ENABLED) { if (window.showAppToast) window.showAppToast('warning', RESERVATION_DISABLED_MESSAGE); return; }
+                if (!document.getElementById('formTimeSlot').value) { if (window.showAppToast) window.showAppToast('warning', 'Please set a valid time slot (max 3 hours).'); return; }
                 const btn = document.getElementById('reserveSubmitBtn');
                 if (btn) {
                     btn.disabled = true;

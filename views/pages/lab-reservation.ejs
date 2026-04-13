@@ -1612,7 +1612,8 @@
 
             function submitReservation() {
                 if (!document.getElementById('formTimeSlot').value) {
-                    alert('Please set a valid time slot (max 3 hours).'); return;
+                    if (window.showAppToast) window.showAppToast('warning', 'Please set a valid time slot (max 3 hours).');
+                    return;
                 }
                 document.getElementById('labResForm').submit();
             }

@@ -640,58 +640,352 @@
         border-color: #DC2626;
     }
 
+    .adm-ai-wrap {
+        padding: 12px 24px 0;
+    }
+
+    .adm-ai-card {
+        background: #fff;
+        border: 1px solid #E8E3DD;
+        border-radius: 16px;
+        padding: 0;
+        box-shadow: 0 6px 18px rgba(28, 43, 53, 0.08);
+        overflow: hidden;
+    }
+
+    .adm-ai-head {
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        color: #fff;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #E8E3DD;
+    }
+
+    .adm-ai-head .adm-panel-title {
+        color: #F1E194;
+        font-size: 11px;
+        letter-spacing: .08em;
+    }
+
+    .adm-ai-refresh {
+        border: none;
+        border-radius: 999px;
+        background: #F1E194;
+        color: #1C2B35;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    .adm-ai-body {
+        padding: 14px 16px;
+        background: #fff;
+    }
+
+    .adm-ai-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .adm-ai-tile {
+        background: #F7F5F2;
+        border: 1px solid #E8E3DD;
+        border-radius: 12px;
+        padding: 10px 11px;
+    }
+
+    .adm-ai-kicker {
+        margin: 0 0 5px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #5B0E14;
+    }
+
+    .adm-ai-value {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #1C2B35;
+        font-weight: 600;
+    }
+
+    .adm-ai-action {
+        margin-top: 10px;
+        padding: 10px 11px;
+        border-radius: 12px;
+        border: 1px solid rgba(241,225,148,.35);
+        background: rgba(241,225,148,.12);
+    }
+
+    .adm-ai-action .adm-ai-kicker {
+        color: #1C2B35;
+    }
+
+    .adm-ai-empty {
+        color: #6B7280;
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    @media (max-width: 900px) {
+        .adm-ai-grid { grid-template-columns: 1fr; }
+    }
+
+    .study-tip-trigger-wrap {
+        padding: 10px 24px 0;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .study-tip-trigger {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        color: #F1E194;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 9px 14px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(28, 43, 53, 0.25);
+    }
+
+    .study-tip-panel {
+        position: fixed;
+        top: 82px;
+        right: 24px;
+        width: 410px;
+        max-width: calc(100vw - 24px);
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+        background: #FFFFFF;
+        border: 1px solid #E8E3DD;
+        box-shadow: 0 8px 32px rgba(28,43,53,0.15);
+        border-radius: 16px;
+        z-index: 120;
+        display: none;
+        animation: studyTipIn .22s ease-out both;
+        font-family: 'DM Sans', sans-serif;
+    }
+
+    .study-tip-panel.open { display: block; }
+
+    @keyframes studyTipIn {
+        from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .study-tip-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        background: linear-gradient(135deg, #1C2B35, #273F4F);
+        border-radius: 16px 16px 0 0;
+        color: #fff;
+    }
+
+    .study-tip-title {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: .04em;
+    }
+
+    .study-tip-title .ico { color: #F1E194; }
+
+    .study-tip-pill {
+        background: #5B0E14;
+        color: #F1E194;
+        border-radius: 999px;
+        padding: 5px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .study-tip-close {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .study-tip-body { padding: 14px; }
+
+    .study-tip-hero {
+        background: #F7F5F2;
+        border: 1px solid #E8E3DD;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 12px;
+    }
+
+    .study-tip-hero h3 {
+        margin: 0 0 4px;
+        color: #1C2B35;
+        font-family: 'Syne', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .study-tip-hero p {
+        margin: 0 0 10px;
+        color: #4B5563;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .study-tip-stat {
+        background: rgba(241,225,148,0.12);
+        border: 1px solid rgba(241,225,148,0.3);
+        border-radius: 10px;
+        padding: 9px 10px;
+        color: #5B0E14;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .study-tip-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px 0;
+        border-bottom: 1px dashed #E8E3DD;
+    }
+
+    .study-tip-row:last-child { border-bottom: none; }
+
+    .study-tip-ico {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: #F0EDE8;
+        border: 1px solid #E8E3DD;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .study-tip-label {
+        margin: 0 0 3px;
+        color: #5B0E14;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+    }
+
+    .study-tip-value {
+        margin: 0;
+        color: #1C2B35;
+        font-size: 20px;
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        line-height: 1.35;
+    }
+
+    .study-tip-foot {
+        margin-top: 12px;
+        padding-top: 8px;
+        border-top: 1px solid #F0ECE6;
+        color: #9CA3AF;
+        font-size: 11px;
+        font-style: italic;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
 
 </style>
 
 <div class="adm-page">
 
-    <!-- Stats Row -->
-    <div class="adm-stats">
-        <div class="adm-stat">
-            <div class="adm-stat-icon" style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#3B82F6" width="20" height="20">
-                    <path
-                        d="M10 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM1.49 15.326a.78.78 0 0 1-.358-.442 3 3 0 0 1 4.308-3.516 6.484 6.484 0 0 0-1.905 3.959c-.023.222-.014.442.025.654a4.97 4.97 0 0 1-2.07-.655ZM16.44 15.98a4.97 4.97 0 0 0 2.07-.654.78.78 0 0 0 .357-.442 3 3 0 0 0-4.308-3.517 6.484 6.484 0 0 1 1.907 3.96 2.32 2.32 0 0 1-.026.654ZM18 8a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM5.304 16.19a.844.844 0 0 1-.277-.71 5 5 0 0 1 9.947 0 .843.843 0 0 1-.277.71A6.975 6.975 0 0 1 10 18a6.974 6.974 0 0 1-4.696-1.81Z" />
-                </svg>
-            </div>
-            <div>
-                <div class="adm-stat-label">Students Registered</div>
-                <div class="adm-stat-val" style="color:#273F4F;">
-                    <%= totalStudents %>
+    <div class="study-tip-trigger-wrap">
+        <button class="study-tip-trigger" id="studyTipBtn">💡 AI Study Tip</button>
+    </div>
+
+    
+
+    <div class="adm-ai-wrap">
+        <div class="adm-ai-card">
+            <div class="adm-ai-head">
+                <div class="adm-panel-title">AI Insights</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span id="admin-ai-updated" style="font-size:10px;color:rgba(255,255,255,.7);font-weight:700;">Live Summary</span>
+                    <button id="admin-ai-refresh" class="adm-ai-refresh">Refresh Insights</button>
                 </div>
             </div>
-        </div>
-        <div class="adm-stat">
-            <div class="adm-stat-icon" style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#059669" width="20" height="20">
-                    <path fill-rule="evenodd"
-                        d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z"
-                        clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div>
-                <div class="adm-stat-label">Currently Sit-in</div>
-                <div class="adm-stat-val" style="color:#059669;">
-                    <%= activeSitins %>
-                </div>
-            </div>
-        </div>
-        <div class="adm-stat">
-            <div class="adm-stat-icon" style="background:linear-gradient(135deg,#FFF7ED,#FFEDD5);">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#EA580C" width="20" height="20">
-                    <path fill-rule="evenodd"
-                        d="M3 6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6Zm4.5 7.5a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0v-2.25a.75.75 0 0 1 .75-.75Zm3.75-1.5a.75.75 0 0 0-1.5 0v4.5a.75.75 0 0 0 1.5 0V12Zm2.25-3a.75.75 0 0 1 .75.75v6.75a.75.75 0 0 1-1.5 0V9.75A.75.75 0 0 1 13.5 9Z"
-                        clip-rule="evenodd" />
-                </svg>
-            </div>
-            <div>
-                <div class="adm-stat-label">Total Sit-in</div>
-                <div class="adm-stat-val" style="color:#EA580C;">
-                    <%= totalSitins %>
-                </div>
+            <div id="admin-ai-content" class="adm-ai-body">
+                <div class="adm-ai-empty">Loading insights...</div>
             </div>
         </div>
     </div>
+
+    <aside class="study-tip-panel" id="studyTipPanel">
+        <div class="study-tip-head">
+            <div class="study-tip-title"><span class="ico">🛡</span> AI STUDY TIP</div>
+            <span class="study-tip-pill" id="stBadge">Best Week: Loading...</span>
+            <button class="study-tip-close" id="studyTipClose" aria-label="Close">×</button>
+        </div>
+        <div class="study-tip-body">
+            <section class="study-tip-hero">
+                <h3 id="stHeroTitle">Best week to sit-in — Loading</h3>
+                <p id="stHeroDesc">Fetching system-wide session trends...</p>
+                <div class="study-tip-stat" id="stHeroStat">📌 Loading statistics...</div>
+            </section>
+
+            <div class="study-tip-row">
+                <div class="study-tip-ico">📅</div>
+                <div>
+                    <p class="study-tip-label">Best Day To Sit-In</p>
+                    <p class="study-tip-value" id="stBestDay">Loading...</p>
+                </div>
+            </div>
+            <div class="study-tip-row">
+                <div class="study-tip-ico">⚠️</div>
+                <div>
+                    <p class="study-tip-label">Busiest Day</p>
+                    <p class="study-tip-value" id="stBusyDay">Loading...</p>
+                </div>
+            </div>
+            <div class="study-tip-row">
+                <div class="study-tip-ico">🖥</div>
+                <div>
+                    <p class="study-tip-label">Most Available Lab</p>
+                    <p class="study-tip-value" id="stBestLab">Loading...</p>
+                </div>
+            </div>
+            <div class="study-tip-row">
+                <div class="study-tip-ico">🕐</div>
+                <div>
+                    <p class="study-tip-label">Best Time To Visit</p>
+                    <p class="study-tip-value" id="stBestTime">Loading...</p>
+                </div>
+            </div>
+
+            <div class="study-tip-foot"><span>📊</span><span id="stFooter">Based on system-wide lab data</span></div>
+        </div>
+    </aside>
 
     <!-- Main Grid -->
     <div class="adm-main">
@@ -1416,7 +1710,7 @@
         const nextMessage = prompt('Edit announcement message:', currentMessage || '');
         if (nextMessage === null) return;
         if (!nextMessage.trim()) {
-            alert('Announcement message cannot be empty.');
+            if (window.showAppToast) window.showAppToast('warning', 'Announcement message cannot be empty.');
             return;
         }
         const form = document.createElement('form');
@@ -1468,5 +1762,110 @@
         if (e.key !== 'Escape') return;
         closeSearchModal(); closeSitinModal();
     });
+
+    async function loadAdminAiInsights(force = false) {
+        const el = document.getElementById('admin-ai-content');
+        const updatedEl = document.getElementById('admin-ai-updated');
+        if (!el) return;
+        const esc = (v) => String(v || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        try {
+            const res = await fetch(`/api/ai/admin-insights`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refresh: force })
+            });
+            const data = await res.json();
+            if (!data.success || !data.insights) {
+                el.innerHTML = '<div class="adm-ai-empty">No AI insights available yet.</div>';
+                return;
+            }
+            const i = data.insights;
+            if (updatedEl) {
+                updatedEl.textContent = data.meta && Number.isFinite(data.meta.minutes_ago)
+                    ? `Last updated: ${data.meta.minutes_ago} min ago`
+                    : 'Live Summary';
+            }
+            el.innerHTML = `
+                <div class="adm-ai-grid">
+                    <div class="adm-ai-tile">
+                        <p class="adm-ai-kicker">🧭 Lab Recommendation</p>
+                        <p class="adm-ai-value">${esc(i.lab_insight || '-')}</p>
+                    </div>
+                    <div class="adm-ai-tile">
+                        <p class="adm-ai-kicker">💬 Feedback Summary</p>
+                        <p class="adm-ai-value">${esc(i.feedback_summary || '-')}</p>
+                    </div>
+                    <div class="adm-ai-tile">
+                        <p class="adm-ai-kicker">🚩 Underperforming Labs</p>
+                        <p class="adm-ai-value">${esc(i.underperforming_labs || '-')}</p>
+                    </div>
+                    <div class="adm-ai-tile">
+                        <p class="adm-ai-kicker">⏰ Peak Hours Insight</p>
+                        <p class="adm-ai-value">${esc(i.peak_hours_insight || '-')}</p>
+                    </div>
+                </div>
+                <div class="adm-ai-action">
+                    <p class="adm-ai-kicker">📊 Student Engagement</p>
+                    <p class="adm-ai-value">${esc(i.student_engagement || '-')}</p>
+                </div>
+                <div class="adm-ai-action">
+                    <p class="adm-ai-kicker">✅ Recommended Action</p>
+                    <p class="adm-ai-value">${esc(i.recommended_action || '-')}</p>
+                </div>
+            `;
+        } catch (_) {
+            el.innerHTML = '<div class="adm-ai-empty" style="color:#b91c1c;">AI insights are temporarily unavailable.</div>';
+        }
+    }
+
+    loadAdminAiInsights();
+    const adminAiRefresh = document.getElementById('admin-ai-refresh');
+    if (adminAiRefresh) adminAiRefresh.addEventListener('click', () => loadAdminAiInsights(true));
+
+    const studyTipBtn = document.getElementById('studyTipBtn');
+    const studyTipPanel = document.getElementById('studyTipPanel');
+    const studyTipClose = document.getElementById('studyTipClose');
+
+    async function loadStudyTip() {
+        try {
+            const res = await fetch('/admin/ai-study-tip');
+            const data = await res.json();
+            if (!data.success || !data.tip) throw new Error('no data');
+            const tip = data.tip;
+            document.getElementById('stBadge').textContent = tip.badge || 'Best Week: No data';
+            document.getElementById('stHeroTitle').textContent = tip.hero_title || 'Best week to sit-in — No data';
+            document.getElementById('stHeroDesc').textContent = tip.hero_description || 'No data yet.';
+            document.getElementById('stHeroStat').textContent = tip.hero_stat || '📌 No key stats yet.';
+            document.getElementById('stBestDay').textContent = tip.best_day || 'No data yet.';
+            document.getElementById('stBusyDay').textContent = tip.busiest_day || 'No data yet.';
+            document.getElementById('stBestLab').textContent = tip.most_available_lab || 'No data yet.';
+            document.getElementById('stBestTime').textContent = tip.best_time || 'No data yet.';
+            document.getElementById('stFooter').textContent = tip.footer || 'Based on system-wide lab data';
+        } catch (_) {
+            document.getElementById('stBadge').textContent = 'Best Week: No data';
+            document.getElementById('stHeroTitle').textContent = 'Best week to sit-in — No data yet';
+            document.getElementById('stHeroDesc').textContent = 'Unable to fetch analytics right now.';
+            document.getElementById('stHeroStat').textContent = '📌 Try refreshing after new sit-in records are saved.';
+            document.getElementById('stBestDay').textContent = 'No data yet.';
+            document.getElementById('stBusyDay').textContent = 'No data yet.';
+            document.getElementById('stBestLab').textContent = 'No data yet.';
+            document.getElementById('stBestTime').textContent = 'No data yet.';
+        }
+    }
+
+    if (studyTipBtn && studyTipPanel) {
+        studyTipBtn.addEventListener('click', async () => {
+            studyTipPanel.classList.add('open');
+            await loadStudyTip();
+        });
+    }
+    if (studyTipClose && studyTipPanel) {
+        studyTipClose.addEventListener('click', () => studyTipPanel.classList.remove('open'));
+    }
 
 </script>

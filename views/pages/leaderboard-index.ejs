@@ -438,7 +438,7 @@
                 style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(241,225,148,0.7);margin:0 0 8px;">
                 CCS Laboratory</p>
             <h1>🏆 Student Leaderboard</h1>
-            <p>Rankings based on sessions, sit-ins, and tasks completed</p>
+            <p>Score = (Tidy LB Pts x 0.5) + (Total Hours x 0.3) + (Task Completion Rate x 0.2)</p>
             <span class="lb-max-badge">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12" height="12">
                     <path fill-rule="evenodd"
@@ -458,21 +458,21 @@
                 <div class="lb-formula-icon" style="background:#FFF7ED;">🎯</div>
                 <div>
                     <div class="lb-formula-pct" style="color:#D97706;">50%</div>
-                    <div class="lb-formula-label">Sessions Used</div>
+                    <div class="lb-formula-label">Tidy LB Points (Raw / 3)</div>
                 </div>
             </div>
             <div class="lb-formula-card">
                 <div class="lb-formula-icon" style="background:#EFF6FF;">💻</div>
                 <div>
                     <div class="lb-formula-pct" style="color:#1D4ED8;">30%</div>
-                    <div class="lb-formula-label">Total Sit-ins</div>
+                    <div class="lb-formula-label">Total Hours</div>
                 </div>
             </div>
             <div class="lb-formula-card">
                 <div class="lb-formula-icon" style="background:#ECFDF5;">✅</div>
                 <div>
                     <div class="lb-formula-pct" style="color:#059669;">20%</div>
-                    <div class="lb-formula-label">Tasks / Feedback</div>
+                    <div class="lb-formula-label">Task Completion Rate</div>
                 </div>
             </div>
         </div>
@@ -587,17 +587,18 @@
                                     <th>Rank</th>
                                     <th>Student</th>
                                     <th>Course</th>
-                                    <th>Year</th>
-                                    <th>Sit-ins</th>
-                                    <th>Feedback</th>
-                                    <th>Total Points</th>
+                                    <th>Tidy Pts (Raw)</th>
+                                    <th>LB Pts x50%</th>
+                                    <th>Total Time</th>
+                                    <th>Hrs x30%</th>
+                                    <th>Final Score</th>
                                 </tr>
                             </thead>
                             <tbody id="lbBody">
                                 <% if (students && students.length> 0) { %>
                                     <% students.forEach(function(s, i) { const
                                         rankClass=i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'; const
-                                        rankEmoji=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1); const
+                                        rankEmoji=i===0?'🥇':i===1?'🥈':i===2?'🥉':('#' + (i+1)); const
                                         initials=((s.first_name||'')[0]||'') + ((s.last_name||'')[0]||''); const
                                         pct=Math.min(s.points, 100); const barColor=pct>=70?'#F59E0B':pct>=40?'#3B82F6':'#10B981';
                                         const isMe = typeof user !== 'undefined' && user && user.id === s.id;
@@ -634,17 +635,10 @@
                                                     style="background:#EFF6FF;color:#1D4ED8;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:700;">
                                                     <%= s.course %>
                                                 </span></td>
-                                            <td style="font-size:12px;color:#4B5563;">
-                                                <%= s.year_level %>
-                                            </td>
-                                            <td><span
-                                                    style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#273F4F;">
-                                                    <%= s.total_sitins %>
-                                                </span></td>
-                                            <td><span
-                                                    style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#059669;">
-                                                    <%= s.feedback_count %>
-                                                </span></td>
+                                            <td><span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#273F4F;"><%= s.tidy_points_raw %></span></td>
+                                            <td><span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#D97706;"><%= (s.tidy_lb_points * 0.5).toFixed(2) %></span></td>
+                                            <td style="font-size:12px;color:#4B5563;"><%= s.total_hours.toFixed(2) %> hrs</td>
+                                            <td><span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#1D4ED8;"><%= (s.total_hours * 0.3).toFixed(2) %></span></td>
                                             <td>
                                                 <div class="score-bar-wrap">
                                                     <div class="score-bar">
@@ -652,8 +646,8 @@
                                                             style="width:<%= pct %>%;background:<%= barColor %>;"></div>
                                                     </div>
                                                     <span
-                                                        style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:<%= barColor %>;min-width:38px;text-align:right;">
-                                                        <%= s.points %>
+                                                        style="font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:<%= barColor %>;min-width:56px;text-align:right;">
+                                                        <%= Number(s.points).toFixed(2) %>
                                                     </span>
                                                 </div>
                                             </td>
@@ -661,7 +655,7 @@
                                         <% }); %>
                                             <% } else { %>
                                                 <tr>
-                                                    <td colspan="7"
+                                                    <td colspan="8"
                                                         style="padding:56px;text-align:center;color:#9CA3AF;">No
                                                         rankings yet. Start your first sit-in!</td>
                                                 </tr>
@@ -673,8 +667,48 @@
                         <span>Showing <strong id="lbCount" style="color:#1C2B35;">
                                 <%= students ? students.length : 0 %>
                             </strong> students</span>
-                        <span>Points = (Sessions Used × 50%) + (Total Sit-ins, max 30 pts) + (Feedback × 4 pts, max 20
-                            pts)</span>
+                        <span>Final Score = (Tidy LB Points x 0.5) + (Total Hours x 0.3) + (Task Completion Rate x 0.2). Tidy LB Points = Raw / 3.</span>
+                    </div>
+                </div>
+
+                <div class="lb-card" style="margin-top:18px;">
+                    <div class="lb-card-head">
+                        <span class="lb-card-title">Most Visited Laboratory</span>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="lb-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Laboratory</th>
+                                    <th>Sit-ins x25%</th>
+                                    <th>Hours x25%</th>
+                                    <th>Rating x25%</th>
+                                    <th>Unique Users x25%</th>
+                                    <th>Lab Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (labs && labs.length > 0) { %>
+                                    <% labs.forEach(function(lab, idx) { %>
+                                        <tr>
+                                            <td><span class="rank-badge <%= idx===0?'rank-1':idx===1?'rank-2':idx===2?'rank-3':'rank-other' %>"><%= idx < 3 ? (idx===0?'🥇':idx===1?'🥈':'🥉') : ('#'+(idx+1)) %></span></td>
+                                            <td>Lab <%= lab.lab_room %></td>
+                                            <td><%= (lab.sitins * 0.25).toFixed(2) %></td>
+                                            <td><%= (lab.hours * 0.25).toFixed(2) %></td>
+                                            <td><%= (lab.rating * 0.25).toFixed(2) %></td>
+                                            <td><%= (lab.unique_users * 0.25).toFixed(2) %></td>
+                                            <td style="font-weight:800;color:#1a2035;"><%= lab.score.toFixed(2) %></td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr><td colspan="7" style="padding:26px;text-align:center;color:#9CA3AF;">No laboratory analytics yet.</td></tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="lb-footer">
+                        <span>Lab Score = (Sit-ins x 0.25) + (Hours x 0.25) + (Rating x 0.25) + (Unique Users x 0.25).</span>
                     </div>
                 </div>
     </div>

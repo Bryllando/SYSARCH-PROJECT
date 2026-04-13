@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../database/database');
+const { generateStudentRecommendation } = require('../services/ai-engine');
 
 // GET Login
 router.get('/login', (req, res) => {
@@ -48,6 +49,10 @@ router.post('/login', (req, res) => {
             type: 'success',
             message: 'Welcome back, ' + user.first_name + '! You are now logged in.'
         };
+
+        if (user.role === 'user') {
+            generateStudentRecommendation(db, user.id, false).catch(() => { });
+        }
 
         return user.role === 'admin'
             ? res.redirect('/admin')

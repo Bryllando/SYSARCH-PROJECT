@@ -1268,7 +1268,7 @@
                 btn.closest('tr').dataset.behavior = score;
             }
         } catch (err) {
-            alert('Failed to save rating. Please try again.');
+            if (window.showAppToast) window.showAppToast('error', 'Failed to save rating. Please try again.');
         }
     }
 </script>

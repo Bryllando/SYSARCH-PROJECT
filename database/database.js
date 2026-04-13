@@ -26,6 +26,9 @@ db.serialize(() => {
 
     db.run(`ALTER TABLE users ADD COLUMN address TEXT DEFAULT ''`, () => { });
     db.run(`ALTER TABLE users ADD COLUMN profile_picture TEXT DEFAULT ''`, () => { });
+    db.run(`ALTER TABLE users ADD COLUMN ai_reco_version INTEGER DEFAULT 0`, () => { });
+    db.run(`ALTER TABLE users ADD COLUMN tidy_points_raw INTEGER DEFAULT 0`, () => { });
+    db.run(`ALTER TABLE users ADD COLUMN task_completion_rate REAL DEFAULT 0`, () => { });
 
     db.run(`CREATE TABLE IF NOT EXISTS sitin_sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -105,6 +108,16 @@ db.serialize(() => {
         created_at DATETIME DEFAULT (datetime('now','localtime'))
     )`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS announcement_comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        announcement_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        message TEXT NOT NULL,
+        created_at DATETIME DEFAULT (datetime('now','localtime')),
+        FOREIGN KEY (announcement_id) REFERENCES announcements(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )`);
+
     db.run(`ALTER TABLE announcements ADD COLUMN is_pinned INTEGER DEFAULT 0`, () => { });
     db.run(`ALTER TABLE announcements ADD COLUMN media_url TEXT DEFAULT ''`, () => { });
     db.run(`ALTER TABLE announcements ADD COLUMN media_type TEXT DEFAULT ''`, () => { });
@@ -125,6 +138,32 @@ db.serialize(() => {
         computer_number INTEGER NOT NULL,
         status TEXT DEFAULT 'available',
         UNIQUE(lab_room, computer_number)
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS ai_recommendations (
+        user_id INTEGER PRIMARY KEY,
+        version INTEGER DEFAULT 0,
+        payload TEXT NOT NULL,
+        updated_at DATETIME DEFAULT (datetime('now','localtime')),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS ai_admin_insights (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        payload TEXT NOT NULL,
+        updated_at DATETIME DEFAULT (datetime('now','localtime'))
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS ai_recommendation_cache (
+        cache_key TEXT PRIMARY KEY,
+        student_id INTEGER,
+        type TEXT NOT NULL,
+        response_json TEXT NOT NULL,
+        generated_at DATETIME DEFAULT (datetime('now','localtime')),
+        source_session_at DATETIME,
+        source_feedback_at DATETIME,
+        source_updated_at DATETIME,
+        FOREIGN KEY (student_id) REFERENCES users(id)
     )`);
 
     // Seed computers for each lab on first run
