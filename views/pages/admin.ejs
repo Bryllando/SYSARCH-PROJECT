@@ -1240,81 +1240,106 @@
 
         <% if (announcements.length > 0) { %>
             <% announcements.forEach(function(ann) { %>
-                <div class="ann-card">
-                    <!-- Head -->
+                <div class="ann-card" id="ann-card-<%= ann.id %>">
+                    <!-- Head: Avatar + Admin Name + Pin Badge + Time -->
                     <div class="ann-card-head">
                         <div class="ann-card-meta">
-                            <div class="ann-card-avatar">A</div>
+                            <div class="ann-card-avatar"><%= ann.first_name ? ann.first_name[0].toUpperCase() : 'A' %></div>
                             <div>
-                                <div class="ann-card-author">CCS Admin<% if(ann.first_name) { %> · <%= ann.first_name %>
-                                            <% } %>
+                                <div class="ann-card-author">
+                                    <%= ann.first_name ? (ann.first_name + ' ' + (ann.last_name || '')) : 'CCS Admin' %>
                                     <% if (ann.is_pinned) { %>
-                                        <span style="font-size:10px;font-weight:700;background:#FEF3C7;color:#92400E;padding:2px 6px;border-radius:999px;margin-left:6px;">📌 Pinned</span>
+                                        <span style="font-size:10px;font-weight:700;background:#FEF3C7;color:#92400E;padding:2px 6px;border-radius:999px;margin-left:6px;vertical-align:middle;">📌 Pinned</span>
                                     <% } %>
                                 </div>
                                 <div class="ann-card-time">
-                                    <%= new
-                                        Date(ann.created_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'})
-                                        %>
+                                    <%= new Date(ann.created_at).toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}) %>
                                 </div>
                             </div>
                         </div>
-                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                            <form action="/admin/announcement/<%= ann.id %>/pin" method="POST" style="margin:0;">
-                                <button type="submit"
-                                    style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;border:1.5px solid #FDE68A;background:#FFF7ED;color:#92400E;cursor:pointer;">
-                                    <%= ann.is_pinned ? 'Unpin' : 'Pin' %>
-                                </button>
-                            </form>
-                            <button type="button"
-                                onclick="editAnnouncement(<%= ann.id %>, <%- JSON.stringify(ann.message || '') %>)"
-                                style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;border:1.5px solid #BFDBFE;background:#EFF6FF;color:#1D4ED8;cursor:pointer;">
-                                Edit
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0;">
+                            <button
+                                type="button"
+                                data-ann-action="pin"
+                                data-ann-url="/admin/announcement/<%= ann.id %>/pin"
+                                style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;border:1.5px solid #FDE68A;background:#FFF7ED;color:#92400E;cursor:pointer;font-family:inherit;transition:all 0.15s;"
+                                title="<%= ann.is_pinned ? 'Unpin this announcement' : 'Pin this announcement to top' %>"
+                            >
+                                📌 <%= ann.is_pinned ? 'Unpin' : 'Pin' %>
                             </button>
-                            <form action="/admin/announcement/<%= ann.id %>/delete" method="POST" class="ann-delete-form" style="margin:0;">
-                                <button type="submit" class="ann-del-btn" onclick="return confirm('Delete this announcement?');">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="currentColor"
-                                        width="10" height="10">
-                                        <path fill-rule="evenodd"
-                                            d="M6 2a.75.75 0 0 0-.712.513L4.843 4H2.75a.75.75 0 0 0 0 1.5h.428l.612 5.5A1.5 1.5 0 0 0 5.282 12.5h3.436a1.5 1.5 0 0 0 1.492-1.5l.612-5.5h.428a.75.75 0 0 0 0-1.5h-2.093L8.712 2.513A.75.75 0 0 0 8 2H6ZM5.5 5.5l.312 3H8.188l.312-3H5.5Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Delete
-                                </button>
-                            </form>
+                            <button
+                                type="button"
+                                data-ann-action="edit-open"
+                                data-ann-id="<%= ann.id %>"
+                                style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:700;border:1.5px solid #BFDBFE;background:#EFF6FF;color:#1D4ED8;cursor:pointer;font-family:inherit;transition:all 0.15s;"
+                                title="Edit this announcement"
+                            >
+                                ✏️ Edit
+                            </button>
+                            <button
+                                type="button"
+                                class="ann-del-btn"
+                                data-ann-action="delete"
+                                data-ann-url="/admin/announcement/<%= ann.id %>/delete"
+                                title="Delete this announcement"
+                            >
+                                🗑️ Delete
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Media -->
-                    <% if (ann.media_url && ann.media_url !=='' ) { %>
+                    <!-- Body (text content — always before media) -->
+                    <div class="ann-card-body">
+                        <p class="ann-card-msg"><%= ann.message %></p>
+                    </div>
+
+                    <!-- Media (image/video — after body text) -->
+                    <% if (ann.media_url && ann.media_url !== '') { %>
                         <div class="ann-card-media">
-                            <% if (ann.media_type==='video' ) { %>
-                                <video controls>
-                                    <source src="<%= ann.media_url %>">
-                                </video>
-                                <% } else { %>
-                                    <img src="<%= ann.media_url %>" alt="Announcement media" loading="lazy">
-                                    <% } %>
+                            <% if (ann.media_type === 'video') { %>
+                                <video controls><source src="<%= ann.media_url %>"></video>
+                            <% } else { %>
+                                <img src="<%= ann.media_url %>" alt="Announcement media" loading="lazy">
+                            <% } %>
                         </div>
-                        <% } %>
-
-                            <!-- Body -->
-                            <div class="ann-card-body">
-                                <p class="ann-card-msg">
-                                    <%= ann.message %>
-                                </p>
-                            </div>
-
+                    <% } %>
                 </div>
-                <% }); %>
-                    <% } else { %>
-                        <div
-                            style="background:#fff;border:1px solid #E8E3DD;border-radius:16px;padding:48px 24px;text-align:center;color:#C4BDB6;">
-                            <div style="font-size:32px;margin-bottom:10px;">📣</div>
-                            <p style="font-size:14px;font-weight:600;color:#4B5563;margin:0;">No announcements yet</p>
-                            <p style="font-size:12px;margin:4px 0 0;">Post your first announcement above.</p>
-                        </div>
-                        <% } %>
+            <% }); %>
+        <% } else { %>
+            <div style="background:#fff;border:1px solid #E8E3DD;border-radius:16px;padding:48px 24px;text-align:center;color:#C4BDB6;">
+                <div style="font-size:32px;margin-bottom:10px;">📣</div>
+                <p style="font-size:14px;font-weight:600;color:#4B5563;margin:0;">No announcements yet</p>
+                <p style="font-size:12px;margin:4px 0 0;">Post your first announcement above.</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- ══ Edit Announcement Modal ══ -->
+<div id="editAnnModal" class="modal-overlay" onclick="if(event.target===this) closeEditModal()">
+    <div class="modal-card" style="max-width:520px;">
+        <div class="modal-header" style="background:linear-gradient(135deg,#273F4F,#1a2d38);">
+            <div class="modal-title" style="color:#fff;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#F1E194" width="15" height="15">
+                    <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L3.22 10.303a1 1 0 0 0-.258.42l-.97 3.397a.75.75 0 0 0 .93.93l3.397-.97a1 1 0 0 0 .42-.258l7.79-7.79a1.75 1.75 0 0 0 0-2.475l-.04-.04Z"/>
+                </svg>
+                Edit Announcement
+            </div>
+            <button class="modal-close" onclick="closeEditModal()" style="border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);">✕</button>
+        </div>
+        <form id="editAnnForm" method="POST" action="">
+            <div style="padding:18px 20px;">
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:8px;letter-spacing:0.08em;">Announcement Message</label>
+                <textarea id="editAnnMessage" name="message" class="ann-textarea" style="min-height:140px;" placeholder="Enter announcement message..." maxlength="1000" required></textarea>
+                <div style="text-align:right;margin-top:4px;">
+                    <span style="font-size:10px;color:#C4BDB6;font-weight:600;"><span id="editCharCount">0</span>/1000</span>
+                </div>
+            </div>
+            <div style="display:flex;gap:10px;padding:0 20px 18px;">
+                <button type="button" onclick="closeEditModal()" style="flex:1;padding:10px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>
+                <button type="submit" style="flex:2;padding:10px;background:linear-gradient(135deg,#5B0E14,#7a131b);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Save Changes</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -1706,24 +1731,91 @@
     }
 
 
-    function editAnnouncement(id, currentMessage) {
-        const nextMessage = prompt('Edit announcement message:', currentMessage || '');
-        if (nextMessage === null) return;
-        if (!nextMessage.trim()) {
-            if (window.showAppToast) window.showAppToast('warning', 'Announcement message cannot be empty.');
-            return;
-        }
-        const form = document.createElement('form');
-        form.method = 'POST';
+    // ── Edit Announcement Modal ──
+    function openEditModal(id, currentMessage) {
+        const modal = document.getElementById('editAnnModal');
+        const form = document.getElementById('editAnnForm');
+        const textarea = document.getElementById('editAnnMessage');
+        const counter = document.getElementById('editCharCount');
         form.action = '/admin/announcement/' + id + '/edit';
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'message';
-        input.value = nextMessage;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
+        textarea.value = currentMessage || '';
+        counter.textContent = (currentMessage || '').length;
+        modal.classList.add('open');
+        setTimeout(() => textarea.focus(), 150);
+        textarea.oninput = function() { counter.textContent = this.value.length; };
     }
+    function closeEditModal() {
+        document.getElementById('editAnnModal').classList.remove('open');
+    }
+
+    // ── Announcement actions (Pin/Edit/Delete) ──
+    // Some browsers/DOM states can cause nested forms or inline handlers to misbehave.
+    // Use a single delegated handler so buttons always work.
+    (function bindAnnouncementActions() {
+        const esc = (v) => String(v ?? '').replace(/\s+/g, ' ').trim();
+
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('[data-ann-action]');
+            if (!btn) return;
+
+            const action = btn.getAttribute('data-ann-action');
+
+            if (action === 'edit-open') {
+                const id = btn.getAttribute('data-ann-id');
+                if (!id) return;
+                const card = btn.closest('.ann-card');
+                const msgEl = card ? card.querySelector('.ann-card-msg') : null;
+                openEditModal(id, msgEl ? msgEl.textContent : '');
+                return;
+            }
+
+            const url = btn.getAttribute('data-ann-url');
+            if (!url) return;
+
+            if (action === 'delete') {
+                const ok = confirm('Delete this announcement permanently?');
+                if (!ok) return;
+            }
+
+            btn.disabled = true;
+            try {
+                const res = await fetch(url, { method: 'POST', credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Request failed');
+                window.location.reload();
+            } catch (_) {
+                btn.disabled = false;
+                if (window.showAppToast) window.showAppToast('error', 'Action failed. Please try again.');
+                else alert('Action failed. Please try again.');
+            }
+        });
+
+        const editForm = document.getElementById('editAnnForm');
+        if (editForm) {
+            editForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(editForm);
+                const body = new URLSearchParams();
+                for (const [k, v] of fd.entries()) body.append(k, String(v));
+
+                const submitBtn = editForm.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.disabled = true;
+                try {
+                    const res = await fetch(editForm.action, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body
+                    });
+                    if (!res.ok) throw new Error('Request failed');
+                    window.location.reload();
+                } catch (_) {
+                    if (submitBtn) submitBtn.disabled = false;
+                    if (window.showAppToast) window.showAppToast('error', 'Failed to save changes.');
+                    else alert('Failed to save changes.');
+                }
+            });
+        }
+    })();
 
     // -- Search + Sit-in modals --
     function openSearchModal() {
@@ -1760,7 +1852,7 @@
 
     document.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return;
-        closeSearchModal(); closeSitinModal();
+        closeSearchModal(); closeSitinModal(); closeEditModal();
     });
 
     async function loadAdminAiInsights(force = false) {

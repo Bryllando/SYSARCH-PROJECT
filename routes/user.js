@@ -8,6 +8,24 @@ const fs = require('fs');
 const { getLeaderboardData } = require('../services/leaderboard');
 const { generateStudentRecommendation, generateStudentTips, generateStudentStudyTip } = require('../services/ai-engine');
 
+function autoExpireReservationsForUser(db, userId, cb) {
+    // Expire any pending/approved reservation whose end time has passed.
+    // If no time_end, fallback to time_start; else treat as 00:00 (will expire next day).
+    db.run(
+        `UPDATE reservations
+         SET status = 'expired',
+             message = COALESCE(NULLIF(message,''), 'Expired automatically.'),
+             updated_at = datetime('now','localtime')
+         WHERE user_id = ?
+           AND status IN ('pending', 'approved')
+           AND datetime(
+                date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')
+              ) < datetime('now','localtime')`,
+        [userId],
+        () => cb && cb()
+    );
+}
+
 // ─── Profanity Filter ─────────────────────────────────────────────────────────
 const VULGAR_WORDS = [
     // English
@@ -302,17 +320,66 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
 // ─── RESERVATION (Lab PC only) ────────────────────────────────────────────────
 router.get('/reservation', isAuthenticated, isUser, (req, res) => {
     db.get(`SELECT enabled, message FROM reservation_settings WHERE id = 1`, (sErr, settings) => {
+        autoExpireReservationsForUser(db, req.session.user.id, () => {
+            db.all(
+                `SELECT * FROM reservations
+                 WHERE user_id = ?
+                   AND computer_number IS NOT NULL
+                   AND COALESCE(deleted_by_user, 0) = 0
+                 ORDER BY created_at DESC`,
+                [req.session.user.id],
+                (err, reservations) => {
+                    res.render('pages/reservation', {
+                        reservations: reservations || [],
+                        reservationSettings: settings || { enabled: 1, message: '' }
+                    });
+                }
+            );
+        });
+    });
+});
+
+// API: fetch current reservations (for live status refresh)
+router.get('/api/reservations/mine', isAuthenticated, isUser, (req, res) => {
+    autoExpireReservationsForUser(db, req.session.user.id, () => {
         db.all(
-            `SELECT * FROM reservations WHERE user_id = ? AND computer_number IS NOT NULL ORDER BY created_at DESC`,
+            `SELECT id, lab_room, computer_number, purpose, date, time_slot, status, created_at, updated_at
+             FROM reservations
+             WHERE user_id = ?
+               AND computer_number IS NOT NULL
+               AND COALESCE(deleted_by_user, 0) = 0
+             ORDER BY created_at DESC`,
             [req.session.user.id],
-            (err, reservations) => {
-                res.render('pages/reservation', {
-                    reservations: reservations || [],
-                    reservationSettings: settings || { enabled: 1, message: '' }
-                });
+            (err, rows) => {
+                if (err) return res.status(500).json({ success: false });
+                res.json({ success: true, reservations: rows || [] });
             }
         );
     });
+});
+
+// API: soft-delete reservation from user history (non-pending only)
+router.delete('/api/reservations/delete/:id', isAuthenticated, isUser, (req, res) => {
+    const id = req.params.id;
+    db.get(
+        `SELECT id, status FROM reservations WHERE id = ? AND user_id = ?`,
+        [id, req.session.user.id],
+        (err, row) => {
+            if (err || !row) return res.status(404).json({ success: false, message: 'Not found' });
+            if (row.status === 'pending') return res.status(400).json({ success: false, message: 'Pending reservations cannot be deleted.' });
+            db.run(
+                `UPDATE reservations
+                 SET deleted_by_user = 1,
+                     updated_at = datetime('now','localtime')
+                 WHERE id = ? AND user_id = ?`,
+                [id, req.session.user.id],
+                function (upErr) {
+                    if (upErr || this.changes === 0) return res.status(500).json({ success: false, message: 'Failed to delete.' });
+                    res.json({ success: true });
+                }
+            );
+        }
+    );
 });
 
 // Lab Reservation POST (submit)

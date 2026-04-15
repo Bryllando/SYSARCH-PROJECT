@@ -1075,8 +1075,8 @@
                         <tbody>
                             <% var safeRes=(typeof reservations !=='undefined' && reservations) ? reservations : []; %>
                                 <% if (safeRes.length> 0) { %>
-                                    <% safeRes.forEach(function(r) { %>
-                                        <tr class="hover:bg-gray-50 res-row" data-status="<%= r.status %>">
+                                    <% safeRes.forEach(function(r) { var rowStatus = String(r.status || '').toLowerCase(); %>
+                                        <tr class="hover:bg-gray-50 res-row" id="row-<%= r.id %>" data-status="<%= r.status %>">
                                             <td class="px-4 py-3"><span
                                                     class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-[#273F4F]/10 text-[#273F4F]">Lab
                                                     <%= r.lab_room %></span></td>
@@ -1112,7 +1112,7 @@
                                                             <% } %>
                                             </td>
                                             <td class="px-4 py-3">
-                                                <% if (r.status === 'pending') { %>
+                                                <% if (rowStatus === 'pending') { %>
                                                     <form action="/reservation/<%= r.id %>/cancel" method="POST"
                                                         onsubmit="return confirm('Cancel this reservation request?')" style="margin:0;">
                                                         <button type="submit"
@@ -1121,7 +1121,14 @@
                                                         </button>
                                                     </form>
                                                 <% } else { %>
-                                                    <span class="text-xs text-gray-400">—</span>
+                                                    <button
+                                                        type="button"
+                                                        class="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full hover:bg-rose-700 hover:text-white transition-all"
+                                                        onclick="deleteReservation(<%= r.id %>)"
+                                                        title="Remove from your history"
+                                                    >
+                                                        🗑️ Delete
+                                                    </button>
                                                 <% } %>
                                             </td>
                                         </tr>
@@ -1611,4 +1618,81 @@
                 closePcModal(); closeReserveForm(); closeStatusModal?.();
             });
             document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatusModal(); });
+        </script>
+
+        <script>
+            // ── Reservation helpers (no reload) ─────────────────────────────
+            function deleteReservation(id) {
+                if (!confirm('Remove this reservation from your history?')) return;
+                fetch(`/api/reservations/delete/${id}`, { method: 'DELETE', credentials: 'same-origin' })
+                    .then(r => r.json().catch(() => ({})).then(b => ({ ok: r.ok, body: b })))
+                    .then(({ ok, body }) => {
+                        if (!ok || !body.success) throw new Error(body.message || 'Failed');
+                        const row = document.getElementById(`row-${id}`);
+                        if (row) row.remove();
+                        if (window.showAppToast) window.showAppToast('success', 'Reservation removed from history.');
+                        filterReservations();
+                    })
+                    .catch((e) => {
+                        if (window.showAppToast) window.showAppToast('error', e.message || 'Failed to remove reservation.');
+                        else alert(e.message || 'Failed to remove reservation.');
+                    });
+            }
+
+            function renderStatusBadge(td, status) {
+                const s = String(status || 'pending').toLowerCase();
+                td.innerHTML =
+                    s === 'approved'
+                        ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Approved</span>`
+                        : s === 'rejected'
+                            ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>Rejected</span>`
+                            : s === 'cancelled'
+                                ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>Cancelled</span>`
+                                : s === 'expired'
+                                    ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-gray-700 bg-gray-100 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>Expired</span>`
+                                    : `<span class="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>Pending</span>`;
+            }
+
+            async function refreshReservationStatuses() {
+                try {
+                    const res = await fetch('/api/reservations/mine', { credentials: 'same-origin' });
+                    const data = await res.json();
+                    if (!data || !data.success) return;
+                    (data.reservations || []).forEach((r) => {
+                        const row = document.getElementById(`row-${r.id}`);
+                        if (!row) return;
+                        row.dataset.status = r.status;
+                        const tds = row.querySelectorAll('td');
+                        const statusTd = tds[5];
+                        if (statusTd) renderStatusBadge(statusTd, r.status);
+
+                        const actionTd = tds[6];
+                        if (actionTd) {
+                            if (String(r.status).toLowerCase() === 'pending') {
+                                actionTd.innerHTML = `
+                                    <form action="/reservation/${r.id}/cancel" method="POST" onsubmit="return confirm('Cancel this reservation request?')" style="margin:0;">
+                                        <button type="submit"
+                                            class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full hover:bg-red-700 hover:text-white transition-all">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                `;
+                            } else {
+                                actionTd.innerHTML = `
+                                    <button type="button"
+                                        class="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full hover:bg-rose-700 hover:text-white transition-all"
+                                        onclick="deleteReservation(${r.id})"
+                                        title="Remove from your history"
+                                    >🗑️ Delete</button>
+                                `;
+                            }
+                        }
+                    });
+                    filterReservations();
+                } catch (_) { }
+            }
+
+            // Poll lightly so status reflects after admin action without manual reload.
+            refreshReservationStatuses();
+            setInterval(refreshReservationStatuses, 15000);
         </script>

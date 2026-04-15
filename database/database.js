@@ -68,6 +68,11 @@ db.serialize(() => {
     db.run(`ALTER TABLE reservations ADD COLUMN time_start TEXT DEFAULT NULL`, () => { });
     db.run(`ALTER TABLE reservations ADD COLUMN time_end TEXT DEFAULT NULL`, () => { });
     db.run(`ALTER TABLE reservations ADD COLUMN message TEXT DEFAULT ''`, () => { });
+    // Reservation workflow metadata (SQLite-safe additive migrations)
+    db.run(`ALTER TABLE reservations ADD COLUMN approved_by INTEGER DEFAULT NULL`, () => { });
+    // Note: SQLite ALTER TABLE only allows constant DEFAULT values; keep NULL and set in code.
+    db.run(`ALTER TABLE reservations ADD COLUMN updated_at DATETIME DEFAULT NULL`, () => { });
+    db.run(`ALTER TABLE reservations ADD COLUMN deleted_by_user INTEGER DEFAULT 0`, () => { });
 
     db.run(`CREATE TABLE IF NOT EXISTS reservation_settings (
         id INTEGER PRIMARY KEY CHECK (id = 1),

@@ -654,7 +654,14 @@ router.post('/reservations/:id/approve', isAuthenticated, isAdmin, (req, res) =>
                         return res.redirect('/admin/reservations');
                     }
 
-                    db.run(`UPDATE reservations SET status = 'approved' WHERE id = ?`, [req.params.id], () => {
+                    db.run(
+                        `UPDATE reservations
+                         SET status = 'approved',
+                             approved_by = ?,
+                             updated_at = datetime('now','localtime')
+                         WHERE id = ?`,
+                        [req.session.user.id, req.params.id],
+                        () => {
                         db.run(
                             `INSERT INTO lab_computers (lab_room, computer_number, status)
                              VALUES (?, ?, 'reserved')
@@ -667,7 +674,8 @@ router.post('/reservations/:id/approve', isAuthenticated, isAdmin, (req, res) =>
                         );
                         req.session.toast = { type: 'success', message: `Reservation approved. PC-${String(r.computer_number).padStart(2, '0')} marked as reserved.` };
                         res.redirect('/admin/reservations');
-                    });
+                        }
+                    );
                 }
             );
         }
@@ -678,14 +686,22 @@ router.post('/reservations/:id/approve', isAuthenticated, isAdmin, (req, res) =>
 router.post('/reservations/:id/reject', isAuthenticated, isAdmin, (req, res) => {
     db.get(`SELECT * FROM reservations WHERE id = ?`, [req.params.id], (err, r) => {
         if (!r) { return res.redirect('/admin/reservations'); }
-        db.run(`UPDATE reservations SET status = 'rejected' WHERE id = ?`, [req.params.id], () => {
+        db.run(
+            `UPDATE reservations
+             SET status = 'rejected',
+                 approved_by = ?,
+                 updated_at = datetime('now','localtime')
+             WHERE id = ?`,
+            [req.session.user.id, req.params.id],
+            () => {
             db.run(
                 `INSERT INTO notifications (user_id, message) VALUES (?, ?)`,
                 [r.user_id, `Your reservation for Lab ${r.lab_room} PC-${String(r.computer_number || 0).padStart(2, '0')} on ${r.date} has been REJECTED.`]
             );
             req.session.toast = { type: 'error', message: 'Reservation rejected.' };
             res.redirect('/admin/reservations');
-        });
+            }
+        );
     });
 });
 
