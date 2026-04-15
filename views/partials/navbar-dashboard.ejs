@@ -1,13 +1,39 @@
+<%# ═══════════════════════════════════════════════════════════════════════════
+     UNIFIED NOTIFICATION COMPONENT — Shared by Admin & User
+     ───────────────────────────────────────────────────────────────────────
+     Project Color Palette (pulled from sidebar, navbar, cards, buttons):
+       --np-primary:     #5B0E14  (Maroon  — navbar bg, buttons, active states)
+       --np-primary-dark:#3A0910  (Dark maroon — gradient endpoints)
+       --np-secondary:   #273F4F  (Dark teal — sidebar, card headers, headings)
+       --np-accent:      #F1E194  (Gold — highlights, badges, active sidebar)
+       --np-bg:          #FFFFFF  (Card background)
+       --np-bg-alt:      #F7F5F2  (Tab bar, alternate section bg)
+       --np-border:      #E8E3DD  (Card/divider borders)
+       --np-border-light:#F3F0EC  (Lighter item dividers)
+       --np-text:        #1C2B35  (Primary heading / body text)
+       --np-text-muted:  #9CA3AF  (Timestamps, empty states, muted copy)
+       --np-text-body:   #6B7280  (Secondary body text)
+       --np-hover:       rgba(91,14,20,0.04) (Light primary tint for hover)
+       --np-unread-bg:   rgba(91,14,20,0.035)(Unread item background tint)
+     ═══════════════════════════════════════════════════════════════════════ %>
+
 <style>
+    /* ═══════════════════════════════════════════════
+       NOTIFICATION PANEL — Unified CSS (Admin & User)
+       Uses project colors from navbar/sidebar/cards
+       ═══════════════════════════════════════════════ */
+
+    /* ─── Dropdown container ─── */
     .notif-dropdown {
         position: absolute;
         right: 0;
         top: calc(100% + 10px);
-        width: 320px;
-        background: #fff;
+        width: 370px;                              /* consistent width for both roles */
+        background: #fff;                           /* --np-bg */
         border-radius: 16px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.08);
-        border: 1px solid #F0F0F0;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.16),
+                    0 2px 8px rgba(0, 0, 0, 0.06);
+        border: 1px solid #E8E3DD;                  /* --np-border */
         overflow: hidden;
         z-index: 50;
         display: none;
@@ -16,45 +42,120 @@
 
     .notif-dropdown.open {
         display: flex;
+        animation: notifDropIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     }
 
+    @keyframes notifDropIn {
+        from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ─── Header bar — uses project PRIMARY gradient (same as navbar) ─── */
     .notif-header {
+        background: linear-gradient(135deg, #5B0E14, #3A0910);  /* --np-primary → --np-primary-dark */
+        padding: 14px 18px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 16px;
-        border-bottom: 1px solid #F3F4F6;
-        flex-shrink: 0;
         gap: 12px;
+        flex-shrink: 0;
     }
 
+    /* Header title — white on primary bg */
     .notif-header-title {
-        font-weight: 700;
-        font-size: 13px;
-        color: #273F4F;
+        font-weight: 800;
+        font-size: 15px;
+        color: #fff;
         white-space: nowrap;
+        letter-spacing: -0.01em;
     }
 
+    /* "Mark all as read" — uses project ACCENT gold color */
     .notif-mark-read {
         font-size: 11px;
-        font-weight: 600;
-        color: #5B0E14;
-        background: none;
-        border: none;
+        font-weight: 700;
+        color: #F1E194;                             /* --np-accent (gold) */
+        background: rgba(241, 225, 148, 0.12);
+        border: 1px solid rgba(241, 225, 148, 0.2);
         cursor: pointer;
         white-space: nowrap;
-        padding: 4px 8px;
-        border-radius: 6px;
-        transition: background 0.15s;
+        padding: 5px 12px;
+        border-radius: 7px;
+        transition: all 0.15s;
         flex-shrink: 0;
+        font-family: inherit;
     }
 
     .notif-mark-read:hover {
-        background: rgba(91, 14, 20, 0.07);
+        background: rgba(241, 225, 148, 0.25);
+        border-color: rgba(241, 225, 148, 0.4);
     }
 
+    /* ─── Tab bar — uses project --np-bg-alt background ─── */
+    .notif-tabs {
+        display: flex;
+        background: #F7F5F2;                        /* --np-bg-alt */
+        border-bottom: 1px solid #E8E3DD;           /* --np-border */
+    }
+
+    /* Individual tab button */
+    .notif-tab {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 11px 14px;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #9CA3AF;                             /* --np-text-muted (inactive) */
+        text-align: center;
+        cursor: pointer;
+        border-bottom: 2.5px solid transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        transition: all 0.15s;
+        font-family: inherit;
+        margin-bottom: -1px;
+    }
+
+    .notif-tab:hover {
+        color: #5B0E14;                             /* --np-primary on hover */
+        background: rgba(91, 14, 20, 0.03);
+    }
+
+    /* Active tab — uses project PRIMARY color for text & underline */
+    .notif-tab.active {
+        color: #5B0E14;                             /* --np-primary */
+        border-bottom-color: #5B0E14;               /* --np-primary underline */
+        background: #fff;                           /* --np-bg */
+    }
+
+    /* Tab badge count pill — uses project PRIMARY maroon */
+    .notif-tab-badge {
+        min-width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        padding: 0 6px;
+        font-size: 10px;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        background: #D6D0CA;                        /* --np-border muted (default) */
+        line-height: 1;
+        transition: background 0.15s;
+    }
+
+    /* Active tab's badge — project PRIMARY color */
+    .notif-tab.active .notif-tab-badge {
+        background: #5B0E14;                        /* --np-primary */
+    }
+
+    /* ─── Notification list ─── */
     .notif-list {
-        max-height: 300px;
+        max-height: 340px;
         overflow-y: auto;
         list-style: none;
         margin: 0;
@@ -70,163 +171,155 @@
     }
 
     .notif-list::-webkit-scrollbar-thumb {
-        background: #E5E7EB;
+        background: #E8E3DD;                        /* --np-border */
         border-radius: 4px;
     }
 
+    /* Empty state — uses project muted text color */
     .notif-empty {
-        padding: 32px 16px;
+        padding: 36px 16px;
         text-align: center;
         font-size: 13px;
-        color: #9CA3AF;
+        color: #9CA3AF;                             /* --np-text-muted */
+        font-weight: 500;
     }
 
+    /* ─── Notification item — consistent card layout ─── */
     .notif-item {
-        padding: 12px 16px;
-        border-bottom: 1px solid #F9FAFB;
-        font-size: 12px;
-        line-height: 1.5;
+        padding: 13px 16px;
+        border-bottom: 1px solid #F3F0EC;           /* --np-border-light */
         transition: background 0.12s;
+        cursor: default;
     }
 
     .notif-item:last-child {
         border-bottom: none;
     }
 
+    /* Hover — light primary tint */
+    .notif-item:hover {
+        background: rgba(91, 14, 20, 0.04);         /* --np-hover */
+    }
+
+    /* Unread item — warm primary tint background */
     .notif-item.unread {
-        background: #EFF6FF;
-        font-weight: 600;
-        color: #1D4ED8;
+        background: rgba(91, 14, 20, 0.035);        /* --np-unread-bg */
     }
 
-    .notif-item.admin-unread {
-        background: #FFF7ED;
-        font-weight: 600;
-        color: #92400E;
+    .notif-item.unread:hover {
+        background: rgba(91, 14, 20, 0.06);
     }
 
+    /* Read item */
     .notif-item.read {
-        color: #6B7280;
-    }
-
-    .notif-item p {
-        margin: 0 0 2px;
-    }
-
-    .notif-item .notif-time {
-        font-size: 11px;
-        color: #9CA3AF;
-        font-weight: 400;
-    }
-
-    .admin-notif-top {
-        background: #173f7a;
-        color: #fff;
-        padding: 12px 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .admin-notif-top .notif-header-title {
-        color: #fff;
-        font-size: 24px;
-        font-weight: 700;
-        line-height: 1;
-    }
-
-    .admin-notif-top .notif-mark-read {
-        color: #ffd35a;
-        font-weight: 700;
-        padding: 0;
-    }
-
-    .admin-notif-top .notif-mark-read:hover {
         background: transparent;
-        text-decoration: underline;
     }
 
-    .admin-notif-tabs {
-        display: flex;
-        background: #f3f4f6;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .admin-notif-tab {
-        flex: 1;
-        background: transparent;
-        border: none;
-        padding: 10px 14px;
-        font-size: 14px;
-        font-weight: 700;
-        color: #8b8b8b;
-        text-align: left;
-        cursor: pointer;
-        border-bottom: 2px solid transparent;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .admin-notif-tab.active {
-        color: #173f7a;
-        border-bottom-color: #173f7a;
-        background: #fff;
-    }
-
-    .admin-notif-count {
-        min-width: 18px;
-        height: 18px;
-        border-radius: 999px;
-        padding: 0 6px;
-        font-size: 11px;
-        font-weight: 800;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        background: #bdbdbd;
-    }
-
-    .admin-notif-count.ann {
-        background: #e23a3a;
-    }
-
+    /* ─── Notification item row layout ─── */
     .notif-item-row {
         display: flex;
-        gap: 8px;
+        gap: 10px;
         align-items: flex-start;
     }
 
-    .notif-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        background: #173f7a;
-        margin-top: 6px;
+    /* Icon circle — uses project SECONDARY color */
+    .notif-item-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+        background: rgba(91, 14, 20, 0.08);         /* light primary tint */
+        color: #5B0E14;                              /* --np-primary */
+    }
+
+    .notif-item.read .notif-item-icon {
+        background: #F3F0EC;                         /* --np-border-light */
+        color: #9CA3AF;                              /* --np-text-muted */
+    }
+
+    /* Body area */
+    .notif-item-body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* Top row: title + time */
+    .notif-item-top {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    /* Title — bold, project heading color */
+    .notif-item-title {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #1C2B35;                             /* --np-text */
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .notif-item.read .notif-item-title {
+        color: #6B7280;                             /* --np-text-body (dimmed for read) */
+        font-weight: 600;
+    }
+
+    /* Timestamp — small, muted */
+    .notif-time {
+        font-size: 10px;
+        color: #9CA3AF;                             /* --np-text-muted */
+        font-weight: 500;
+        white-space: nowrap;
         flex-shrink: 0;
     }
 
-    .notif-item.admin-unread .notif-dot {
-        background: #173f7a;
-    }
-
-    .notif-item.read .notif-dot {
-        background: #d1d5db;
-    }
-
-    .notif-item-title {
-        font-size: 13px;
-        font-weight: 700;
-        color: #1f2937;
-        line-height: 1.3;
-    }
-
+    /* Message body text */
     .notif-item-msg {
         font-size: 12px;
-        color: #6b7280;
-        line-height: 1.35;
+        color: #6B7280;                             /* --np-text-body */
+        line-height: 1.4;
         margin-top: 2px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .notif-item.unread .notif-item-msg {
+        color: #4B5563;                             /* slightly darker for unread */
+    }
+
+    /* Unread dot indicator — uses project PRIMARY maroon */
+    .notif-unread-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #5B0E14;                        /* --np-primary */
+        flex-shrink: 0;
+        margin-top: 12px;
+        transition: opacity 0.15s;
+    }
+
+    .notif-item.read .notif-unread-dot {
+        opacity: 0;
+    }
+
+    /* ─── Panel footer ─── */
+    .notif-footer {
+        padding: 10px 16px;
+        border-top: 1px solid #F3F0EC;              /* --np-border-light */
+        background: #F7F5F2;                        /* --np-bg-alt */
+        text-align: center;
+        font-size: 11px;
+        color: #9CA3AF;                             /* --np-text-muted */
+        font-weight: 500;
     }
 </style>
 
@@ -250,241 +343,306 @@
     <!-- Right side -->
     <div class="flex items-center gap-4">
 
-        <!-- ── USER Notification Bell ── -->
-        <% if (user && user.role==='user' ) { %>
-            <div style="position:relative;">
-                <button id="notifBtn"
-                    class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path fill-rule="evenodd"
-                            d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                    <span id="notifBadge"
-                        style="position:absolute;top:-2px;right:-2px;background:#F1E194;color:#5B0E14;font-size:9px;font-weight:800;border-radius:999px;width:16px;height:16px;display:none;align-items:center;justify-content:center;line-height:1;">
-                    </span>
-                </button>
+        <%# ═══ UNIFIED NOTIFICATION BELL — Same for User & Admin ═══ %>
+        <div style="position:relative;">
+            <button id="notifBellBtn"
+                class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
+                title="Notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                    <path fill-rule="evenodd"
+                        d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
+                        clip-rule="evenodd" />
+                </svg>
+                <!-- Badge — project ACCENT gold bg, PRIMARY text -->
+                <span id="notifBadge"
+                    style="position:absolute;top:-2px;right:-2px;background:#F1E194;color:#5B0E14;font-size:9px;font-weight:800;border-radius:999px;width:16px;height:16px;display:none;align-items:center;justify-content:center;line-height:1;">
+                </span>
+            </button>
 
-                <div id="notifDropdown" class="notif-dropdown">
-                    <div class="notif-header">
-                        <span class="notif-header-title">Notifications</span>
-                        <button id="markAllRead" class="notif-mark-read">Mark all read</button>
-                    </div>
-                    <ul id="notifList" class="notif-list">
-                        <li class="notif-empty">Loading...</li>
-                    </ul>
+            <%# ─── UNIFIED DROPDOWN STRUCTURE (identical HTML for both roles) ─── %>
+            <div id="notifDropdown" class="notif-dropdown">
+
+                <!-- Header — project PRIMARY maroon gradient -->
+                <div class="notif-header">
+                    <span class="notif-header-title">Notifications</span>
+                    <button id="notifMarkAllRead" class="notif-mark-read">Mark all as read</button>
+                </div>
+
+                <!-- Tabs — project colors for active/inactive -->
+                <div class="notif-tabs">
+                    <button id="notifTabAnn" class="notif-tab active" data-tab="announcements">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13">
+                            <path d="M3.38 3.012a.75.75 0 0 1 1.06-.038A9.251 9.251 0 0 1 8 4.609a9.25 9.25 0 0 1 3.56-1.635.75.75 0 0 1 .918.581l.003.022A9.208 9.208 0 0 1 12.884 6c.091.97.046 1.958-.22 2.899a.75.75 0 1 1-1.435-.432c.207-.69.25-1.43.164-2.2A7.755 7.755 0 0 0 8 7.846a7.755 7.755 0 0 0-3.393-1.58 7.736 7.736 0 0 0 .164 2.201.75.75 0 1 1-1.435.432A9.19 9.19 0 0 1 3.098 6c0-.848.11-1.67.316-2.453l.003-.022a.75.75 0 0 1-.037-1.013ZM5.818 11.26a.75.75 0 0 1 .22 1.038 4.5 4.5 0 0 1-1.466 1.392.75.75 0 0 1-.79-1.274 3 3 0 0 0 .998-.936.75.75 0 0 1 1.038-.22Z"/>
+                        </svg>
+                        Announcements
+                        <span id="notifAnnCount" class="notif-tab-badge">0</span>
+                    </button>
+                    <button id="notifTabRes" class="notif-tab" data-tab="reservations">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13">
+                            <path fill-rule="evenodd" d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2V1.75ZM4.5 6a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-7Z" clip-rule="evenodd"/>
+                        </svg>
+                        Reservations
+                        <span id="notifResCount" class="notif-tab-badge">0</span>
+                    </button>
+                </div>
+
+                <!-- Notification list (populated by JS) -->
+                <ul id="notifList" class="notif-list">
+                    <li class="notif-empty">Loading…</li>
+                </ul>
+
+                <!-- Footer -->
+                <div class="notif-footer">
+                    CCS Sit-in Monitoring System
                 </div>
             </div>
-            <% } %>
+        </div>
 
-                <!-- ── ADMIN Notification Bell ── -->
-                <% if (user && user.role==='admin' ) { %>
-                    <div style="position:relative;">
-                        <button id="adminNotifBtn"
-                            class="relative text-white/80 hover:text-white transition-colors focus:outline-none cursor-pointer p-1"
-                            title="Notifications">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                class="size-6">
-                                <path fill-rule="evenodd"
-                                    d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span id="adminNotifBadge"
-                                style="position:absolute;top:-2px;right:-2px;background:#F1E194;color:#5B0E14;font-size:9px;font-weight:800;border-radius:999px;width:16px;height:16px;display:none;align-items:center;justify-content:center;line-height:1;">
-                            </span>
-                        </button>
-
-                        <div id="adminNotifDropdown" class="notif-dropdown" style="width:360px;">
-                            <div class="admin-notif-top">
-                                <span class="notif-header-title">Notifications</span>
-                                <button id="adminMarkAllRead" class="notif-mark-read">Mark all as read</button>
-                            </div>
-                            <div class="admin-notif-tabs">
-                                <button id="adminTabAnnouncements" class="admin-notif-tab active" data-tab="announcements">
-                                    Announcements <span id="adminAnnCount" class="admin-notif-count ann">0</span>
-                                </button>
-                                <button id="adminTabReservations" class="admin-notif-tab" data-tab="reservations">
-                                    Reservations <span id="adminResCount" class="admin-notif-count">0</span>
-                                </button>
-                            </div>
-                            <ul id="adminNotifList" class="notif-list">
-                                <li class="notif-empty">Loading...</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <% } %>
-
-                        <!-- Name + Role -->
-                        <div class="flex items-center gap-3">
-                            <div class="text-right hidden sm:block">
-                                <p class="text-white font-semibold text-sm leading-none">
-                                    <%= user ? user.first_name + ' ' + user.last_name : '' %>
-                                </p>
-                                <p class="text-white/50 text-xs mt-0.5 capitalize text-center">
-                                    <%= user ? user.role : '' %>
-                                </p>
-                            </div>
-                        </div>
+        <!-- Name + Role -->
+        <div class="flex items-center gap-3">
+            <div class="text-right hidden sm:block">
+                <p class="text-white font-semibold text-sm leading-none">
+                    <%= user ? user.first_name + ' ' + user.last_name : '' %>
+                </p>
+                <p class="text-white/50 text-xs mt-0.5 capitalize text-center">
+                    <%= user ? user.role : '' %>
+                </p>
+            </div>
+        </div>
 
     </div>
 </header>
 
-<!-- ── USER notifications script ── -->
-<% if (user && user.role==='user' ) { %>
-    <script>
-        (function () {
-            const notifBtn = document.getElementById('notifBtn');
-            const notifDropdown = document.getElementById('notifDropdown');
-            const notifBadge = document.getElementById('notifBadge');
-            const notifList = document.getElementById('notifList');
+<%# ═══════════════════════════════════════════════════════════════════════════
+     UNIFIED NOTIFICATION SCRIPT — One script handles both Admin & User
+     The ONLY difference is the API endpoint and data classification.
+     HTML structure, CSS classes, colors, and layout are 100% identical.
+     ═══════════════════════════════════════════════════════════════════════ %>
+<script>
+(function () {
+    /* ─── Determine role & API config ─── */
+    const ROLE = '<%= user ? user.role : "" %>';
+    const IS_ADMIN = ROLE === 'admin';
+    const API_URL     = IS_ADMIN ? '/admin/notifications' : '/notifications';
+    const API_READ    = IS_ADMIN ? '/admin/notifications/read' : '/notifications/read';
+    const POLL_MS     = IS_ADMIN ? 20000 : 30000;
 
-            async function loadNotifications() {
-                try {
-                    const res = await fetch('/notifications');
-                    const data = await res.json();
-                    const unread = data.filter(n => !n.is_read).length;
-                    notifBadge.textContent = unread > 9 ? '9+' : unread;
-                    notifBadge.style.display = unread === 0 ? 'none' : 'inline-flex';
-                    if (data.length === 0) {
-                        notifList.innerHTML = '<li class="notif-empty">No notifications yet</li>';
-                    } else {
-                        notifList.innerHTML = data.map(n => `
-                    <li class="notif-item ${n.is_read ? 'read' : 'unread'}">
-                        <p>${n.message}</p>
-                        <p class="notif-time">${new Date(n.created_at).toLocaleString()}</p>
-                    </li>`).join('');
-                    }
-                } catch (e) {
-                    notifList.innerHTML = '<li class="notif-empty">Could not load notifications</li>';
-                }
-            }
+    /* ─── DOM references (shared IDs for both roles) ─── */
+    const bellBtn     = document.getElementById('notifBellBtn');
+    const dropdown    = document.getElementById('notifDropdown');
+    const badge       = document.getElementById('notifBadge');
+    const list        = document.getElementById('notifList');
+    const markAllBtn  = document.getElementById('notifMarkAllRead');
+    const tabAnn      = document.getElementById('notifTabAnn');
+    const tabRes      = document.getElementById('notifTabRes');
+    const annCount    = document.getElementById('notifAnnCount');
+    const resCount    = document.getElementById('notifResCount');
 
-            notifBtn.addEventListener('click', function (e) {
-                e.stopPropagation();
-                const isOpen = notifDropdown.classList.toggle('open');
-                if (isOpen) loadNotifications();
-            });
+    let currentTab    = 'announcements';
+    let allNotifs     = [];
+    let prevUnread    = -1;
 
-            document.getElementById('markAllRead').addEventListener('click', async function () {
-                await fetch('/notifications/read', { method: 'POST' });
-                notifBadge.style.display = 'none';
-                loadNotifications();
-            });
+    /* ─── Helpers ─── */
+    function escHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
 
-            document.addEventListener('click', function (e) {
-                if (!notifDropdown.contains(e.target) && e.target !== notifBtn) {
-                    notifDropdown.classList.remove('open');
-                }
-            });
+    function timeAgo(dateStr) {
+        if (!dateStr) return '';
+        const now = Date.now();
+        const then = new Date(dateStr).getTime();
+        if (isNaN(then)) return '';
+        const diffSec = Math.floor((now - then) / 1000);
+        if (diffSec < 60)   return 'Just now';
+        if (diffSec < 3600) return Math.floor(diffSec / 60) + 'm ago';
+        if (diffSec < 86400) return Math.floor(diffSec / 3600) + 'h ago';
+        if (diffSec < 604800) return Math.floor(diffSec / 86400) + 'd ago';
+        return new Date(dateStr).toLocaleDateString();
+    }
 
-            loadNotifications();
-            setInterval(loadNotifications, 30000);
-        })();
-    </script>
-    <% } %>
+    /**
+     * Classify notification into 'reservations' or 'announcements' tab.
+     * Admin notifications have a `type` field. User notifications are
+     * classified by message content keywords.
+     */
+    function classify(n) {
+        if (IS_ADMIN) {
+            return n.type === 'reservation' ? 'reservations' : 'announcements';
+        }
+        const msg = String(n.message || '').toLowerCase();
+        if (msg.includes('reservation') || msg.includes('reserved') || msg.includes('approved') || msg.includes('rejected') || msg.includes('expired')) {
+            return 'reservations';
+        }
+        return 'announcements';
+    }
 
-        <!-- ── ADMIN notifications script ── -->
-        <% if (user && user.role==='admin' ) { %>
-            <script>
-                (function () {
-                    const btn = document.getElementById('adminNotifBtn');
-                    const dropdown = document.getElementById('adminNotifDropdown');
-                    const badge = document.getElementById('adminNotifBadge');
-                    const list = document.getElementById('adminNotifList');
-                    const tabAnnouncements = document.getElementById('adminTabAnnouncements');
-                    const tabReservations = document.getElementById('adminTabReservations');
-                    const annCount = document.getElementById('adminAnnCount');
-                    const resCount = document.getElementById('adminResCount');
-                    let currentTab = 'announcements';
-                    let adminNotifData = [];
+    /**
+     * Derive a human-readable title from the notification content.
+     */
+    function getTitle(n, tab) {
+        if (tab === 'reservations') {
+            const msg = String(n.message || '').toLowerCase();
+            if (msg.includes('approved'))  return 'Reservation Approved';
+            if (msg.includes('rejected'))  return 'Reservation Rejected';
+            if (msg.includes('expired'))   return 'Reservation Expired';
+            if (msg.includes('started'))   return 'Sit-in Started';
+            if (IS_ADMIN) return 'New Reservation';
+            return 'Reservation Update';
+        }
+        const msg = String(n.message || '').toLowerCase();
+        if (msg.includes('replied'))  return 'Admin Reply';
+        if (msg.includes('feedback')) return 'Feedback Update';
+        return 'Announcement';
+    }
 
-                    function escHtml(str) {
-                        return String(str || '')
-                            .replace(/&/g, '&amp;')
-                            .replace(/</g, '&lt;')
-                            .replace(/>/g, '&gt;')
-                            .replace(/"/g, '&quot;')
-                            .replace(/'/g, '&#39;');
-                    }
+    /**
+     * Icon SVG for notification type — uses project PRIMARY color via CSS class
+     */
+    function getIcon(tab) {
+        if (tab === 'reservations') {
+            return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path fill-rule="evenodd" d="M4 1.75a.75.75 0 0 1 1.5 0V3h5V1.75a.75.75 0 0 1 1.5 0V3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2V1.75ZM4.5 6a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-7Z" clip-rule="evenodd"/></svg>';
+        }
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="15" height="15"><path fill-rule="evenodd" d="M4.74 1.293a.75.75 0 0 1 1.02.273L8 5.233l2.24-3.667a.75.75 0 0 1 1.28.786L9.55 5.648c.887.32 1.7.794 2.4 1.39a.75.75 0 0 1-.96 1.152A5.466 5.466 0 0 0 8 7.136a5.467 5.467 0 0 0-2.99 1.054.75.75 0 1 1-.96-1.152 6.962 6.962 0 0 1 2.4-1.39L4.48 2.352a.75.75 0 0 1 .26-1.06ZM8 9.62a.75.75 0 0 1 .6.3 3.979 3.979 0 0 1 .794 2.33.75.75 0 0 1-1.494.1 2.478 2.478 0 0 0-.5-1.46.75.75 0 0 1 .6-1.27Z" clip-rule="evenodd"/></svg>';
+    }
 
-                    function classifyNotification(n) {
-                        return n.type === 'reservation' ? 'reservations' : 'announcements';
-                    }
+    /* ─── Render notification list for current tab ─── */
+    function render() {
+        const filtered = allNotifs.filter(n => classify(n) === currentTab);
 
-                    function renderAdminNotifications() {
-                        const filtered = adminNotifData.filter(n => classifyNotification(n) === currentTab);
-                        if (filtered.length === 0) {
-                            list.innerHTML = `<li class="notif-empty">No ${currentTab} notifications</li>`;
-                            return;
-                        }
+        if (filtered.length === 0) {
+            list.innerHTML = '<li class="notif-empty">No ' + currentTab + ' notifications</li>';
+            return;
+        }
 
-                        list.innerHTML = filtered.map(n => {
-                            const rawMessage = String(n.message || '');
-                            const messageOnly = rawMessage.replace(/^[^A-Za-z0-9]+/, '');
-                            return `<li class="notif-item ${n.is_read ? 'read' : 'admin-unread'}">
-                        <div class="notif-item-row">
-                            <span class="notif-dot"></span>
-                            <div>
-                                <p class="notif-item-title">${currentTab === 'reservations' ? 'Reservation' : 'Announcement'}</p>
-                                <p class="notif-item-msg">${escHtml(messageOnly)}</p>
-                                <p class="notif-time">${new Date(n.created_at).toLocaleString()}</p>
-                            </div>
+        list.innerHTML = filtered.map(n => {
+            const tab = classify(n);
+            const isRead = !!n.is_read;
+            const cls = isRead ? 'read' : 'unread';
+            const title = getTitle(n, tab);
+            const rawMsg = String(n.message || '').replace(/^[^A-Za-z0-9]+/, '');
+            const icon = getIcon(tab);
+            const time = timeAgo(n.created_at);
+
+            return `<li class="notif-item ${cls}">
+                <div class="notif-item-row">
+                    <div class="notif-item-icon">${icon}</div>
+                    <div class="notif-item-body">
+                        <div class="notif-item-top">
+                            <span class="notif-item-title">${escHtml(title)}</span>
+                            <span class="notif-time">${escHtml(time)}</span>
                         </div>
-                    </li>`;
-                        }).join('');
-                    }
+                        <p class="notif-item-msg">${escHtml(rawMsg)}</p>
+                    </div>
+                    <span class="notif-unread-dot"></span>
+                </div>
+            </li>`;
+        }).join('');
+    }
 
-                    function setActiveTab(nextTab) {
-                        currentTab = nextTab;
-                        tabAnnouncements.classList.toggle('active', nextTab === 'announcements');
-                        tabReservations.classList.toggle('active', nextTab === 'reservations');
-                        renderAdminNotifications();
-                    }
+    /* ─── Tab switching ─── */
+    function setTab(tab) {
+        currentTab = tab;
+        tabAnn.classList.toggle('active', tab === 'announcements');
+        tabRes.classList.toggle('active', tab === 'reservations');
+        render();
+    }
 
-                    async function loadAdminNotifications() {
-                        try {
-                            const res = await fetch('/admin/notifications');
-                            const data = await res.json();
-                            adminNotifData = Array.isArray(data) ? data : [];
-                            const unread = adminNotifData.filter(n => !n.is_read).length;
-                            badge.textContent = unread > 9 ? '9+' : unread;
-                            badge.style.display = unread === 0 ? 'none' : 'inline-flex';
+    /* ─── Load notifications from API ─── */
+    async function loadNotifications() {
+        try {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+            allNotifs = Array.isArray(data) ? data : [];
 
-                            const ann = adminNotifData.filter(n => classifyNotification(n) === 'announcements').length;
-                            const resv = adminNotifData.filter(n => classifyNotification(n) === 'reservations').length;
-                            annCount.textContent = ann;
-                            resCount.textContent = resv;
+            const unread = allNotifs.filter(n => !n.is_read).length;
+            badge.textContent = unread > 9 ? '9+' : unread;
+            badge.style.display = unread === 0 ? 'none' : 'inline-flex';
 
-                            renderAdminNotifications();
-                        } catch (e) {
-                            list.innerHTML = '<li class="notif-empty">Could not load notifications</li>';
-                        }
-                    }
+            /* Toast pop-up if new unread notifications appeared since last poll */
+            if (prevUnread >= 0 && unread > prevUnread) {
+                showNotifToast(unread - prevUnread);
+            }
+            prevUnread = unread;
 
-                    btn.addEventListener('click', function (e) {
-                        e.stopPropagation();
-                        const isOpen = dropdown.classList.toggle('open');
-                        if (isOpen) loadAdminNotifications();
-                    });
+            /* Update tab badge counts */
+            const annArr = allNotifs.filter(n => classify(n) === 'announcements');
+            const resArr = allNotifs.filter(n => classify(n) === 'reservations');
+            annCount.textContent = annArr.length;
+            resCount.textContent = resArr.length;
 
-                    document.getElementById('adminMarkAllRead').addEventListener('click', async function () {
-                        await fetch('/admin/notifications/read', { method: 'POST' });
-                        badge.style.display = 'none';
-                        loadAdminNotifications();
-                    });
+            render();
+        } catch (e) {
+            list.innerHTML = '<li class="notif-empty">Could not load notifications</li>';
+        }
+    }
 
-                    tabAnnouncements.addEventListener('click', () => setActiveTab('announcements'));
-                    tabReservations.addEventListener('click', () => setActiveTab('reservations'));
+    /* ─── Toast pop-up for new incoming notifications ─── */
+    function showNotifToast(count) {
+        const existing = document.getElementById('notif-toast-popup');
+        if (existing) existing.remove();
 
-                    document.addEventListener('click', function (e) {
-                        if (!dropdown.contains(e.target) && e.target !== btn) {
-                            dropdown.classList.remove('open');
-                        }
-                    });
+        const toast = document.createElement('div');
+        toast.id = 'notif-toast-popup';
+        toast.style.cssText = 'position:fixed;top:16px;right:16px;z-index:9999;padding:12px 18px;border-radius:12px;background:linear-gradient(135deg,#5B0E14,#3A0910);color:#fff;font-size:13px;font-weight:700;box-shadow:0 8px 32px rgba(0,0,0,0.2);display:flex;align-items:center;gap:8px;animation:notifToastIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;font-family:inherit;cursor:pointer;';
+        toast.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="18" height="18"><path fill-rule="evenodd" d="M10 2a6 6 0 0 0-6 6c0 1.887-.454 3.665-1.257 5.234a.75.75 0 0 0 .515 1.076 32.91 32.91 0 0 0 3.256.508 3.5 3.5 0 0 0 6.972 0 32.903 32.903 0 0 0 3.256-.508.75.75 0 0 0 .515-1.076A11.448 11.448 0 0 1 16 8a6 6 0 0 0-6-6Z" clip-rule="evenodd"/></svg>' +
+            '<span>' + count + ' new notification' + (count > 1 ? 's' : '') + '</span>';
 
-                    loadAdminNotifications();
-                    // Poll every 20 seconds for new reservation notifications
-                    setInterval(loadAdminNotifications, 20000);
-                })();
-            </script>
-            <% } %>
+        toast.addEventListener('click', function () {
+            toast.remove();
+            if (!dropdown.classList.contains('open')) {
+                dropdown.classList.add('open');
+                loadNotifications();
+            }
+        });
+
+        if (!document.getElementById('notif-toast-keyframes')) {
+            const style = document.createElement('style');
+            style.id = 'notif-toast-keyframes';
+            style.textContent = '@keyframes notifToastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}@keyframes notifToastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(40px)}}';
+            document.head.appendChild(style);
+        }
+
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'notifToastOut 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 350);
+        }, 5000);
+    }
+
+    /* ─── Event Listeners ─── */
+    bellBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.toggle('open');
+        if (isOpen) loadNotifications();
+    });
+
+    markAllBtn.addEventListener('click', async function () {
+        await fetch(API_READ, { method: 'POST' });
+        badge.style.display = 'none';
+        prevUnread = 0;
+        loadNotifications();
+    });
+
+    tabAnn.addEventListener('click', () => setTab('announcements'));
+    tabRes.addEventListener('click', () => setTab('reservations'));
+
+    document.addEventListener('click', function (e) {
+        if (!dropdown.contains(e.target) && !bellBtn.contains(e.target)) {
+            dropdown.classList.remove('open');
+        }
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') dropdown.classList.remove('open');
+    });
+
+    /* ─── Init: load immediately + start polling ─── */
+    loadNotifications();
+    setInterval(loadNotifications, POLL_MS);
+})();
+</script>
