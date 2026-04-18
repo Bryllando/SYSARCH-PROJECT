@@ -807,7 +807,7 @@ function getVisibleData() {
             const i = data.insights;
             el.innerHTML = `
                 <div style="margin-bottom:6px;"><strong>Lab Insight:</strong> ${i.lab_insight || '-'}</div>
-                <div style="margin-bottom:6px;"><strong>Peak Hours:</strong> ${i.peak_hours_insight || '-'}</div>
+                <div style="margin-bottom:6px;"><strong>Peak Hours:</strong> ${i.peak_usage_insight || '-'}</div>
                 <div><strong>Recommended Action:</strong> ${i.recommended_action || '-'}</div>
             `;
         } catch (_) {

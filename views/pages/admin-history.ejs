@@ -652,7 +652,7 @@
     </div>
 
     <% var safeSessions=(typeof sessions !=='undefined' && sessions) ? sessions : []; var
-        doneSessions=safeSessions.filter(s=> s.status === 'done').length;
+        doneSessions=safeSessions.filter(s=> s.status === 'completed').length;
         var activeSessions = safeSessions.filter(s => s.status === 'active').length;
         %>
 
@@ -662,7 +662,7 @@
                 <select id="statusFilter" class="hist-filter-select">
                     <option value="">All Status</option>
                     <option value="active">Active</option>
-                    <option value="done">Completed</option>
+                    <option value="completed">Completed</option>
                 </select>
                 <select id="labFilter" class="hist-filter-select">
                     <option value="">All Labs</option>
