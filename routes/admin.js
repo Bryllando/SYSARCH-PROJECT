@@ -110,7 +110,11 @@ router.get('/', isAuthenticated, isAdmin, (req, res) => {
 
 // Post Announcement (with optional media)
 router.post('/announcement', isAuthenticated, isAdmin, annUpload.single('media'), (req, res) => {
-    const { message } = req.body;
+    const message = (req.body.message || '').trim();
+    if (!message) {
+        req.session.toast = { type: 'error', message: 'Announcement message cannot be empty.' };
+        return res.redirect('/admin');
+    }
     let media_url = '';
     let media_type = '';
     if (req.file) {
@@ -507,7 +511,7 @@ router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
         `SELECT s.user_id, s.lab_room, s.computer_number, u.first_name, u.last_name
          FROM sitin_sessions s JOIN users u ON s.user_id = u.id WHERE s.id = ?`,
         [req.params.id], (err, row) => {
-            db.run(`UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'done' WHERE id = ?`, [req.params.id], () => {
+            db.run(`UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'completed' WHERE id = ?`, [req.params.id], () => {
                 if (row && row.user_id) {
                     db.run(`UPDATE users SET remaining_sessions = remaining_sessions - 1 WHERE id = ? AND remaining_sessions > 0`, [row.user_id], () => {
                         // Free the PC
@@ -843,7 +847,7 @@ router.post('/reservations/:id/delete', isAuthenticated, isAdmin, (req, res) => 
 router.post('/reservations/delete-history', isAuthenticated, isAdmin, (req, res) => {
     db.run(
         `DELETE FROM reservations
-         WHERE status IN ('rejected', 'completed', 'expired')`,
+         WHERE status IN ('rejected', 'completed', 'expired', 'cancelled', 'deleted', 'done')`,
         function (err) {
             if (err) {
                 req.session.toast = { type: 'error', message: 'Failed to delete reservation history.' };
@@ -1048,7 +1052,7 @@ router.post('/history/:id/delete', isAuthenticated, isAdmin, (req, res) => {
 
 // ── Delete ALL sit-in history (completed sessions only) ───────────────────────
 router.post('/history/delete-all', isAuthenticated, isAdmin, (req, res) => {
-    db.run(`DELETE FROM sitin_sessions WHERE status = 'done'`, function (err) {
+    db.run(`DELETE FROM sitin_sessions WHERE status IN ('completed', 'done')`, function (err) {
         if (err) {
             req.session.toast = { type: 'error', message: 'Failed to clear history.' };
         } else {

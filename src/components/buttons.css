@@ -30,7 +30,7 @@
 
     /* Profile Avatar Container */
     .profile-avatar-container {
-        @apply w-20 h-20 rounded-full overflow-hidden border-[3px] border-[#5B0E14] shadow-[0_2px_14px_rgba(91, 14, 20, 0.2)] shrink-0;
+        @apply w-20 h-20 rounded-full overflow-hidden border-[3px] border-[#5B0E14] shadow-[0_2px_14px_rgba(91,14,20,0.2)] shrink-0;
     }
 
     /* Placeholder Avatar Background */

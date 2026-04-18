@@ -937,6 +937,123 @@
         background: #3B82F6;
     }
 
+    /* ── Fixed: Delete button styling per fixing bugs.md ── */
+    .res-btn-delete {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: 'DM Sans', sans-serif;
+        color: #fff;
+        background: linear-gradient(135deg, #DC2626, #B91C1C);
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all 0.18s;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+    }
+    .res-btn-delete:hover {
+        background: linear-gradient(135deg, #B91C1C, #991B1B);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+    }
+    .res-btn-delete:active {
+        transform: translateY(0);
+    }
+
+    /* ── Fixed: Cancel button styling per fixing bugs.md ── */
+    .res-btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: 'DM Sans', sans-serif;
+        color: #DC2626;
+        background: #FEF2F2;
+        border: 1.5px solid #FECACA;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all 0.18s;
+    }
+    .res-btn-cancel:hover {
+        background: #DC2626;
+        color: #fff;
+        border-color: #DC2626;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
+    }
+
+    /* ── Fixed: Status badges with inline colors per fixing bugs.md ── */
+    .res-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 999px;
+    }
+    .res-status-badge .badge-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .badge-approved { background: #ECFDF5; color: #065F46; }
+    .badge-approved .badge-dot { background: #10B981; }
+    .badge-rejected { background: #FEF2F2; color: #991B1B; }
+    .badge-rejected .badge-dot { background: #DC2626; }
+    .badge-pending  { background: #FFFBEB; color: #92400E; }
+    .badge-pending  .badge-dot { background: #F59E0B; animation: pulse 1.5s infinite; }
+    .badge-cancelled { background: #F3F4F6; color: #4B5563; }
+    .badge-cancelled .badge-dot { background: #9CA3AF; }
+    .badge-expired  { background: #FFF7ED; color: #9A3412; }
+    .badge-expired  .badge-dot { background: #F97316; }
+
+    /* ── Improved: Reservation table row hover and borders ── */
+    #resTable tbody tr {
+        border-bottom: 1px solid #F0EDE8;
+        transition: background 0.12s;
+    }
+    #resTable tbody tr:hover {
+        background: #FAFAF9;
+    }
+    #resTable thead th {
+        background: #F7F5F2;
+        white-space: nowrap;
+    }
+    .res-lab-tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(39, 63, 79, 0.08);
+        color: #273F4F;
+    }
+    .res-pc-tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #EFF6FF;
+        color: #1D4ED8;
+    }
+    .res-purpose-tag {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        background: #F0F9FF;
+        color: #0369A1;
+    }
+
     @media print {
         body * {
             visibility: hidden;
@@ -1076,54 +1193,49 @@
                             <% var safeRes=(typeof reservations !=='undefined' && reservations) ? reservations : []; %>
                                 <% if (safeRes.length> 0) { %>
                                     <% safeRes.forEach(function(r) { var rowStatus = String(r.status || '').toLowerCase(); %>
-                                        <tr class="hover:bg-gray-50 res-row" id="row-<%= r.id %>" data-status="<%= r.status %>">
-                                            <td class="px-4 py-3"><span
-                                                    class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-[#273F4F]/10 text-[#273F4F]">Lab
-                                                    <%= r.lab_room %></span></td>
-                                            <td class="px-4 py-3"><span
-                                                    class="inline-block px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">PC-
-                                                    <%= String(r.computer_number||0).padStart(2,'0') %></span></td>
-                                            <td class="px-4 py-3"><span
-                                                    class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700">
-                                                    <%= r.purpose||'—' %>
-                                                </span></td>
-                                            <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
+                                        <tr class="res-row" id="row-<%= r.id %>" data-status="<%= r.status %>">
+                                            <td style="padding:12px 16px;">
+                                                <span class="res-lab-tag">Lab <%= r.lab_room %></span>
+                                            </td>
+                                            <td style="padding:12px 16px;">
+                                                <span class="res-pc-tag">PC-<%= String(r.computer_number||0).padStart(2,'0') %></span>
+                                            </td>
+                                            <td style="padding:12px 16px;">
+                                                <span class="res-purpose-tag"><%= r.purpose||'—' %></span>
+                                            </td>
+                                            <td style="padding:12px 16px;font-size:12px;color:#4B5563;white-space:nowrap;">
                                                 <%= r.date %>
                                             </td>
-                                            <td class="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">
+                                            <td style="padding:12px 16px;font-size:12px;color:#4B5563;white-space:nowrap;">
                                                 <%= r.time_slot %>
                                             </td>
-                                            <td class="px-4 py-3">
-                                                <% if (r.status==='approved' ) { %><span
-                                                        class="inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full"><span
-                                                            class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Approved</span>
-                                                    <% } else if (r.status==='rejected' ) { %><span
-                                                            class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full"><span
-                                                                class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>Rejected</span>
-                                                        <% } else if (r.status==='cancelled' ) { %><span
-                                                                class="inline-flex items-center gap-1 text-xs font-bold text-gray-700 bg-gray-100 px-2.5 py-1 rounded-full"><span
-                                                                    class="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>Cancelled</span>
-                                                            <% } else if (r.status==='expired' ) { %><span
-                                                                    class="inline-flex items-center gap-1 text-xs font-bold text-orange-700 bg-orange-50 px-2.5 py-1 rounded-full"><span
-                                                                        class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Expired</span>
-                                                        <% } else { %><span
-                                                                class="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full"><span
-                                                                    class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>Pending</span>
-                                                            <% } %>
+                                            <!-- Fixed: Status badges with inline colors per fixing bugs.md rule #2 -->
+                                            <td style="padding:12px 16px;">
+                                                <% if (r.status==='approved') { %>
+                                                    <span class="res-status-badge badge-approved"><span class="badge-dot"></span>Approved</span>
+                                                <% } else if (r.status==='rejected') { %>
+                                                    <span class="res-status-badge badge-rejected"><span class="badge-dot"></span>Rejected</span>
+                                                <% } else if (r.status==='cancelled') { %>
+                                                    <span class="res-status-badge badge-cancelled"><span class="badge-dot"></span>Cancelled</span>
+                                                <% } else if (r.status==='expired') { %>
+                                                    <span class="res-status-badge badge-expired"><span class="badge-dot"></span>Expired</span>
+                                                <% } else { %>
+                                                    <span class="res-status-badge badge-pending"><span class="badge-dot"></span>Pending</span>
+                                                <% } %>
                                             </td>
-                                            <td class="px-4 py-3">
+                                            <!-- Fixed: Delete button color per fixing bugs.md rule #1 -->
+                                            <td style="padding:12px 16px;">
                                                 <% if (rowStatus === 'pending') { %>
                                                     <form action="/reservation/<%= r.id %>/cancel" method="POST"
                                                         onsubmit="return confirm('Cancel this reservation request?')" style="margin:0;">
-                                                        <button type="submit"
-                                                            class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full hover:bg-red-700 hover:text-white transition-all">
-                                                            Cancel
+                                                        <button type="submit" class="res-btn-cancel">
+                                                            ✕ Cancel
                                                         </button>
                                                     </form>
                                                 <% } else { %>
                                                     <button
                                                         type="button"
-                                                        class="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full hover:bg-rose-700 hover:text-white transition-all"
+                                                        class="res-btn-delete"
                                                         onclick="deleteReservation(<%= r.id %>)"
                                                         title="Remove from your history"
                                                     >
@@ -1338,8 +1450,17 @@
             const RESERVATION_ENABLED = <%= reservationSettings && Number(reservationSettings.enabled) === 0 ? 'false' : 'true' %>;
             const RESERVATION_DISABLED_MESSAGE = <%- JSON.stringify((reservationSettings && reservationSettings.message) ? reservationSettings.message : 'Reservations are currently unavailable.') %>;
 
-            // ── Initialize ──────────────────────────────────────────────────────────
-            renderLabGrid();
+            // Fixed: switchTab function was missing, caused console errors per fixing bugs.md rule #3
+            function switchTab(tabName) {
+                document.querySelectorAll('.res-tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.res-tab-btn').forEach(el => el.classList.remove('active'));
+                const tabContent = document.getElementById('tab-' + tabName);
+                const tabBtn = document.getElementById('tab-btn-' + tabName);
+                if (tabContent) tabContent.classList.add('active');
+                if (tabBtn) tabBtn.classList.add('active');
+            }
+
+            // Fixed: removed duplicate renderLabGrid() call — was here AND at line 1615, causing double API fetch per fixing bugs.md rule #5
 
             // ═══════════════════════════════════════════════════════════════
             //  RESERVATION TAB LOGIC
@@ -1613,11 +1734,11 @@
 
             // ── Init ──────────────────────────────────────────────────────────────────
             renderLabGrid();
+            // Fixed: consolidated duplicate Escape key listeners into one per fixing bugs.md rule #5
             document.addEventListener('keydown', e => {
                 if (e.key !== 'Escape') return;
                 closePcModal(); closeReserveForm(); closeStatusModal?.();
             });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatusModal(); });
         </script>
 
         <script>
@@ -1639,18 +1760,18 @@
                     });
             }
 
+            // Fixed: renderStatusBadge now uses vanilla CSS classes per fixing bugs.md rule #2
             function renderStatusBadge(td, status) {
                 const s = String(status || 'pending').toLowerCase();
-                td.innerHTML =
-                    s === 'approved'
-                        ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-green-700 bg-green-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Approved</span>`
-                        : s === 'rejected'
-                            ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>Rejected</span>`
-                            : s === 'cancelled'
-                                ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>Cancelled</span>`
-                                : s === 'expired'
-                                    ? `<span class="inline-flex items-center gap-1 text-xs font-bold text-gray-700 bg-gray-100 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>Expired</span>`
-                                    : `<span class="inline-flex items-center gap-1 text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full"><span class="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse"></span>Pending</span>`;
+                const map = {
+                    approved:  { cls: 'badge-approved',  label: 'Approved' },
+                    rejected:  { cls: 'badge-rejected',  label: 'Rejected' },
+                    cancelled: { cls: 'badge-cancelled', label: 'Cancelled' },
+                    expired:   { cls: 'badge-expired',   label: 'Expired' },
+                    pending:   { cls: 'badge-pending',   label: 'Pending' }
+                };
+                const b = map[s] || map.pending;
+                td.innerHTML = `<span class="res-status-badge ${b.cls}"><span class="badge-dot"></span>${b.label}</span>`;
             }
 
             async function refreshReservationStatuses() {
@@ -1666,21 +1787,18 @@
                         const statusTd = tds[5];
                         if (statusTd) renderStatusBadge(statusTd, r.status);
 
+                        // Fixed: action buttons now use res-btn-cancel/res-btn-delete classes per fixing bugs.md rule #1
                         const actionTd = tds[6];
                         if (actionTd) {
                             if (String(r.status).toLowerCase() === 'pending') {
                                 actionTd.innerHTML = `
                                     <form action="/reservation/${r.id}/cancel" method="POST" onsubmit="return confirm('Cancel this reservation request?')" style="margin:0;">
-                                        <button type="submit"
-                                            class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full hover:bg-red-700 hover:text-white transition-all">
-                                            Cancel
-                                        </button>
+                                        <button type="submit" class="res-btn-cancel">✕ Cancel</button>
                                     </form>
                                 `;
                             } else {
                                 actionTd.innerHTML = `
-                                    <button type="button"
-                                        class="inline-flex items-center gap-1 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full hover:bg-rose-700 hover:text-white transition-all"
+                                    <button type="button" class="res-btn-delete"
                                         onclick="deleteReservation(${r.id})"
                                         title="Remove from your history"
                                     >🗑️ Delete</button>

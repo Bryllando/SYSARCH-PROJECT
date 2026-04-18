@@ -1,4 +1,4 @@
 @import "tailwindcss";
 @import "../components/buttons.css";
 @import "../components/animation.css";
-@source "./views/**/*.ejs";
+@source "../../views/**/*.ejs"; /* Fixed: path was relative to src/css/, not project root */

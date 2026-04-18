@@ -9,20 +9,47 @@ const { getLeaderboardData } = require('../services/leaderboard');
 const { generateStudentRecommendation, generateStudentTips, generateStudentStudyTip } = require('../services/ai-engine');
 
 function autoExpireReservationsForUser(db, userId, cb) {
-    // Expire any pending/approved reservation whose end time has passed.
-    // If no time_end, fallback to time_start; else treat as 00:00 (will expire next day).
-    db.run(
-        `UPDATE reservations
-         SET status = 'expired',
-             message = COALESCE(NULLIF(message,''), 'Expired automatically.'),
-             updated_at = datetime('now','localtime')
+    // Expire overdue reservations and free reserved PCs from approved rows.
+    db.all(
+        `SELECT id, status, lab_room, computer_number
+         FROM reservations
          WHERE user_id = ?
            AND status IN ('pending', 'approved')
            AND datetime(
                 date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')
               ) < datetime('now','localtime')`,
         [userId],
-        () => cb && cb()
+        (selErr, rows) => {
+            if (selErr || !rows || rows.length === 0) {
+                cb && cb();
+                return;
+            }
+            db.run(
+                `UPDATE reservations
+                 SET status = 'expired',
+                     message = COALESCE(NULLIF(message,''), 'Expired automatically.'),
+                     updated_at = datetime('now','localtime')
+                 WHERE user_id = ?
+                   AND status IN ('pending', 'approved')
+                   AND datetime(
+                        date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')
+                      ) < datetime('now','localtime')`,
+                [userId],
+                () => {
+                    rows
+                        .filter((r) => r.status === 'approved' && r.lab_room && r.computer_number)
+                        .forEach((r) => {
+                            db.run(
+                                `UPDATE lab_computers
+                                 SET status = 'available'
+                                 WHERE lab_room = ? AND computer_number = ?`,
+                                [r.lab_room, r.computer_number]
+                            );
+                        });
+                    cb && cb();
+                }
+            );
+        }
     );
 }
 
@@ -540,11 +567,30 @@ router.post('/reservation/:id/cancel', isAuthenticated, isUser, (req, res) => {
                 req.session.toast = { type: 'error', message: 'Only pending or approved reservations can be cancelled.' };
                 return res.redirect('/reservation');
             }
-            db.run(`UPDATE reservations SET status = 'cancelled', message = 'Cancelled by student.' WHERE id = ?`, [reservationId], (upErr) => {
-                if (upErr) req.session.toast = { type: 'error', message: 'Failed to cancel reservation.' };
-                else req.session.toast = { type: 'success', message: 'Reservation cancelled.' };
-                res.redirect('/reservation');
-            });
+            db.run(
+                `UPDATE reservations
+                 SET status = 'cancelled',
+                     message = 'Cancelled by student.',
+                     updated_at = datetime('now','localtime')
+                 WHERE id = ?`,
+                [reservationId],
+                (upErr) => {
+                    if (upErr) {
+                        req.session.toast = { type: 'error', message: 'Failed to cancel reservation.' };
+                        return res.redirect('/reservation');
+                    }
+                    if (reservation.status === 'approved' && reservation.lab_room && reservation.computer_number) {
+                        db.run(
+                            `UPDATE lab_computers
+                             SET status = 'available'
+                             WHERE lab_room = ? AND computer_number = ?`,
+                            [reservation.lab_room, reservation.computer_number]
+                        );
+                    }
+                    req.session.toast = { type: 'success', message: 'Reservation cancelled.' };
+                    res.redirect('/reservation');
+                }
+            );
         }
     );
 });
