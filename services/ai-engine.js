@@ -1,7 +1,7 @@
 const { getLeaderboardData } = require('./leaderboard');
 
-const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
-const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514';
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'google/gemma-3-4b-it:free';
 
 function dbGet(db, sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -58,42 +58,62 @@ function minutesAgo(isoDate) {
     return Math.floor(ms / 60000);
 }
 
-async function callAnthropic({ systemPrompt, payload }) {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) throw new Error('ANTHROPIC_API_KEY is missing');
+function extractJson(raw) {
+    if (!raw) return null;
+    // Strip markdown code fences if present (```json ... ``` or ``` ... ```)
+    let cleaned = raw.trim();
+    const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fenceMatch) cleaned = fenceMatch[1].trim();
+    // Try to find JSON object boundaries
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace > firstBrace) {
+        cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+    }
+    return parseJson(cleaned);
+}
+
+async function callAI({ systemPrompt, payload }) {
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) throw new Error('OPENROUTER_API_KEY is missing. Set it in your .env file.');
 
     const body = {
-        model: ANTHROPIC_MODEL,
+        model: OPENROUTER_MODEL,
         max_tokens: 1500,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: JSON.stringify(payload) }]
+        temperature: 0.4,
+        messages: [
+            { role: 'user', content: systemPrompt + '\n\nHere is the data to analyze:\n' + JSON.stringify(payload) }
+        ]
     };
 
-    const response = await fetch(ANTHROPIC_URL, {
+    const response = await fetch(OPENROUTER_URL, {
         method: 'POST',
         headers: {
-            'content-type': 'application/json',
-            'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': 'http://localhost:3000',
+            'X-Title': 'CCS SitIn Monitoring System'
         },
         body: JSON.stringify(body)
     });
 
     if (!response.ok) {
         const txt = await response.text().catch(() => '');
-        const err = new Error(`Anthropic API error ${response.status}`);
+        const err = new Error(`OpenRouter API error ${response.status}`);
         err.httpStatus = response.status;
         err.raw = txt;
         throw err;
     }
 
     const data = await response.json();
-    const text = Array.isArray(data.content)
-        ? data.content.map(c => c.text || '').join('\n')
+    const text = data.choices && data.choices[0] && data.choices[0].message
+        ? data.choices[0].message.content || ''
         : '';
-    const parsed = parseJson(text);
+    const parsed = extractJson(text);
     if (!parsed || typeof parsed !== 'object') {
-        throw new Error('AI returned invalid JSON');
+        const err = new Error('AI returned invalid JSON');
+        err.rawText = text;
+        throw err;
     }
     return parsed;
 }
@@ -363,15 +383,34 @@ function studentStudyTipPrompt() {
         'Use provided real personal data and return ONLY valid JSON with keys: badge, best_week, best_day, busiest_day, best_lab, best_time, note.';
 }
 
-async function callWithRetry(prompt, payload) {
-    try {
-        return await callAnthropic({ systemPrompt: prompt, payload });
-    } catch (err) {
-        if (String(err.message || '').includes('invalid JSON')) {
-            return callAnthropic({ systemPrompt: prompt, payload });
+async function callWithRetry(prompt, payload, retries = 3) {
+    let lastErr;
+    for (let i = 0; i < retries; i++) {
+        try {
+            return await callAI({ systemPrompt: prompt, payload });
+        } catch (err) {
+            lastErr = err;
+            if (err.httpStatus === 429 || String(err.message || '').includes('429')) {
+                // Rate limited (likely concurrent requests on free tier).
+                // Wait a random amount between 1.5s and 3.5s before retrying to prevent stampede.
+                console.warn(`[AI-ENGINE] OpenRouter 429 Rate Limit Hit (attempt ${i + 1}/${retries}). Waiting to retry...`);
+                await new Promise(res => setTimeout(res, 1500 + Math.random() * 2000));
+                continue; 
+            }
+            if (String(err.message || '').includes('invalid JSON')) {
+                // Retry with explicit instruction to return only JSON
+                prompt = prompt + ' IMPORTANT: Return ONLY a single valid JSON object. No markdown, no explanation, no code fences. Just raw JSON.';
+                continue; 
+            }
+            throw err; // Other errors (like 500, 401) throw immediately
         }
-        throw err;
     }
+    // If we exhausted retries specifically on 429 or JSON, fallback gracefully instead of crashing
+    if (lastErr && (lastErr.httpStatus === 429 || String(lastErr.message || '').includes('429'))) {
+        console.warn('[AI-ENGINE] OpenRouter 429 Rate Limit exhausted. Using system default fallbacks.');
+        return {}; // Returning an empty object forces the upstream functions to use their default string fallbacks
+    }
+    throw lastErr;
 }
 
 async function generateStudentRecommendation(db, userId, forceRefresh = false) {

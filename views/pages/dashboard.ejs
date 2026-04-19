@@ -473,7 +473,7 @@
         font-size: 13px;
         color: #374151;
         font-weight: 400;
-        line-height: 1.45;
+        line-height: 1.6;
     }
 
     .ai-c-maroon { color: #5B0E14; }
@@ -829,23 +829,23 @@
         target.innerHTML = `
             <article class="ai-rec-item">
                 <p class="ai-rec-kicker ai-c-maroon"><span class="dot">📅</span> SCHEDULE TIP</p>
-                <p class="ai-rec-value">${escHtml(rec.schedule_tip || 'No AI schedule tip returned yet.')}</p>
+                <div class="ai-rec-value">${formatAIText(rec.schedule_tip || 'No AI schedule tip returned yet.')}</div>
             </article>
             <article class="ai-rec-item">
                 <p class="ai-rec-kicker ai-c-green"><span class="dot">🖥</span> RESOURCE TIP</p>
-                <p class="ai-rec-value">${escHtml(rec.resource_tip || 'No AI resource tip returned yet.')}</p>
+                <div class="ai-rec-value">${formatAIText(rec.resource_tip || 'No AI resource tip returned yet.')}</div>
             </article>
             <article class="ai-rec-item">
                 <p class="ai-rec-kicker ai-c-amber"><span class="dot">📊</span> BEHAVIOR INSIGHT</p>
-                <p class="ai-rec-value">${escHtml(rec.behavior_insight || 'No AI behavior insight returned yet.')}</p>
+                <div class="ai-rec-value">${formatAIText(rec.behavior_insight || 'No AI behavior insight returned yet.')}</div>
             </article>
             <article class="ai-rec-item">
                 <p class="ai-rec-kicker ai-c-blue"><span class="dot">🏆</span> LEADERBOARD TIP</p>
-                <p class="ai-rec-value">${escHtml(rec.leaderboard_tip || 'No AI leaderboard tip returned yet.')}</p>
+                <div class="ai-rec-value">${formatAIText(rec.leaderboard_tip || 'No AI leaderboard tip returned yet.')}</div>
             </article>
             <article class="ai-rec-item full">
                 <p class="ai-rec-kicker ai-c-gray"><span class="dot">💬</span> FEEDBACK INSIGHT</p>
-                <p class="ai-rec-value">${escHtml(rec.feedback_insight || 'No AI feedback insight returned yet.')}</p>
+                <div class="ai-rec-value">${formatAIText(rec.feedback_insight || 'No AI feedback insight returned yet.')}</div>
             </article>
             ${alertHtml}
         `;
@@ -914,13 +914,13 @@
             if (!data.success || !data.tip) throw new Error('No data');
             const t = data.tip;
             tipBody.innerHTML = `
-                <div class="user-tip-row"><b>${escHtml(t.badge || 'Best Week')}</b></div>
-                <div class="user-tip-row"><b>Best Week:</b> ${escHtml(t.best_week || 'No data yet')}</div>
-                <div class="user-tip-row"><b>Best Day:</b> ${escHtml(t.best_day || 'No data yet')}</div>
-                <div class="user-tip-row"><b>Busiest Day:</b> ${escHtml(t.busiest_day || 'No data yet')}</div>
-                <div class="user-tip-row"><b>Most Available Lab:</b> ${escHtml(t.best_lab || 'No data yet')}</div>
-                <div class="user-tip-row"><b>Best Time:</b> ${escHtml(t.best_time || 'No data yet')}</div>
-                <div class="user-tip-row" style="color:#9CA3AF;font-style:italic;">${escHtml(t.note || '')}</div>
+                <div class="user-tip-row"><b>${formatAIText(t.badge || 'Best Week')}</b></div>
+                <div class="user-tip-row"><b>Best Week:</b> ${formatAIText(t.best_week || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Best Day:</b> ${formatAIText(t.best_day || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Busiest Day:</b> ${formatAIText(t.busiest_day || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Most Available Lab:</b> ${formatAIText(t.best_lab || 'No data yet')}</div>
+                <div class="user-tip-row"><b>Best Time:</b> ${formatAIText(t.best_time || 'No data yet')}</div>
+                <div class="user-tip-row" style="color:#9CA3AF;font-style:italic;">${formatAIText(t.note || '')}</div>
             `;
         } catch (_) {
             tipBody.innerHTML = '<div class="user-tip-row">No study tip available yet. Complete sit-ins first.</div>';
@@ -937,8 +937,52 @@
         tipClose.addEventListener('click', () => tipPanel.classList.remove('open'));
     }
 
-    function escHtml(str) {
+    function formatAIText(str) {
         if (!str) return '';
-        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        
+        // Handle arrays or objects returned by AI
+        if (typeof str === 'object' && str !== null) {
+            if (Array.isArray(str)) {
+                str = str.map(item => {
+                    if (typeof item === 'object' && item !== null) {
+                        return '- ' + Object.entries(item).map(([k, v]) => {
+                            let keyName = k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g, ' ');
+                            return `**${keyName}:** ${String(v).replace(/\n/g, ' ')}`;
+                        }).join(' | ');
+                    }
+                    return '- ' + String(item).replace(/\n/g, ' ');
+                }).join('\n');
+            } else {
+                str = Object.entries(str).map(([k, v]) => {
+                    let keyName = k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g, ' ');
+                    let val = typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v).replace(/\n/g, ' ');
+                    return `- **${keyName}:** ${val}`;
+                }).join('\n');
+            }
+        }
+        
+        let s = String(str)
+            .replace(/&/g,'&amp;')
+            .replace(/</g,'&lt;')
+            .replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;');
+        
+        // Convert Markdown bold to strong
+        s = s.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #1C2B35;">$1</strong>');
+        // Convert Markdown italics
+        s = s.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        // Convert Markdown list items
+        s = s.replace(/^[-*]\s+(.*)$/gm, '<li style="margin-left:14px; margin-bottom:6px; list-style-type:disc;">$1</li>');
+        // Convert newlines to breaks
+        s = s.replace(/\n/g, '<br>');
+        // Clean up multiple line breaks
+        s = s.replace(/(<br>\s*){2,}/g, '<br><br>');
+        // Clean up breaks around list items
+        s = s.replace(/(<br>)*<li/g, '<li');
+        s = s.replace(/<\/li>(<br>)*/g, '</li>');
+        // Wrap list items in ul
+        s = s.replace(/(<li[\s\S]*?<\/li>)+/g, '<ul style="padding:0; margin: 4px 0;">$&</ul>');
+        
+        return s;
     }
 </script>

@@ -1,5 +1,5 @@
-const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
-const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514';
+const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'google/gemma-3-4b-it:free';
 
 function dbGet(db, sql, params = []) {
     return new Promise((resolve, reject) => {
@@ -42,34 +42,41 @@ function fallbackRecommendation() {
     };
 }
 
-async function callAnthropic(systemPrompt, payload, responseMode = 'student') {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+async function callAI(systemPrompt, payload, responseMode = 'student') {
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) return null;
 
-    const res = await fetch(ANTHROPIC_URL, {
+    const res = await fetch(OPENROUTER_URL, {
         method: 'POST',
         headers: {
-            'content-type': 'application/json',
-            'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+            'HTTP-Referer': 'http://localhost:3000',
+            'X-Title': 'CCS SitIn Monitoring System'
         },
         body: JSON.stringify({
-            model: ANTHROPIC_MODEL,
+            model: OPENROUTER_MODEL,
             max_tokens: 1000,
-            system: systemPrompt,
+            temperature: 0.4,
             messages: [
-                {
-                    role: 'user',
-                    content: JSON.stringify(payload)
-                }
+                { role: 'user', content: systemPrompt + ' IMPORTANT: Return ONLY a valid JSON object. No markdown, no explanation.\n\nHere is the data to analyze:\n' + JSON.stringify(payload) }
             ]
         })
     });
 
     if (!res.ok) return null;
     const data = await res.json();
-    const text = Array.isArray(data.content) ? data.content.map(c => c.text || '').join('\n') : '';
-    const parsed = safeJsonParse(text);
+    const text = data.choices && data.choices[0] && data.choices[0].message
+        ? data.choices[0].message.content || ''
+        : '';
+    // Extract JSON robustly (strip markdown fences)
+    let cleaned = text.trim();
+    const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
+    if (fenceMatch) cleaned = fenceMatch[1].trim();
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace > firstBrace) cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+    const parsed = safeJsonParse(cleaned);
     if (!parsed || typeof parsed !== 'object') return null;
     if (responseMode !== 'student') return parsed;
     const fallback = fallbackRecommendation();
@@ -256,7 +263,7 @@ async function getStudentRecommendation(db, userId) {
         'Most visited lab score=(Sit-ins*0.25)+(Hours*0.25)+(Rating*0.25)+(UniqueUsers*0.25). ' +
         'Return ONLY valid JSON with keys: schedule_tip, resource_tip, behavior_insight, leaderboard_tip, feedback_insight, alert.';
 
-    const recommendation = (await callAnthropic(systemPrompt, payload, 'student')) || fallbackRecommendation();
+    const recommendation = (await callAI(systemPrompt, payload, 'student')) || fallbackRecommendation();
     await dbRun(
         db,
         `INSERT INTO ai_recommendations (user_id, version, payload, updated_at)
@@ -304,7 +311,7 @@ async function getAdminInsights(db) {
         'You provide concise admin insights for a university SIT-IN monitoring system. ' +
         'Return ONLY valid JSON with keys: lab_recommendation, feedback_summary, at_risk_students, peak_hours_insight, admin_action.';
 
-    const aiRaw = await callAnthropic(systemPrompt, payload, 'admin');
+    const aiRaw = await callAI(systemPrompt, payload, 'admin');
     const insights = aiRaw && typeof aiRaw === 'object' && aiRaw.lab_recommendation
         ? aiRaw
         : {

@@ -710,10 +710,20 @@
 
     .adm-ai-value {
         margin: 0;
-        font-size: 12px;
-        line-height: 1.45;
-        color: #1C2B35;
-        font-weight: 600;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #374151;
+        font-weight: 400;
+        max-height: 180px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+    .adm-ai-value::-webkit-scrollbar {
+        width: 4px;
+    }
+    .adm-ai-value::-webkit-scrollbar-thumb {
+        background: #D8D1C9;
+        border-radius: 4px;
     }
 
     .adm-ai-action {
@@ -1874,12 +1884,55 @@
         const el = document.getElementById('admin-ai-content');
         const updatedEl = document.getElementById('admin-ai-updated');
         if (!el) return;
-        const esc = (v) => String(v || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+        const formatAIText = (str) => {
+            if (!str) return '';
+            
+            // Handle arrays or objects returned by AI
+            if (typeof str === 'object' && str !== null) {
+                if (Array.isArray(str)) {
+                    str = str.map(item => {
+                        if (typeof item === 'object' && item !== null) {
+                            return '- ' + Object.entries(item).map(([k, v]) => {
+                                let keyName = k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g, ' ');
+                                return `**${keyName}:** ${String(v).replace(/\n/g, ' ')}`;
+                            }).join(' | ');
+                        }
+                        return '- ' + String(item).replace(/\n/g, ' ');
+                    }).join('\n');
+                } else {
+                    str = Object.entries(str).map(([k, v]) => {
+                        let keyName = k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g, ' ');
+                        let val = typeof v === 'object' && v !== null ? JSON.stringify(v) : String(v).replace(/\n/g, ' ');
+                        return `- **${keyName}:** ${val}`;
+                    }).join('\n');
+                }
+            }
+            
+            let s = String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            
+            // Convert Markdown bold to strong
+            s = s.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #1C2B35;">$1</strong>');
+            // Convert Markdown italics
+            s = s.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            // Convert Markdown list items
+            s = s.replace(/^[-*]\s+(.*)$/gm, '<li style="margin-left:14px; margin-bottom:6px; list-style-type:disc;">$1</li>');
+            // Convert newlines to breaks
+            s = s.replace(/\n/g, '<br>');
+            // Clean up multiple line breaks
+            s = s.replace(/(<br>\s*){2,}/g, '<br><br>');
+            // Clean up breaks around list items
+            s = s.replace(/(<br>)*<li/g, '<li');
+            s = s.replace(/<\/li>(<br>)*/g, '</li>');
+            // Wrap list items in ul
+            s = s.replace(/(<li[\s\S]*?<\/li>)+/g, '<ul style="padding:0; margin: 4px 0;">$&</ul>');
+            
+            return s;
+        };
         try {
             const res = await fetch(`/api/ai/admin-insights`, {
                 method: 'POST',
@@ -1901,28 +1954,28 @@
                 <div class="adm-ai-grid">
                     <div class="adm-ai-tile">
                         <p class="adm-ai-kicker">🧭 Lab Recommendation</p>
-                        <p class="adm-ai-value">${esc(i.lab_insight || '-')}</p>
+                        <div class="adm-ai-value">${formatAIText(i.lab_insight || '-')}</div>
                     </div>
                     <div class="adm-ai-tile">
                         <p class="adm-ai-kicker">💬 Feedback Summary</p>
-                        <p class="adm-ai-value">${esc(i.feedback_summary || '-')}</p>
+                        <div class="adm-ai-value">${formatAIText(i.feedback_summary || '-')}</div>
                     </div>
                     <div class="adm-ai-tile">
                         <p class="adm-ai-kicker">🚩 Underperforming Labs</p>
-                        <p class="adm-ai-value">${esc(i.underperforming_labs || '-')}</p>
+                        <div class="adm-ai-value">${formatAIText(i.underperforming_labs || '-')}</div>
                     </div>
                     <div class="adm-ai-tile">
                         <p class="adm-ai-kicker">⏰ Peak Hours Insight</p>
-                        <p class="adm-ai-value">${esc(i.peak_usage_insight || '-')}</p>
+                        <div class="adm-ai-value">${formatAIText(i.peak_usage_insight || '-')}</div>
                     </div>
                 </div>
                 <div class="adm-ai-action">
                     <p class="adm-ai-kicker">📊 Student Engagement</p>
-                    <p class="adm-ai-value">${esc(i.student_engagement || '-')}</p>
+                    <div class="adm-ai-value">${formatAIText(i.student_engagement || '-')}</div>
                 </div>
                 <div class="adm-ai-action">
                     <p class="adm-ai-kicker">✅ Recommended Action</p>
-                    <p class="adm-ai-value">${esc(i.recommended_action || '-')}</p>
+                    <div class="adm-ai-value">${formatAIText(i.recommended_action || '-')}</div>
                 </div>
             `;
         } catch (_) {
