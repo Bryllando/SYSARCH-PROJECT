@@ -869,16 +869,14 @@
                         </select>
                     </div>
                     <div class="res-toolbar-right">
-                        <form action="/admin/reservations/auto-expire" method="POST" style="margin:0;"
-                            onsubmit="if(!confirm('Auto-expire overdue pending/approved reservations?')) return false; const b=document.getElementById('autoExpireBtn'); b.disabled=true; b.textContent='Processing...';">
-                            <button id="autoExpireBtn" type="submit" class="btn-print-res" style="background:#92400E;">
+                        <form action="/admin/reservations/auto-expire" method="POST" style="margin:0;" id="autoExpireForm">
+                            <button id="autoExpireBtn" type="button" class="btn-print-res" style="background:#92400E;" onclick="showConfirmModal({title:'Auto-Expire Reservations',message:'Auto-expire all overdue pending/approved reservations?',type:'warning',confirmText:'Auto-Expire',onConfirm:()=>{const b=document.getElementById('autoExpireBtn');b.disabled=true;b.textContent='Processing...';document.getElementById('autoExpireForm').submit();}})">
                                 Auto-Expire
                             </button>
                         </form>
                         <% if (isHistoryView) { %>
-                        <form action="/admin/reservations/delete-history" method="POST" style="margin:0;"
-                            onsubmit="return confirm('Delete all rejected/completed/expired reservation history? This cannot be undone.')">
-                            <button type="submit" class="btn-print-res" style="background:#7F1D1D;">
+                        <form action="/admin/reservations/delete-history" method="POST" style="margin:0;" id="deleteHistoryForm">
+                            <button type="button" class="btn-print-res" style="background:#7F1D1D;" onclick="showConfirmModal({title:'Delete Reservation History',message:'Delete all rejected/completed/expired reservation history? This cannot be undone.',type:'danger',confirmText:'Delete All',onConfirm:()=>{document.getElementById('deleteHistoryForm').submit();}})">
                                 Delete All History
                             </button>
                         </form>
@@ -892,6 +890,13 @@
                             </svg>
                             <input type="text" id="searchInput" placeholder="Search..." oninput="filterTable()">
                         </div>
+                        <!-- ── EXPORT CSV BUTTON ── -->
+                        <button class="btn-print-res" onclick="exportReservationsCSV()" style="background:#065F46;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13">
+                                <path fill-rule="evenodd" d="M4 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.44A1.5 1.5 0 0 0 8.878 2H4Zm1 5.75A.75.75 0 0 1 5.75 7h4.5a.75.75 0 0 1 0 1.5h-4.5A.75.75 0 0 1 5 7.75Zm0 3a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd"/>
+                            </svg>
+                            Export CSV
+                        </button>
                         <!-- ── PRINT BUTTON ── -->
                         <button class="btn-print-res" onclick="printReservations()">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
@@ -991,14 +996,12 @@
                                                     <div
                                                         style="display:flex;align-items:center;justify-content:center;gap:8px;">
                                                         <form action="/admin/reservations/<%= r.id %>/approve"
-                                                            method="POST" style="margin:0;"
-                                                            onsubmit="return confirm('Approve? PC-<%= r.computer_number %> will be marked reserved.')">
-                                                            <button type="submit" class="btn-approve">✓ Approve</button>
+                                                            method="POST" style="margin:0;" id="approveForm-<%= r.id %>">
+                                                            <button type="button" class="btn-approve" onclick="showConfirmModal({title:'Approve Reservation',message:'Approve this reservation? PC-<%= r.computer_number %> will be marked as reserved.',type:'success',confirmText:'✓ Approve',onConfirm:()=>{document.getElementById('approveForm-<%= r.id %>').submit();}})">✓ Approve</button>
                                                         </form>
                                                         <form action="/admin/reservations/<%= r.id %>/reject"
-                                                            method="POST" style="margin:0;"
-                                                            onsubmit="return confirm('Reject this reservation?')">
-                                                            <button type="submit" class="btn-reject">✕ Reject</button>
+                                                            method="POST" style="margin:0;" id="rejectForm-<%= r.id %>">
+                                                            <button type="button" class="btn-reject" onclick="showConfirmModal({title:'Reject Reservation',message:'Reject this reservation? The student will be notified.',type:'danger',confirmText:'✕ Reject',onConfirm:()=>{document.getElementById('rejectForm-<%= r.id %>').submit();}})">✕ Reject</button>
                                                         </form>
                                                     </div>
                                                 <% } else if (r.status==='approved') { %>
@@ -1017,9 +1020,8 @@
                                                                 Archived
                                                             </span>
                                                             <form action="/admin/reservations/<%= r.id %>/delete<%= isHistoryView ? '?view=history' : '' %>"
-                                                                method="POST" style="margin:0;"
-                                                                onsubmit="return confirm('Delete this reservation from active views?')">
-                                                                <button type="submit" class="btn-reject">Delete</button>
+                                                                method="POST" style="margin:0;" id="deleteResForm-<%= r.id %>">
+                                                                <button type="button" class="btn-reject" onclick="showConfirmModal({title:'Delete Reservation',message:'Delete this reservation from active views?',type:'danger',confirmText:'Delete',onConfirm:()=>{document.getElementById('deleteResForm-<%= r.id %>').submit();}})">Delete</button>
                                                             </form>
                                                         </div>
                                                         <% } %>
@@ -1195,7 +1197,10 @@
         document.querySelectorAll('.res-tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.res-tab-content').forEach(content => content.classList.remove('active'));
 
-        event.target.closest('.res-tab-btn').classList.add('active');
+        // Find the clicked button by matching tab name text
+        document.querySelectorAll('.res-tab-btn').forEach(btn => {
+            if (btn.textContent.trim().toLowerCase().includes(tabName)) btn.classList.add('active');
+        });
         document.getElementById('tab-' + tabName).classList.add('active');
 
         if (tabName === 'computers') {
@@ -1363,4 +1368,40 @@
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeStatusModal(); });
+
+    function exportReservationsCSV() {
+        const rows = document.querySelectorAll('.res-row');
+        const visible = Array.from(rows).filter(r => r.style.display !== 'none');
+        if (!visible.length) {
+            if (window.showAppToast) window.showAppToast('warning', 'No visible reservations to export.');
+            return;
+        }
+
+        const headers = ['Student', 'ID Number', 'Lab', 'PC', 'Purpose', 'Date', 'Time', 'Status'];
+        const csvRows = [headers.join(',')];
+
+        visible.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const student = (cells[0] ? cells[0].textContent.replace(/\s+/g, ' ').trim() : '').replace(/,/g, ';');
+            const idNum = (cells[1] ? cells[1].textContent.trim() : '');
+            const lab = (cells[2] ? cells[2].textContent.trim() : '');
+            const pc = (cells[3] ? cells[3].textContent.trim() : '');
+            const purpose = (cells[4] ? cells[4].textContent.trim() : '').replace(/,/g, ';');
+            const date = (cells[5] ? cells[5].textContent.trim() : '');
+            const time = (cells[6] ? cells[6].textContent.trim() : '');
+            const status = (cells[7] ? cells[7].textContent.trim() : '');
+            csvRows.push([student, idNum, lab, pc, purpose, date, time, status].map(v => '"' + v + '"').join(','));
+        });
+
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reservations_' + new Date().toISOString().slice(0, 10) + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        if (window.showAppToast) window.showAppToast('success', 'CSV exported successfully.');
+    }
 </script>

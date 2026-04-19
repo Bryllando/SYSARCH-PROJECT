@@ -566,8 +566,8 @@
             </button>
 
             <!-- Reset Sessions -->
-            <form action="/admin/students/reset-sessions" method="POST" style="margin:0;display:inline-flex;">
-                <button type="submit" class="btn-reset-sessions" onclick="if(!confirm('Reset ALL student sessions to 30?')) return false;">
+            <form action="/admin/students/reset-sessions" method="POST" style="margin:0;display:inline-flex;" id="resetSessionsForm">
+                <button type="button" class="btn-reset-sessions" onclick="showConfirmModal({title:'Reset All Sessions',message:'Reset ALL student sessions to 30? This will affect every student account.',type:'warning',confirmText:'Reset All',onConfirm:()=>{document.getElementById('resetSessionsForm').submit();}})">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="12"
                         height="12">
                         <path fill-rule="evenodd"

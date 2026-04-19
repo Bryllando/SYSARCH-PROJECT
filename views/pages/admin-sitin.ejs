@@ -1039,9 +1039,8 @@
                                                 <%= br ? (rMeta[br].emoji + ' ' + rMeta[br].lbl) : '⭐ Rate' %>
                                             </button>
                                             <!-- Logout -->
-                                            <form action="/admin/sitin/<%= s.id %>/end" method="POST"
-                                                onsubmit="return confirm('Log out this student from the lab?')">
-                                                <button type="submit" class="btn-logout">
+                                            <form action="/admin/sitin/<%= s.id %>/end" method="POST" id="logoutForm-<%= s.id %>">
+                                                <button type="button" class="btn-logout" onclick="showConfirmModal({title:'Log Out Student',message:'Log out this student from the lab? Their session will be ended.',type:'warning',confirmText:'Log Out',onConfirm:()=>{document.getElementById('logoutForm-<%= s.id %>').submit();}})">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"
                                                         fill="currentColor" width="11" height="11">
                                                         <path fill-rule="evenodd"

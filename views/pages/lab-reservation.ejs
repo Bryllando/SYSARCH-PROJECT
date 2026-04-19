@@ -1126,18 +1126,18 @@
                                                 <div
                                                     style="display:flex;align-items:center;justify-content:center;gap:7px;">
                                                     <form action="/admin/lab-reservations/<%= r.id %>/approve"
-                                                        method="POST" style="margin:0;"
-                                                        onsubmit="return confirm('Approve? PC-<%= String(r.computer_number).padStart(2,"0") %> will be marked reserved.')">
-                                                        <button type="submit"
-                                                            style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#059669,#047857);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                                                        method="POST" style="margin:0;" id="labApproveForm-<%= r.id %>">
+                                                        <button type="button"
+                                                            style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#059669,#047857);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;"
+                                                            onclick="showConfirmModal({title:'Approve Reservation',message:'Approve this reservation? PC-<%= String(r.computer_number).padStart(2,'0') %> will be marked reserved.',type:'success',confirmText:'✓ Approve',onConfirm:()=>{document.getElementById('labApproveForm-<%= r.id %>').submit();}})">
                                                             ✓ Approve
                                                         </button>
                                                     </form>
                                                     <form action="/admin/lab-reservations/<%= r.id %>/reject"
-                                                        method="POST" style="margin:0;"
-                                                        onsubmit="return confirm('Reject this reservation?')">
-                                                        <button type="submit"
-                                                            style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:#DC2626;background:#FEF2F2;border:1.5px solid #FECACA;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                                                        method="POST" style="margin:0;" id="labRejectForm-<%= r.id %>">
+                                                        <button type="button"
+                                                            style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;color:#DC2626;background:#FEF2F2;border:1.5px solid #FECACA;cursor:pointer;font-family:'DM Sans',sans-serif;"
+                                                            onclick="showConfirmModal({title:'Reject Reservation',message:'Reject this reservation? The student will be notified.',type:'danger',confirmText:'✕ Reject',onConfirm:()=>{document.getElementById('labRejectForm-<%= r.id %>').submit();}})">
                                                             ✕ Reject
                                                         </button>
                                                     </form>

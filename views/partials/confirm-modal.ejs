@@ -1,0 +1,270 @@
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CUSTOM CONFIRM / ALERT MODAL
+     Replaces all native confirm() and alert() browser popups.
+     Include this once in the dashboard layout — it works on every page.
+══════════════════════════════════════════════════════════════════════════ -->
+<div id="appConfirmOverlay" class="acm-overlay" onclick="if(event.target===this) window.__acmCancel()">
+    <div class="acm-card">
+        <div class="acm-header" id="acmHeader">
+            <div class="acm-icon" id="acmIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20">
+                    <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.168-.168 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.457-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div class="acm-header-text">
+                <div class="acm-title" id="acmTitle">Confirm Action</div>
+                <div class="acm-subtitle" id="acmSubtitle">Please confirm to proceed</div>
+            </div>
+        </div>
+        <div class="acm-body">
+            <p class="acm-message" id="acmMessage">Are you sure?</p>
+        </div>
+        <div class="acm-footer" id="acmFooter">
+            <button type="button" class="acm-btn acm-btn-cancel" id="acmCancelBtn" onclick="window.__acmCancel()">Cancel</button>
+            <button type="button" class="acm-btn acm-btn-confirm" id="acmConfirmBtn" onclick="window.__acmConfirm()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ── Confirm Modal Overlay ── */
+    .acm-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100001;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+    }
+    .acm-overlay.open {
+        display: flex;
+    }
+    .acm-overlay.open .acm-card {
+        animation: acmIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    @keyframes acmIn {
+        from { opacity: 0; transform: scale(0.92) translateY(10px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ── Card ── */
+    .acm-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 420px;
+        overflow: hidden;
+        font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    }
+
+    /* ── Header ── */
+    .acm-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 20px 24px;
+        background: linear-gradient(135deg, #273F4F, #1a2d38);
+    }
+    .acm-header.acm-danger {
+        background: linear-gradient(135deg, #7F1D1D, #991B1B);
+    }
+    .acm-header.acm-warning {
+        background: linear-gradient(135deg, #78350F, #92400E);
+    }
+    .acm-header.acm-info {
+        background: linear-gradient(135deg, #273F4F, #1a2d38);
+    }
+    .acm-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #F1E194;
+        flex-shrink: 0;
+    }
+    .acm-header-text {
+        flex: 1;
+        min-width: 0;
+    }
+    .acm-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        color: #fff;
+        margin: 0 0 2px;
+    }
+    .acm-subtitle {
+        font-size: 11px;
+        color: rgba(255,255,255,0.5);
+        margin: 0;
+    }
+
+    /* ── Body ── */
+    .acm-body {
+        padding: 22px 24px 18px;
+    }
+    .acm-message {
+        font-size: 14px;
+        color: #374151;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* ── Footer ── */
+    .acm-footer {
+        display: flex;
+        gap: 10px;
+        padding: 0 24px 22px;
+    }
+
+    /* ── Buttons ── */
+    .acm-btn {
+        flex: 1;
+        padding: 11px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.15s;
+        border: none;
+    }
+    .acm-btn-cancel {
+        background: #F3F0EC;
+        color: #374151;
+        border: 1.5px solid #E8E3DD;
+    }
+    .acm-btn-cancel:hover {
+        background: #E8E3DD;
+    }
+    .acm-btn-confirm {
+        flex: 2;
+        background: linear-gradient(135deg, #5B0E14, #7a131b);
+        color: #fff;
+    }
+    .acm-btn-confirm:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+    .acm-btn-confirm.acm-confirm-ok {
+        background: linear-gradient(135deg, #273F4F, #1a2d38);
+    }
+    .acm-btn-confirm.acm-confirm-danger {
+        background: linear-gradient(135deg, #7F1D1D, #991B1B);
+    }
+    .acm-btn-confirm.acm-confirm-success {
+        background: linear-gradient(135deg, #059669, #047857);
+    }
+    .acm-btn-confirm.acm-confirm-warning {
+        background: linear-gradient(135deg, #92400E, #B45309);
+    }
+</style>
+
+<script>
+(function() {
+    let _onConfirm = null;
+    let _onCancel  = null;
+
+    const overlay    = document.getElementById('appConfirmOverlay');
+    const header     = document.getElementById('acmHeader');
+    const icon       = document.getElementById('acmIcon');
+    const titleEl    = document.getElementById('acmTitle');
+    const subtitleEl = document.getElementById('acmSubtitle');
+    const messageEl  = document.getElementById('acmMessage');
+    const footer     = document.getElementById('acmFooter');
+    const cancelBtn  = document.getElementById('acmCancelBtn');
+    const confirmBtn = document.getElementById('acmConfirmBtn');
+
+    function close() {
+        overlay.classList.remove('open');
+        _onConfirm = null;
+        _onCancel  = null;
+    }
+
+    window.__acmConfirm = function() {
+        const cb = _onConfirm;
+        close();
+        if (cb) cb();
+    };
+
+    window.__acmCancel = function() {
+        const cb = _onCancel;
+        close();
+        if (cb) cb();
+    };
+
+    /**
+     * showConfirmModal — the main API.
+     * @param {Object} opts
+     * @param {string} opts.title       — Modal title (default "Confirm Action")
+     * @param {string} opts.message     — Body message
+     * @param {string} opts.confirmText — Confirm button label (default "Confirm")
+     * @param {string} opts.cancelText  — Cancel button label (default "Cancel")
+     * @param {string} opts.type        — "danger" | "warning" | "success" | "info" (default "info")
+     * @param {Function} opts.onConfirm — Called when user clicks Confirm
+     * @param {Function} opts.onCancel  — Called when user clicks Cancel
+     */
+    window.showConfirmModal = function(opts) {
+        const type = opts.type || 'info';
+        titleEl.textContent    = opts.title    || 'Confirm Action';
+        subtitleEl.textContent = opts.subtitle || 'Please confirm to proceed';
+        messageEl.textContent  = opts.message  || 'Are you sure?';
+
+        // Header color
+        header.className = 'acm-header';
+        if (type === 'danger')  header.classList.add('acm-danger');
+        if (type === 'warning') header.classList.add('acm-warning');
+
+        // Icon
+        const icons = {
+            danger: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.168-.168 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.457-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>',
+            warning: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.168-.168 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.457-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd"/></svg>',
+            success: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>',
+            info: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-7-4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM9 9a.75.75 0 0 0 0 1.5h.253a.25.25 0 0 1 .244.304l-.459 2.066A1.75 1.75 0 0 0 10.747 15H11a.75.75 0 0 0 0-1.5h-.253a.25.25 0 0 1-.244-.304l.459-2.066A1.75 1.75 0 0 0 9.253 9H9Z" clip-rule="evenodd"/></svg>'
+        };
+        icon.innerHTML = icons[type] || icons.info;
+
+        // Confirm button style
+        confirmBtn.className = 'acm-btn acm-btn-confirm';
+        if (type === 'danger')  confirmBtn.classList.add('acm-confirm-danger');
+        if (type === 'success') confirmBtn.classList.add('acm-confirm-success');
+        if (type === 'warning') confirmBtn.classList.add('acm-confirm-warning');
+        if (type === 'info')    confirmBtn.classList.add('acm-confirm-ok');
+
+        confirmBtn.textContent = opts.confirmText || 'Confirm';
+        cancelBtn.textContent  = opts.cancelText  || 'Cancel';
+
+        cancelBtn.style.display = '';
+        _onConfirm = opts.onConfirm || null;
+        _onCancel  = opts.onCancel  || null;
+
+        overlay.classList.add('open');
+    };
+
+    /**
+     * showConfirmAlert — alert-only mode (no Cancel button).
+     */
+    window.showConfirmAlert = function(opts) {
+        const merged = Object.assign({}, opts, { cancelText: '' });
+        window.showConfirmModal(merged);
+        cancelBtn.style.display = 'none';
+        confirmBtn.style.flex = '1';
+    };
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) {
+            window.__acmCancel();
+        }
+    });
+})();
+</script>

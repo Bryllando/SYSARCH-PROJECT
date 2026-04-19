@@ -1013,6 +1013,8 @@
     .badge-cancelled .badge-dot { background: #9CA3AF; }
     .badge-expired  { background: #FFF7ED; color: #9A3412; }
     .badge-expired  .badge-dot { background: #F97316; }
+    .badge-completed { background: #EFF6FF; color: #1E40AF; }
+    .badge-completed .badge-dot { background: #3B82F6; }
 
     /* ── Improved: Reservation table row hover and borders ── */
     #resTable tbody tr {
@@ -1149,6 +1151,7 @@
                         <option value="pending">Pending</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="expired">Expired</option>
+                        <option value="completed">Completed</option>
                     </select>
                     <input type="text" id="searchRes" placeholder="Search..." oninput="filterReservations()"
                         class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#273F4F] bg-white w-36">
@@ -1209,7 +1212,7 @@
                                             <td style="padding:12px 16px;font-size:12px;color:#4B5563;white-space:nowrap;">
                                                 <%= r.time_slot %>
                                             </td>
-                                            <!-- Fixed: Status badges with inline colors per fixing bugs.md rule #2 -->
+                                            <!-- Status badges with inline colors -->
                                             <td style="padding:12px 16px;">
                                                 <% if (r.status==='approved') { %>
                                                     <span class="res-status-badge badge-approved"><span class="badge-dot"></span>Approved</span>
@@ -1219,16 +1222,18 @@
                                                     <span class="res-status-badge badge-cancelled"><span class="badge-dot"></span>Cancelled</span>
                                                 <% } else if (r.status==='expired') { %>
                                                     <span class="res-status-badge badge-expired"><span class="badge-dot"></span>Expired</span>
+                                                <% } else if (r.status==='completed') { %>
+                                                    <span class="res-status-badge badge-completed"><span class="badge-dot"></span>Completed</span>
                                                 <% } else { %>
                                                     <span class="res-status-badge badge-pending"><span class="badge-dot"></span>Pending</span>
                                                 <% } %>
                                             </td>
-                                            <!-- Fixed: Delete button color per fixing bugs.md rule #1 -->
+                                            <!-- Action buttons -->
                                             <td style="padding:12px 16px;">
-                                                <% if (rowStatus === 'pending') { %>
+                                                <% if (rowStatus === 'pending' || rowStatus === 'approved') { %>
                                                     <form action="/reservation/<%= r.id %>/cancel" method="POST"
-                                                        onsubmit="return confirm('Cancel this reservation request?')" style="margin:0;">
-                                                        <button type="submit" class="res-btn-cancel">
+                                                        style="margin:0;" id="cancelResForm-<%= r.id %>">
+                                                        <button type="button" class="res-btn-cancel" onclick="showConfirmModal({title:'Cancel Reservation',message:'Cancel this reservation? This action cannot be undone.',type:'danger',confirmText:'Cancel Reservation',onConfirm:()=>{document.getElementById('cancelResForm-<%= r.id %>').submit();}})">
                                                             ✕ Cancel
                                                         </button>
                                                     </form>
@@ -1744,23 +1749,29 @@
         <script>
             // ── Reservation helpers (no reload) ─────────────────────────────
             function deleteReservation(id) {
-                if (!confirm('Remove this reservation from your history?')) return;
-                fetch(`/api/reservations/delete/${id}`, { method: 'DELETE', credentials: 'same-origin' })
-                    .then(r => r.json().catch(() => ({})).then(b => ({ ok: r.ok, body: b })))
-                    .then(({ ok, body }) => {
-                        if (!ok || !body.success) throw new Error(body.message || 'Failed');
-                        const row = document.getElementById(`row-${id}`);
-                        if (row) row.remove();
-                        if (window.showAppToast) window.showAppToast('success', 'Reservation removed from history.');
-                        filterReservations();
-                    })
-                    .catch((e) => {
-                        if (window.showAppToast) window.showAppToast('error', e.message || 'Failed to remove reservation.');
-                        else alert(e.message || 'Failed to remove reservation.');
-                    });
+                showConfirmModal({
+                    title: 'Delete Reservation',
+                    message: 'Remove this reservation from your history?',
+                    type: 'danger',
+                    confirmText: 'Delete',
+                    onConfirm: () => {
+                        fetch(`/api/reservations/delete/${id}`, { method: 'DELETE', credentials: 'same-origin' })
+                            .then(r => r.json().catch(() => ({})).then(b => ({ ok: r.ok, body: b })))
+                            .then(({ ok, body }) => {
+                                if (!ok || !body.success) throw new Error(body.message || 'Failed');
+                                const row = document.getElementById(`row-${id}`);
+                                if (row) row.remove();
+                                if (window.showAppToast) window.showAppToast('success', 'Reservation removed from history.');
+                                filterReservations();
+                            })
+                            .catch((e) => {
+                                if (window.showAppToast) window.showAppToast('error', e.message || 'Failed to remove reservation.');
+                            });
+                    }
+                });
             }
 
-            // Fixed: renderStatusBadge now uses vanilla CSS classes per fixing bugs.md rule #2
+            // Render status badge with proper CSS class for each status
             function renderStatusBadge(td, status) {
                 const s = String(status || 'pending').toLowerCase();
                 const map = {
@@ -1768,10 +1779,30 @@
                     rejected:  { cls: 'badge-rejected',  label: 'Rejected' },
                     cancelled: { cls: 'badge-cancelled', label: 'Cancelled' },
                     expired:   { cls: 'badge-expired',   label: 'Expired' },
+                    completed: { cls: 'badge-completed', label: 'Completed' },
                     pending:   { cls: 'badge-pending',   label: 'Pending' }
                 };
                 const b = map[s] || map.pending;
                 td.innerHTML = `<span class="res-status-badge ${b.cls}"><span class="badge-dot"></span>${b.label}</span>`;
+            }
+
+            // Render the correct action button based on reservation status
+            function renderActionButton(td, id, status) {
+                const s = String(status || '').toLowerCase();
+                if (s === 'pending' || s === 'approved') {
+                    td.innerHTML = `
+                        <form action="/reservation/${id}/cancel" method="POST" style="margin:0;" id="cancelResForm-dyn-${id}">
+                            <button type="button" class="res-btn-cancel" onclick="showConfirmModal({title:'Cancel Reservation',message:'Cancel this reservation? This action cannot be undone.',type:'danger',confirmText:'Cancel Reservation',onConfirm:()=>{document.getElementById('cancelResForm-dyn-${id}').submit();}})">✕ Cancel</button>
+                        </form>
+                    `;
+                } else {
+                    td.innerHTML = `
+                        <button type="button" class="res-btn-delete"
+                            onclick="deleteReservation(${id})"
+                            title="Remove from your history"
+                        >🗑️ Delete</button>
+                    `;
+                }
             }
 
             async function refreshReservationStatuses() {
@@ -1779,38 +1810,39 @@
                     const res = await fetch('/api/reservations/mine', { credentials: 'same-origin' });
                     const data = await res.json();
                     if (!data || !data.success) return;
+
+                    const serverIds = new Set();
                     (data.reservations || []).forEach((r) => {
+                        serverIds.add(String(r.id));
                         const row = document.getElementById(`row-${r.id}`);
                         if (!row) return;
-                        row.dataset.status = r.status;
-                        const tds = row.querySelectorAll('td');
-                        const statusTd = tds[5];
-                        if (statusTd) renderStatusBadge(statusTd, r.status);
 
-                        // Fixed: action buttons now use res-btn-cancel/res-btn-delete classes per fixing bugs.md rule #1
-                        const actionTd = tds[6];
-                        if (actionTd) {
-                            if (String(r.status).toLowerCase() === 'pending') {
-                                actionTd.innerHTML = `
-                                    <form action="/reservation/${r.id}/cancel" method="POST" onsubmit="return confirm('Cancel this reservation request?')" style="margin:0;">
-                                        <button type="submit" class="res-btn-cancel">✕ Cancel</button>
-                                    </form>
-                                `;
-                            } else {
-                                actionTd.innerHTML = `
-                                    <button type="button" class="res-btn-delete"
-                                        onclick="deleteReservation(${r.id})"
-                                        title="Remove from your history"
-                                    >🗑️ Delete</button>
-                                `;
-                            }
+                        // Update status badge if status changed
+                        const oldStatus = row.dataset.status;
+                        if (oldStatus !== r.status) {
+                            row.dataset.status = r.status;
+                            const tds = row.querySelectorAll('td');
+                            const statusTd = tds[5];
+                            if (statusTd) renderStatusBadge(statusTd, r.status);
+                            const actionTd = tds[6];
+                            if (actionTd) renderActionButton(actionTd, r.id, r.status);
                         }
                     });
+
+                    // Remove rows that no longer exist in the server response
+                    // (e.g. admin deleted, or soft-deleted)
+                    document.querySelectorAll('.res-row').forEach(row => {
+                        const rowId = row.id.replace('row-', '');
+                        if (!serverIds.has(rowId)) {
+                            row.remove();
+                        }
+                    });
+
                     filterReservations();
                 } catch (_) { }
             }
 
-            // Poll lightly so status reflects after admin action without manual reload.
+            // Poll every 5 seconds so status reflects quickly after admin action.
             refreshReservationStatuses();
-            setInterval(refreshReservationStatuses, 15000);
+            setInterval(refreshReservationStatuses, 5000);
         </script>

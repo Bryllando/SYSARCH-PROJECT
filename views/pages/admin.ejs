@@ -1774,8 +1774,24 @@
             if (!url) return;
 
             if (action === 'delete') {
-                const ok = confirm('Delete this announcement permanently?');
-                if (!ok) return;
+                showConfirmModal({
+                    title: 'Delete Announcement',
+                    message: 'Delete this announcement permanently? This cannot be undone.',
+                    type: 'danger',
+                    confirmText: 'Delete',
+                    onConfirm: async () => {
+                        btn.disabled = true;
+                        try {
+                            const r = await fetch(url, { method: 'POST', credentials: 'same-origin' });
+                            if (!r.ok) throw new Error('Request failed');
+                            window.location.reload();
+                        } catch (_) {
+                            btn.disabled = false;
+                            if (window.showAppToast) window.showAppToast('error', 'Action failed. Please try again.');
+                        }
+                    }
+                });
+                return;
             }
 
             btn.disabled = true;
@@ -1786,7 +1802,6 @@
             } catch (_) {
                 btn.disabled = false;
                 if (window.showAppToast) window.showAppToast('error', 'Action failed. Please try again.');
-                else alert('Action failed. Please try again.');
             }
         });
 
@@ -1812,7 +1827,6 @@
                 } catch (_) {
                     if (submitBtn) submitBtn.disabled = false;
                     if (window.showAppToast) window.showAppToast('error', 'Failed to save changes.');
-                    else alert('Failed to save changes.');
                 }
             });
         }
