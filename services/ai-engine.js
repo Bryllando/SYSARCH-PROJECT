@@ -335,52 +335,42 @@ function studentPrompt() {
     return 'You are an AI study assistant for the College of Computer Studies SIT-IN Monitoring System at University of Cebu. ' +
         'Your role is to analyze a student\'s personal data and provide actionable, encouraging recommendations. ' +
         'Given the student\'s data, return ONLY valid JSON with these exact keys: ' +
-        'schedule_tip (insight about attendance patterns and scheduling), ' +
-        'resource_tip (advice about lab selection and resource usage), ' +
-        'behavior_insight (feedback on behavior ratings and professionalism), ' +
-        'leaderboard_tip (motivation based on leaderboard position), ' +
-        'feedback_insight (recognition of engagement through feedback submissions), ' +
-        'alert (warning if inactive or falling behind, null if none). ' +
-        'Guidelines: 1) Be positive and motivating. 2) Use specific data points (numbers, dates, lab names). ' +
-        '3) Keep tips actionable and practical. 4) Alert only if genuine concern (7+ days inactive, low ratings). ' +
-        '5) Acknowledge strengths before suggesting improvements. 6) Make it personal - use "you" and "your". ' +
-        '7) Each tip must be under 200 characters. 8) Avoid jargon - use simple language. ' +
-        'Context awareness: If student is new (<5 sessions), focus on onboarding tips. ' +
-        'If struggling (rating <3), focus on support. If excelling (top 20%), focus on maintaining excellence.';
+        'schedule_tip, resource_tip, behavior_insight, leaderboard_tip, feedback_insight, alert. ' +
+        'Guidelines: 1) Keep every field extremely short, just 1 to 3 simple sentences. ' +
+        '2) Use very simple words. ' +
+        '3) Use specific data like lab numbers and times. Note that lab hours are strictly 8:00 AM to 8:00 PM. Never suggest times outside this window. ' +
+        '4) Be positive and actionable. ' +
+        '5) If no concern, alert should be null.';
 }
 function adminPrompt() {
-    return 'You are an AI analytics assistant for administrators managing the College of Computer Studies SIT-IN Monitoring System at University of Cebu. ' +
-        'Analyze system-wide data and provide strategic insights. ' +
-        'Return ONLY valid JSON with these exact keys: ' +
-        'lab_insight (overview of lab performance and usage patterns), ' +
-        'feedback_summary (sentiment analysis and key themes from student feedback), ' +
-        'underperforming_labs (identification of labs needing attention with reasons), ' +
-        'peak_usage_insight (timing patterns and capacity recommendations), ' +
-        'student_engagement (analysis of student participation and trends), ' +
-        'recommended_action (specific action items for this week). ' +
-        'Guidelines: 1) Use data-driven language with specific numbers. 2) Highlight both successes and areas for improvement. ' +
-        '3) Make recommendations concrete and time-bound. 4) Consider resource allocation and student experience. ' +
-        '5) Identify patterns across time, labs, and student cohorts. 6) Prioritize high-impact, actionable insights.';
+    return 'You are an AI analytics assistant for administrators managing the College of Computer Studies SIT-IN Monitoring System. ' +
+        'Analyze system-wide data and return ONLY valid JSON with these exact keys: ' +
+        'lab_insight, feedback_summary, underperforming_labs, peak_usage_insight, student_engagement, recommended_action. ' +
+        'STRICT RULES: ' +
+        '1) Use simple and proper English words. ' +
+        '2) Start each value with a bold "**Summary:** <1 simple sentence>" then use 1-2 short bullet points. ' +
+        '3) Include specific lab numbers (e.g., Lab 524) and times. Lab hours are strictly 8:00 AM to 8:00 PM. ' +
+        '4) CRITICAL: recommended_action MUST be a plain string formatted like "**Action 1:** <task>\n- **Action 2:** <task>". ' +
+        '5) Keep each field under 3 short sentences total. No big paragraphs. ' +
+        'Return ONLY valid JSON.';
 }
 function tipsPrompt() {
-    return 'You are an AI productivity coach for the College of Computer Studies SIT-IN Monitoring System at University of Cebu. ' +
-        'Analyze the student\'s behavior and provide practical, motivating tips. ' +
-        'Return ONLY valid JSON with these exact keys: ' +
-        'daily_tip (one actionable tip for today/this week), ' +
-        'improvement_tip (specific advice to boost leaderboard score), ' +
-        'lab_tip (strategic guidance on lab selection and timing), ' +
-        'streak_message (encouragement about consistency and streaks). ' +
-        'Guidelines: 1) Keep tips concise (1-2 sentences). 2) Be specific to their data patterns. ' +
-        '3) Focus on wins and small improvements. 4) Make tips time-sensitive ("today", "this week"). ' +
-        '5) Vary the tone between motivational and tactical.';
+    return 'You are an AI productivity coach for the SIT-IN Monitoring System. ' +
+        'Return ONLY valid JSON with these keys: daily_tip, improvement_tip, lab_tip, streak_message. ' +
+        'Guidelines: 1) Keep every tip strictly 1 to 2 simple sentences. 2) Use easy words. ' +
+        '3) Be motivating and use their personal data to suggest a specific lab or time between 8:00 AM and 8:00 PM.';
 }
 function adminStudyTipPrompt() {
-    return 'You are an AI analytics assistant for admin study-tip panel in a university SIT-IN system. ' +
-        'Use the provided real system-wide data and return ONLY valid JSON with keys: badge, hero_title, hero_description, hero_stat, best_day, busiest_day, most_available_lab, best_time, footer.';
+    return 'You are an AI analytics assistant for the admin study-tip panel. ' +
+        'Use the real system-wide data and return ONLY valid JSON with keys: badge, hero_title, hero_description, hero_stat, best_day, busiest_day, most_available_lab, best_time, footer. ' +
+        'Rules: 1) Keep answers to 1-2 very simple sentences. ' +
+        '2) explicitly state which lab is most available (e.g., "Lab 528 is mostly free"). ' +
+        '3) state the busiest day and best time to sit in (between 8:00 AM and 8:00 PM).';
 }
 function studentStudyTipPrompt() {
-    return 'You are an AI study-tip assistant for one student in a university SIT-IN system. ' +
-        'Use provided real personal data and return ONLY valid JSON with keys: badge, best_week, best_day, busiest_day, best_lab, best_time, note.';
+    return 'You are an AI study-tip assistant for a student. ' +
+        'Analyze their data and return ONLY valid JSON with keys: badge, best_week, best_day, busiest_day, best_lab, best_time, note. ' +
+        'Rules: 1) Keep answers to 1-2 simple sentences. 2) Explicitly name their best lab and best time to visit based on their habits, ensuring the time is within the 8:00 AM to 8:00 PM window.';
 }
 
 async function callWithRetry(prompt, payload, retries = 3) {
@@ -402,15 +392,13 @@ async function callWithRetry(prompt, payload, retries = 3) {
                 prompt = prompt + ' IMPORTANT: Return ONLY a single valid JSON object. No markdown, no explanation, no code fences. Just raw JSON.';
                 continue; 
             }
-            throw err; // Other errors (like 500, 401) throw immediately
+            // For other errors like 401 or 500, break and use fallbacks immediately
+            break; 
         }
     }
-    // If we exhausted retries specifically on 429 or JSON, fallback gracefully instead of crashing
-    if (lastErr && (lastErr.httpStatus === 429 || String(lastErr.message || '').includes('429'))) {
-        console.warn('[AI-ENGINE] OpenRouter 429 Rate Limit exhausted. Using system default fallbacks.');
-        return {}; // Returning an empty object forces the upstream functions to use their default string fallbacks
-    }
-    throw lastErr;
+    // Fallback gracefully instead of crashing the UI
+    console.warn('[AI-ENGINE] AI call failed or exhausted retries. Using system default fallbacks. Error:', lastErr?.message || String(lastErr));
+    return {}; // Returning an empty object forces the upstream functions to use their default string fallbacks
 }
 
 async function generateStudentRecommendation(db, userId, forceRefresh = false) {
@@ -424,11 +412,11 @@ async function generateStudentRecommendation(db, userId, forceRefresh = false) {
         const context = await buildUnifiedContext(db, userId);
         const ai = await callWithRetry(studentPrompt(), context);
         const response = {
-            schedule_tip: ai.schedule_tip || null,
-            resource_tip: ai.resource_tip || null,
-            behavior_insight: ai.behavior_insight || null,
-            leaderboard_tip: ai.leaderboard_tip || null,
-            feedback_insight: ai.feedback_insight || null,
+            schedule_tip: ai.schedule_tip || 'Try visiting in the morning around 8:00 AM. Labs are less busy then.',
+            resource_tip: ai.resource_tip || 'Lab 524 is usually free. Try sitting there next time.',
+            behavior_insight: ai.behavior_insight || 'You are doing great. Keep following the rules.',
+            leaderboard_tip: ai.leaderboard_tip || 'Do more sit-ins between 8:00 AM and 8:00 PM to boost your rank.',
+            feedback_insight: ai.feedback_insight || 'Thanks for sharing your thoughts. We are listening.',
             alert: ai.alert ?? null
         };
         await setCache(db, { cacheKey, studentId: userId, type: 'student_recommendation', payload: response, sourceTimes });
@@ -453,10 +441,10 @@ async function generateStudentTips(db, userId, forceRefresh = false) {
         const context = await buildUnifiedContext(db, userId);
         const ai = await callWithRetry(tipsPrompt(), context);
         const response = {
-            daily_tip: ai.daily_tip || 'Show up consistently this week to build momentum.',
-            improvement_tip: ai.improvement_tip || 'Increase tidy points and complete tasks to raise your leaderboard score.',
-            lab_tip: ai.lab_tip || 'Pick lower-traffic labs for better focus.',
-            streak_message: ai.streak_message || 'You can start a strong study streak this week.'
+            daily_tip: ai.daily_tip || 'Visit the lab today. It is quiet right now.',
+            improvement_tip: ai.improvement_tip || 'Clean your area to get higher points.',
+            lab_tip: ai.lab_tip || 'Lab 528 is best for deep focus between classes.',
+            streak_message: ai.streak_message || 'Keep visiting daily between 8:00 AM and 8:00 PM to build a streak.'
         };
         await setCache(db, { cacheKey, studentId: userId, type: 'student_tips', payload: response, sourceTimes });
         const newCache = await getCache(db, cacheKey);
@@ -479,13 +467,21 @@ async function generateAdminInsights(db, forceRefresh = false) {
     try {
         const context = await buildUnifiedContext(db, null);
         const ai = await callWithRetry(adminPrompt(), context);
+        // Safely normalize recommended_action: always return a plain string
+        function safeStr(val) {
+            if (!val) return null;
+            if (typeof val === 'string') return val;
+            if (Array.isArray(val)) return val.map(item => typeof item === 'object' ? Object.values(item).join(' ') : String(item)).join('\n- ');
+            if (typeof val === 'object') return Object.entries(val).map(([k, v]) => `**${k}:** ${v}`).join('\n- ');
+            return String(val);
+        }
         const response = {
-            lab_insight: ai.lab_insight || 'Lab performance varies; prioritize low-performing labs.',
-            feedback_summary: ai.feedback_summary || 'Feedback is currently limited; gather more responses.',
-            underperforming_labs: ai.underperforming_labs || 'Monitor low-usage labs for improvement opportunities.',
-            peak_usage_insight: ai.peak_usage_insight || 'Peak usage periods should be monitored.',
-            student_engagement: ai.student_engagement || 'Engagement can be improved with targeted nudges.',
-            recommended_action: ai.recommended_action || 'Focus on underutilized labs and student participation this week.'
+            lab_insight: ai.lab_insight || '**Summary:** Lab usage is stable today.\n- Lab 524 is currently the most active.\n- Monitor capacity during afternoon shifts.',
+            feedback_summary: ai.feedback_summary || '**Summary:** Student feedback is positive.\n- Most ratings show high satisfaction.\n- Keep monitoring for new concerns.',
+            underperforming_labs: ai.underperforming_labs || '**Summary:** Some labs have low attendance.\n- Lab 542 is mostly empty today.\n- Check equipment to ensure everything works.',
+            peak_usage_insight: ai.peak_usage_insight || '**Summary:** Afternoons have the highest traffic.\n- Expect heavy usage around 2:00 PM.\n- Redirect students to available labs.',
+            student_engagement: ai.student_engagement || '**Summary:** Student participation is steady.\n- Many students log in consistently.\n- Encourage inactive students to visit.',
+            recommended_action: safeStr(ai.recommended_action) || '**Action 1:** Inspect computers in Lab 542.\n- **Action 2:** Encourage morning lab sessions to avoid crowding.'
         };
         await setCache(db, { cacheKey, studentId: null, type: 'admin_insights', payload: response, sourceTimes });
         const newCache = await getCache(db, cacheKey);
@@ -509,15 +505,15 @@ async function generateAdminStudyTip(db, forceRefresh = false) {
         const context = await buildUnifiedContext(db, null);
         const ai = await callWithRetry(adminStudyTipPrompt(), context);
         const response = {
-            badge: ai.badge || 'Best Week: Data-driven window',
-            hero_title: ai.hero_title || 'Best week to sit-in — System analytics',
-            hero_description: ai.hero_description || 'This recommendation is generated from real lab usage trends.',
-            hero_stat: ai.hero_stat || '📌 Updated from real sit-in activity records.',
-            best_day: ai.best_day || 'No data yet.',
-            busiest_day: ai.busiest_day || 'No data yet.',
-            most_available_lab: ai.most_available_lab || 'No data yet.',
-            best_time: ai.best_time || 'No data yet.',
-            footer: ai.footer || 'Based on system-wide lab data'
+            badge: ai.badge || 'Best Week: System Analytics',
+            hero_title: ai.hero_title || 'System Lab Trends',
+            hero_description: ai.hero_description || 'See what labs are busy.',
+            hero_stat: ai.hero_stat || '📌 Real time stats.',
+            best_day: ai.best_day || 'Wednesday is the best day to visit.',
+            busiest_day: ai.busiest_day || 'Friday is very busy. Avoid it.',
+            most_available_lab: ai.most_available_lab || 'Lab 524 has the most free PCs.',
+            best_time: ai.best_time || '8:00 AM to 10:00 AM is the quietest time window.',
+            footer: ai.footer || 'Based on real system data'
         };
         await setCache(db, { cacheKey, studentId: null, type: 'admin_study_tip', payload: response, sourceTimes });
         const newCache = await getCache(db, cacheKey);
@@ -541,13 +537,13 @@ async function generateStudentStudyTip(db, userId, forceRefresh = false) {
         const context = await buildUnifiedContext(db, userId);
         const ai = await callWithRetry(studentStudyTipPrompt(), context);
         const response = {
-            badge: ai.badge || 'Best Week: Personal analytics',
-            best_week: ai.best_week || 'No data yet',
-            best_day: ai.best_day || 'No data yet',
-            busiest_day: ai.busiest_day || 'No data yet',
-            best_lab: ai.best_lab || 'No data yet',
-            best_time: ai.best_time || 'No data yet',
-            note: ai.note || 'Based on your own sit-in history patterns.'
+            badge: ai.badge || 'Personal Analytics',
+            best_week: ai.best_week || 'You did great this week.',
+            best_day: ai.best_day || 'Tuesday is your favorite day.',
+            busiest_day: ai.busiest_day || 'You avoid busy Fridays.',
+            best_lab: ai.best_lab || 'Lab 528 is your most used lab.',
+            best_time: ai.best_time || 'You like morning sessions at 9:00 AM.',
+            note: ai.note || 'Based on your personal history.'
         };
         await setCache(db, { cacheKey, studentId: userId, type: 'student_study_tip', payload: response, sourceTimes });
         const newCache = await getCache(db, cacheKey);

@@ -546,10 +546,31 @@
         </div>
     </div>
 
-    <div style="margin:14px 32px;background:#fff;border:1px solid #E8E3DD;border-radius:14px;padding:14px 16px;box-shadow:0 1px 6px rgba(0,0,0,.04);">
-        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#1a2035;margin-bottom:8px;">AI Admin Insight</div>
-        <div id="feedback-ai-insight" style="font-size:12px;color:#6B7280;">Loading insight...</div>
+    <!-- AI Admin Insight Card -->
+    <div style="margin:14px 32px;background:#fff;border:1px solid #E8E3DD;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(28,43,53,0.07);">
+        <div style="background:linear-gradient(135deg,#1C2B35,#273F4F);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:16px;">✨</span>
+                <span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#F1E194;">AI Admin Insight</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <span id="fb-ai-updated" style="font-size:10px;color:rgba(255,255,255,.6);font-weight:600;">Loading...</span>
+                <button id="fb-ai-refresh" style="font-size:11px;font-weight:700;background:#F1E194;color:#1C2B35;border:none;border-radius:999px;padding:5px 12px;cursor:pointer;">Refresh</button>
+            </div>
+        </div>
+        <div id="feedback-ai-insight" style="padding:14px 16px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:180px;background:#F7F5F2;border-radius:10px;padding:10px 12px;animation:fbAiShimmer 1.2s infinite;height:60px;"></div>
+                <div style="flex:1;min-width:180px;background:#F7F5F2;border-radius:10px;padding:10px 12px;animation:fbAiShimmer 1.2s infinite;height:60px;"></div>
+                <div style="flex:1;min-width:100%;background:#F7F5F2;border-radius:10px;padding:10px 12px;animation:fbAiShimmer 1.2s infinite;height:60px;"></div>
+            </div>
+        </div>
     </div>
+    <style>
+        @keyframes fbAiShimmer {
+            0%,100%{opacity:1} 50%{opacity:.5}
+        }
+    </style>
 
     <% var totalFb=feedbacks.length; var rated=feedbacks.filter(function(f){ return parseInt(f.rating) > 0; });
         var avgRating = rated.length > 0 ? (rated.reduce(function(s,f){ return s + parseInt(f.rating); }, 0) /
@@ -1136,24 +1157,150 @@
     });
 </script>
 <script>
-    (async function () {
+    // ── Helper: safely convert ANY value (string/array/object) to clean HTML ──
+    function formatInsightText(val) {
+        if (val === null || val === undefined) return '<span style="color:#C4BDB6;font-style:italic;">No data yet.</span>';
+
+        // If it's an array, map each item to a string
+        if (Array.isArray(val)) {
+            val = val.map(item => {
+                if (item === null || item === undefined) return '';
+                if (typeof item === 'object') {
+                    return Object.entries(item)
+                        .map(([k, v]) => '- **' + k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g,' ') + ':** ' + String(v || ''))
+                        .join('\n');
+                }
+                return String(item);
+            }).filter(Boolean).join('\n');
+        }
+
+        // If it's still an object (not array), flatten it
+        if (typeof val === 'object') {
+            val = Object.entries(val)
+                .map(([k, v]) => '- **' + k.charAt(0).toUpperCase() + k.slice(1).replace(/_/g,' ') + ':** ' + String(v || ''))
+                .join('\n');
+        }
+
+        // Now val is a string — render it nicely
+        let s = String(val)
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+        // Bold: **text**
+        s = s.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#1C2B35;">$1</strong>');
+        // Italic: *text*
+        s = s.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        // Bullet list items: - or *
+        s = s.replace(/^[-*]\s+(.+)$/gm, '<li style="margin-bottom:5px;margin-left:4px;">$1</li>');
+        // Newlines to <br>
+        s = s.replace(/\n/g, '<br>');
+        // Clean up <br> around <li>
+        s = s.replace(/(<br>)*<li/g, '<li');
+        s = s.replace(/<\/li>(<br>)*/g, '</li>');
+        // Wrap consecutive <li> in <ul>
+        s = s.replace(/(<li[\s\S]*?<\/li>)+/g, '<ul style="padding:0;margin:6px 0 4px;list-style:disc inside;">$&</ul>');
+        // Clean up orphan <br><br>
+        s = s.replace(/(<br>\s*){2,}/g, '<br>');
+
+        return s || '<span style="color:#C4BDB6;font-style:italic;">No data.</span>';
+    }
+
+    // ── Human-readable timestamp ──
+    function fbFormatTime(totalSeconds) {
+        if (totalSeconds < 60) { const s = Math.round(totalSeconds); return s + ' sec' + (s!==1?'s':'') + ' ago'; }
+        if (totalSeconds < 3600) { const m = Math.round(totalSeconds/60); return m + ' min' + (m!==1?'s':'') + ' ago'; }
+        if (totalSeconds < 86400) { const h = Math.round(totalSeconds/3600); return h + ' hr' + (h!==1?'s':'') + ' ago'; }
+        const d = Math.round(totalSeconds/86400); return d + ' day' + (d!==1?'s':'') + ' ago';
+    }
+
+    // ── Render the insight cards ──
+    function renderFbInsight(i, updatedLabel) {
         const el = document.getElementById('feedback-ai-insight');
+        const updEl = document.getElementById('fb-ai-updated');
         if (!el) return;
+        if (updEl) updEl.textContent = updatedLabel || 'Live';
+
+        const tile = (emoji, label, color, value) => `
+            <div style="flex:1;min-width:220px;background:#fff;border:1px solid #E8E3DD;border-radius:12px;padding:13px 15px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:${color};margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                    <span>${emoji}</span>${label}
+                </div>
+                <div style="font-size:12px;color:#374151;line-height:1.7;">${formatInsightText(value)}</div>
+            </div>`;
+
+        el.innerHTML = `
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+                ${tile('💬','Feedback Summary','#1D4ED8', i.feedback_summary)}
+                ${tile('📊','Student Engagement','#059669', i.student_engagement)}
+            </div>
+            <div style="background:#fff;border:1px solid #E8E3DD;border-radius:12px;padding:13px 15px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#D97706;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                    <span>✅</span> Recommended Actions
+                </div>
+                <div style="font-size:12px;color:#374151;line-height:1.7;">${formatInsightText(i.recommended_action)}</div>
+            </div>`;
+    }
+
+    // ── Load insights ──
+    async function loadFbInsight(force = false) {
+        const el = document.getElementById('feedback-ai-insight');
+        const updEl = document.getElementById('fb-ai-updated');
+        if (!el) return;
+
+        // Show shimmer while loading
+        el.innerHTML = `<div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:180px;background:#F7F5F2;border-radius:10px;height:70px;animation:fbAiShimmer 1.2s infinite;"></div>
+            <div style="flex:1;min-width:180px;background:#F7F5F2;border-radius:10px;height:70px;animation:fbAiShimmer 1.2s infinite;"></div>
+            <div style="flex:1;min-width:100%;background:#F7F5F2;border-radius:10px;height:70px;animation:fbAiShimmer 1.2s infinite;"></div>
+        </div>`;
+        if (updEl) updEl.textContent = 'Loading...';
+
         try {
-            const res = await fetch('/api/ai/admin-insights', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh: false }) });
+            const res = await fetch('/api/ai/admin-insights', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refresh: force })
+            });
             const data = await res.json();
+
             if (!data.success || !data.insights) {
-                el.textContent = 'No AI insight available right now.';
+                el.innerHTML = '<div style="color:#9CA3AF;font-size:12px;font-style:italic;padding:8px 0;">No AI insight available right now.</div>';
+                if (updEl) updEl.textContent = 'Unavailable';
                 return;
             }
-            const i = data.insights;
-            el.innerHTML = `
-                <div style="margin-bottom:6px;"><strong>Feedback Summary:</strong> ${i.feedback_summary || '-'}</div>
-                <div style="margin-bottom:6px;"><strong>Student Engagement:</strong> ${i.student_engagement || '-'}</div>
-                <div><strong>Recommended Action:</strong> ${i.recommended_action || '-'}</div>
-            `;
+            if (force && data.meta && data.meta.fallback) {
+                if (window.showAppToast) window.showAppToast('warning', 'AI API offline. Showing backup offline data.');
+            }
+
+            // Build timestamp label
+            let label = 'Live';
+            if (data.meta && Number.isFinite(data.meta.minutes_ago)) {
+                const sec = data.meta.minutes_ago * 60;
+                label = 'Updated ' + fbFormatTime(sec);
+                if (updEl) {
+                    updEl.dataset.seconds = sec;
+                    updEl.dataset.fetchedAt = Date.now();
+                }
+            }
+
+            renderFbInsight(data.insights, label);
+
         } catch (_) {
-            el.textContent = 'AI insight is temporarily unavailable.';
+            el.innerHTML = '<div style="color:#DC2626;font-size:12px;padding:8px 0;">⚠ AI insight is temporarily unavailable.</div>';
+            if (updEl) updEl.textContent = 'Error';
         }
-    })();
+    }
+
+    // ── Auto-tick the timestamp label every 30s ──
+    setInterval(() => {
+        const updEl = document.getElementById('fb-ai-updated');
+        if (!updEl || !updEl.dataset.seconds || !updEl.dataset.fetchedAt) return;
+        const elapsedSec = (Date.now() - Number(updEl.dataset.fetchedAt)) / 1000;
+        const totalSec = Number(updEl.dataset.seconds) + elapsedSec;
+        updEl.textContent = 'Updated ' + fbFormatTime(totalSec);
+    }, 30000);
+
+    // Boot
+    loadFbInsight();
+    const fbRefreshBtn = document.getElementById('fb-ai-refresh');
+    if (fbRefreshBtn) fbRefreshBtn.addEventListener('click', () => loadFbInsight(true));
 </script>

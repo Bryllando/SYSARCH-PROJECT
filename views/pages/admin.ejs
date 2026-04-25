@@ -1944,11 +1944,19 @@
                 el.innerHTML = '<div class="adm-ai-empty">No AI insights available yet.</div>';
                 return;
             }
+            if (force && data.meta && data.meta.fallback) {
+                if (window.showAppToast) window.showAppToast('warning', 'AI API offline. Showing backup offline data.');
+            }
             const i = data.insights;
             if (updatedEl) {
-                updatedEl.textContent = data.meta && Number.isFinite(data.meta.minutes_ago)
-                    ? `Last updated: ${data.meta.minutes_ago} min ago`
-                    : 'Live Summary';
+                if (data.meta && Number.isFinite(data.meta.minutes_ago)) {
+                    const totalSeconds = data.meta.minutes_ago * 60;
+                    updatedEl.dataset.seconds = totalSeconds;
+                    updatedEl.dataset.fetchedAt = Date.now();
+                    updatedEl.textContent = 'Last updated: ' + formatAdminTimestamp(totalSeconds);
+                } else {
+                    updatedEl.textContent = 'Live Summary';
+                }
             }
             el.innerHTML = `
                 <div class="adm-ai-grid">
@@ -1986,6 +1994,32 @@
     loadAdminAiInsights();
     const adminAiRefresh = document.getElementById('admin-ai-refresh');
     if (adminAiRefresh) adminAiRefresh.addEventListener('click', () => loadAdminAiInsights(true));
+
+    // ── Human-readable timestamp helper (Admin) ──
+    function formatAdminTimestamp(totalSeconds) {
+        if (totalSeconds < 60) {
+            const s = Math.round(totalSeconds);
+            return s + ' second' + (s !== 1 ? 's' : '') + ' ago';
+        } else if (totalSeconds < 3600) {
+            const m = Math.round(totalSeconds / 60);
+            return m + ' minute' + (m !== 1 ? 's' : '') + ' ago';
+        } else if (totalSeconds < 86400) {
+            const h = Math.round(totalSeconds / 3600);
+            return h + ' hour' + (h !== 1 ? 's' : '') + ' ago';
+        } else {
+            const d = Math.round(totalSeconds / 86400);
+            return d + ' day' + (d !== 1 ? 's' : '') + ' ago';
+        }
+    }
+
+    // ── Auto-refresh the Admin "Last updated" label every 30s ──
+    setInterval(() => {
+        const updatedEl = document.getElementById('admin-ai-updated');
+        if (!updatedEl || !updatedEl.dataset.seconds || !updatedEl.dataset.fetchedAt) return;
+        const elapsedSec = (Date.now() - Number(updatedEl.dataset.fetchedAt)) / 1000;
+        const totalSec = Number(updatedEl.dataset.seconds) + elapsedSec;
+        updatedEl.textContent = 'Last updated: ' + formatAdminTimestamp(totalSec);
+    }, 30000);
 
     const studyTipBtn = document.getElementById('studyTipBtn');
     const studyTipPanel = document.getElementById('studyTipPanel');

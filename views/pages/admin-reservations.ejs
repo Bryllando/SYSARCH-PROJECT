@@ -834,14 +834,14 @@
                         </a>
                         <form action="/admin/reservation-settings" method="POST" class="res-setting-form">
                             <input type="hidden" name="enabled" value="<%= reservationSettings && Number(reservationSettings.enabled) === 1 ? 0 : 1 %>">
-                            <input type="text" name="message" value="<%= reservationSettings ? reservationSettings.message : '' %>"
-                                class="res-filter-select res-setting-message" placeholder="Disabled message">
+                            <input type="hidden" name="message" value="<%= reservationSettings ? reservationSettings.message : '' %>">
                             <button type="submit" class="btn-print-res" style="background:<%= reservationSettings && Number(reservationSettings.enabled) === 1 ? '#991B1B' : '#065F46' %>;">
                                 <%= reservationSettings && Number(reservationSettings.enabled) === 1 ? 'Disable Reservations' : 'Enable Reservations' %>
                             </button>
                         </form>
                     </div>
                 </div>
+                <!-- Row 2: Filters + Search + Secondary Actions -->
                 <div class="res-toolbar-row">
                     <div class="res-toolbar-left">
                         <select id="statusFilter" class="res-filter-select" onchange="filterTable()">
@@ -899,8 +899,7 @@
                         </button>
                         <!-- ── PRINT BUTTON ── -->
                         <button class="btn-print-res" onclick="printReservations()">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13"
-                                height="13">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13">
                                 <path fill-rule="evenodd"
                                     d="M4.25 1.5A.75.75 0 0 1 5 .75h6a.75.75 0 0 1 .75.75V3h.5A2.25 2.25 0 0 1 14.5 5.25v4.5A2.25 2.25 0 0 1 12.25 12H12v1.25A1.75 1.75 0 0 1 10.25 15h-4.5A1.75 1.75 0 0 1 4 13.25V12h-.25A2.25 2.25 0 0 1 1.5 9.75v-4.5A2.25 2.25 0 0 1 3.75 3h.5V1.5ZM5.5 3h5V2.25h-5V3Zm-.75 7.5v2.75c0 .138.112.25.25.25h5.5a.25.25 0 0 0 .25-.25V10.5h-6Zm7-5.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
                                     clip-rule="evenodd" />
