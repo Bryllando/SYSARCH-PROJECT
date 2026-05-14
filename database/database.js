@@ -73,8 +73,17 @@ const db = {
 
 // Database Initialization (Migrations)
 async function initDb() {
-    console.log(`Connecting to ${isProd ? 'Turso' : 'Local SQLite'}...`);
+    console.log(`[DB] Attempting to connect to ${isProd ? 'Turso' : 'Local SQLite'}...`);
     
+    try {
+        // Test connection
+        await client.execute("SELECT 1");
+        console.log("[DB] Connection successful.");
+    } catch (connErr) {
+        console.error("[DB] Connection FAILED:", connErr.message);
+        return;
+    }
+
     const migrations = [
         `CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -222,49 +231,57 @@ async function initDb() {
         try {
             await client.execute(sql);
         } catch (err) {
-            // Ignore "column already exists" errors during manual migrations
             if (!err.message.includes('already exists') && !err.message.includes('duplicate')) {
-                console.error('Migration Error:', err.message, '| SQL:', sql);
+                console.error('[DB] Migration Error:', err.message);
             }
         }
     }
 
     // Seed computers if empty
-    const count = await db.get(`SELECT COUNT(*) as c FROM lab_computers`);
-    if (count && count.c === 0) {
-        console.log('Seeding lab computers...');
-        const labs = ['530', '528', '526', '542', '544', '524'];
-        for (const room of labs) {
-            for (let i = 1; i <= 50; i++) {
-                await client.execute({
-                    sql: `INSERT OR IGNORE INTO lab_computers (lab_room, computer_number, status) VALUES (?, ?, 'available')`,
-                    args: [room, i]
-                });
+    try {
+        const res = await client.execute(`SELECT COUNT(*) as c FROM lab_computers`);
+        const count = res.rows[0]?.c || 0;
+        if (Number(count) === 0) {
+            console.log('[DB] Seeding lab computers...');
+            const labs = ['530', '528', '526', '542', '544', '524'];
+            for (const room of labs) {
+                for (let i = 1; i <= 50; i++) {
+                    await client.execute({
+                        sql: `INSERT OR IGNORE INTO lab_computers (lab_room, computer_number, status) VALUES (?, ?, 'available')`,
+                        args: [room, i]
+                    });
+                }
             }
         }
-    }
+    } catch (e) { console.error("[DB] Computer Seeding Error:", e.message); }
 
-    // NEW: Seed Admin Accounts if they don't exist
-    const adminCount = await db.get(`SELECT COUNT(*) as c FROM users WHERE role = 'admin'`);
-    if (adminCount && adminCount.c === 0) {
-        console.log('Seeding admin accounts...');
-        const bcrypt = require('bcryptjs');
-        const hashed = await bcrypt.hash('Admin@1234', 10);
-        
-        const admins = [
-            ['23769862', 'Taburnal', 'Emmanuel', 'O', 'BSIT', 3, 'bryllando@gmail.com', hashed, 'admin'],
-            ['00000000', 'Salimbangon', 'Jeff Pelorina', '', 'BSCS', 4, 'jeff@gmail.com', hashed, 'admin']
-        ];
+    // Seed Admin Accounts if they don't exist
+    try {
+        const res = await client.execute(`SELECT COUNT(*) as c FROM users WHERE role = 'admin'`);
+        const adminCount = res.rows[0]?.c || 0;
+        if (Number(adminCount) === 0) {
+            console.log('[DB] Seeding admin accounts...');
+            const bcrypt = require('bcryptjs');
+            const hashed = await bcrypt.hash('Admin@1234', 10);
+            
+            const admins = [
+                ['23769862', 'Taburnal', 'Emmanuel', 'O', 'BSIT', 3, 'bryllando@gmail.com', hashed, 'admin'],
+                ['00000000', 'Salimbangon', 'Jeff Pelorina', '', 'BSCS', 4, 'jeff@gmail.com', hashed, 'admin']
+            ];
 
-        for (const a of admins) {
-            await client.execute({
-                sql: `INSERT OR IGNORE INTO users 
-                      (id_number, last_name, first_name, middle_initial, course, year_level, email, password, role)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                args: a
-            });
+            for (const a of admins) {
+                await client.execute({
+                    sql: `INSERT OR IGNORE INTO users 
+                          (id_number, last_name, first_name, middle_initial, course, year_level, email, password, role)
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    args: a
+                });
+            }
+            console.log("[DB] Admin seeding complete.");
+        } else {
+            console.log(`[DB] Found ${adminCount} admin(s). Skipping seeding.`);
         }
-    }
+    } catch (e) { console.error("[DB] Admin Seeding Error:", e.message); }
 }
 
 // Initializing DB in background (or you can call this in server.js)

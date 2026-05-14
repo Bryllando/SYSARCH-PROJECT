@@ -16,23 +16,34 @@ router.get('/login', (req, res) => {
 
 // POST Login
 router.post('/login', async (req, res) => {
-    const { id_number, password } = req.body;
+    let { id_number, password } = req.body;
+    id_number = (id_number || '').trim();
+    password = (password || '').trim();
+
+    console.log(`[AUTH] Login attempt for ID: ${id_number}`);
+
     try {
         const user = await db.get('SELECT * FROM users WHERE id_number = ?', [id_number]);
         
         if (!user) {
+            console.log(`[AUTH] Login FAILED: User ${id_number} not found in database.`);
             return res.render('pages/login', {
                 messages: [{ type: 'error', text: 'Invalid ID number or password.' }]
             });
         }
         
+        console.log(`[AUTH] User found: ${user.first_name} ${user.last_name} (${user.role})`);
+
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
+            console.log(`[AUTH] Login FAILED: Password mismatch for ${id_number}.`);
             return res.render('pages/login', {
                 messages: [{ type: 'error', text: 'Invalid ID number or password.' }]
             });
         }
         
+        console.log(`[AUTH] Login SUCCESS: ${id_number}`);
+
         req.session.user = {
             id: user.id,
             id_number: user.id_number,
@@ -62,7 +73,7 @@ router.post('/login', async (req, res) => {
             : res.redirect('/dashboard');
             
     } catch (err) {
-        console.error('Login Error:', err);
+        console.error('[AUTH] Login EXCEPTION:', err.message);
         return res.render('pages/login', {
             messages: [{ type: 'error', text: 'An error occurred during login. Please try again.' }]
         });
