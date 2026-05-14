@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const db = require('../database/database');
+const { db } = require('../database/database');
 const { generateStudentRecommendation } = require('../services/ai-engine');
 
 // GET Login
@@ -166,11 +166,8 @@ router.post('/forgot-password', (req, res) => {
 
 // Logout
 router.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) console.error('Session destroy error:', err);
-        res.clearCookie('connect.sid');
-        res.redirect('/');
-    });
+    req.session = null;
+    res.redirect('/');
 });
 
 module.exports = router;

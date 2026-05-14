@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database/database');
+const { db } = require('../database/database');
 const {
     generateStudentRecommendation,
     generateAdminInsights,

@@ -284,7 +284,5 @@ async function initDb() {
     } catch (e) { console.error("[DB] Admin Seeding Error:", e.message); }
 }
 
-// Initializing DB in background (or you can call this in server.js)
-initDb().then(() => console.log('Database initialized.')).catch(console.error);
-
-module.exports = db;
+// Initializing DB (exported so server.js can await it)
+module.exports = { db, initDb };

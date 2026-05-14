@@ -270,7 +270,7 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
 
     if (!message || !message.trim()) {
         req.session.toast = { type: 'error', message: 'Feedback message cannot be empty.' };
-        return req.session.save(() => res.redirect('/history'));
+        return res.redirect('/history');
     }
 
     if (containsVulgar(message)) {
@@ -278,7 +278,7 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
             type: 'error',
             message: '⚠ Your feedback contains inappropriate language. Please keep it respectful and resubmit.'
         };
-        return req.session.save(() => res.redirect('/history'));
+        return res.redirect('/history');
     }
 
     const ratingVal = Math.min(5, Math.max(0, parseInt(rating) || 0));
@@ -291,7 +291,7 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
             (sessionErr, ownSession) => {
                 if (sessionErr || !ownSession) {
                     req.session.toast = { type: 'error', message: 'Invalid session selected for feedback.' };
-                    return req.session.save(() => res.redirect('/history'));
+                    return res.redirect('/history');
                 }
 
                 db.get(
@@ -300,11 +300,11 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
                     (dupErr, existingFeedback) => {
                         if (dupErr) {
                             req.session.toast = { type: 'error', message: 'Failed to submit feedback. Please try again.' };
-                            return req.session.save(() => res.redirect('/history'));
+                            return res.redirect('/history');
                         }
                         if (existingFeedback) {
                             req.session.toast = { type: 'error', message: 'You already submitted feedback for this session.' };
-                            return req.session.save(() => res.redirect('/history'));
+                            return res.redirect('/history');
                         }
 
                         db.run(
@@ -313,10 +313,10 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
                             function (err) {
                                 if (err) {
                                     req.session.toast = { type: 'error', message: 'Failed to submit feedback. Please try again.' };
-                                    return req.session.save(() => res.redirect('/history'));
+                                    return res.redirect('/history');
                                 }
                                 req.session.toast = { type: 'success', message: '✅ Thank you for your feedback! It has been submitted successfully.' };
-                                req.session.save(() => res.redirect('/history'));
+                                res.redirect('/history');
                             }
                         );
                     }
@@ -332,10 +332,10 @@ router.post('/feedback', isAuthenticated, isUser, (req, res) => {
         function (err) {
             if (err) {
                 req.session.toast = { type: 'error', message: 'Failed to submit feedback. Please try again.' };
-                return req.session.save(() => res.redirect('/history'));
+                return res.redirect('/history');
             }
             req.session.toast = { type: 'success', message: '✅ Thank you for your feedback! It has been submitted successfully.' };
-            req.session.save(() => res.redirect('/history'));
+            res.redirect('/history');
         }
     );
 });

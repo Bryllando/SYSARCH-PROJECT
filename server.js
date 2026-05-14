@@ -1,34 +1,28 @@
 require('dotenv').config();
 const express = require('express');
 const express_layouts = require('express-ejs-layouts');
-const session = require('express-session');
+const cookieSession = require('cookie-session');
 const path = require('path');
-const db = require('./database/database');
+const { db, initDb } = require('./database/database');
 const { getLeaderboardData } = require('./services/leaderboard');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// ─── Session ───────────────────────────────────────────────────────────────────
-// Use memory store in production (Vercel) because SQLite files are read-only
-let sessionConfig = {
-    secret: process.env.SESSION_SECRET || 'ccs-sitin-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production'
-    }
-};
+// Initialize Database
+initDb().catch(console.error);
 
-if (process.env.NODE_ENV !== 'production') {
-    const SQLiteStore = require('connect-sqlite3')(session);
-    sessionConfig.store = new SQLiteStore({ db: 'sessions.db', dir: './database' });
-}
-
-app.use(session(sessionConfig));
+// ─── Session (Cookie Session for Vercel/Serverless) ───────────────────────────
+// This stores session data directly in the cookie, ensuring it persists across
+// different serverless lambda instances.
+app.use(cookieSession({
+    name: 'session',
+    keys: [process.env.SESSION_SECRET || 'ccs-sitin-secret-key'],
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    httpOnly: true
+}));
 
 // ─── View engine ───────────────────────────────────────────────────────────────
 app.use(express_layouts);
