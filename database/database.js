@@ -5,10 +5,32 @@ require('dotenv').config();
 const isProd = process.env.NODE_ENV === 'production';
 
 // In production, we use Turso. In development, we use a local SQLite file.
-const client = createClient({
-    url: isProd ? process.env.TURSO_DATABASE_URL : `file:${path.join(__dirname, 'sitin.db')}`,
-    authToken: isProd ? process.env.TURSO_AUTH_TOKEN : undefined,
-});
+const dbUrl = isProd ? process.env.TURSO_DATABASE_URL : `file:${path.join(__dirname, 'sitin.db')}`;
+const dbToken = isProd ? process.env.TURSO_AUTH_TOKEN : undefined;
+
+let client;
+try {
+    if (isProd && !dbUrl) {
+        console.warn("[DB] WARNING: TURSO_DATABASE_URL is not set. Database operations will fail.");
+        // Create a dummy client or handle it gracefully
+        client = {
+            execute: async () => { throw new Error("Database not configured: TURSO_DATABASE_URL is missing."); },
+            batch: async () => { throw new Error("Database not configured: TURSO_DATABASE_URL is missing."); }
+        };
+    } else {
+        client = createClient({
+            url: dbUrl,
+            authToken: dbToken,
+        });
+    }
+} catch (e) {
+    console.error("[DB] Failed to create LibSQL client:", e.message);
+    // Fallback to avoid crashing the whole app during discovery/build
+    client = {
+        execute: async () => { throw new Error("Database client failed to initialize: " + e.message); },
+        batch: async () => { throw new Error("Database client failed to initialize: " + e.message); }
+    };
+}
 
 /**
  * Compatibility wrapper to make Turso client behave like sqlite3 (but with Promises)
