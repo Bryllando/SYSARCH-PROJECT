@@ -208,7 +208,7 @@ router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
     const { user_id, purpose, lab_room, computer_number, return_to } = req.body;
     const redirectTo = return_to || '/admin';
     const pcNum = computer_number ? parseInt(computer_number) : null;
-    const nowHour = new Date().getHours();
+    const nowHour = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Manila"})).getHours();
 
     if (nowHour >= 20) {
         req.session.toast = { type: 'error', message: 'Cannot start a sit-in after 8:00 PM.' };
@@ -227,7 +227,7 @@ router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
             }
             db.get(
                 `SELECT id, lab_room, computer_number, time_slot FROM reservations
-                 WHERE user_id = ? AND date = date('now','localtime') AND status = 'pending'
+                 WHERE user_id = ? AND date = date('now','+8 hours') AND status = 'pending'
                  ORDER BY created_at DESC LIMIT 1`,
                 [user_id],
                 (resErr, pendingReservation) => {
@@ -247,7 +247,7 @@ router.post('/sitin/start', isAuthenticated, isAdmin, (req, res) => {
                     function doInsert() {
                         db.run(
                             `INSERT INTO sitin_sessions (user_id, purpose, lab_room, computer_number, time_in)
-                             VALUES (?, ?, ?, ?, datetime('now','localtime'))`,
+                             VALUES (?, ?, ?, ?, datetime('now','+8 hours'))`,
                             [user_id, purpose, lab_room, pcNum],
                             () => {
                                 // Mark PC as in_use
@@ -509,7 +509,7 @@ router.post('/sitin/:id/end', isAuthenticated, isAdmin, (req, res) => {
         `SELECT s.user_id, s.lab_room, s.computer_number, u.first_name, u.last_name
          FROM sitin_sessions s JOIN users u ON s.user_id = u.id WHERE s.id = ?`,
         [req.params.id], (err, row) => {
-            db.run(`UPDATE sitin_sessions SET time_out = datetime('now','localtime'), status = 'completed' WHERE id = ?`, [req.params.id], () => {
+            db.run(`UPDATE sitin_sessions SET time_out = datetime('now','+8 hours'), status = 'completed' WHERE id = ?`, [req.params.id], () => {
                 if (row && row.user_id) {
                     db.run(`UPDATE users SET remaining_sessions = remaining_sessions - 1 WHERE id = ? AND remaining_sessions > 0`, [row.user_id], () => {
                         // Free the PC
@@ -660,7 +660,7 @@ router.post('/reservations/:id/approve', isAuthenticated, isAdmin, (req, res) =>
                         `UPDATE reservations
                          SET status = 'approved',
                              approved_by = ?,
-                             updated_at = datetime('now','localtime')
+                             updated_at = datetime('now','+8 hours')
                          WHERE id = ?`,
                         [req.session.user.id, req.params.id],
                         () => {
@@ -692,7 +692,7 @@ router.post('/reservations/:id/reject', isAuthenticated, isAdmin, (req, res) => 
             `UPDATE reservations
              SET status = 'rejected',
                  approved_by = ?,
-                 updated_at = datetime('now','localtime')
+                 updated_at = datetime('now','+8 hours')
              WHERE id = ?`,
             [req.session.user.id, req.params.id],
             () => {
@@ -863,7 +863,7 @@ router.post('/reservations/auto-expire', isAuthenticated, isAdmin, (req, res) =>
         `SELECT id, user_id, lab_room, computer_number, date, time_slot, time_start, time_end, status
          FROM reservations
          WHERE status IN ('pending', 'approved')
-           AND datetime(date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')) < datetime('now','localtime')`,
+           AND datetime(date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')) < datetime('now','+8 hours')`,
         (selErr, rows) => {
             if (selErr) {
                 req.session.toast = { type: 'error', message: 'Failed to auto-expire reservations.' };
@@ -879,7 +879,7 @@ router.post('/reservations/auto-expire', isAuthenticated, isAdmin, (req, res) =>
                  SET status = 'expired',
                      message = 'Your reservation has expired as your time slot has already passed. Please book a new reservation at a different time.'
                  WHERE status IN ('pending', 'approved')
-                   AND datetime(date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')) < datetime('now','localtime')`,
+                   AND datetime(date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')) < datetime('now','+8 hours')`,
                 function (err) {
                     if (err) {
                         req.session.toast = { type: 'error', message: 'Failed to auto-expire reservations.' };

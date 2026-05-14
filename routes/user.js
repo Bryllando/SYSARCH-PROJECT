@@ -17,7 +17,7 @@ function autoExpireReservationsForUser(db, userId, cb) {
            AND status IN ('pending', 'approved')
            AND datetime(
                 date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')
-              ) < datetime('now','localtime')`,
+              ) < datetime('now','+8 hours')`,
         [userId],
         (selErr, rows) => {
             if (selErr || !rows || rows.length === 0) {
@@ -28,12 +28,12 @@ function autoExpireReservationsForUser(db, userId, cb) {
                 `UPDATE reservations
                  SET status = 'expired',
                      message = COALESCE(NULLIF(message,''), 'Expired automatically.'),
-                     updated_at = datetime('now','localtime')
+                     updated_at = datetime('now','+8 hours')
                  WHERE user_id = ?
                    AND status IN ('pending', 'approved')
                    AND datetime(
                         date || ' ' || COALESCE(NULLIF(time_end, ''), NULLIF(time_start, ''), '00:00')
-                      ) < datetime('now','localtime')`,
+                      ) < datetime('now','+8 hours')`,
                 [userId],
                 () => {
                     rows
@@ -393,7 +393,7 @@ router.delete('/api/reservations/delete/:id', isAuthenticated, isUser, (req, res
             db.run(
                 `UPDATE reservations
                  SET deleted_by_user = 1,
-                     updated_at = datetime('now','localtime')
+                     updated_at = datetime('now','+8 hours')
                  WHERE id = ? AND user_id = ?`,
                 [id, req.session.user.id],
                 function (upErr) {
@@ -438,8 +438,13 @@ router.post('/lab-reservation', isAuthenticated, isUser, (req, res) => {
             return res.redirect('/reservation');
         }
 
-        const now = new Date();
-        const today = now.toISOString().slice(0, 10);
+        const nowStr = new Date().toLocaleString("en-US", {timeZone: "Asia/Manila"});
+        const now = new Date(nowStr);
+        // Correctly format YYYY-MM-DD for Philippine time
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const today = `${yyyy}-${mm}-${dd}`;
         if (date < today) {
             req.session.toast = { type: 'error', message: 'You cannot book a reservation in the past.' };
             return res.redirect('/reservation');
@@ -567,7 +572,7 @@ router.post('/reservation/:id/cancel', isAuthenticated, isUser, (req, res) => {
                 `UPDATE reservations
                  SET status = 'cancelled',
                      message = 'Cancelled by student.',
-                     updated_at = datetime('now','localtime')
+                     updated_at = datetime('now','+8 hours')
                  WHERE id = ?`,
                 [reservationId],
                 (upErr) => {
@@ -601,7 +606,7 @@ router.get('/lab-computers/:lab_room', isAuthenticated, (req, res) => {
          LEFT JOIN reservations r ON r.lab_room = lc.lab_room
              AND r.computer_number = lc.computer_number
              AND r.status = 'approved'
-             AND r.date = date('now','localtime')
+             AND r.date = date('now','+8 hours')
          LEFT JOIN users u ON r.user_id = u.id
          WHERE lc.lab_room = ?
          ORDER BY lc.computer_number`,

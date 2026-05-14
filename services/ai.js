@@ -267,7 +267,7 @@ async function getStudentRecommendation(db, userId) {
     await dbRun(
         db,
         `INSERT INTO ai_recommendations (user_id, version, payload, updated_at)
-         VALUES (?, ?, ?, datetime('now','localtime'))
+         VALUES (?, ?, ?, datetime('now','+8 hours'))
          ON CONFLICT(user_id) DO UPDATE
          SET version = excluded.version, payload = excluded.payload, updated_at = excluded.updated_at`,
         [userId, version, JSON.stringify(recommendation)]
@@ -325,7 +325,7 @@ async function getAdminInsights(db) {
     await dbRun(
         db,
         `INSERT INTO ai_admin_insights (id, payload, updated_at)
-         VALUES (1, ?, datetime('now','localtime'))
+         VALUES (1, ?, datetime('now','+8 hours'))
          ON CONFLICT(id) DO UPDATE SET payload = excluded.payload, updated_at = excluded.updated_at`,
         [JSON.stringify(insights)]
     );
