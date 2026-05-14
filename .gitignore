@@ -1,1 +1,14 @@
+.env
+*.db
+*.db-journal
 node_modules/
+.env
+database/*.db
+database/*.db-journal
+public/uploads/announcements/*
+public/uploads/profiles/*
+public/uploads/software/*
+!public/uploads/announcements/.gitkeep
+!public/uploads/profiles/.gitkeep
+!public/uploads/software/.gitkeep
+  public/uploads/

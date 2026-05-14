@@ -1270,6 +1270,42 @@
             </div>
         </div>
     </div>
+
+    <!-- ═══════ SOFTWARE AVAILABILITY SECTION ═══════ -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-[0_2px_16px_rgba(39,63,79,0.08)] overflow-hidden mb-6" style="font-family:'DM Sans',sans-serif;">
+        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between flex-wrap gap-4 bg-[#F7F5F2]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-white border border-[#E8E3DD] flex items-center justify-center text-[#273F4F]">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                        <path fill-rule="evenodd" d="M2.25 6a3 3 0 0 1 3-3h13.5a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V6Zm3.97.97a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1 0 1.06l-2.25 2.25a.75.75 0 0 1-1.06-1.06l1.72-1.72-1.72-1.72a.75.75 0 0 1 0-1.06Zm4.28 4.28a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5h-3Z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-base font-extrabold text-[#1C2B35]" style="font-family:'Syne',sans-serif;margin:0 0 2px;">Lab Software Availability</h2>
+                    <p class="text-xs text-gray-500" style="margin:0;">View software installed across all laboratories</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <select id="userSwLabFilter" class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-700 focus:outline-none bg-white cursor-pointer" onchange="loadUserSoftware()">
+                    <option value="">All Labs</option>
+                    <option value="524">Lab 524</option>
+                    <option value="526">Lab 526</option>
+                    <option value="528">Lab 528</option>
+                    <option value="530">Lab 530</option>
+                    <option value="542">Lab 542</option>
+                    <option value="544">Lab 544</option>
+                </select>
+                <input type="text" id="userSwSearch" placeholder="Search software..." class="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#273F4F] bg-white w-40" oninput="loadUserSoftware()">
+            </div>
+        </div>
+        
+        <div style="padding:20px 24px;background:#FAFAF9;">
+            <div id="userSwGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
+                <div style="grid-column:1/-1;text-align:center;padding:40px;color:#9CA3AF;font-size:13px;">Loading software...</div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 <!-- ═══════ PC GRID MODAL (for reservation) ═══════ -->
@@ -1845,4 +1881,56 @@
             // Poll every 5 seconds so status reflects quickly after admin action.
             refreshReservationStatuses();
             setInterval(refreshReservationStatuses, 5000);
-        </script>
+        // ── Software Availability Grid Logic ──
+        let _userAllSoftware = [];
+
+        async function fetchUserSoftware() {
+            try {
+                const res = await fetch('/api/lab-software');
+                const data = await res.json();
+                _userAllSoftware = data || [];
+                loadUserSoftware();
+            } catch (err) {
+                document.getElementById('userSwGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#DC2626;font-size:13px;">Failed to load software.</div>';
+            }
+        }
+
+        function loadUserSoftware() {
+            const labFilter = document.getElementById('userSwLabFilter').value;
+            const search = document.getElementById('userSwSearch').value.toLowerCase().trim();
+            const grid = document.getElementById('userSwGrid');
+
+            const filtered = _userAllSoftware.filter(sw => {
+                if (labFilter && sw.lab_room !== labFilter) return false;
+                if (search && sw.software_name.toLowerCase().indexOf(search) === -1) return false;
+                return true;
+            });
+
+            if (!filtered.length) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#9CA3AF;font-size:13px;">No software found matching your search.</div>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(sw => {
+                const isAvail = sw.status === 'Available';
+                html += `
+                    <div style="background:#fff;border:1.5px solid #EDEDED;border-radius:14px;padding:18px 20px;transition:all 0.2s;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                            <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#6B7280;">Lab ${sw.lab_room}</span>
+                            ${isAvail 
+                                ? '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:7px;font-size:10px;font-weight:700;background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;"><span style="width:6px;height:6px;border-radius:50%;background:#10B981;"></span>Available</span>' 
+                                : '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:7px;font-size:10px;font-weight:700;background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;"><span style="width:6px;height:6px;border-radius:50%;background:#DC2626;"></span>Unavailable</span>'
+                            }
+                        </div>
+                        <p style="font-size:15px;font-weight:700;color:#1C2B35;margin:0 0 4px;">${sw.software_name}</p>
+                        <p style="font-size:12px;color:#6B7280;margin:0;">${sw.version ? 'Version: ' + sw.version : 'No version specified'}</p>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        // Fetch on load
+        fetchUserSoftware();
+    </script>

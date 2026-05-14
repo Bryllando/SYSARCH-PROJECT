@@ -815,6 +815,12 @@
                 </svg>
                 Lab Computers
             </button>
+            <button class="res-tab-btn" onclick="switchTab('software')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                    <path fill-rule="evenodd" d="M6 3a2 2 0 0 0-2 2v.586l-1.293 1.293A1 1 0 0 0 2.414 8H2a1 1 0 0 0 0 2h.586l.707.707L2 12a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1v-.586l1.293-1.293A1 1 0 0 0 6 10.828V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v5.828a1 1 0 0 0 .293.707L15.586 13H16a1 1 0 0 0 1-1v-1h1a1 1 0 1 0 0-2h-1V8h1a1 1 0 1 0 0-2h-1V5a2 2 0 0 0-2-2H8A2 2 0 0 0 6 5V3Z" clip-rule="evenodd" />
+                </svg>
+                Software
+            </button>
         </div>
 
         <!-- Reservations Tab Content -->
@@ -834,7 +840,7 @@
                         </a>
                         <form action="/admin/reservation-settings" method="POST" class="res-setting-form">
                             <input type="hidden" name="enabled" value="<%= reservationSettings && Number(reservationSettings.enabled) === 1 ? 0 : 1 %>">
-                            <input type="hidden" name="message" value="<%= reservationSettings ? reservationSettings.message : '' %>">
+                            <input type="text" name="message" class="res-setting-message" placeholder="Disable message shown to students..." value="<%= reservationSettings ? reservationSettings.message : '' %>" style="padding:8px 14px;border:1.5px solid #D6D0CA;border-radius:9px;background:#fff;font-size:12px;color:#1C2B35;outline:none;font-family:'DM Sans',sans-serif;height:34px;box-sizing:border-box;">
                             <button type="submit" class="btn-print-res" style="background:<%= reservationSettings && Number(reservationSettings.enabled) === 1 ? '#991B1B' : '#065F46' %>;">
                                 <%= reservationSettings && Number(reservationSettings.enabled) === 1 ? 'Disable Reservations' : 'Enable Reservations' %>
                             </button>
@@ -1097,6 +1103,213 @@
                 </div>
             </div>
         </div>
+
+        <!-- Software Tab Content -->
+        <div id="tab-software" class="res-tab-content">
+            <div class="res-toolbar">
+                <div class="res-toolbar-row">
+                    <div class="res-toolbar-left">
+                        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6B7280;">Filter by Lab</span>
+                        <select id="swLabFilter" class="res-filter-select" onchange="loadSoftwareTable()">
+                            <option value="">All Labs</option>
+                            <option value="524">Lab 524</option>
+                            <option value="526">Lab 526</option>
+                            <option value="528">Lab 528</option>
+                            <option value="530">Lab 530</option>
+                            <option value="542">Lab 542</option>
+                            <option value="544">Lab 544</option>
+                        </select>
+                    </div>
+                    <div class="res-toolbar-right">
+                        <button class="btn-print-res" style="background:#065F46;" onclick="openSwUploadModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path fill-rule="evenodd" d="M4 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.44A1.5 1.5 0 0 0 8.878 2H4Zm4 3.5a.75.75 0 0 1 .75.75v1.5h1.5a.75.75 0 0 1 0 1.5h-1.5v1.5a.75.75 0 0 1-1.5 0v-1.5h-1.5a.75.75 0 0 1 0-1.5h1.5v-1.5A.75.75 0 0 1 8 5.5Z" clip-rule="evenodd"/></svg>
+                            Upload File
+                        </button>
+                        <button class="btn-print-res" style="background:#273F4F;" onclick="openSwAddModal()">
+                            + Add Software
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="res-table-wrap">
+                <div class="res-table-card">
+                    <div style="overflow-x:auto;">
+                        <table class="res-table" id="swTable">
+                            <thead>
+                                <tr>
+                                    <th>Lab</th>
+                                    <th>Software Name</th>
+                                    <th>Version</th>
+                                    <th>Status</th>
+                                    <th style="text-align:center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="swBody">
+                                <tr><td colspan="5" style="padding:56px 24px;text-align:center;color:#9CA3AF;font-size:13px;">Loading software entries...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="res-table-footer">
+                        <span>Showing <strong id="swCount" style="color:#1C2B35;">0</strong> software entries</span>
+                        <span>Lab software inventory</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<!-- Upload Software File Modal -->
+<div id="swUploadOverlay" class="pcmodal-overlay" onclick="if(event.target===this) closeSwUploadModal()">
+    <div class="pcmodal-card" style="max-width:460px;">
+        <div class="pcmodal-header" style="background:linear-gradient(135deg,#065F46,#047857);">
+            <div class="pcmodal-header-left">
+                <div class="pcmodal-header-icon" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#fff" width="20" height="20"><path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 0 0 3 3.5v13A1.5 1.5 0 0 0 4.5 18h11a1.5 1.5 0 0 0 1.5-1.5V7.621a1.5 1.5 0 0 0-.44-1.06l-4.12-4.122A1.5 1.5 0 0 0 11.378 2H4.5Z" clip-rule="evenodd"/></svg>
+                </div>
+                <div>
+                    <p class="pcmodal-header-title" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin:0 0 2px;">📁 Upload Software File</p>
+                    <p class="pcmodal-header-sub" style="font-size:11px;color:rgba(255,255,255,0.6);margin:0;">Import software list from CSV, Excel, or PDF</p>
+                </div>
+            </div>
+            <button class="pcmodal-close" onclick="closeSwUploadModal()">✕</button>
+        </div>
+        <div style="padding:20px 24px;">
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:16px;">
+                <div style="text-align:center;padding:12px 16px;background:#ECFDF5;border:1.5px solid #A7F3D0;border-radius:12px;min-width:70px;">
+                    <div style="font-size:24px;">📄</div>
+                    <div style="font-size:10px;font-weight:700;color:#065F46;margin-top:4px;">CSV</div>
+                    <div style="font-size:9px;color:#6B7280;">.csv</div>
+                </div>
+                <div style="text-align:center;padding:12px 16px;background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:12px;min-width:70px;">
+                    <div style="font-size:24px;">📊</div>
+                    <div style="font-size:10px;font-weight:700;color:#1D4ED8;margin-top:4px;">Excel</div>
+                    <div style="font-size:9px;color:#6B7280;">.xlsx / .xls</div>
+                </div>
+                <div style="text-align:center;padding:12px 16px;background:#FEF2F2;border:1.5px solid #FECACA;border-radius:12px;min-width:70px;">
+                    <div style="font-size:24px;">📕</div>
+                    <div style="font-size:10px;font-weight:700;color:#991B1B;margin-top:4px;">PDF</div>
+                    <div style="font-size:9px;color:#6B7280;">.pdf</div>
+                </div>
+            </div>
+            <div style="background:#F7F5F2;border:1.5px solid #E8E3DD;border-radius:10px;padding:12px 14px;margin-bottom:16px;">
+                <p style="margin:0 0 4px;font-size:11px;font-weight:700;color:#4B5563;">📋 Required columns in your file:</p>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+                    <span style="padding:3px 8px;background:#E8E3DD;border-radius:5px;font-size:10px;font-weight:700;color:#374151;font-family:monospace;">lab</span>
+                    <span style="padding:3px 8px;background:#E8E3DD;border-radius:5px;font-size:10px;font-weight:700;color:#374151;font-family:monospace;">software_name</span>
+                    <span style="padding:3px 8px;background:#E8E3DD;border-radius:5px;font-size:10px;font-weight:700;color:#374151;font-family:monospace;">version</span>
+                    <span style="padding:3px 8px;background:#E8E3DD;border-radius:5px;font-size:10px;font-weight:700;color:#374151;font-family:monospace;">status</span>
+                </div>
+                <p style="margin:8px 0 0;font-size:10px;color:#6B7280;">Status values: <strong>Available</strong> or <strong>Unavailable</strong></p>
+            </div>
+            <div id="swDropZone" style="border:2px dashed #D6D0CA;border-radius:14px;padding:32px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:#FAFAF9;" onclick="document.getElementById('swFileInput').click()" ondragover="event.preventDefault();this.style.borderColor='#065F46';this.style.background='#ECFDF5';" ondragleave="this.style.borderColor='#D6D0CA';this.style.background='#FAFAF9';" ondrop="event.preventDefault();this.style.borderColor='#D6D0CA';this.style.background='#FAFAF9';handleSwFileDrop(event);">
+                <div style="font-size:32px;margin-bottom:8px;">📁</div>
+                <p style="font-size:13px;font-weight:700;color:#374151;margin:0 0 4px;">Click to choose file or drag & drop here</p>
+                <p style="font-size:11px;color:#9CA3AF;margin:0;" id="swFileName">Supported: .csv · .xlsx · .xls · .pdf</p>
+                <input type="file" id="swFileInput" accept=".csv,.xlsx,.xls,.pdf" style="display:none;" onchange="handleSwFileSelect(this)">
+            </div>
+            <div id="swUploadResult" style="display:none;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;"></div>
+        </div>
+        <div style="padding:0 24px 20px;display:flex;gap:10px;">
+            <button onclick="closeSwUploadModal()" style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
+            <button id="swUploadBtn" onclick="submitSwUpload()" style="flex:2;padding:11px;background:linear-gradient(135deg,#065F46,#047857);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;" disabled>📥 Upload & Import</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Software Modal -->
+<div id="swAddOverlay" class="pcmodal-overlay" onclick="if(event.target===this) closeSwAddModal()">
+    <div class="pcmodal-card" style="max-width:400px;">
+        <div class="pcmodal-header" style="background:linear-gradient(135deg,#273F4F,#1a2d38);">
+            <div class="pcmodal-header-left">
+                <div class="pcmodal-header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="20" height="20"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z" clip-rule="evenodd"/></svg>
+                </div>
+                <div>
+                    <p class="pcmodal-header-title" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin:0 0 2px;">+ Add Software</p>
+                    <p class="pcmodal-header-sub" style="font-size:11px;color:rgba(255,255,255,0.5);margin:0;">Fill in software details</p>
+                </div>
+            </div>
+            <button class="pcmodal-close" onclick="closeSwAddModal()">✕</button>
+        </div>
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+            <div>
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;letter-spacing:0.08em;">Lab Room *</label>
+                <select id="swAddLab" style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                    <option value="" disabled selected>Select lab...</option>
+                    <option value="524">Lab 524</option>
+                    <option value="526">Lab 526</option>
+                    <option value="528">Lab 528</option>
+                    <option value="530">Lab 530</option>
+                    <option value="542">Lab 542</option>
+                    <option value="544">Lab 544</option>
+                </select>
+            </div>
+            <div>
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;letter-spacing:0.08em;">Software Name *</label>
+                <input type="text" id="swAddName" placeholder="e.g. Microsoft Visual Studio" style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;letter-spacing:0.08em;">Version</label>
+                <input type="text" id="swAddVersion" placeholder="e.g. 2022, v3.11, 17.0..." style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;letter-spacing:0.08em;">Status *</label>
+                <div style="display:flex;gap:12px;">
+                    <label style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid #A7F3D0;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;color:#065F46;flex:1;" id="swStatusAvailLabel">
+                        <input type="radio" name="sw_status" value="Available" checked style="accent-color:#059669;" onchange="updateSwStatusStyle()"> ✅ Available
+                    </label>
+                    <label style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid #E5E7EB;border-radius:10px;cursor:pointer;font-size:12px;font-weight:700;color:#6B7280;flex:1;" id="swStatusUnavailLabel">
+                        <input type="radio" name="sw_status" value="Unavailable" style="accent-color:#DC2626;" onchange="updateSwStatusStyle()"> ✕ Unavailable
+                    </label>
+                </div>
+            </div>
+            <div id="swAddError" style="display:none;padding:8px 12px;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;font-size:12px;font-weight:600;color:#DC2626;"></div>
+        </div>
+        <div style="padding:0 24px 20px;display:flex;gap:10px;">
+            <button onclick="closeSwAddModal()" style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
+            <button onclick="submitSwAdd()" style="flex:2;padding:11px;background:linear-gradient(135deg,#273F4F,#1a2d38);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Add Software</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Software Modal -->
+<div id="swEditOverlay" class="pcmodal-overlay" onclick="if(event.target===this) closeSwEditModal()">
+    <div class="pcmodal-card" style="max-width:400px;">
+        <div class="pcmodal-header" style="background:linear-gradient(135deg,#273F4F,#1a2d38);">
+            <div class="pcmodal-header-left">
+                <div class="pcmodal-header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#F1E194" width="20" height="20"><path d="m5.433 13.917 1.262-3.155A4 4 0 0 1 7.58 9.42l6.92-6.918a2.121 2.121 0 0 1 3 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 0 1-.65-.65Z"/><path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0 0 10 3H4.75A2.75 2.75 0 0 0 2 5.75v9.5A2.75 2.75 0 0 0 4.75 18h9.5A2.75 2.75 0 0 0 17 15.25V10a.75.75 0 0 0-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5Z"/></svg>
+                </div>
+                <div>
+                    <p class="pcmodal-header-title" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;margin:0 0 2px;">Edit Software</p>
+                    <p class="pcmodal-header-sub" style="font-size:11px;color:rgba(255,255,255,0.5);margin:0;">Update software details</p>
+                </div>
+            </div>
+            <button class="pcmodal-close" onclick="closeSwEditModal()">✕</button>
+        </div>
+        <input type="hidden" id="swEditId">
+        <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+            <div>
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Software Name *</label>
+                <input type="text" id="swEditName" style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Version</label>
+                <input type="text" id="swEditVersion" style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:#6B7280;margin-bottom:6px;">Status *</label>
+                <select id="swEditStatus" style="width:100%;padding:10px 12px;border:1.5px solid #D6D0CA;border-radius:9px;background:#F9F8F6;font-size:13px;outline:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                    <option value="Available">Available</option>
+                    <option value="Unavailable">Unavailable</option>
+                </select>
+            </div>
+        </div>
+        <div style="padding:0 24px 20px;display:flex;gap:10px;">
+            <button onclick="closeSwEditModal()" style="flex:1;padding:11px;background:#F3F0EC;color:#374151;border:1.5px solid #E8E3DD;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button>
+            <button onclick="submitSwEdit()" style="flex:2;padding:11px;background:linear-gradient(135deg,#273F4F,#1a2d38);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Save Changes</button>
+        </div>
+    </div>
 </div>
 
 <!-- Status Change Modal -->
@@ -1207,6 +1420,9 @@
             if (labSelect.value) {
                 loadLabComputersGrid(labSelect.value);
             }
+        }
+        if (tabName === 'software') {
+            loadSoftwareTable();
         }
     }
 
@@ -1402,5 +1618,173 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         if (window.showAppToast) window.showAppToast('success', 'CSV exported successfully.');
+    }
+</script>
+
+<script>
+    // ── Software Tab JS ──────────────────────────────────────────────
+    let _swSelectedFile = null;
+
+    async function loadSoftwareTable() {
+        const lab = document.getElementById('swLabFilter').value;
+        const url = '/admin/software' + (lab ? '?lab=' + lab : '');
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            renderSoftwareTable(data);
+        } catch (e) {
+            document.getElementById('swBody').innerHTML = '<tr><td colspan="5" style="padding:40px;text-align:center;color:#DC2626;">Failed to load software.</td></tr>';
+        }
+    }
+
+    function renderSoftwareTable(rows) {
+        const body = document.getElementById('swBody');
+        if (!rows.length) {
+            body.innerHTML = '<tr><td colspan="5" style="padding:56px 24px;text-align:center;color:#9CA3AF;font-size:13px;">No software entries yet.</td></tr>';
+            document.getElementById('swCount').textContent = '0';
+            return;
+        }
+        let html = '';
+        rows.forEach(function(sw) {
+            const isAvail = sw.status === 'Available';
+            const eName = sw.software_name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            const eVer = (sw.version||'').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            html += '<tr style="border-bottom:1px solid #F3F0EC;">' +
+                '<td><span class="badge-lab">Lab ' + sw.lab_room + '</span></td>' +
+                '<td style="font-size:13px;font-weight:600;color:#1C2B35;">' + sw.software_name + '</td>' +
+                '<td style="font-size:12px;color:#4B5563;">' + (sw.version || '\u2014') + '</td>' +
+                '<td>' + (isAvail
+                    ? '<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;"><span style="width:6px;height:6px;border-radius:50%;background:#10B981;"></span>Available</span>'
+                    : '<span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;font-size:11px;font-weight:700;background:#FEF2F2;color:#991B1B;border:1px solid #FECACA;"><span style="width:6px;height:6px;border-radius:50%;background:#DC2626;"></span>Unavailable</span>'
+                ) + '</td>' +
+                '<td style="text-align:center;"><div style="display:flex;align-items:center;justify-content:center;gap:8px;">' +
+                '<button class="btn-approve" style="background:linear-gradient(135deg,#273F4F,#1a2d38);padding:5px 12px;" onclick="openSwEditModal(' + sw.id + ',\'' + eName + '\',\'' + eVer + '\',\'' + sw.status + '\')">Edit</button>' +
+                '<button class="btn-reject" onclick="deleteSw(' + sw.id + ',\'' + eName + '\')">Delete</button>' +
+                '</div></td></tr>';
+        });
+        body.innerHTML = html;
+        document.getElementById('swCount').textContent = rows.length;
+    }
+
+    function openSwUploadModal() {
+        _swSelectedFile = null;
+        document.getElementById('swFileInput').value = '';
+        document.getElementById('swFileName').textContent = 'Supported: .csv \u00b7 .xlsx \u00b7 .xls \u00b7 .pdf';
+        document.getElementById('swUploadBtn').disabled = true;
+        document.getElementById('swUploadResult').style.display = 'none';
+        document.getElementById('swUploadOverlay').classList.add('open');
+    }
+    function closeSwUploadModal() { document.getElementById('swUploadOverlay').classList.remove('open'); }
+
+    function handleSwFileSelect(input) {
+        if (input.files && input.files[0]) {
+            _swSelectedFile = input.files[0];
+            document.getElementById('swFileName').textContent = _swSelectedFile.name;
+            document.getElementById('swUploadBtn').disabled = false;
+        }
+    }
+    function handleSwFileDrop(e) {
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            _swSelectedFile = e.dataTransfer.files[0];
+            document.getElementById('swFileName').textContent = _swSelectedFile.name;
+            document.getElementById('swUploadBtn').disabled = false;
+        }
+    }
+
+    async function submitSwUpload() {
+        if (!_swSelectedFile) return;
+        var btn = document.getElementById('swUploadBtn');
+        btn.disabled = true; btn.textContent = 'Uploading...';
+        var resultEl = document.getElementById('swUploadResult');
+        resultEl.style.display = 'none';
+        var fd = new FormData();
+        fd.append('software_file', _swSelectedFile);
+        try {
+            var res = await fetch('/admin/software/upload', { method: 'POST', body: fd });
+            var data = await res.json();
+            resultEl.style.display = 'block';
+            if (data.error) {
+                resultEl.style.background = '#FEF2F2'; resultEl.style.color = '#991B1B'; resultEl.style.border = '1px solid #FECACA';
+                resultEl.textContent = data.error;
+            } else {
+                resultEl.style.background = '#ECFDF5'; resultEl.style.color = '#065F46'; resultEl.style.border = '1px solid #A7F3D0';
+                resultEl.textContent = 'Imported ' + data.inserted + ' entries. ' + (data.duplicates ? data.duplicates + ' duplicate(s) skipped.' : '') + ' (' + data.total + ' total rows)';
+                loadSoftwareTable();
+            }
+        } catch (e) {
+            resultEl.style.display = 'block'; resultEl.style.background = '#FEF2F2'; resultEl.style.color = '#991B1B';
+            resultEl.textContent = 'Upload failed. Please try again.';
+        }
+        btn.disabled = false; btn.textContent = 'Upload & Import';
+    }
+
+    function openSwAddModal() {
+        document.getElementById('swAddLab').value = '';
+        document.getElementById('swAddName').value = '';
+        document.getElementById('swAddVersion').value = '';
+        var r = document.querySelector('input[name="sw_status"][value="Available"]'); if (r) r.checked = true;
+        updateSwStatusStyle();
+        document.getElementById('swAddError').style.display = 'none';
+        document.getElementById('swAddOverlay').classList.add('open');
+    }
+    function closeSwAddModal() { document.getElementById('swAddOverlay').classList.remove('open'); }
+
+    function updateSwStatusStyle() {
+        var a = document.getElementById('swStatusAvailLabel'), u = document.getElementById('swStatusUnavailLabel');
+        var r = document.querySelector('input[name="sw_status"]:checked');
+        var isA = r && r.value === 'Available';
+        if (a) { a.style.borderColor = isA ? '#A7F3D0' : '#E5E7EB'; a.style.color = isA ? '#065F46' : '#6B7280'; }
+        if (u) { u.style.borderColor = !isA ? '#FECACA' : '#E5E7EB'; u.style.color = !isA ? '#991B1B' : '#6B7280'; }
+    }
+
+    async function submitSwAdd() {
+        var lab = document.getElementById('swAddLab').value;
+        var name = document.getElementById('swAddName').value.trim();
+        var version = document.getElementById('swAddVersion').value.trim();
+        var r = document.querySelector('input[name="sw_status"]:checked');
+        var status = r ? r.value : 'Available';
+        var errEl = document.getElementById('swAddError');
+        errEl.style.display = 'none';
+        if (!lab || !name) { errEl.textContent = 'Lab room and software name are required.'; errEl.style.display = 'block'; return; }
+        try {
+            var res = await fetch('/admin/software/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lab_room: lab, software_name: name, version: version, status: status }) });
+            var data = await res.json();
+            if (data.error) { errEl.textContent = data.error; errEl.style.display = 'block'; }
+            else { closeSwAddModal(); loadSoftwareTable(); if (window.showAppToast) window.showAppToast('success', 'Software added to Lab ' + lab); }
+        } catch (e) { errEl.textContent = 'Failed to add software.'; errEl.style.display = 'block'; }
+    }
+
+    function openSwEditModal(id, name, version, status) {
+        document.getElementById('swEditId').value = id;
+        document.getElementById('swEditName').value = name;
+        document.getElementById('swEditVersion').value = version;
+        document.getElementById('swEditStatus').value = status;
+        document.getElementById('swEditOverlay').classList.add('open');
+    }
+    function closeSwEditModal() { document.getElementById('swEditOverlay').classList.remove('open'); }
+
+    async function submitSwEdit() {
+        var id = document.getElementById('swEditId').value;
+        var name = document.getElementById('swEditName').value.trim();
+        var version = document.getElementById('swEditVersion').value.trim();
+        var status = document.getElementById('swEditStatus').value;
+        if (!name) return;
+        try {
+            var res = await fetch('/admin/software/' + id + '/edit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ software_name: name, version: version, status: status }) });
+            var data = await res.json();
+            if (data.success) { closeSwEditModal(); loadSoftwareTable(); if (window.showAppToast) window.showAppToast('success', 'Software updated.'); }
+        } catch (e) {}
+    }
+
+    async function deleteSw(id, name) {
+        showConfirmModal({ title: 'Delete Software', message: 'Delete this software from the list?', type: 'danger', confirmText: 'Delete',
+            onConfirm: async function() {
+                try {
+                    var res = await fetch('/admin/software/' + id + '/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                    var data = await res.json();
+                    if (data.success) { loadSoftwareTable(); if (window.showAppToast) window.showAppToast('success', 'Software deleted.'); }
+                } catch (e) {}
+            }
+        });
     }
 </script>

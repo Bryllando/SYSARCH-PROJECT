@@ -2,25 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const express_layouts = require('express-ejs-layouts');
 const session = require('express-session');
-const SQLiteStore = require('connect-sqlite3')(session);
 const path = require('path');
 const db = require('./database/database');
 const { getLeaderboardData } = require('./services/leaderboard');
 
 const app = express();
-const port = 3000;
-
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
-const adminRoutes = require('./routes/admin');
-const aiRoutes = require('./routes/ai');
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const port = process.env.PORT || 3000;
 
 // ─── Session ───────────────────────────────────────────────────────────────────
-app.use(session({
-    store: new SQLiteStore({ db: 'sessions.db', dir: './database' }),
+// Use memory store in production (Vercel) because SQLite files are read-only
+let sessionConfig = {
     secret: process.env.SESSION_SECRET || 'ccs-sitin-secret-key',
     resave: false,
     saveUninitialized: false,
@@ -30,7 +21,14 @@ app.use(session({
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production'
     }
-}));
+};
+
+if (process.env.NODE_ENV !== 'production') {
+    const SQLiteStore = require('connect-sqlite3')(session);
+    sessionConfig.store = new SQLiteStore({ db: 'sessions.db', dir: './database' });
+}
+
+app.use(session(sessionConfig));
 
 // ─── View engine ───────────────────────────────────────────────────────────────
 app.use(express_layouts);
@@ -38,6 +36,9 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.set('layout', 'layouts/main');
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // ─── Global middleware ─────────────────────────────────────────────────────────
 app.use((req, res, next) => {
@@ -47,6 +48,12 @@ app.use((req, res, next) => {
     if (req.session.toast) delete req.session.toast;
     next();
 });
+
+// Routes
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
+const adminRoutes = require('./routes/admin');
+const aiRoutes = require('./routes/ai');
 
 // ─── Public homepage ───────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
@@ -58,26 +65,15 @@ app.get('/', (req, res) => {
     res.render('pages/index');
 });
 
-// ─── Public Leaderboard PAGE (no auth required) ───────────────────────────────
 app.get('/leaderboard-index', (req, res) => {
     getLeaderboardData(db)
         .then(({ students, labs }) => res.render('pages/leaderboard-index', { students, labs }))
         .catch(() => res.render('pages/leaderboard-index', { students: [], labs: [] }));
 });
 
-// ─── Public About page ────────────────────────────────────────────────────────
-app.get('/about', (req, res) => {
-    res.render('pages/about');
-});
+app.get('/about', (req, res) => res.render('pages/about'));
+app.get('/community', (req, res) => res.render('pages/community'));
 
-// ─── Public Community page ────────────────────────────────────────────────────
-app.get('/community', (req, res) => {
-    res.render('pages/community');
-});
-
-// ─── Public Leaderboard API (no auth required) - handled by user.js
-
-// ─── Admin: All announcement comments (for feedback page comments tab) ────────
 app.get('/admin/all-comments', (req, res) => {
     if (!req.session.user || req.session.user.role !== 'admin') {
         return res.status(403).json([]);
@@ -91,16 +87,20 @@ app.get('/admin/all-comments', (req, res) => {
         JOIN announcements a ON c.announcement_id = a.id
         ORDER BY c.created_at DESC
         LIMIT 200
-    `, (err, comments) => {
+    `, [], (err, comments) => {
         if (err) return res.json([]);
         res.json(comments || []);
     });
 });
 
-// ─── Auth, User, Admin routes ─────────────────────────────────────────────────
 app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/', aiRoutes);
 
-app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+// Export for Vercel, listen for local
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
+}
+
+module.exports = app;

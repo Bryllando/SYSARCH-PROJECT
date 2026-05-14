@@ -92,17 +92,10 @@ function containsVulgar(text) {
     );
 }
 
-// ─── Multer for profile pictures ─────────────────────────────────────────────
-const uploadDir = path.join(__dirname, '../public/uploads/profiles');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+const { uploadToCloudinary } = require('../services/cloudinary');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, `user_${req.session.user.id}_${Date.now()}${ext}`);
-    }
-});
+// ─── Multer for profile pictures (Memory Storage for Cloudinary) ─────────────
+const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
     const allowed = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
     if (allowed.includes(path.extname(file.originalname).toLowerCase())) cb(null, true);
@@ -227,7 +220,7 @@ router.post('/profile', isAuthenticated, isUser, (req, res) => {
 });
 
 // Upload Profile Picture
-router.post('/profile/picture', isAuthenticated, isUser, upload.single('profile_picture'), (req, res) => {
+router.post('/profile/picture', isAuthenticated, isUser, upload.single('profile_picture'), async (req, res) => {
     if (!req.file) {
         db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err, userData) => {
             if (userData) req.session.user = { ...req.session.user, ...userData };
@@ -235,18 +228,21 @@ router.post('/profile/picture', isAuthenticated, isUser, upload.single('profile_
         });
         return;
     }
-    const picturePath = `/uploads/profiles/${req.file.filename}`;
-    const oldPic = req.session.user.profile_picture;
-    if (oldPic && oldPic !== '') {
-        const oldPath = path.join(__dirname, '../public', oldPic);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-    }
-    db.run(`UPDATE users SET profile_picture=? WHERE id=?`, [picturePath, req.session.user.id], () => {
-        db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err2, userData) => {
-            if (userData) req.session.user = { ...req.session.user, ...userData };
-            res.render('pages/profile', { messages: [{ type: 'success', text: 'Profile picture updated!' }] });
+
+    try {
+        const result = await uploadToCloudinary(req.file.buffer, 'profiles');
+        const picturePath = result.secure_url;
+
+        db.run(`UPDATE users SET profile_picture=? WHERE id=?`, [picturePath, req.session.user.id], () => {
+            db.get(`SELECT * FROM users WHERE id = ?`, [req.session.user.id], (err2, userData) => {
+                if (userData) req.session.user = { ...req.session.user, ...userData };
+                res.render('pages/profile', { messages: [{ type: 'success', text: 'Profile picture updated!' }] });
+            });
         });
-    });
+    } catch (uploadErr) {
+        console.error('Cloudinary Upload Error:', uploadErr);
+        res.render('pages/profile', { messages: [{ type: 'error', text: 'Failed to upload image to cloud storage.' }] });
+    }
 });
 
 // Sit-in History
@@ -641,6 +637,21 @@ router.get('/leaderboard-index', isAuthenticated, (req, res) => {
     getLeaderboardData(db)
         .then(({ students, labs }) => res.render('pages/leaderboard-index', { students, labs }))
         .catch(() => res.render('pages/leaderboard-index', { students: [], labs: [] }));
+});
+
+// ─── Lab Software (Student View) ──────────────────────────────────────────────
+// API: Lab software JSON (for AJAX)
+router.get('/api/lab-software', isAuthenticated, (req, res) => {
+    const lab = req.query.lab || '';
+    const where = lab ? `WHERE lab_room = ?` : '';
+    const params = lab ? [lab] : [];
+    db.all(
+        `SELECT * FROM lab_software ${where} ORDER BY lab_room, software_name`,
+        params,
+        (err, rows) => {
+            res.json(rows || []);
+        }
+    );
 });
 
 module.exports = router;

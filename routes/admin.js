@@ -10,17 +10,10 @@ const { bumpStudentAiVersion } = require('../services/ai');
 const { getLeaderboardData } = require('../services/leaderboard');
 const { generateAdminInsights, generateStudentRecommendation, generateAdminStudyTip } = require('../services/ai-engine');
 
-// ── Multer for announcement media ──────────────────────────────────────────────
-const annDir = path.join(__dirname, '../public/uploads/announcements');
-if (!fs.existsSync(annDir)) fs.mkdirSync(annDir, { recursive: true });
+const { uploadToCloudinary } = require('../services/cloudinary');
 
-const annStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, annDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        cb(null, `ann_${Date.now()}${ext}`);
-    }
-});
+// ── Multer for announcement media (Memory Storage for Cloudinary) ──────────────
+const annStorage = multer.memoryStorage();
 const annUpload = multer({
     storage: annStorage,
     limits: { fileSize: 15 * 1024 * 1024 },
@@ -109,7 +102,7 @@ router.get('/', isAuthenticated, isAdmin, (req, res) => {
 });
 
 // Post Announcement (with optional media)
-router.post('/announcement', isAuthenticated, isAdmin, annUpload.single('media'), (req, res) => {
+router.post('/announcement', isAuthenticated, isAdmin, annUpload.single('media'), async (req, res) => {
     const message = (req.body.message || '').trim();
     if (!message) {
         req.session.toast = { type: 'error', message: 'Announcement message cannot be empty.' };
@@ -118,11 +111,16 @@ router.post('/announcement', isAuthenticated, isAdmin, annUpload.single('media')
     let media_url = '';
     let media_type = '';
     if (req.file) {
-        media_url = `/uploads/announcements/${req.file.filename}`;
-        const ext = path.extname(req.file.filename).toLowerCase();
-        if (ext === '.gif') media_type = 'gif';
-        else if (['.mp4', '.webm'].includes(ext)) media_type = 'video';
-        else media_type = 'image';
+        try {
+            const result = await uploadToCloudinary(req.file.buffer, 'announcements');
+            media_url = result.secure_url;
+            const ext = path.extname(req.file.originalname).toLowerCase();
+            if (ext === '.gif') media_type = 'gif';
+            else if (['.mp4', '.webm'].includes(ext)) media_type = 'video';
+            else media_type = 'image';
+        } catch (uploadErr) {
+            console.error('Cloudinary Announcement Upload Error:', uploadErr);
+        }
     }
     db.run(
         `INSERT INTO announcements (admin_id, message, media_url, media_type) VALUES (?, ?, ?, ?)`,
@@ -1062,6 +1060,239 @@ router.post('/history/delete-all', isAuthenticated, isAdmin, (req, res) => {
             };
         }
         res.redirect('/admin/history');
+    });
+});
+
+// ── Lab Software Management ───────────────────────────────────────────────────
+
+// Multer for software file uploads (Memory Storage)
+const softwareUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        const allowed = ['.csv', '.xlsx', '.xls', '.pdf'];
+        cb(null, allowed.includes(path.extname(file.originalname).toLowerCase()));
+    }
+});
+
+// GET: All software (JSON)
+router.get('/software', isAuthenticated, isAdmin, (req, res) => {
+    const lab = req.query.lab || '';
+    const where = lab ? `WHERE lab_room = ?` : '';
+    const params = lab ? [lab] : [];
+    db.all(
+        `SELECT * FROM lab_software ${where} ORDER BY lab_room, software_name`,
+        params,
+        (err, rows) => {
+            if (req.accepts('json')) {
+                return res.json(rows || []);
+            }
+            res.json(rows || []);
+        }
+    );
+});
+
+// POST: Add single software
+router.post('/software/add', isAuthenticated, isAdmin, (req, res) => {
+    const { lab_room, software_name, version, status } = req.body;
+    if (!lab_room || !software_name) {
+        return res.json({ error: 'Lab room and software name are required.' });
+    }
+    const swStatus = (status === 'Unavailable') ? 'Unavailable' : 'Available';
+    db.run(
+        `INSERT INTO lab_software (lab_room, software_name, version, status) VALUES (?, ?, ?, ?)`,
+        [lab_room, software_name.trim(), (version || '').trim(), swStatus],
+        function (err) {
+            if (err) {
+                if (err.message.includes('UNIQUE')) {
+                    return res.json({ error: 'This software already exists in that lab with the same version.' });
+                }
+                return res.json({ error: err.message });
+            }
+            res.json({ success: true, id: this.lastID });
+        }
+    );
+});
+
+// POST: Edit software
+router.post('/software/:id/edit', isAuthenticated, isAdmin, (req, res) => {
+    const { software_name, version, status } = req.body;
+    if (!software_name) {
+        return res.json({ error: 'Software name is required.' });
+    }
+    const swStatus = (status === 'Unavailable') ? 'Unavailable' : 'Available';
+    db.run(
+        `UPDATE lab_software SET software_name = ?, version = ?, status = ? WHERE id = ?`,
+        [software_name.trim(), (version || '').trim(), swStatus, req.params.id],
+        function (err) {
+            if (err) return res.json({ error: err.message });
+            res.json({ success: true });
+        }
+    );
+});
+
+// POST: Delete software
+router.post('/software/:id/delete', isAuthenticated, isAdmin, (req, res) => {
+    db.run(`DELETE FROM lab_software WHERE id = ?`, [req.params.id], function (err) {
+        if (err) return res.json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+// POST: Upload software file (CSV, XLSX, PDF)
+router.post('/software/upload', isAuthenticated, isAdmin, softwareUpload.single('software_file'), async (req, res) => {
+    if (!req.file) {
+        return res.json({ error: 'No file uploaded.' });
+    }
+    const ext = path.extname(req.file.originalname).toLowerCase();
+    let rows = [];
+
+    try {
+        if (ext === '.csv') {
+            const fileContent = req.file.buffer.toString('utf8');
+            const lines = fileContent.split(/\r?\n/);
+            
+            let headerIdx = -1;
+            for (let i = 0; i < lines.length; i++) {
+                const lowerLine = lines[i].toLowerCase();
+                if ((lowerLine.includes('lab') || lowerLine.includes('room')) && (lowerLine.includes('software') || lowerLine.includes('name'))) {
+                    headerIdx = i;
+                    break;
+                }
+            }
+            
+            const validLines = headerIdx !== -1 ? lines.slice(headerIdx) : lines;
+            const validCsv = validLines.join('\n');
+            const csvParser = require('csv-parser');
+            const stream = require('stream');
+            
+            rows = await new Promise((resolve, reject) => {
+                const results = [];
+                const bufferStream = new stream.PassThrough();
+                bufferStream.end(Buffer.from(validCsv));
+                bufferStream.pipe(csvParser()).on('data', (data) => results.push(data)).on('end', () => resolve(results)).on('error', (err) => reject(err));
+            });
+        } else if (ext === '.xlsx' || ext === '.xls') {
+            const XLSX = require('xlsx');
+            const workbook = XLSX.read(req.file.buffer);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const rawRows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+            let headerIdx = -1;
+            for (let i = 0; i < rawRows.length; i++) {
+                const rowStr = (rawRows[i] || []).join(' ').toLowerCase();
+                if ((rowStr.includes('lab') || rowStr.includes('room')) && (rowStr.includes('software') || rowStr.includes('name'))) {
+                    headerIdx = i;
+                    break;
+                }
+            }
+            if (headerIdx !== -1) {
+                const headers = rawRows[headerIdx];
+                for (let i = headerIdx + 1; i < rawRows.length; i++) {
+                    const obj = {};
+                    for (let j = 0; j < headers.length; j++) { if (headers[j]) obj[headers[j]] = rawRows[i][j]; }
+                    if (Object.keys(obj).length > 0) rows.push(obj);
+                }
+            } else {
+                rows = XLSX.utils.sheet_to_json(sheet);
+            }
+        } else if (ext === '.pdf') {
+            const PDFParser = require('pdf2json');
+            rows = await new Promise((resolve, reject) => {
+                const pdfParser = new PDFParser(null, 1);
+                pdfParser.on("pdfParser_dataError", errData => reject(new Error(errData.parserError)));
+                pdfParser.on("pdfParser_dataReady", () => {
+                    const text = pdfParser.getRawTextContent() || '';
+                    const extractedRows = [];
+                    const regex = /(?:Lab\s*)?(\d{3})[\s\|]+([\s\S]+?)[\s\|]+(Available|Unavailable)/gi;
+                    let match;
+                    while ((match = regex.exec(text)) !== null) {
+                        const lab = match[1];
+                        const middle = match[2].trim().replace(/\r?\n/g, ' ');
+                        const status = match[3];
+                        let name = middle; let version = '';
+                        const words = middle.split(/\s+/);
+                        if (words.length > 1) {
+                            const lastWord = words[words.length - 1];
+                            if (/[\d\.]/.test(lastWord) || lastWord.toLowerCase().startsWith('v')) {
+                                version = words.pop(); name = words.join(' ');
+                            }
+                        }
+                        extractedRows.push({ lab, software_name: name, version, status });
+                    }
+                    resolve(extractedRows);
+                });
+                pdfParser.parseBuffer(req.file.buffer);
+            });
+        }
+    } catch (parseErr) {
+        return res.json({ error: 'Failed to parse file: ' + parseErr.message });
+    }
+
+    if (!rows.length) {
+        return res.json({ error: 'No valid data found in the file.' });
+    }
+
+    // Normalize column headers (case-insensitive matching)
+    function normalizeKey(obj) {
+        const normalized = {};
+        Object.keys(obj).forEach(key => {
+            const k = key.toLowerCase().replace(/[^a-z0-9_]/g, '_').trim();
+            normalized[k] = String(obj[key] || '').trim();
+        });
+        return normalized;
+    }
+
+    let inserted = 0;
+    let duplicates = 0;
+    let errors = [];
+
+    for (const rawRow of rows) {
+        const row = normalizeKey(rawRow);
+        const lab = row.lab || row.lab_room || row.laboratory || '';
+        const swName = row.software_name || row.name || row.software || '';
+        const version = row.version || '';
+        const status = (row.status || 'Available').trim();
+
+        // Extract lab number (just digits like 524, 526, etc.)
+        const labNum = lab.match(/\d{3}/);
+        if (!labNum || !swName) continue;
+
+        const labRoom = labNum[0];
+        const swStatus = status.toLowerCase().includes('unavail') ? 'Unavailable' : 'Available';
+
+        try {
+            await new Promise((resolve, reject) => {
+                db.run(
+                    `INSERT INTO lab_software (lab_room, software_name, version, status) VALUES (?, ?, ?, ?)`,
+                    [labRoom, swName, version, swStatus],
+                    function (err) {
+                        if (err) {
+                            if (err.message.includes('UNIQUE')) {
+                                duplicates++;
+                                resolve();
+                            } else {
+                                errors.push(err.message);
+                                resolve();
+                            }
+                        } else {
+                            inserted++;
+                            resolve();
+                        }
+                    }
+                );
+            });
+        } catch (e) {
+            errors.push(e.message);
+        }
+    }
+
+    res.json({
+        success: true,
+        inserted,
+        duplicates,
+        total: rows.length,
+        errors: errors.length > 0 ? errors.slice(0, 5) : undefined
     });
 });
 

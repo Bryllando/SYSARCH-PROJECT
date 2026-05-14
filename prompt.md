@@ -1,33 +1,26 @@
-Prompt 1: Fixing the "Last updated" Timestamp (Screenshot 1)
-Use this prompt to change the "1289 min ago" logic to a human-readable format.
+Screenthot 1:
+Admin Screenshot 5
+- Add the input text beside the disable reservation button, 
+  for the text when the user reserve and still disable, the toast will be shown what you input in the input text. Like "Disable Reservation"
+- Screenshot 5 add Software button beside Lab Computers for lab computer software info. 
+- make it same stlye layout in screenshot 1 where it has a table and list of the software available in the lab with delete button and edit button. Above at the table upload files button , add software button
 
-"Rewrite the JavaScript function for the 'Last updated' timestamp. Instead of showing only total minutes (e.g., 1289 min ago), create a helper function that converts the difference between the current time and the 'last updated' time into the most relevant unit. If it's under 60 seconds, show 'seconds'; under 60 minutes, show 'minutes'; under 24 hours, show 'hours'; and if more than 24 hours, show 'days'. Ensure it updates dynamically without refreshing the whole page."
+Screenshot 2:
+when clicking the upload files button. it will pop op same with the screenshot 2 and it will upload what in the csv, pdf, or excel file as long as the text about in the excel is same.
+like the excel file: 
+Software ID | Software Name | Version | File Size
+1001 | Windows 11 | 22H2 | 5GB
 
-Prompt 2: Fixing the AI Insights Content & Readability (Screenshot 1 & 2)
-Use this prompt to stop the AI from generating "walls of text" and fix the [object Object] error in your Recommended Actions.
+it can also check if there is a duplicates files
 
-"Adjust the AI system prompt for the 'AI Insights' and 'Admin Insight' sections.
+Screenshot 3:
+- by clicking the  add software button. It will pop up same with the screenshot 3 but it will just add a software. not the file or something. By selecting the Lab, software name, version and etc. It can also check if there is a duplicates software in that lab.
 
-Formatting: Instead of long paragraphs, instruct the AI to use bullet points and bold headers for key metrics.
+Screenshot 4:
+User side (student side) 
+- Lab software availability see what software available in the lab 
+- what best to put this in screenshot 4 User side for the software availability. home or reservation below?
 
-Structure: Use a 'TL;DR' summary at the top followed by three specific categories: 'Status', 'Concerns', and 'Action Items'.
 
-Data Fix: In the 'Recommended Action' section, ensure the AI returns a clean string or a properly mapped array of strings to avoid the [object Object] display error in the UI.
 
-Tone: Make the language professional, concise, and optimized for a quick glance by a busy admin."
-
-Prompt 3: Fixing the Reservation UI & Buttons (Screenshot 3)
-Use this prompt to clean up the layout and remove the unnecessary "ssds" input box.
-
-"Refactor the 'Reservations' header layout using Tailwind CSS.
-
-Alignment: Align all top-level buttons (Active List, View History, Auto-Expire, Export, Print) on a single horizontal plane or a clean grid. Use flex items-center gap-4 to prevent them from looking cluttered.
-
-Cleanup: Remove the text input field located above the 'Disable Reservations' button (the one currently showing 'ssds') as it is not being used.
-
-Consistency: Ensure the 'Disable Reservations' button is visually distinct but aligned with the filters (All Status, All Labs) below it. Use a consistent padding and height for all buttons and dropdowns to create a uniform UI."
-
-Prompt 4: Fixing the "Last updated" Timestamp (screenshot 4)
-Use this prompt to change the "1289 min ago" logic to a human-readable format.
-
-"Rewrite the JavaScript function for the 'Last updated' timestamp. Instead of showing only total minutes (e.g., 1289 min ago), create a helper function that converts the difference between the current time and the 'last updated' time into the most relevant unit. If it's under 60 seconds, show 'seconds'; under 60 minutes, show 'minutes'; under 24 hours, show 'hours'; and if more than 24 hours, show 'days'. Ensure it updates dynamically without refreshing the whole page."  same with the screenshot 1 logic User A.I Recommendation
+plf help me with this add the software add in my project working properly no bugs and error.
