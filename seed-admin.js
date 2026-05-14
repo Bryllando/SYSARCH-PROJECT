@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const db = require('./database/database');
+const { db } = require('./database/database');
 
 async function createAdmin() {
     const hashed = await bcrypt.hash('Admin@1234', 10);

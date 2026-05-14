@@ -12,6 +12,8 @@ const port = process.env.PORT || 3000;
 // Initialize Database
 initDb().catch(console.error);
 
+app.set('trust proxy', 1);
+
 // ─── Session (Cookie Session for Vercel/Serverless) ───────────────────────────
 // This stores session data directly in the cookie, ensuring it persists across
 // different serverless lambda instances.

@@ -255,32 +255,32 @@ async function initDb() {
         }
     } catch (e) { console.error("[DB] Computer Seeding Error:", e.message); }
 
-    // Seed Admin Accounts if they don't exist
+    // Seed Admin Accounts
     try {
-        const res = await client.execute(`SELECT COUNT(*) as c FROM users WHERE role = 'admin'`);
-        const adminCount = res.rows[0]?.c || 0;
-        if (Number(adminCount) === 0) {
-            console.log('[DB] Seeding admin accounts...');
-            const bcrypt = require('bcryptjs');
-            const hashed = await bcrypt.hash('Admin@1234', 10);
-            
-            const admins = [
-                ['23769862', 'Taburnal', 'Emmanuel', 'O', 'BSIT', 3, 'bryllando@gmail.com', hashed, 'admin'],
-                ['00000000', 'Salimbangon', 'Jeff Pelorina', '', 'BSCS', 4, 'jeff@gmail.com', hashed, 'admin']
-            ];
+        console.log('[DB] Ensuring static admin accounts...');
+        const bcrypt = require('bcryptjs');
+        const hashed = await bcrypt.hash('Admin@1234', 10);
+        
+        const admins = [
+            ['23769862', 'Taburnal', 'Emmanuel', 'O', 'BSIT', 3, 'bryllando@gmail.com', hashed, 'admin'],
+            ['00000000', 'Salimbangon', 'Jeff Pelorina', '', 'BSCS', 4, 'jeff@gmail.com', hashed, 'admin']
+        ];
 
-            for (const a of admins) {
-                await client.execute({
-                    sql: `INSERT OR IGNORE INTO users 
-                          (id_number, last_name, first_name, middle_initial, course, year_level, email, password, role)
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                    args: a
-                });
-            }
-            console.log("[DB] Admin seeding complete.");
-        } else {
-            console.log(`[DB] Found ${adminCount} admin(s). Skipping seeding.`);
+        for (const a of admins) {
+            // Try to insert if doesn't exist
+            await client.execute({
+                sql: `INSERT OR IGNORE INTO users 
+                      (id_number, last_name, first_name, middle_initial, course, year_level, email, password, role)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                args: a
+            });
+            // Force role and password update for these specific IDs
+            await client.execute({
+                sql: `UPDATE users SET role = 'admin', password = ? WHERE id_number = ?`,
+                args: [hashed, a[0]]
+            });
         }
+        console.log("[DB] Admin accounts verified/updated.");
     } catch (e) { console.error("[DB] Admin Seeding Error:", e.message); }
 }
 
