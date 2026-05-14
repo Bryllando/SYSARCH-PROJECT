@@ -102,7 +102,7 @@ async function initDb() {
             ai_reco_version INTEGER DEFAULT 0,
             tidy_points_raw INTEGER DEFAULT 0,
             task_completion_rate REAL DEFAULT 0,
-            created_at DATETIME DEFAULT (datetime('now','localtime'))
+            created_at DATETIME DEFAULT (datetime('now','+8 hours'))
         )`,
         `CREATE TABLE IF NOT EXISTS sitin_sessions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -110,7 +110,7 @@ async function initDb() {
             lab_room TEXT,
             computer_number INTEGER DEFAULT NULL,
             purpose TEXT,
-            time_in DATETIME DEFAULT (datetime('now','localtime')),
+            time_in DATETIME DEFAULT (datetime('now','+8 hours')),
             time_end DATETIME DEFAULT NULL,
             time_out DATETIME,
             status TEXT DEFAULT 'active',
@@ -133,7 +133,7 @@ async function initDb() {
             approved_by INTEGER DEFAULT NULL,
             updated_at DATETIME DEFAULT NULL,
             deleted_by_user INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT (datetime('now','localtime')),
+            created_at DATETIME DEFAULT (datetime('now','+8 hours')),
             FOREIGN KEY (user_id) REFERENCES users(id)
         )`,
         `CREATE TABLE IF NOT EXISTS reservation_settings (
@@ -149,7 +149,7 @@ async function initDb() {
             session_id INTEGER,
             message TEXT NOT NULL,
             rating INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT (datetime('now','localtime')),
+            created_at DATETIME DEFAULT (datetime('now','+8 hours')),
             FOREIGN KEY (user_id) REFERENCES users(id)
         )`,
         `CREATE TABLE IF NOT EXISTS notifications (
@@ -157,7 +157,7 @@ async function initDb() {
             user_id INTEGER NOT NULL,
             message TEXT NOT NULL,
             is_read INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT (datetime('now','localtime')),
+            created_at DATETIME DEFAULT (datetime('now','+8 hours')),
             FOREIGN KEY (user_id) REFERENCES users(id)
         )`,
         `CREATE TABLE IF NOT EXISTS announcements (
@@ -167,14 +167,14 @@ async function initDb() {
             is_pinned INTEGER DEFAULT 0,
             media_url TEXT DEFAULT '',
             media_type TEXT DEFAULT '',
-            created_at DATETIME DEFAULT (datetime('now','localtime'))
+            created_at DATETIME DEFAULT (datetime('now','+8 hours'))
         )`,
         `CREATE TABLE IF NOT EXISTS announcement_comments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             announcement_id INTEGER NOT NULL,
             user_id INTEGER NOT NULL,
             message TEXT NOT NULL,
-            created_at DATETIME DEFAULT (datetime('now','localtime')),
+            created_at DATETIME DEFAULT (datetime('now','+8 hours')),
             FOREIGN KEY (announcement_id) REFERENCES announcements(id),
             FOREIGN KEY (user_id) REFERENCES users(id)
         )`,
@@ -184,7 +184,7 @@ async function initDb() {
             type TEXT DEFAULT 'info',
             related_id INTEGER,
             is_read INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT (datetime('now','localtime'))
+            created_at DATETIME DEFAULT (datetime('now','+8 hours'))
         )`,
         `CREATE TABLE IF NOT EXISTS lab_computers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -197,20 +197,20 @@ async function initDb() {
             user_id INTEGER PRIMARY KEY,
             version INTEGER DEFAULT 0,
             payload TEXT NOT NULL,
-            updated_at DATETIME DEFAULT (datetime('now','localtime')),
+            updated_at DATETIME DEFAULT (datetime('now','+8 hours')),
             FOREIGN KEY (user_id) REFERENCES users(id)
         )`,
         `CREATE TABLE IF NOT EXISTS ai_admin_insights (
             id INTEGER PRIMARY KEY CHECK (id = 1),
             payload TEXT NOT NULL,
-            updated_at DATETIME DEFAULT (datetime('now','localtime'))
+            updated_at DATETIME DEFAULT (datetime('now','+8 hours'))
         )`,
         `CREATE TABLE IF NOT EXISTS ai_recommendation_cache (
             cache_key TEXT PRIMARY KEY,
             student_id INTEGER,
             type TEXT NOT NULL,
             response_json TEXT NOT NULL,
-            generated_at DATETIME DEFAULT (datetime('now','localtime')),
+            generated_at DATETIME DEFAULT (datetime('now','+8 hours')),
             source_session_at DATETIME,
             source_feedback_at DATETIME,
             source_updated_at DATETIME,
@@ -222,7 +222,7 @@ async function initDb() {
             software_name TEXT NOT NULL,
             version TEXT DEFAULT '',
             status TEXT DEFAULT 'Available',
-            created_at DATETIME DEFAULT (datetime('now','localtime')),
+            created_at DATETIME DEFAULT (datetime('now','+8 hours')),
             UNIQUE(lab_room, software_name, version)
         )`
     ];

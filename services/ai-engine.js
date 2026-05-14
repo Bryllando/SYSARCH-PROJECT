@@ -307,7 +307,7 @@ async function setCache(db, { cacheKey, studentId, type, payload, sourceTimes })
         db,
         `INSERT INTO ai_recommendation_cache
          (cache_key, student_id, type, response_json, generated_at, source_session_at, source_feedback_at, source_updated_at)
-         VALUES (?, ?, ?, ?, datetime('now','localtime'), ?, ?, ?)
+         VALUES (?, ?, ?, ?, datetime('now','+8 hours'), ?, ?, ?)
          ON CONFLICT(cache_key) DO UPDATE SET
             response_json = excluded.response_json,
             generated_at = excluded.generated_at,
