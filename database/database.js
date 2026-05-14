@@ -40,6 +40,10 @@ const db = {
      * Executes a query and returns all rows.
      */
     all: async (sql, params = [], callback) => {
+        if (typeof params === 'function') {
+            callback = params;
+            params = [];
+        }
         try {
             const result = await client.execute({ sql, args: params });
             const rows = result.rows;
@@ -55,6 +59,10 @@ const db = {
      * Executes a query and returns the first row.
      */
     get: async (sql, params = [], callback) => {
+        if (typeof params === 'function') {
+            callback = params;
+            params = [];
+        }
         try {
             const result = await client.execute({ sql, args: params });
             const row = result.rows[0];
@@ -70,6 +78,10 @@ const db = {
      * Executes a query (INSERT, UPDATE, DELETE).
      */
     run: async (sql, params = [], callback) => {
+        if (typeof params === 'function') {
+            callback = params;
+            params = [];
+        }
         try {
             const result = await client.execute({ sql, args: params });
             const response = {
