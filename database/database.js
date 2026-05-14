@@ -243,6 +243,28 @@ async function initDb() {
             }
         }
     }
+
+    // NEW: Seed Admin Accounts if they don't exist
+    const adminCount = await db.get(`SELECT COUNT(*) as c FROM users WHERE role = 'admin'`);
+    if (adminCount && adminCount.c === 0) {
+        console.log('Seeding admin accounts...');
+        const bcrypt = require('bcryptjs');
+        const hashed = await bcrypt.hash('Admin@1234', 10);
+        
+        const admins = [
+            ['23769862', 'Taburnal', 'Emmanuel', 'O', 'BSIT', 3, 'bryllando@gmail.com', hashed, 'admin'],
+            ['00000000', 'Salimbangon', 'Jeff Pelorina', '', 'BSCS', 4, 'jeff@gmail.com', hashed, 'admin']
+        ];
+
+        for (const a of admins) {
+            await client.execute({
+                sql: `INSERT OR IGNORE INTO users 
+                      (id_number, last_name, first_name, middle_initial, course, year_level, email, password, role)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                args: a
+            });
+        }
+    }
 }
 
 // Initializing DB in background (or you can call this in server.js)
