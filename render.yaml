@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ccs-sitin-monitoring
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TZ
+        value: Asia/Manila
