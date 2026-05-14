@@ -244,13 +244,18 @@ async function initDb() {
         if (Number(count) === 0) {
             console.log('[DB] Seeding lab computers...');
             const labs = ['530', '528', '526', '542', '544', '524'];
+            const statements = [];
             for (const room of labs) {
                 for (let i = 1; i <= 50; i++) {
-                    await client.execute({
+                    statements.push({
                         sql: `INSERT OR IGNORE INTO lab_computers (lab_room, computer_number, status) VALUES (?, ?, 'available')`,
                         args: [room, i]
                     });
                 }
+            }
+            // Execute in batches of 100 to avoid any limits
+            for (let i = 0; i < statements.length; i += 100) {
+                await client.batch(statements.slice(i, i + 100));
             }
         }
     } catch (e) { console.error("[DB] Computer Seeding Error:", e.message); }
