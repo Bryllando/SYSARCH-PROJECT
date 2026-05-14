@@ -15,20 +15,24 @@ router.get('/login', (req, res) => {
 });
 
 // POST Login
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const { id_number, password } = req.body;
-    db.get('SELECT * FROM users WHERE id_number = ?', [id_number], async (err, user) => {
-        if (err || !user) {
+    try {
+        const user = await db.get('SELECT * FROM users WHERE id_number = ?', [id_number]);
+        
+        if (!user) {
             return res.render('pages/login', {
                 messages: [{ type: 'error', text: 'Invalid ID number or password.' }]
             });
         }
+        
         const match = await bcrypt.compare(password, user.password);
         if (!match) {
             return res.render('pages/login', {
                 messages: [{ type: 'error', text: 'Invalid ID number or password.' }]
             });
         }
+        
         req.session.user = {
             id: user.id,
             id_number: user.id_number,
@@ -44,7 +48,6 @@ router.post('/login', (req, res) => {
             profile_picture: user.profile_picture || ''
         };
 
-        // ── Flash toast for the next page ──────────────────────────────────────
         req.session.toast = {
             type: 'success',
             message: 'Welcome back, ' + user.first_name + '! You are now logged in.'
@@ -57,7 +60,13 @@ router.post('/login', (req, res) => {
         return user.role === 'admin'
             ? res.redirect('/admin')
             : res.redirect('/dashboard');
-    });
+            
+    } catch (err) {
+        console.error('Login Error:', err);
+        return res.render('pages/login', {
+            messages: [{ type: 'error', text: 'An error occurred during login. Please try again.' }]
+        });
+    }
 });
 
 // GET Register
