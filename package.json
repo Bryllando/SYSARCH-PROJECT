@@ -19,7 +19,7 @@
     "@tailwindcss/cli": "^4.2.1",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
-    "cookie-session": "^2.1.1",
+    "cookie-session": "^2.1.0",
     "csv-parser": "^3.0.0",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
