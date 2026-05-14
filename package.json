@@ -7,8 +7,8 @@
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "devStart": "nodemon server.js",
-    "build": "npx tailwindcss -i ./src/css/input.css -o ./public/dist/output.css --minify",
-    "dev": "npx tailwindcss -i ./src/css/input.css -o ./public/dist/output.css --watch"
+    "build": "tailwindcss -i ./src/css/input.css -o ./public/dist/output.css --minify",
+    "dev": "tailwindcss -i ./src/css/input.css -o ./public/dist/output.css --watch"
   },
   "keywords": [],
   "author": "",
