@@ -13,7 +13,7 @@
             </div>
         </div>
         <form action="/admin/reservations/<%= reservation.id %>/sit-in" method="POST" style="padding:20px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                 <div>
                     <label style="display:block;font-size:11px;font-weight:700;color:#6B7280;margin-bottom:6px;">Start Time</label>
                     <input type="datetime-local" name="start_time" required

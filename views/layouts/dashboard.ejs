@@ -16,9 +16,9 @@
 
     <%- include('../partials/navbar-dashboard') %>
 
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1 overflow-hidden relative">
             <%- include('../partials/sidebar') %>
-                <main class="flex-1 overflow-y-auto bg-gray-100">
+                <main class="flex-1 overflow-y-auto bg-gray-100 min-w-0">
                     <%- body %>
                 </main>
         </div>

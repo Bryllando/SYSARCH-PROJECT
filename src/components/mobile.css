@@ -1,0 +1,384 @@
+/* ══════════════════════════════════════════════════════
+   GLOBAL MOBILE RESPONSIVE OVERRIDES
+   Covers: navbar, sidebar, dashboard, admin pages,
+   tables, grids, modals, notification panel, forms
+   ══════════════════════════════════════════════════════ */
+
+/* ── Body / Root ── */
+html, body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* ── Guest Navbar Mobile ── */
+@media (max-width: 640px) {
+    .guest-nav-links {
+        display: none !important;
+    }
+    .guest-nav-links.mobile-open {
+        display: flex !important;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #5B0E14;
+        padding: 12px 20px 18px;
+        gap: 2px;
+        z-index: 60;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        border-top: 1px solid rgba(255,255,255,0.1);
+        animation: mobileNavIn 0.2s ease-out;
+    }
+    .guest-nav-links.mobile-open li {
+        width: 100%;
+    }
+    .guest-nav-links.mobile-open a {
+        display: block;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 14px !important;
+        transition: background 0.15s;
+    }
+    .guest-nav-links.mobile-open a:hover {
+        background: rgba(255,255,255,0.08);
+    }
+    @keyframes mobileNavIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+}
+
+/* ── Dashboard Navbar Mobile ── */
+@media (max-width: 768px) {
+    .notif-dropdown {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-height: 75vh;
+        border-radius: 20px 20px 0 0 !important;
+        z-index: 200 !important;
+    }
+    .notif-list {
+        max-height: 50vh !important;
+    }
+}
+
+/* ── Admin Stats Grid ── */
+@media (max-width: 768px) {
+    .adm-stats {
+        grid-template-columns: 1fr !important;
+        padding: 14px 14px 0 !important;
+        gap: 10px !important;
+    }
+    .adm-stat {
+        padding: 14px 16px !important;
+    }
+    .adm-stat-val {
+        font-size: 24px !important;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .adm-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* ── Admin Main Grid (Announcements + Sidebar Panels) ── */
+@media (max-width: 900px) {
+    .adm-main {
+        grid-template-columns: 1fr !important;
+        padding: 14px !important;
+        gap: 14px !important;
+    }
+}
+
+/* ── Admin Feed ── */
+@media (max-width: 768px) {
+    .adm-feed {
+        padding: 0 14px 24px !important;
+    }
+}
+
+/* ── Admin AI Wrap ── */
+@media (max-width: 768px) {
+    .adm-ai-wrap {
+        padding: 12px 14px 0 !important;
+    }
+    .adm-ai-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ── Student Table Page ── */
+@media (max-width: 768px) {
+    .stud-header {
+        padding: 20px 16px !important;
+    }
+    .stud-header h1 {
+        font-size: 22px !important;
+    }
+    .stud-toolbar {
+        padding: 14px 16px !important;
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    .stud-search-wrap input {
+        width: 100% !important;
+    }
+    .stud-table-wrap {
+        padding: 0 10px 16px !important;
+    }
+    .stud-table th,
+    .stud-table td {
+        padding: 10px 10px !important;
+        font-size: 12px !important;
+    }
+    .cell-actions {
+        flex-direction: column;
+        gap: 4px !important;
+    }
+    .btn-edit-row,
+    .btn-sitin {
+        font-size: 10px !important;
+        padding: 5px 10px !important;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ── Tables (universal overflow-x) ── */
+@media (max-width: 768px) {
+    .overflow-x-auto {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table {
+        min-width: 600px;
+    }
+}
+
+/* ── PC Grids (10-column → 5-column on mobile) ── */
+@media (max-width: 768px) {
+    .lc-pc-grid,
+    .pc-grid-10,
+    .sb-pc-grid,
+    .sb-pc-grid-mobile {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 5px !important;
+    }
+    .lc-pc-icon-wrap,
+    .pc-icon-wrap,
+    .sb-pc-icon {
+        width: 34px !important;
+        height: 28px !important;
+    }
+    .lc-grid-body,
+    .pcmodal-body {
+        padding: 14px 12px !important;
+    }
+    .lc-header {
+        padding: 20px 16px !important;
+    }
+    .lc-header h1 {
+        font-size: 22px !important;
+    }
+    .lc-stats {
+        padding: 10px 16px !important;
+    }
+    .lc-tabs {
+        padding: 10px 16px 0 !important;
+    }
+    .lc-grid-card {
+        margin: 10px 16px 20px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .lc-pc-grid,
+    .pc-grid-10,
+    .sb-pc-grid {
+        grid-template-columns: repeat(5, 1fr) !important;
+    }
+}
+
+/* ── Reservation Page Tabs ── */
+@media (max-width: 640px) {
+    .res-tab-bar {
+        padding: 0 10px !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .res-tab-btn {
+        padding: 12px 14px !important;
+        font-size: 12px !important;
+        white-space: nowrap;
+    }
+    .lc-page-inner {
+        padding: 14px !important;
+    }
+    .lab-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ── Modals on Mobile ── */
+@media (max-width: 640px) {
+    .pcmodal-card,
+    .stud-modal-card,
+    .sidebar-modal-card,
+    .sc-card,
+    .edit-pc-card,
+    .extend-card {
+        max-width: calc(100vw - 20px) !important;
+        border-radius: 16px !important;
+        max-height: 92vh !important;
+    }
+    .pcmodal-header,
+    .stud-modal-header,
+    .sc-header,
+    .edit-pc-header {
+        padding: 14px 16px !important;
+    }
+    .pcmodal-footer,
+    .stud-modal-footer,
+    .sc-footer,
+    .edit-pc-footer {
+        padding: 12px 16px !important;
+        flex-direction: column;
+    }
+    .resform-card {
+        max-width: 100% !important;
+        border-radius: 16px !important;
+    }
+    
+    /* Edit Student Modal Grid stacking */
+    .stud-modal-card form > div[style*="grid-template-columns"],
+    .edit-pc-card form > div[style*="grid-template-columns"],
+    .extend-card .extend-time-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ── Dashboard User Page ── */
+@media (max-width: 768px) {
+    .grid.grid-cols-1.md\:grid-cols-3 {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .p-4.md\:p-6 {
+        padding: 12px !important;
+    }
+    .space-y-4.md\:space-y-6 {
+        gap: 12px !important;
+    }
+}
+
+/* ── Profile Page ── */
+@media (max-width: 640px) {
+    .prof-avatar-wrap {
+        width: 80px !important;
+        height: 80px !important;
+    }
+    .prof-avatar-inner {
+        width: 74px !important;
+        height: 74px !important;
+    }
+}
+
+/* ── History Page ── */
+@media (max-width: 768px) {
+    .p-6 {
+        padding: 14px !important;
+    }
+}
+
+/* ── Announcement Toolbar ── */
+@media (max-width: 640px) {
+    .ann-toolbar {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+    .ann-toolbar-left {
+        flex-wrap: wrap;
+    }
+    .ann-post-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ── Leaderboard Index Page ── */
+@media (max-width: 768px) {
+    .adm-lb-item {
+        padding: 10px 14px !important;
+        gap: 8px !important;
+    }
+    .adm-lb-bar-wrap {
+        display: none;
+    }
+}
+
+/* ── Admin Reports Page ── */
+@media (max-width: 768px) {
+    .adm-panel-head {
+        padding: 12px 14px !important;
+        flex-wrap: wrap;
+        gap: 6px !important;
+    }
+}
+
+/* ── Study Tip Panel ── */
+@media (max-width: 640px) {
+    .study-tip-panel {
+        width: calc(100vw - 24px) !important;
+        right: 12px !important;
+        max-width: 100% !important;
+    }
+    .user-tip-panel {
+        width: calc(100vw - 24px) !important;
+        right: 12px !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ── Footer ── */
+@media (max-width: 480px) {
+    footer {
+        font-size: 10px !important;
+        padding: 8px 12px !important;
+    }
+}
+
+/* ── General utility: prevent horizontal overflow on all containers ── */
+@media (max-width: 768px) {
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+    /* Make sure images don't overflow */
+    img, video {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* ── Admin Page Specifics ── */
+@media (max-width: 768px) {
+    .adm-main {
+        padding: 10px !important;
+    }
+    .adm-lb-count {
+        font-size: 13px !important;
+    }
+    .ann-textarea {
+        font-size: 13px !important;
+        min-height: 90px !important;
+    }
+}

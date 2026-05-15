@@ -1,4 +1,4 @@
-<header class="bg-[#5B0E14] px-6 md:px-10 py-3 flex flex-col md:flex-row justify-between items-center shadow-lg">
+<header class="bg-[#5B0E14] px-6 md:px-10 py-3 flex justify-between items-center shadow-lg relative">
 
     <!-- Logo + Title -->
     <div class="flex items-center gap-3">
@@ -9,15 +9,25 @@
                 class="h-10 w-10 md:h-12 md:w-12 object-contain mix-blend-lighten drop-shadow-md">
         </div>
         <div class="hidden sm:block w-px h-10 bg-white/30"></div>
-        <h1 class="text-white font-semibold text-sm md:text-base leading-tight">
+        <h1 class="text-white font-semibold text-sm md:text-base leading-tight hidden sm:block">
             College of Computer Studies<br>
             <span style="color:#F1E194; font-weight:700;">Sit-in Monitoring System</span>
         </h1>
     </div>
 
+    <!-- Mobile Hamburger Button -->
+    <button id="guestNavToggle" class="block sm:hidden text-white/80 hover:text-white focus:outline-none p-1" onclick="toggleGuestNav()">
+        <svg id="guestNavOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+        <svg id="guestNavClose" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 hidden">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+
     <!-- Guest Nav: Home · Community · About · Login · Register -->
-    <nav class="mt-3 md:mt-0">
-        <ul class="flex flex-wrap justify-center items-center gap-5 md:gap-8 list-none">
+    <nav class="hidden sm:block" id="guestNavMenu">
+        <ul id="guestNavLinks" class="guest-nav-links flex flex-wrap justify-center items-center gap-5 md:gap-8 list-none">
             <li>
                 <a href="/" class="nav-link text-white/90 hover:text-white font-medium text-sm md:text-base">Home</a>
             </li>
@@ -47,4 +57,29 @@
             </li>
         </ul>
     </nav>
-</header>
+</header>
+
+<script>
+function toggleGuestNav() {
+    const menu = document.getElementById('guestNavMenu');
+    const links = document.getElementById('guestNavLinks');
+    const openIcon = document.getElementById('guestNavOpen');
+    const closeIcon = document.getElementById('guestNavClose');
+
+    const isOpen = links.classList.contains('mobile-open');
+
+    if (!isOpen) {
+        // Open
+        menu.classList.remove('hidden');
+        links.classList.add('mobile-open');
+        openIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+    } else {
+        // Close
+        menu.classList.add('hidden');
+        links.classList.remove('mobile-open');
+        openIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+    }
+}
+</script>
